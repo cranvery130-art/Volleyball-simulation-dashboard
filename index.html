@@ -110,7 +110,10 @@
   .preset-empty{ font-size:12px; color:var(--text-dim); }
 
   .stage-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px; flex-wrap:wrap; }
-  .stage-top .scenario-title{ font-size:18px; font-weight:600; }
+  .stage-top .scenario-title{ font-size:18px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
+  .stage-top .scenario-title:hover{ color:var(--accent); }
+  .stage-top .scenario-title::after{ content:'▾'; font-size:12px; color:var(--text-dim); }
+  .stage-top .scenario-title:hover::after{ color:var(--accent); }
   .stage-top .scenario-tag{ font-size:12px; color:#241b02; background:var(--accent); padding:3px 10px; border-radius:999px; font-weight:700; }
 
   .court-wrap{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; }
@@ -157,15 +160,15 @@
   #loginOverlay{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:20px; z-index:1000; overflow-y:auto; }
 
   #desktopSplit{ display:flex; flex-direction:column; }
-  #mainAppCol{ min-width:0; }
-  #videoCol{ min-width:0; margin-top:20px; }
+  #mainAppCol{ min-width:0; max-width:1400px; margin:0 auto; width:100%; }
+  #videoCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; }
   #videoCol .card{ max-width:820px; margin:0 auto; }
-  @media (min-width:1300px){
-    #desktopSplit{ flex-direction:row; align-items:flex-start; gap:18px; padding:0 20px; }
-    #mainAppCol{ flex:1 1 50%; }
-    #videoCol{ flex:1 1 50%; margin-top:0; position:sticky; top:16px; max-height:100vh; overflow-y:auto; }
+  #mainAppCol.mode-hidden, #videoCol.mode-hidden{ display:none; }
+  @media (min-width:900px){
     #videoCol .card{ max-width:none; }
   }
+  .mode-seg-wrap{ max-width:1400px; margin:0 auto 16px; padding:0 20px; }
+  .mode-seg-wrap .seg{ max-width:420px; }
   .color-swatch{ width:22px; height:22px; border-radius:6px; border:1px solid var(--border); background:var(--panel-2); display:inline-block; }
   .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; }
   .record-row input[type=text]{ flex:1; min-width:0; padding:6px 8px; border-radius:7px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:12px; font-family:inherit; }
@@ -218,6 +221,12 @@
 </div>
 
 <div id="desktopSplit">
+<div class="mode-seg-wrap">
+  <div class="seg" id="appModeSeg">
+    <button data-appmode="sim" class="active">🏐 전술 시뮬레이션</button>
+    <button data-appmode="video">🎥 경기 영상 분석</button>
+  </div>
+</div>
 <div id="mainAppCol">
 <div class="app" style="display:none;">
 
@@ -385,7 +394,7 @@
 
     <div>
       <div class="stage-top">
-        <div class="scenario-title" id="scenarioTitle">상대 좌측(L) 오픈 공격</div>
+        <div class="scenario-title" id="scenarioTitle" role="button" tabindex="0" title="클릭해서 공격 상황 바꾸기">상대 좌측(L) 오픈 공격</div>
         <div style="display:flex; align-items:center; gap:8px;">
           <div class="scenario-tag" id="blockTag">2인 블로킹</div>
           <button class="btn" id="btnOrientation" style="white-space:nowrap;">세로 보기로 전환</button>
@@ -500,10 +509,10 @@
 </div>
 </div>
 
-<div id="videoCol">
+<div id="videoCol" class="mode-hidden">
   <div class="card">
     <h2>경기 영상 분석 <span class="field-note" style="display:inline;">(실험적 기능)</span></h2>
-    <div class="field-note" style="margin-top:0;">영상을 올리고 두 팀의 유니폼 색을 클릭으로 지정하면, 그 색과 비슷한 부분을 찾아 왼쪽과 같은 방식의 점으로 표시해요. 완벽한 인식은 아니라서 점 위치는 직접 드래그로 고칠 수 있어요. 카메라가 코트 전체를 위에서 넓게 비출수록 더 정확해요.</div>
+    <div class="field-note" style="margin-top:0;">영상을 올리고 두 팀의 유니폼 색을 클릭으로 지정하면, 그 색과 비슷한 부분을 찾아 왼쪽과 같은 방식의 점(양 팀 모두 1~9번)으로 표시해요. 번호는 화면 왼쪽부터 순서대로 매겨져요 — 특정 선수를 계속 따라다니며 매기는 건 아니라서, 선수들이 서로 위치를 크게 바꾸면 번호도 함께 바뀔 수 있어요. 완벽한 인식은 아니라서 점 위치는 직접 드래그로 고칠 수 있어요. 카메라가 코트 전체를 위에서 넓게 비출수록 더 정확해요.</div>
 
     <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
     <div id="videoWrap" style="position:relative; margin-top:8px;">
@@ -964,7 +973,7 @@
     if(atk.setterOpp){
       const setterPos = CUSTOM_OPP_BASE[resolveOppByPos(atk.setterPos, atk.setterOpp)];
       const tossStart = atk.tossStart || 0;
-      const tossEnd = T.approach;
+      const tossEnd = T.peak; // the attacker's approach-to-contact lerp finishes exactly at T.peak (see attackerPathAt) — sync the toss to land there, not at T.approach (which is only the run-up, before the attacker has reached the contact point)
       if(p<=tossStart) return setterPos.slice();
       if(p<=tossEnd){
         const t = easeInOut((p-tossStart)/(tossEnd-tossStart));
@@ -1207,7 +1216,7 @@
         el.ring.style.animation = (id===attackerOppId) ? 'pulseRing 1.4s ease-in-out infinite':'none';
         const decoyActive = fakeOppIdVal && id===fakeOppIdVal && progress>0.05 && progress<0.55;
         el.dring.style.opacity = decoyActive ? 1:0;
-        const setterActive = setterOppIdVal && id===setterOppIdVal && progress>=(atk.tossStart||0) && progress<atk.timing.approach+0.05;
+        const setterActive = setterOppIdVal && id===setterOppIdVal && progress>=(atk.tossStart||0) && progress<atk.timing.peak+0.03;
         el.sring.style.opacity = setterActive ? 1:0;
         if(pos[1]>=345 && pos[1]<=382) nearNetPlayers.push({x:pos[0], side:'opp'});
       });
@@ -1390,7 +1399,7 @@
     }
     const atk=ATTACKS[scenario], T=atk.timing;
     if(progress<=0.02) return '대기 중 — 재생을 눌러보세요';
-    if(atk.setterOpp && progress>=(atk.tossStart||0) && progress<T.approach) return atk.backToss ? '세터 빽토스' : '세터 토스';
+    if(atk.setterOpp && progress>=(atk.tossStart||0) && progress<T.peak) return atk.backToss ? '세터 빽토스' : '세터 토스';
     if(atk.fakeContact && progress<T.approach*0.7) return '페이크 동작 (속공인 척)';
     if(progress<T.approach) return '공격수 도움닫기';
     if(progress<T.land) return '스파이크';
@@ -1495,6 +1504,19 @@
     ballCurrent=null;
     updateTexts();
   }
+
+  const scenarioTitleEl = document.getElementById('scenarioTitle');
+  function openScenarioPicker(){
+    const sel = document.getElementById('scenarioSelect');
+    if(typeof sel.showPicker === 'function'){
+      try{ sel.showPicker(); return; }catch(err){}
+    }
+    sel.focus();
+  }
+  scenarioTitleEl.addEventListener('click', openScenarioPicker);
+  scenarioTitleEl.addEventListener('keydown', e=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openScenarioPicker(); }
+  });
 
   document.getElementById('scenarioSelect').addEventListener('change', e=>{
     switchScenario(e.target.value);
@@ -1717,6 +1739,16 @@
       grid.appendChild(item);
     });
   }
+
+  // ---------- app mode switcher (전술 시뮬레이션 vs 경기 영상 분석) ----------
+  document.querySelectorAll('#appModeSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#appModeSeg button').forEach(b=>b.classList.toggle('active', b===btn));
+      const mode = btn.dataset.appmode;
+      document.getElementById('mainAppCol').classList.toggle('mode-hidden', mode!=='sim');
+      document.getElementById('videoCol').classList.toggle('mode-hidden', mode!=='video');
+    });
+  });
 
   // ---------- init ----------
   updateTexts();
@@ -2161,8 +2193,12 @@
     }
     const blobsA = extractBlobs(gridA, GRID_W, GRID_H);
     const blobsB = extractBlobs(gridB, GRID_W, GRID_H);
-    ownDetected = blobsA.slice(0,9).map(b=>[b.x/GRID_W, b.y/GRID_H]);
-    oppDetected = blobsB.slice(0,9).map(b=>[b.x/GRID_W, b.y/GRID_H]);
+    // keep only the largest blobs (most likely real players), then number left-to-right
+    // so "1번" tends to mean "leftmost detected player" consistently, rather than shuffling
+    // every frame by blob size — a rough stand-in for true per-player identity tracking.
+    const sortByX = (a,b)=>a.x-b.x;
+    ownDetected = blobsA.slice(0,9).sort(sortByX).map(b=>[b.x/GRID_W, b.y/GRID_H]);
+    oppDetected = blobsB.slice(0,9).sort(sortByX).map(b=>[b.x/GRID_W, b.y/GRID_H]);
     renderVideoCourt();
   }
 
