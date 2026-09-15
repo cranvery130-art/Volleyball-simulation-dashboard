@@ -223,6 +223,7 @@
     <h1>9인제 배구 수비 전술 시뮬레이터</h1>
     <p class="login-sub">코드를 만들거나, 공유받은 코드로 입장하세요.</p>
     <div id="storageWarning" class="note-box" style="display:none;"></div>
+    <div id="autoRejoinStatus" class="login-status" style="display:none;"></div>
 
     <div class="seg" id="loginModeSeg">
       <button data-mode="create" class="active">새 코드 만들기</button>
@@ -1830,18 +1831,26 @@
   // Backend.delete(key)   -> removes a key
   // Keeping this exact same in/out shape (strings) means nothing else in the app
   // (fetchRoom, saveRoom, deleteRoom, etc.) has to change when the backend changes.
+  // Single "kv" collection with namespaced keys (all keys start with "vt:") — this means the
+  // Firestore security rule only ever has to check the key prefix, not validate the shape of
+  // whatever data this app happens to store today. If the app's data shape changes later, the
+  // security rule never needs to change. (Pattern borrowed from a companion Firebase project.)
+  const KV_COLLECTION = 'kv';
+  function sanitizeDocId(key){ return String(key).replace(/\//g,'_').slice(0,400); }
   const Backend = {
     async get(key){
       try{
-        const snap = await firebaseDb.collection('rooms').doc(key).get();
-        return snap.exists ? JSON.stringify(snap.data()) : null;
+        const snap = await firebaseDb.collection(KV_COLLECTION).doc(sanitizeDocId(key)).get();
+        if(!snap.exists) return null;
+        const data = snap.data();
+        return typeof data.value === 'string' ? data.value : null;
       }catch(err){ return null; } // missing/unavailable — treat as "not found"
     },
     async set(key, value){
-      await firebaseDb.collection('rooms').doc(key).set(JSON.parse(value));
+      await firebaseDb.collection(KV_COLLECTION).doc(sanitizeDocId(key)).set({value:String(value), updatedAt:Date.now()});
     },
     async delete(key){
-      try{ await firebaseDb.collection('rooms').doc(key).delete(); }catch(err){ /* already gone */ }
+      try{ await firebaseDb.collection(KV_COLLECTION).doc(sanitizeDocId(key)).delete(); }catch(err){ /* already gone */ }
     }
   };
 
@@ -1853,15 +1862,39 @@
       return;
     }
     try{
-      await Backend.set('__probe__', '{"ok":true}');
-      await Backend.delete('__probe__');
+      await Backend.set('vt:__probe__', '{"ok":true}');
+      await Backend.delete('vt:__probe__');
     }catch(err){
       warnEl.textContent = '아직 코드 저장 기능은 서버 연결 준비 중이에요 (' + errText(err) + '). 지금 바로 쓰시려면 "코드 없이 계속하기"를 이용해주세요.';
       warnEl.style.display='block';
     }
   })();
 
-  function roomKey(code){ return 'room_'+code.trim().toLowerCase().replace(/[\/\.\s#\[\]]/g,'-'); }
+  // ---------- try to silently resume this device's last code, unless a shared link overrides it ----------
+  (async function tryAutoRejoin(){
+    if(!storageOk) return;
+    const params = new URLSearchParams(location.search);
+    if(params.get('code')) return; // an explicit shared link always wins over a remembered session
+    let lastCode = null;
+    try{ lastCode = localStorage.getItem(LAST_CODE_KEY); }catch(err){ return; }
+    if(!lastCode) return;
+    let rememberedLevel = null;
+    try{ rememberedLevel = localStorage.getItem(deviceRoleKey(lastCode)); }catch(err){}
+    if(!rememberedLevel) return;
+    const statusEl = document.getElementById('autoRejoinStatus');
+    statusEl.textContent = `이 기기에 저장된 코드(${lastCode})로 자동 입장 중...`;
+    statusEl.style.display='block';
+    try{
+      const room = await fetchRoom(lastCode);
+      if(!room){ forgetDevice(lastCode); statusEl.style.display='none'; return; }
+      const hasEditPw = rememberedLevel==='creator' ? !!room.editPassword : undefined;
+      enterApp(lastCode, rememberedLevel, room.state, hasEditPw);
+    }catch(err){
+      statusEl.style.display='none';
+    }
+  })();
+
+  function roomKey(code){ return 'vt:room:'+code.trim().toLowerCase().replace(/[\/\.\s#\[\]]/g,'-'); }
 
   function serializeRoomState(){
     return {
@@ -1904,9 +1937,27 @@
     document.getElementById('btnDeleteRoom').style.display='none';
   }
 
+  // ---------- this device remembers its last code/role locally (not on the server) ----------
+  // Purely a client-side convenience, mirroring a pattern from a companion Firebase project:
+  // once THIS browser has successfully entered a code, it won't need to retype the password
+  // again on this same device. It grants nothing new server-side — someone without the
+  // password still can't get in on a different device.
+  const LAST_CODE_KEY = 'vt:last-code';
+  function deviceRoleKey(code){ return 'vt:device:'+code; }
+  function rememberDevice(code, level){
+    try{ localStorage.setItem(LAST_CODE_KEY, code); localStorage.setItem(deviceRoleKey(code), level); }catch(err){}
+  }
+  function forgetDevice(code){
+    try{
+      if(localStorage.getItem(LAST_CODE_KEY)===code) localStorage.removeItem(LAST_CODE_KEY);
+      if(code) localStorage.removeItem(deviceRoleKey(code));
+    }catch(err){}
+  }
+
   function enterApp(code, level, state, hasEditPw){
     roomCode = code; accessLevel = level;
     applyRoomState(state);
+    if(code) rememberDevice(code, level);
     document.getElementById('loginOverlay').style.display='none';
     document.querySelector('.app').style.display='block';
     document.getElementById('settingsCodeLabel').textContent = code || '(로컬)';
@@ -2049,10 +2100,12 @@
     }catch(err){
       alert('삭제 중 문제가 있었어요: ' + errText(err) + '\n그래도 로그인 화면으로 돌아갑니다.');
     }
+    forgetDevice(roomCode);
     location.href = location.pathname;
   });
 
   document.getElementById('btnLogoutRoom').addEventListener('click', ()=>{
+    forgetDevice(roomCode);
     location.href = location.pathname;
   });
 
