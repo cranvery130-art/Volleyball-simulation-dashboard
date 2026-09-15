@@ -162,19 +162,23 @@
   #desktopSplit{ display:flex; flex-direction:column; }
   #mainAppCol{ min-width:0; max-width:1400px; margin:0 auto; width:100%; }
   #videoCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; }
-  #videoCol .card{ max-width:820px; margin:0 auto; }
+  #videoCol .card{ margin:0 auto; }
   #mainAppCol.mode-hidden, #videoCol.mode-hidden{ display:none; }
-  @media (min-width:900px){
-    #videoCol .card{ max-width:none; }
-  }
   .mode-seg-wrap{ max-width:1400px; margin:0 auto 16px; padding:0 20px; }
   .mode-seg-wrap .seg{ max-width:420px; }
-  .color-swatch{ width:22px; height:22px; border-radius:6px; border:1px solid var(--border); background:var(--panel-2); display:inline-block; }
   .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; }
   .record-row input[type=text]{ flex:1; min-width:0; padding:6px 8px; border-radius:7px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:12px; font-family:inherit; }
   .record-row .btn{ font-size:11.5px; padding:6px 8px; white-space:nowrap; }
   .record-row .x{ width:20px; height:20px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--text-dim); cursor:pointer; flex:none; }
   .record-row .x:hover{ background:#EF4A4A; color:#fff; }
+  .banner-block{ margin-bottom:14px; }
+  .banner-title{ font-size:12.5px; font-weight:700; color:var(--accent); margin-bottom:6px; }
+  .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; }
+  .banner-tabs button{ padding:7px 11px; font-size:12px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; }
+  .banner-tabs button:hover{ border-color:var(--accent); }
+  .banner-tabs button.flash{ background:var(--accent); color:#241b02; border-color:var(--accent); }
+  .tally-row{ font-size:12px; color:var(--text-dim); line-height:1.8; }
+  .tally-row b{ color:var(--text); }
   .login-card{ width:100%; max-width:420px; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px 24px; }
   .login-card h1{ font-size:22px; font-weight:600; text-align:center; }
   .login-card .login-sub{ font-size:13px; color:var(--text-dim); text-align:center; margin:6px 0 16px; }
@@ -253,9 +257,8 @@
       </div>
     </div>
 
-    <div class="row-2">
-      <div class="card">
-        <h2><span class="n">02</span>블로킹 인원</h2>
+    <div class="card">
+      <h2><span class="n">02</span>블로킹 인원</h2>
         <div class="seg" id="blockSeg">
           <button data-block="4">4인</button>
           <button data-block="3">3인</button>
@@ -352,7 +355,6 @@
           <div class="edit-hint" id="customStatus"></div>
         </div>
       </div>
-    </div>
 
     <div class="card">
       <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
@@ -511,48 +513,71 @@
 
 <div id="videoCol" class="mode-hidden">
   <div class="card">
-    <h2>경기 영상 분석 <span class="field-note" style="display:inline;">(실험적 기능)</span></h2>
-    <div class="field-note" style="margin-top:0;">영상을 올리고 두 팀의 유니폼 색을 클릭으로 지정하면, 그 색과 비슷한 부분을 찾아 왼쪽과 같은 방식의 점(양 팀 모두 1~9번)으로 표시해요. 번호는 화면 왼쪽부터 순서대로 매겨져요 — 특정 선수를 계속 따라다니며 매기는 건 아니라서, 선수들이 서로 위치를 크게 바꾸면 번호도 함께 바뀔 수 있어요. 완벽한 인식은 아니라서 점 위치는 직접 드래그로 고칠 수 있어요. 카메라가 코트 전체를 위에서 넓게 비출수록 더 정확해요.</div>
-
+    <h2>경기 영상</h2>
+    <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서, 아래 대시보드에 직접 그리고 배너로 빠르게 기록하세요.</div>
     <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
-    <div id="videoWrap" style="position:relative; margin-top:8px;">
-      <video id="matchVideo" style="width:100%; border-radius:10px; background:#000; display:block;" controls></video>
-      <div id="roiBox" style="display:none; position:absolute; border:2px dashed #F2B705; background:rgba(242,183,5,0.12); pointer-events:none;"></div>
-      <div id="roiCatcher" style="display:none; position:absolute; inset:0; cursor:crosshair;"></div>
+    <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
+  </div>
+
+  <div class="card">
+    <h2>대시보드 (직접 작성)</h2>
+    <label class="field-label">도구 선택</label>
+    <div class="seg" id="drawToolSeg">
+      <button data-tool="dotRed">🔴 도트</button>
+      <button data-tool="dotBlue">🔵 도트</button>
+      <button data-tool="ball">🏐 공</button>
+      <button data-tool="straight">➡ 직선</button>
+      <button data-tool="curved">➰ 곡선</button>
+      <button data-tool="pigtail">🌀 돼지꼬리</button>
+      <button data-tool="wavy">〰 물결</button>
+      <button data-tool="erase">🗑 지우기</button>
     </div>
+    <div class="field-note" id="drawStatus">도구를 고른 뒤 코트를 클릭(도트·공)하거나 드래그(화살표)하세요. "지우기"를 고르고 그림을 클릭하면 지워져요.</div>
     <div class="btn-row" style="margin-top:8px;">
-      <button class="btn" id="btnDrawRoi">📐 분석 영역 지정</button>
-      <button class="btn" id="btnClearRoi">영역 초기화 (전체 화면 분석)</button>
+      <button class="btn" id="btnClearBoard">보드 전체 지우기</button>
     </div>
-    <div class="field-note" id="roiStatus" style="margin-top:0;">분석 영역을 지정하면 그 안에서만 색을 찾아서 관중석·배경 등의 오탐지를 줄일 수 있어요. 보통 코트 전체가 들어오게 사각형을 그려주세요.</div>
-
-    <div class="btn-row" style="margin-top:10px;">
-      <button class="btn" id="btnPickColorA">🔵 아군 색상 지정</button>
-      <button class="btn" id="btnPickColorB">🔴 상대팀 색상 지정</button>
-    </div>
-    <div class="field-note" id="colorPickStatus" style="margin-top:0;">색상 지정 버튼을 누른 뒤, 영상(잠시 멈춘 상태 권장)에서 해당 팀 선수의 유니폼 부분을 클릭하세요.</div>
-    <div style="display:flex; align-items:center; gap:14px; margin-top:6px;">
-      <div style="display:flex; align-items:center; gap:6px;"><span class="color-swatch" id="swatchA"></span><span class="field-note" style="margin:0;">아군</span></div>
-      <div style="display:flex; align-items:center; gap:6px;"><span class="color-swatch" id="swatchB"></span><span class="field-note" style="margin:0;">상대팀</span></div>
-    </div>
-
-    <div class="check-row"><input type="checkbox" id="chkTrackToggle"><label for="chkTrackToggle">실시간 위치 추적 켜기</label></div>
-
     <div class="court-wrap" style="margin-top:8px;">
-      <svg id="videoCourt" viewBox="0 0 400 760" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
-        <rect x="14" y="14" width="372" height="732" rx="8" fill="none" stroke="#9C4A2E" stroke-width="6"/>
-        <rect x="18" y="18" width="364" height="724" rx="6" fill="#1F7A64"/>
-        <rect x="20" y="20" width="360" height="720" fill="none" stroke="#F2F6FA" stroke-width="2"/>
-        <rect x="14" y="376" width="372" height="8" fill="#0C1524" opacity="0.85"/>
+      <svg id="videoCourt" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
+        <defs>
+          <marker id="drawArrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="#F2F6FA"/>
+          </marker>
+        </defs>
+        <rect x="14" y="14" width="732" height="372" rx="8" fill="none" stroke="#9C4A2E" stroke-width="6"/>
+        <rect x="18" y="18" width="724" height="364" rx="6" fill="#1F7A64"/>
+        <rect x="20" y="20" width="720" height="360" fill="none" stroke="#F2F6FA" stroke-width="2"/>
+        <rect x="376" y="14" width="8" height="372" fill="#0C1524" opacity="0.85"/>
         <g id="videoDotsLayer"></g>
       </svg>
     </div>
+  </div>
 
-    <div class="btn-row" style="margin-top:10px;">
-      <button class="btn primary" id="btnRecordMoment">🔴 이 순간 기록</button>
+  <div class="card">
+    <h2>빠른 기록 배너</h2>
+    <div class="field-note" style="margin-top:0;">영상을 보다가 멈추고 해당하는 탭을 누르면, 지금 시간 + 지금 대시보드 상태가 함께 기록돼요.</div>
+
+    <div class="banner-block">
+      <div class="banner-title">🔴 상대팀 — 공격 옵션</div>
+      <div class="banner-tabs" id="oppTabs"></div>
+    </div>
+    <div class="banner-block">
+      <div class="banner-title">🔵 우리팀 — 득점</div>
+      <div class="banner-tabs" id="ourScoreTabs"></div>
+    </div>
+    <div class="banner-block">
+      <div class="banner-title">🔵 우리팀 — 미스</div>
+      <div class="banner-tabs" id="ourMissTabs"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>기록</h2>
+    <div id="tallySummary" style="margin-bottom:10px;"></div>
+    <div class="btn-row">
+      <button class="btn" id="btnRecordMoment">🔴 이 순간 자유 기록</button>
       <button class="btn" id="btnExportRecords">📄 기록 파일로 내보내기</button>
     </div>
-    <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동하면서, 저장해둔 도트 위치가 있으면 바로 함께 표시돼요.</div>
+    <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동하면서, 그때 그려둔 대시보드가 있으면 바로 복원돼요.</div>
     <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
   </div>
 </div>
@@ -2035,263 +2060,154 @@
   const fileInput = document.getElementById('videoFileInput');
   const dotsLayer = document.getElementById('videoDotsLayer');
   const videoCourtSvg = document.getElementById('videoCourt');
-  const statusEl = document.getElementById('colorPickStatus');
-  const swatchA = document.getElementById('swatchA'), swatchB = document.getElementById('swatchB');
 
-  let colorA = null, colorB = null; // [r,g,b]
-  let roi = null; // {x0,y0,x1,y1} normalized 0-1 within the video frame; null = whole frame
-  let pickMode = null; // 'A' | 'B' | null
-  let ownDetected = [], oppDetected = []; // normalized [0-1,0-1] centroids from the latest scan
-  let manualOverride = {}; // key `${team}-${idx}` -> [svgX, svgY], set when user drags a dot
-  let trackTimer = null;
-  let records = []; // {time, label, positions: [{team,idx,x,y}] | null}
-
+  let currentVideoName = '';
   fileInput.addEventListener('change', ()=>{
     const file = fileInput.files && fileInput.files[0];
     if(!file) return;
     video.src = URL.createObjectURL(file);
-    manualOverride = {};
     currentVideoName = file.name;
-    // note: records, saved positions and the color/ROI setup are intentionally kept —
-    // switching videos doesn't erase anything you've already recorded.
+    // note: the drawing board and all records are intentionally kept — switching videos doesn't erase anything.
   });
-  video.addEventListener('loadedmetadata', ()=>{ drawRoiBoxFromNormalized(); });
 
   function clip(v,lo,hi){ return Math.max(lo, Math.min(hi, v)); }
-  function colorDist(c1,c2){ return Math.sqrt((c1[0]-c2[0])**2 + (c1[1]-c2[1])**2 + (c1[2]-c2[2])**2); }
-
-  const pickCanvas = document.createElement('canvas');
-  video.addEventListener('click', e=>{
-    if(!pickMode || !video.videoWidth) return;
-    const rect = video.getBoundingClientRect();
-    const xr = clip((e.clientX-rect.left)/rect.width, 0, 1);
-    const yr = clip((e.clientY-rect.top)/rect.height, 0, 1);
-    pickCanvas.width = video.videoWidth; pickCanvas.height = video.videoHeight;
-    const ctx = pickCanvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, pickCanvas.width, pickCanvas.height);
-    const px = ctx.getImageData(Math.floor(xr*pickCanvas.width), Math.floor(yr*pickCanvas.height), 1, 1).data;
-    const color = [px[0], px[1], px[2]];
-    if(pickMode==='A'){ colorA=color; swatchA.style.background=`rgb(${color.join(',')})`; }
-    else { colorB=color; swatchB.style.background=`rgb(${color.join(',')})`; }
-    statusEl.textContent = '색상을 지정했어요. 다시 지정하려면 버튼을 눌러주세요.';
-    pickMode = null;
-  });
-  document.getElementById('btnPickColorA').addEventListener('click', ()=>{
-    pickMode='A'; statusEl.textContent='영상에서 아군 선수의 유니폼을 클릭하세요.';
-  });
-  document.getElementById('btnPickColorB').addEventListener('click', ()=>{
-    pickMode='B'; statusEl.textContent='영상에서 상대팀 선수의 유니폼을 클릭하세요.';
-  });
-
-  // ---------- analysis region (ROI) ----------
-  const roiBox = document.getElementById('roiBox');
-  const roiCatcher = document.getElementById('roiCatcher');
-  const roiStatus = document.getElementById('roiStatus');
-  let roiDrawing = false, roiStart = null, roiMode = false;
-
-  function setRoiMode(on){
-    roiMode = on;
-    roiCatcher.style.display = on ? 'block' : 'none';
-    document.getElementById('btnDrawRoi').classList.toggle('primary', on);
-    roiStatus.textContent = on
-      ? '영상 위를 드래그해 분석할 영역을 사각형으로 그려주세요.'
-      : (roi ? '분석 영역이 지정되어 있어요.' : '분석 영역을 지정하면 그 안에서만 색을 찾아서 관중석·배경 등의 오탐지를 줄일 수 있어요. 보통 코트 전체가 들어오게 사각형을 그려주세요.');
-  }
-  document.getElementById('btnDrawRoi').addEventListener('click', ()=> setRoiMode(!roiMode));
-  document.getElementById('btnClearRoi').addEventListener('click', ()=>{
-    roi = null; roiBox.style.display='none';
-    setRoiMode(false);
-  });
-
-  function drawRoiBoxFromNormalized(){
-    if(!roi) { roiBox.style.display='none'; return; }
-    const w = document.getElementById('videoWrap').clientWidth, h = document.getElementById('videoWrap').clientHeight;
-    roiBox.style.left = (roi.x0*w)+'px';
-    roiBox.style.top = (roi.y0*h)+'px';
-    roiBox.style.width = ((roi.x1-roi.x0)*w)+'px';
-    roiBox.style.height = ((roi.y1-roi.y0)*h)+'px';
-    roiBox.style.display='block';
-  }
-  window.addEventListener('resize', drawRoiBoxFromNormalized);
-
-  roiCatcher.addEventListener('pointerdown', e=>{
-    if(!roiMode) return;
-    const rect = roiCatcher.getBoundingClientRect();
-    roiStart = [clip((e.clientX-rect.left)/rect.width,0,1), clip((e.clientY-rect.top)/rect.height,0,1)];
-    roiDrawing = true;
-    try{ roiCatcher.setPointerCapture(e.pointerId); }catch(err){}
-  });
-  roiCatcher.addEventListener('pointermove', e=>{
-    if(!roiDrawing) return;
-    const rect = roiCatcher.getBoundingClientRect();
-    const cur = [clip((e.clientX-rect.left)/rect.width,0,1), clip((e.clientY-rect.top)/rect.height,0,1)];
-    roi = {x0:Math.min(roiStart[0],cur[0]), y0:Math.min(roiStart[1],cur[1]), x1:Math.max(roiStart[0],cur[0]), y1:Math.max(roiStart[1],cur[1])};
-    drawRoiBoxFromNormalized();
-  });
-  ['pointerup','pointercancel'].forEach(evt=>{
-    roiCatcher.addEventListener(evt, ()=>{
-      if(roiDrawing && roi && (roi.x1-roi.x0<0.03 || roi.y1-roi.y0<0.03)) roi=null; // ignore accidental tiny drags
-      roiDrawing=false;
-      if(roi) setRoiMode(false);
-    });
-  });
-
-  // ---------- simplified color-blob tracking ----------
-  // Downsamples the current video frame to a small grid, flags pixels close to each
-  // tracked color, then finds connected blobs (flood fill) and treats the largest
-  // blobs as players. This is a rough approximation, not real player recognition —
-  // camera angle, lighting and similar jersey colors will all affect accuracy.
-  const trackCanvas = document.createElement('canvas');
-  const GRID_W = 80, GRID_H = 60;
-
-  function extractBlobs(grid, w, h){
-    const visited = new Uint8Array(w*h);
-    const blobs = [];
-    for(let y=0;y<h;y++){
-      for(let x=0;x<w;x++){
-        const idx = y*w+x;
-        if(grid[idx] && !visited[idx]){
-          let stack=[idx]; visited[idx]=1; let sumX=0,sumY=0,count=0;
-          while(stack.length){
-            const cur = stack.pop();
-            const cy = Math.floor(cur/w), cx = cur%w;
-            sumX+=cx; sumY+=cy; count++;
-            const cand = [cur-1,cur+1,cur-w,cur+w];
-            cand.forEach(n=>{
-              if(n>=0 && n<w*h && !visited[n] && grid[n]){
-                const nx = n%w;
-                if(Math.abs(nx-cx)<=1){ visited[n]=1; stack.push(n); }
-              }
-            });
-          }
-          if(count>=3) blobs.push({x:sumX/count, y:sumY/count, size:count});
-        }
-      }
-    }
-    blobs.sort((a,b)=>b.size-a.size);
-    return blobs;
-  }
-
-  function analyzeFrame(){
-    if((!colorA && !colorB) || !video.videoWidth) return;
-    trackCanvas.width = GRID_W; trackCanvas.height = GRID_H;
-    const tctx = trackCanvas.getContext('2d');
-    if(roi){
-      const sx = roi.x0*video.videoWidth, sy = roi.y0*video.videoHeight;
-      const sw = (roi.x1-roi.x0)*video.videoWidth, sh = (roi.y1-roi.y0)*video.videoHeight;
-      tctx.drawImage(video, sx, sy, sw, sh, 0, 0, GRID_W, GRID_H);
-    } else {
-      tctx.drawImage(video, 0, 0, GRID_W, GRID_H);
-    }
-    const data = tctx.getImageData(0,0,GRID_W,GRID_H).data;
-    const gridA = new Uint8Array(GRID_W*GRID_H), gridB = new Uint8Array(GRID_W*GRID_H);
-    const THRESH = 46;
-    for(let i=0;i<GRID_W*GRID_H;i++){
-      const r=data[i*4], g=data[i*4+1], b=data[i*4+2];
-      if(colorA && colorDist([r,g,b],colorA)<THRESH) gridA[i]=1;
-      if(colorB && colorDist([r,g,b],colorB)<THRESH) gridB[i]=1;
-    }
-    const blobsA = extractBlobs(gridA, GRID_W, GRID_H);
-    const blobsB = extractBlobs(gridB, GRID_W, GRID_H);
-    // keep only the largest blobs (most likely real players), then number left-to-right
-    // so "1번" tends to mean "leftmost detected player" consistently, rather than shuffling
-    // every frame by blob size — a rough stand-in for true per-player identity tracking.
-    const sortByX = (a,b)=>a.x-b.x;
-    ownDetected = blobsA.slice(0,9).sort(sortByX).map(b=>[b.x/GRID_W, b.y/GRID_H]);
-    oppDetected = blobsB.slice(0,9).sort(sortByX).map(b=>[b.x/GRID_W, b.y/GRID_H]);
-    renderVideoCourt();
-  }
-
-  document.getElementById('chkTrackToggle').addEventListener('change', e=>{
-    if(e.target.checked){
-      if(trackTimer) clearInterval(trackTimer);
-      trackTimer = setInterval(analyzeFrame, 450);
-    } else if(trackTimer){
-      clearInterval(trackTimer); trackTimer=null;
-    }
-  });
 
   function toVideoSvgPoint(e){
     const pt = videoCourtSvg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
     const loc = pt.matrixTransform(videoCourtSvg.getScreenCTM().inverse());
-    return [loc.x, loc.y];
+    return [clip(loc.x,20,740), clip(loc.y,20,380)];
   }
 
-  function makeDraggable(circleEl, key){
-    circleEl.addEventListener('pointerdown', e=>{
-      try{ circleEl.setPointerCapture(e.pointerId); }catch(err){}
-      e.preventDefault(); e.stopPropagation();
-      const move = ev=>{
-        const pt = toVideoSvgPoint(ev);
-        const x = clip(pt[0],22,378), y = clip(pt[1],22,738);
-        circleEl.setAttribute('cx', x); circleEl.setAttribute('cy', y);
-        manualOverride[key] = [x,y];
-      };
-      const up = ()=>{
-        circleEl.removeEventListener('pointermove', move);
-        circleEl.removeEventListener('pointerup', up);
-      };
-      circleEl.addEventListener('pointermove', move);
-      circleEl.addEventListener('pointerup', up);
+  // ---------- manual drawing board ----------
+  let drawTool = null;
+  let elements = []; // dots/ball: {id,type,x,y}  arrows: {id,type,x1,y1,x2,y2}
+  let elIdCounter = 0;
+  let dragStart = null, dragPreview = null;
+
+  function curvedPath(x1,y1,x2,y2){
+    const mx=(x1+x2)/2, my=(y1+y2)/2;
+    const dx=x2-x1, dy=y2-y1;
+    const len = Math.hypot(dx,dy) || 1;
+    const bulge = Math.min(60, len*0.35);
+    const cx = mx - (dy/len)*bulge, cy = my + (dx/len)*bulge;
+    return `M ${x1},${y1} Q ${cx},${cy} ${x2},${y2}`;
+  }
+  function wavyPath(x1,y1,x2,y2){
+    const segments = 6;
+    const dx=(x2-x1)/segments, dy=(y2-y1)/segments;
+    const len = Math.hypot(x2-x1,y2-y1) || 1;
+    const amp = Math.min(14, len/segments*0.7);
+    const perpX = -dy/len*amp, perpY = dx/len*amp;
+    let d = `M ${x1},${y1}`;
+    for(let i=0;i<segments;i++){
+      const midX = x1+dx*(i+0.5) + (i%2===0? perpX : -perpX);
+      const midY = y1+dy*(i+0.5) + (i%2===0? perpY : -perpY);
+      const endX = x1+dx*(i+1), endY = y1+dy*(i+1);
+      d += ` Q ${midX.toFixed(1)},${midY.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
+    }
+    return d;
+  }
+  function pigtailPath(x1,y1,x2,y2){
+    const r = 9;
+    const loop = `M ${x1},${y1} c ${r},${-r} ${r*2},${r} 0,${r*2} c ${-r*2},${r} ${-r},${-r*2} 0.1,${-r*2}`;
+    return `${loop} M ${x1},${y1} L ${x2},${y2}`;
+  }
+  function pathFor(type,x1,y1,x2,y2){
+    if(type==='straight') return `M ${x1},${y1} L ${x2},${y2}`;
+    if(type==='curved') return curvedPath(x1,y1,x2,y2);
+    if(type==='pigtail') return pigtailPath(x1,y1,x2,y2);
+    if(type==='wavy') return wavyPath(x1,y1,x2,y2);
+    return `M ${x1},${y1} L ${x2},${y2}`;
+  }
+
+  document.querySelectorAll('#drawToolSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#drawToolSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      drawTool = btn.dataset.tool;
+      videoCourtSvg.style.cursor = drawTool==='erase' ? 'not-allowed' : 'crosshair';
+      document.getElementById('drawStatus').textContent = drawTool==='erase'
+        ? '지우고 싶은 도트나 화살표를 코트에서 클릭하세요.'
+        : (['dotRed','dotBlue','ball'].includes(drawTool) ? '코트를 클릭해서 놓으세요.' : '코트를 드래그해서 그리세요.');
     });
-  }
+  });
 
-  function renderVideoCourt(){
+  videoCourtSvg.addEventListener('pointerdown', e=>{
+    if(!drawTool || drawTool==='erase') return;
+    const pt = toVideoSvgPoint(e);
+    if(drawTool==='dotRed' || drawTool==='dotBlue' || drawTool==='ball'){
+      elements.push({id:++elIdCounter, type:drawTool, x:pt[0], y:pt[1]});
+      renderBoard();
+      return;
+    }
+    dragStart = pt;
+    try{ videoCourtSvg.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  videoCourtSvg.addEventListener('pointermove', e=>{
+    if(!dragStart) return;
+    const pt = toVideoSvgPoint(e);
+    dragPreview = {type:drawTool, x1:dragStart[0], y1:dragStart[1], x2:pt[0], y2:pt[1]};
+    renderBoard();
+  });
+  ['pointerup','pointercancel'].forEach(evt=>{
+    videoCourtSvg.addEventListener(evt, e=>{
+      if(!dragStart) return;
+      const pt = toVideoSvgPoint(e);
+      if(Math.hypot(pt[0]-dragStart[0], pt[1]-dragStart[1]) > 8){
+        elements.push({id:++elIdCounter, type:drawTool, x1:dragStart[0], y1:dragStart[1], x2:pt[0], y2:pt[1]});
+      }
+      dragStart=null; dragPreview=null;
+      renderBoard();
+    });
+  });
+
+  function renderBoard(){
     dotsLayer.innerHTML='';
-    ownDetected.forEach((pt,i)=>{
-      const key = `own-${i+1}`;
-      const [x,y] = manualOverride[key] || [20+pt[0]*360, 20+pt[1]*720];
-      addDot(key, x, y, '#3E82F7', i+1);
+    elements.forEach(el=>{
+      if(el.type==='dotRed' || el.type==='dotBlue' || el.type==='ball'){
+        const c = document.createElementNS(svgNS,'circle');
+        c.setAttribute('cx',el.x); c.setAttribute('cy',el.y);
+        c.setAttribute('r', el.type==='ball' ? 9 : 13);
+        c.setAttribute('fill', el.type==='dotRed' ? '#EF4A4A' : el.type==='dotBlue' ? '#3E82F7' : '#FBC02D');
+        c.setAttribute('stroke', el.type==='ball' ? '#7A5A05' : '#fff'); c.setAttribute('stroke-width','1.3');
+        c.style.cursor='pointer';
+        c.addEventListener('click', ()=>{ if(drawTool==='erase'){ elements=elements.filter(x=>x.id!==el.id); renderBoard(); } });
+        dotsLayer.appendChild(c);
+      } else {
+        const path = document.createElementNS(svgNS,'path');
+        path.setAttribute('d', pathFor(el.type, el.x1, el.y1, el.x2, el.y2));
+        path.setAttribute('fill','none'); path.setAttribute('stroke','#F2F6FA'); path.setAttribute('stroke-width','2.5');
+        path.setAttribute('marker-end','url(#drawArrowHead)');
+        path.style.cursor='pointer'; path.style.pointerEvents='stroke';
+        path.addEventListener('click', ()=>{ if(drawTool==='erase'){ elements=elements.filter(x=>x.id!==el.id); renderBoard(); } });
+        dotsLayer.appendChild(path);
+      }
     });
-    oppDetected.forEach((pt,i)=>{
-      const key = `opp-${i+1}`;
-      const [x,y] = manualOverride[key] || [20+pt[0]*360, 20+pt[1]*720];
-      addDot(key, x, y, '#EF4A4A', i+1);
-    });
-  }
-  function addDot(key, x, y, color, num, team){
-    const g = document.createElementNS(svgNS,'g'); g.style.cursor='grab';
-    const c = document.createElementNS(svgNS,'circle');
-    c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r','13');
-    c.setAttribute('fill',color); c.setAttribute('stroke','#fff'); c.setAttribute('stroke-width','1.3');
-    c.dataset.team = team || (color==='#EF4A4A' ? 'opp' : 'own');
-    c.dataset.idx = num;
-    const t = document.createElementNS(svgNS,'text');
-    t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('text-anchor','middle'); t.setAttribute('dy','.35em');
-    t.setAttribute('fill','#fff'); t.setAttribute('font-size','11'); t.setAttribute('font-weight','700');
-    t.style.pointerEvents='none'; t.textContent=num;
-    g.appendChild(c); g.appendChild(t);
-    dotsLayer.appendChild(g);
-    makeDraggable(c, key);
-    // keep the label glued to the circle while dragging
-    const obs = new MutationObserver(()=>{ t.setAttribute('x', c.getAttribute('cx')); t.setAttribute('y', c.getAttribute('cy')); });
-    obs.observe(c, {attributes:true, attributeFilter:['cx','cy']});
+    if(dragPreview){
+      const p = dragPreview;
+      const path = document.createElementNS(svgNS,'path');
+      path.setAttribute('d', pathFor(p.type, p.x1, p.y1, p.x2, p.y2));
+      path.setAttribute('fill','none'); path.setAttribute('stroke','#F2B705'); path.setAttribute('stroke-width','2'); path.setAttribute('stroke-dasharray','4 3');
+      dotsLayer.appendChild(path);
+    }
   }
 
-  function restoreDotPositions(positions){
-    dotsLayer.innerHTML='';
-    (positions||[]).forEach(p=>{
-      const color = p.team==='opp' ? '#EF4A4A' : '#3E82F7';
-      const key = `${p.team||'own'}-${p.idx}`;
-      addDot(key, p.x, p.y, color, p.idx, p.team);
-    });
-  }
+  document.getElementById('btnClearBoard').addEventListener('click', ()=>{
+    elements=[]; renderBoard();
+  });
+
+  function captureBoard(){ return elements.length ? JSON.parse(JSON.stringify(elements)) : null; }
+  function restoreBoard(saved){ elements = saved ? JSON.parse(JSON.stringify(saved)) : []; renderBoard(); }
 
   // ---------- timestamped records ----------
-  let currentVideoName = '';
+  let records = []; // {time, label, category, optionLabel, videoName, positions}
   function fmtTime(sec){
     sec = Math.max(0, Math.floor(sec||0));
     const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
     const mm = String(m).padStart(2,'0'), ss = String(s).padStart(2,'0');
     return h>0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
   }
-  function captureCurrentDotPositions(){
-    const out = [];
-    dotsLayer.querySelectorAll('circle').forEach(c=>{
-      out.push({team:c.dataset.team||'own', idx:c.dataset.idx||'', x:Number(c.getAttribute('cx')), y:Number(c.getAttribute('cy'))});
-    });
-    return out;
-  }
+
   function renderRecords(){
     const list = document.getElementById('recordList');
     list.innerHTML='';
@@ -2301,31 +2217,90 @@
       timeBtn.title = rec.videoName ? `영상: ${rec.videoName}` : '';
       timeBtn.addEventListener('click', ()=>{
         video.currentTime = rec.time;
-        if(rec.positions && rec.positions.length) restoreDotPositions(rec.positions);
+        restoreBoard(rec.positions);
       });
       const input = document.createElement('input'); input.type='text'; input.value=rec.label;
-      input.placeholder='메모 (예: 상대 좌측 오픈 공격)';
+      input.placeholder='메모';
       input.addEventListener('input', ()=>{ rec.label = input.value; });
       const saveBtn = document.createElement('button'); saveBtn.className='btn';
-      saveBtn.textContent = rec.positions ? '위치 다시 저장' : '도트 위치 저장';
+      saveBtn.textContent = rec.positions ? '보드 다시 저장' : '보드 저장';
       saveBtn.addEventListener('click', ()=>{
-        rec.positions = captureCurrentDotPositions();
+        rec.positions = captureBoard();
         saveBtn.textContent='저장됨 ✓';
-        setTimeout(()=>{ saveBtn.textContent='위치 다시 저장'; }, 1200);
+        setTimeout(()=>{ saveBtn.textContent='보드 다시 저장'; }, 1200);
       });
       const del = document.createElement('span'); del.className='x'; del.textContent='✕';
-      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); });
+      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); });
       row.appendChild(timeBtn); row.appendChild(input); row.appendChild(saveBtn); row.appendChild(del);
       list.appendChild(row);
     });
   }
+
   document.getElementById('btnRecordMoment').addEventListener('click', ()=>{
-    records.push({time: video.currentTime||0, label:'', positions:null, videoName: currentVideoName});
+    records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, positions: captureBoard()});
     renderRecords();
   });
 
+  // ---------- quick-log banners ----------
+  const OPP_ATTACK_OPTIONS = ['레프트','앞차','백차','백A','A','라이트'];
+  const OUR_SCORE_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리'];
+  const OUR_MISS_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','토스','2단토스','블로킹(다이렉트)','3구처리','디그움직임'];
+
+  function flashBtn(btn){
+    btn.classList.add('flash');
+    setTimeout(()=>btn.classList.remove('flash'), 350);
+  }
+  function logEvent(category, label, btn){
+    records.push({
+      time: video.currentTime||0,
+      label: `[${category}] ${label}`,
+      category, optionLabel: label,
+      videoName: currentVideoName,
+      positions: captureBoard()
+    });
+    renderRecords();
+    renderTally();
+    if(btn) flashBtn(btn);
+  }
+  function buildTabGroup(containerId, options, category){
+    const container = document.getElementById(containerId);
+    options.forEach(label=>{
+      const btn = document.createElement('button');
+      btn.type='button'; btn.textContent=label;
+      btn.addEventListener('click', ()=> logEvent(category, label, btn));
+      container.appendChild(btn);
+    });
+  }
+  buildTabGroup('oppTabs', OPP_ATTACK_OPTIONS, '상대공격');
+  buildTabGroup('ourScoreTabs', OUR_SCORE_OPTIONS, '득점');
+  buildTabGroup('ourMissTabs', OUR_MISS_OPTIONS, '미스');
+
+  function renderTally(){
+    const el = document.getElementById('tallySummary');
+    const counts = {};
+    records.forEach(r=>{
+      if(r.category){ const k=r.category+'|'+r.optionLabel; counts[k]=(counts[k]||0)+1; }
+    });
+    const groupNames = {'상대공격':'🔴 상대팀 공격 옵션', '득점':'🔵 우리팀 득점', '미스':'🔵 우리팀 미스'};
+    const groups = {'상대공격':[], '득점':[], '미스':[]};
+    Object.keys(counts).forEach(k=>{
+      const idx = k.indexOf('|');
+      const cat = k.slice(0,idx), label = k.slice(idx+1);
+      if(groups[cat]) groups[cat].push([label, counts[k]]);
+    });
+    let html='';
+    Object.keys(groups).forEach(cat=>{
+      if(groups[cat].length){
+        groups[cat].sort((a,b)=>b[1]-a[1]);
+        const parts = groups[cat].map(([label,n])=>`${label} ${n}회`).join(', ');
+        html += `<div class="tally-row"><b>${groupNames[cat]}</b>: ${parts}</div>`;
+      }
+    });
+    el.innerHTML = html || '<span class="field-note" style="margin:0;">아직 배너로 기록된 통계가 없어요.</span>';
+  }
+
   function exportRecords(){
-    if(records.length===0){ alert('내보낼 기록이 없어요. 먼저 "이 순간 기록"으로 기록을 남겨주세요.'); return; }
+    if(records.length===0){ alert('내보낼 기록이 없어요.'); return; }
     let md = `# 경기 영상 기록\n\n생성일시: ${new Date().toLocaleString('ko-KR')}\n\n`;
     const byVideo = {};
     records.forEach(r=>{ const key=r.videoName || '(영상 이름 없음)'; if(!byVideo[key]) byVideo[key]=[]; byVideo[key].push(r); });
@@ -2334,13 +2309,25 @@
       byVideo[vname].sort((a,b)=>a.time-b.time).forEach(r=>{
         md += `### ${fmtTime(r.time)}${r.label ? ' — '+r.label : ''}\n`;
         if(r.positions && r.positions.length){
-          md += r.positions.map(p=>`- ${p.team==='opp'?'상대':'아군'} ${p.idx}번: (x:${Math.round(p.x)}, y:${Math.round(p.y)})`).join('\n') + '\n';
+          md += r.positions.map(p=>{
+            if(p.x!==undefined) return `- 도트(${p.type}): (x:${Math.round(p.x)}, y:${Math.round(p.y)})`;
+            return `- 화살표(${p.type}): (${Math.round(p.x1)},${Math.round(p.y1)}) → (${Math.round(p.x2)},${Math.round(p.y2)})`;
+          }).join('\n') + '\n';
         } else {
-          md += '_(도트 위치는 저장되지 않았어요)_\n';
+          md += '_(대시보드는 저장되지 않았어요)_\n';
         }
         md += '\n';
       });
     });
+    const counts = {};
+    records.forEach(r=>{ if(r.category){ const k=r.category+'|'+r.optionLabel; counts[k]=(counts[k]||0)+1; } });
+    if(Object.keys(counts).length){
+      md += `## 통계 요약\n\n`;
+      Object.keys(counts).forEach(k=>{
+        const idx=k.indexOf('|');
+        md += `- ${k.slice(0,idx)} · ${k.slice(idx+1)}: ${counts[k]}회\n`;
+      });
+    }
     const blob = new Blob([md], {type:'text/markdown;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -2349,6 +2336,10 @@
     URL.revokeObjectURL(url);
   }
   document.getElementById('btnExportRecords').addEventListener('click', exportRecords);
+
+  renderBoard();
+  renderRecords();
+  renderTally();
 
 })();
 </script>
