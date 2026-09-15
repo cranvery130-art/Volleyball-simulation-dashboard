@@ -193,35 +193,40 @@
 <div id="loginOverlay">
   <div class="login-card">
     <h1>9인제 배구 수비 전술 시뮬레이터</h1>
-    <p class="login-sub">코드를 만들거나, 공유받은 코드로 입장하세요.</p>
-    <div id="storageWarning" class="note-box" style="display:none;">이 화면을 여는 방식에서는 저장 기능을 쓸 수 없어요. 아래 "코드 없이 계속하기"로 진행해주세요.</div>
+    <p class="login-sub">아래 버튼을 누르면 바로 시작할 수 있어요.</p>
 
-    <div class="seg" id="loginModeSeg">
-      <button data-mode="create" class="active">새 코드 만들기</button>
-      <button data-mode="enter">코드로 입장</button>
+    <button class="btn primary" id="btnSkipLogin" style="width:100%; font-size:15px; padding:13px;">시작하기</button>
+
+    <button class="btn" id="btnCustomToggleLogin" style="width:100%; margin-top:18px; background:transparent; border:1px solid var(--border); font-weight:500; color:var(--text-dim);">코드로 여러 명과 공유하기 (준비 중) ▾</button>
+
+    <div id="codePanelLogin" style="display:none; margin-top:12px;">
+      <div id="storageWarning" class="note-box" style="display:none;"></div>
+
+      <div class="seg" id="loginModeSeg">
+        <button data-mode="create" class="active">새 코드 만들기</button>
+        <button data-mode="enter">코드로 입장</button>
+      </div>
+
+      <div id="createPane">
+        <label class="field-label" style="margin-top:10px;">코드 (예: myteam2024)</label>
+        <input type="text" id="createCodeInput" class="login-input" placeholder="원하는 코드를 입력하세요" maxlength="30">
+        <label class="field-label" style="margin-top:10px;">개설자 전용 비밀번호 <span class="field-note" style="display:inline;">(대형·설정 편집 가능)</span></label>
+        <input type="password" id="createCreatorPw" class="login-input">
+        <label class="field-label" style="margin-top:10px;">조회 가능 비밀번호 <span class="field-note" style="display:inline;">(보기만 가능)</span></label>
+        <input type="password" id="createViewPw" class="login-input">
+        <button class="btn primary" id="btnCreateRoom" style="width:100%; margin-top:14px;">코드 만들기</button>
+        <div class="login-status" id="createStatus"></div>
+      </div>
+
+      <div id="enterPane" style="display:none;">
+        <label class="field-label" style="margin-top:10px;">코드</label>
+        <input type="text" id="enterCodeInput" class="login-input" maxlength="30">
+        <label class="field-label" style="margin-top:10px;">비밀번호</label>
+        <input type="password" id="enterPwInput" class="login-input">
+        <button class="btn primary" id="btnEnterRoom" style="width:100%; margin-top:14px;">입장</button>
+        <div class="login-status" id="enterStatus"></div>
+      </div>
     </div>
-
-    <div id="createPane">
-      <label class="field-label" style="margin-top:10px;">코드 (예: myteam2024)</label>
-      <input type="text" id="createCodeInput" class="login-input" placeholder="원하는 코드를 입력하세요" maxlength="30">
-      <label class="field-label" style="margin-top:10px;">개설자 전용 비밀번호 <span class="field-note" style="display:inline;">(대형·설정 편집 가능)</span></label>
-      <input type="password" id="createCreatorPw" class="login-input">
-      <label class="field-label" style="margin-top:10px;">조회 가능 비밀번호 <span class="field-note" style="display:inline;">(보기만 가능)</span></label>
-      <input type="password" id="createViewPw" class="login-input">
-      <button class="btn primary" id="btnCreateRoom" style="width:100%; margin-top:14px;">코드 만들기</button>
-      <div class="login-status" id="createStatus"></div>
-    </div>
-
-    <div id="enterPane" style="display:none;">
-      <label class="field-label" style="margin-top:10px;">코드</label>
-      <input type="text" id="enterCodeInput" class="login-input" maxlength="30">
-      <label class="field-label" style="margin-top:10px;">비밀번호</label>
-      <input type="password" id="enterPwInput" class="login-input">
-      <button class="btn primary" id="btnEnterRoom" style="width:100%; margin-top:14px;">입장</button>
-      <div class="login-status" id="enterStatus"></div>
-    </div>
-
-    <button class="btn" id="btnSkipLogin" style="width:100%; margin-top:16px;">코드 없이 계속하기 (이 기기에만 저장)</button>
   </div>
 </div>
 
@@ -1788,15 +1793,15 @@
     document.querySelectorAll('#loginModeSeg button').forEach(b=>b.disabled=true);
     document.getElementById('createPane').style.display='none';
     document.getElementById('enterPane').style.display='none';
-    const skip=document.getElementById('btnSkipLogin');
-    skip.classList.add('primary');
-    skip.textContent='코드 없이 계속하기 (지금 유일하게 되는 방법이에요)';
   }
 
-  (async function testStorage(){
+  let storageChecked = false;
+  async function checkStorageOnce(){
+    if(storageChecked) return;
+    storageChecked = true;
     const warnEl = document.getElementById('storageWarning');
     if(!storageOk){
-      warnEl.textContent = '이 화면에서는 저장 기능을 찾을 수 없어요. 아래 "코드 없이 계속하기"로 진행해주세요.';
+      warnEl.textContent = '아직 이 기능은 서버 연결 준비 중이에요. 위 "시작하기"로 이용해주세요.';
       warnEl.style.display='block';
       disableCodeFeatures();
       return;
@@ -1805,11 +1810,18 @@
       await Backend.set('__probe__', '1');
       await Backend.delete('__probe__');
     }catch(err){
-      warnEl.textContent = '지금은 코드 저장/공유 기능이 아직 연결되어 있지 않아요 (' + errText(err) + '). 실제 배포 전까지는 아래 "코드 없이 계속하기"로 이용해주세요. 페이지 맨 아래 배포 가이드를 참고하세요.';
+      warnEl.textContent = '아직 이 기능은 서버 연결 준비 중이에요 (' + errText(err) + '). 위 "시작하기"로 이용해주세요.';
       warnEl.style.display='block';
       disableCodeFeatures();
     }
-  })();
+  }
+  document.getElementById('btnCustomToggleLogin').addEventListener('click', ()=>{
+    const panel = document.getElementById('codePanelLogin');
+    const showing = panel.style.display!=='none';
+    panel.style.display = showing ? 'none' : 'block';
+    document.getElementById('btnCustomToggleLogin').textContent = showing ? '코드로 여러 명과 공유하기 (준비 중) ▾' : '코드로 여러 명과 공유하기 (준비 중) ▴';
+    if(!showing) checkStorageOnce();
+  });
 
   function roomKey(code){ return 'room_'+code.trim().toLowerCase(); }
 
@@ -2343,6 +2355,25 @@
   document.getElementById('btnExportRecords').addEventListener('click', exportRecords);
 
 })();
+</script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAbdsh333whhehTj6cQqxVuwf_2T5bcH8",
+    authDomain: "volleyball-simulation-board.firebaseapp.com",
+    projectId: "volleyball-simulation-board",
+    storageBucket: "volleyball-simulation-board.firebasestorage.app",
+    messagingSenderId: "466737005208",
+    appId: "1:466737005208:web:bcd06f2ceeb83bccad46ed"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
 </script>
 </body>
 </html>
