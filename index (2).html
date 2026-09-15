@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>9인제 배구 수비 전술 시뮬레이터</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101826; --panel:#1A2436; --panel-2:#20304A; --border:#2B3B54;
+    --text:#E8EDF5; --text-dim:#8FA0BC; --accent:#F2B705; --accent-soft:rgba(242,183,5,0.16);
+    --own:#3E82F7; --opp:#EF4A4A; --ball:#FBC02D; --decoy:#8AA0C8;
+    --radius-lg:16px; --radius-md:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; min-height:100vh; }
+  h1,h2,h3{ font-family:'Barlow Condensed', 'Inter', sans-serif; margin:0; }
+  .app{ max-width:1400px; margin:0 auto; padding:20px clamp(14px,2.2vw,40px) 40px; }
+  .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:820px){ .row-2{ grid-template-columns:1fr; } }
+  @media (max-width:520px){
+    .app{ padding:14px 10px 30px; }
+    .topbar h1{ font-size:21px; }
+    .topbar .sub{ font-size:12.5px; }
+    .stage-top .scenario-title{ font-size:16px; }
+    .card{ padding:13px; }
+    .btn-row .btn{ min-width:0; flex-basis:100%; }
+    .check-row input, .pos-item .num{ width:18px; height:18px; }
+    #visualAidsCard{ max-width:none; }
+  }
+  @media (max-width:700px){
+    .own-dot circle.body{ r:16px; }
+    .own-dot circle.attacker-ring{ r:21px; }
+    .own-dot circle.setter-ring{ r:21px; }
+    .own-dot circle.decoy-ring{ r:20px; }
+    .opp-dot circle.body{ r:14px; }
+    .opp-dot circle.attacker-ring{ r:20px; }
+    .opp-dot circle.decoy-ring{ r:19px; }
+    .opp-dot circle.setter-ring{ r:19px; }
+    #ownLabelLayer text{ font-size:15px; }
+    #oppLabelLayer text{ font-size:13.5px; }
+  }
+  .topbar{ padding:2px 4px 18px; border-bottom:1px solid var(--border); margin-bottom:18px; }
+  .topbar h1{ font-size:27px; font-weight:600; letter-spacing:0.2px; }
+  .topbar .sub{ color:var(--text-dim); font-size:13.5px; display:block; margin-top:4px; }
+
+  .column{ display:flex; flex-direction:column; gap:14px; }
+
+  .card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; }
+  .card h2{ font-size:15px; font-weight:600; color:var(--text); margin-bottom:10px; }
+  .card h2 .n{ color:var(--accent); font-family:'Barlow Condensed'; font-size:15px; margin-right:6px; }
+
+  label.field-label{ display:block; font-size:12.5px; color:var(--text-dim); margin-bottom:6px; }
+  select{ width:100%; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-size:13.5px; font-family:inherit; cursor:pointer; }
+  select:focus, button:focus-visible, input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+  optgroup{ color:var(--text-dim); font-style:normal; }
+  .field-note{ font-size:11.5px; color:var(--text-dim); margin-top:8px; line-height:1.5; }
+
+  .seg{ display:flex; flex-wrap:wrap; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:3px; gap:2px; }
+  .seg button{ flex:1; min-width:44px; border:none; background:transparent; color:var(--text-dim); padding:8px 2px; border-radius:999px; font-size:11.5px; font-weight:600; font-family:inherit; cursor:pointer; }
+  .seg button.active{ background:var(--accent); color:#241b02; }
+
+  .check-row{ display:flex; align-items:center; gap:9px; padding:7px 2px; font-size:13.5px; color:var(--text); }
+  .check-row input{ width:16px; height:16px; accent-color:var(--accent); cursor:pointer; }
+  .check-row label{ cursor:pointer; }
+  .check-list{ display:flex; flex-wrap:wrap; gap:4px 24px; }
+  #visualAidsCard{ align-self:flex-start; max-width:640px; width:100%; }
+
+  .legend{ display:flex; flex-wrap:wrap; gap:8px 18px; font-size:12.5px; color:var(--text-dim); }
+  .legend.stage-legend{ margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+  .legend .row{ display:flex; align-items:center; gap:6px; white-space:nowrap; }
+  .legend .dot{ width:10px; height:10px; border-radius:50%; flex:none; }
+  .legend .ring{ width:10px; height:10px; border-radius:50%; flex:none; border:2px solid var(--accent); }
+  .legend .ring.decoy{ border:2px dashed var(--decoy); }
+  .legend .ring.setter{ border:2px dashed #57D18C; }
+
+  .pos-cols{ display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; }
+  @media (max-width:600px){ .pos-cols{ grid-template-columns:1fr; } }
+  .pos-team-label{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-dim); font-weight:700; margin-bottom:6px; }
+  .pos-team-label .dot{ width:9px; height:9px; border-radius:50%; }
+  .pos-grid{ display:flex; flex-wrap:wrap; gap:6px; }
+  .pos-item{ display:flex; align-items:center; gap:5px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:4px 6px; }
+  .pos-item .num{ width:18px; height:18px; border-radius:50%; background:var(--own); color:#fff; font-family:'Barlow Condensed'; font-weight:700; font-size:11px; display:flex; align-items:center; justify-content:center; flex:none; }
+  .pos-item.opp .num{ background:var(--opp); }
+  .pos-item select{ width:auto; min-width:78px; padding:4px 5px; font-size:11px; border-radius:6px; }
+
+  .btn{ border:1px solid var(--border); background:var(--panel-2); color:var(--text); padding:9px 10px; border-radius:var(--radius-md); font-size:12.5px; font-weight:600; font-family:inherit; cursor:pointer; }
+  .btn:hover{ filter:brightness(1.12); }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; filter:none; }
+  .btn.primary{ background:var(--accent); color:#241b02; border-color:var(--accent); }
+  .btn-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+  .btn-row .btn{ flex:1; min-width:140px; }
+  .edit-hint{ font-size:11.5px; color:var(--text-dim); margin:9px 0; line-height:1.5; }
+  .edit-divider{ height:1px; background:var(--border); margin:14px 0; }
+  .edit-group-label{ font-size:11.5px; color:var(--accent); font-weight:700; margin:4px 0 6px; }
+
+  .preset-input-row{ display:flex; gap:6px; margin:10px 0 8px; }
+  .preset-input-row input[type=text]{ flex:1; padding:8px 10px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-size:12.5px; font-family:inherit; }
+  .preset-list{ display:flex; flex-direction:column; gap:10px; }
+  .preset-folder-group{ display:flex; flex-direction:column; gap:6px; }
+  .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
+  .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  .preset-chip{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; font-size:12px; cursor:pointer; }
+  .preset-chip.active{ border-color:var(--accent); }
+  .preset-chip:hover{ border-color:var(--accent); }
+  .preset-chip .x{ width:16px; height:16px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--text-dim); }
+  .preset-chip .x:hover{ background:#EF4A4A; color:#fff; }
+  .preset-empty{ font-size:12px; color:var(--text-dim); }
+
+  .stage-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px; flex-wrap:wrap; }
+  .stage-top .scenario-title{ font-size:18px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
+  .stage-top .scenario-title:hover{ color:var(--accent); }
+  .stage-top .scenario-title::after{ content:'▾'; font-size:12px; color:var(--text-dim); }
+  .stage-top .scenario-title:hover::after{ color:var(--accent); }
+  .stage-top .scenario-tag{ font-size:12px; color:#241b02; background:var(--accent); padding:3px 10px; border-radius:999px; font-weight:700; }
+
+  .court-wrap{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; }
+  svg#court{ width:100%; height:auto; display:block; touch-action:none; }
+
+  .own-dot circle.body{ fill:var(--own); stroke:#0E2F63; stroke-width:1.5; }
+  .own-dot.blocker circle.body{ fill:#1E4FBE; }
+  #ownLabelLayer text{ fill:#fff; font-family:'Barlow Condensed'; font-weight:700; font-size:13px; pointer-events:none; }
+  #oppLabelLayer text{ fill:#fff; font-family:'Barlow Condensed'; font-weight:700; font-size:11.5px; pointer-events:none; }
+  .opp-dot circle.body{ fill:var(--opp); stroke:#6E1414; stroke-width:1.5; }
+  .attacker-ring{ fill:none; stroke:var(--accent); stroke-width:2.5; opacity:0; }
+  .setter-ring{ fill:none; stroke:#57D18C; stroke-width:2.5; stroke-dasharray:4 3; opacity:0; }
+  .decoy-ring{ fill:none; stroke:var(--decoy); stroke-width:2; stroke-dasharray:3 3; opacity:0; }
+
+  svg#court.edit-mode .own-dot, svg#court.override-mode .own-dot,
+  svg#court.edit-mode .opp-dot{ cursor:grab; }
+  svg#court.edit-mode .own-dot:active, svg#court.override-mode .own-dot:active,
+  svg#court.edit-mode .opp-dot:active{ cursor:grabbing; }
+  svg#court.edit-mode .own-dot circle.body{ stroke-dasharray:3 2; stroke-width:2.5; }
+  svg#court.edit-mode .opp-dot circle.body{ stroke-dasharray:3 2; stroke-width:2.5; }
+  svg#court.override-mode .own-dot circle.body{ stroke:#F2B705; stroke-width:2.5; }
+  svg#court.shadow-mode{ cursor:crosshair; }
+
+  @keyframes pulseRing{ 0%{ stroke-opacity:0.9; } 70%{ stroke-opacity:0.15; } 100%{ stroke-opacity:0.9; } }
+
+  .timeline-bar{ display:flex; align-items:center; gap:12px; margin-top:12px; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:12px 16px; }
+  .tl-btn{ width:38px; height:38px; border-radius:50%; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center; font-size:14px; }
+  .tl-btn.primary{ background:var(--accent); color:#241b02; border-color:var(--accent); }
+  .tl-btn:hover{ filter:brightness(1.12); }
+  .tl-btn:disabled{ opacity:0.4; cursor:not-allowed; }
+  .tl-mid{ flex:1; min-width:0; }
+  .tl-phase{ font-size:12px; color:var(--accent); font-weight:600; margin-bottom:4px; }
+  input[type=range]{ width:100%; appearance:none; height:5px; border-radius:3px; background:linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct,0%), #33455F var(--pct,0%), #33455F 100%); cursor:pointer; }
+  input[type=range]::-webkit-slider-thumb{ appearance:none; width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid #241b02; cursor:pointer; }
+  input[type=range]::-moz-range-thumb{ width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid #241b02; cursor:pointer; }
+  input[type=range]:disabled{ opacity:0.4; }
+
+  .desc-block{ font-size:12.5px; color:var(--accent); font-weight:700; margin-bottom:10px; }
+  p.desc-text{ font-size:13.5px; line-height:1.65; color:var(--text); margin:0 0 14px; max-width:74ch; }
+  ul.points{ margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:var(--text-dim); max-width:70ch; }
+  ul.points li::marker{ color:var(--accent); }
+  .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(242,183,5,0.35); font-size:12px; color:#F4D77A; line-height:1.55; }
+
+  #loginOverlay{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:20px; z-index:1000; overflow-y:auto; }
+
+  #desktopSplit{ display:flex; flex-direction:column; }
+  #mainAppCol{ min-width:0; max-width:1400px; margin:0 auto; width:100%; }
+  #videoCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; }
+  #videoCol .card{ margin:0 auto; }
+  #mainAppCol.mode-hidden, #videoCol.mode-hidden{ display:none; }
+  .mode-seg-wrap{ max-width:1400px; margin:0 auto 16px; padding:0 20px; }
+  .mode-seg-wrap .seg{ max-width:420px; }
+  .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; }
+  .record-row input[type=text]{ flex:1; min-width:0; padding:6px 8px; border-radius:7px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:12px; font-family:inherit; }
+  .record-row .btn{ font-size:11.5px; padding:6px 8px; white-space:nowrap; }
+  .record-row .x{ width:20px; height:20px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--text-dim); cursor:pointer; flex:none; }
+  .record-row .x:hover{ background:#EF4A4A; color:#fff; }
+  .banner-block{ margin-bottom:14px; }
+  .banner-title{ font-size:12.5px; font-weight:700; color:var(--accent); margin-bottom:6px; }
+  .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; }
+  .banner-tabs button{ padding:7px 11px; font-size:12px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; }
+  .banner-tabs button:hover{ border-color:var(--accent); }
+  .banner-tabs button.flash{ background:var(--accent); color:#241b02; border-color:var(--accent); }
+  .tally-row{ font-size:12px; color:var(--text-dim); line-height:1.8; }
+  .tally-row b{ color:var(--text); }
+  .login-card{ width:100%; max-width:420px; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px 24px; }
+  .login-card h1{ font-size:22px; font-weight:600; text-align:center; }
+  .login-card .login-sub{ font-size:13px; color:var(--text-dim); text-align:center; margin:6px 0 16px; }
+  .login-input{ width:100%; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-size:14px; font-family:inherit; margin-top:4px; }
+  .login-status{ font-size:12.5px; color:var(--accent); margin-top:10px; min-height:1.2em; text-align:center; }
+  #settingsCodeLabel, #settingsRoleLabel{ color:var(--text); }
+</style>
+<!-- ======================================================================
+     FIREBASE 연결 설정
+     아래 firebaseConfig의 값들을 Firebase 콘솔에서 발급받은 실제 값으로
+     바꿔주세요 (자세한 방법은 대화창 안내를 참고하세요).
+     값을 바꾸지 않은 채로 두면, 코드 저장 기능은 계속 "준비 중" 상태로
+     남아있고 나머지 시뮬레이터 기능은 평소처럼 그대로 작동해요.
+====================================================================== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAbdsh333whhehTj6cQqxVuwf_2T5bcH8",
+    authDomain: "volleyball-simulation-board.firebaseapp.com",
+    projectId: "volleyball-simulation-board",
+    storageBucket: "volleyball-simulation-board.firebasestorage.app",
+    messagingSenderId: "466737005208",
+    appId: "1:466737005208:web:bcd06f2ceeb83bccad46ed"
+  };
+  let firebaseDb = null;
+  try{
+    if(firebaseConfig.apiKey !== "YOUR_API_KEY"){ // only try once real values are filled in
+      firebase.initializeApp(firebaseConfig);
+      firebaseDb = firebase.firestore();
+    }
+  }catch(err){
+    console.warn('Firebase 초기화 실패:', err);
+    firebaseDb = null;
+  }
+</script>
+</head>
+<body>
+
+<div id="loginOverlay">
+  <div class="login-card">
+    <h1>9인제 배구 수비 전술 시뮬레이터</h1>
+    <p class="login-sub">코드를 만들거나, 공유받은 코드로 입장하세요.</p>
+    <div id="storageWarning" class="note-box" style="display:none;"></div>
+    <div id="autoRejoinStatus" class="login-status" style="display:none;"></div>
+
+    <div class="seg" id="loginModeSeg">
+      <button data-mode="create" class="active">새 코드 만들기</button>
+      <button data-mode="enter">코드로 입장</button>
+    </div>
+
+    <div id="createPane">
+      <label class="field-label" style="margin-top:10px;">코드 (예: myteam2024)</label>
+      <input type="text" id="createCodeInput" class="login-input" placeholder="원하는 코드를 입력하세요" maxlength="30">
+      <label class="field-label" style="margin-top:10px;">개설자 전용 비밀번호 <span class="field-note" style="display:inline;">(대형·설정 편집 가능)</span></label>
+      <input type="password" id="createCreatorPw" class="login-input">
+      <label class="field-label" style="margin-top:10px;">조회 가능 비밀번호 <span class="field-note" style="display:inline;">(보기만 가능)</span></label>
+      <input type="password" id="createViewPw" class="login-input">
+      <button class="btn primary" id="btnCreateRoom" style="width:100%; margin-top:14px;">코드 만들기</button>
+      <div class="login-status" id="createStatus"></div>
+    </div>
+
+    <div id="enterPane" style="display:none;">
+      <label class="field-label" style="margin-top:10px;">코드</label>
+      <input type="text" id="enterCodeInput" class="login-input" maxlength="30">
+      <label class="field-label" style="margin-top:10px;">비밀번호</label>
+      <input type="password" id="enterPwInput" class="login-input">
+      <button class="btn primary" id="btnEnterRoom" style="width:100%; margin-top:14px;">입장</button>
+      <div class="login-status" id="enterStatus"></div>
+    </div>
+
+    <button class="btn" id="btnSkipLogin" style="width:100%; margin-top:16px;">코드 없이 계속하기 (이 기기에만 저장)</button>
+  </div>
+</div>
+
+<div id="desktopSplit">
+<div class="mode-seg-wrap">
+  <div class="seg" id="appModeSeg">
+    <button data-appmode="sim" class="active">🏐 전술 시뮬레이션</button>
+    <button data-appmode="video">🎥 경기 영상 분석</button>
+  </div>
+</div>
+<div id="mainAppCol">
+<div class="app" style="display:none;">
+
+
+  <div class="topbar">
+    <h1>9인제 배구 수비 전술 시뮬레이터</h1>
+    <span class="sub">공격 유형·블로킹 인원에 따라 대형이 어떻게 바뀌는지 살펴보고, 직접 대형·동선·그림자를 만들어 시뮬레이션할 수 있어요</span>
+  </div>
+
+  <div class="column">
+
+    <div class="card">
+      <h2><span class="n">01</span>포지션 배정</h2>
+      <div class="field-note" style="margin-top:0; margin-bottom:10px;">공격수·세터·리시브 배정과 움직임이 지정한 포지션에 맞게 반영돼요. 레프트백·센터백·라이트백은 리베로 역할이라 블로킹에 가담하지 않아요.</div>
+      <div class="pos-cols">
+        <div>
+          <div class="pos-team-label"><span class="dot" style="background:var(--own);"></span>아군</div>
+          <div class="pos-grid" id="posGrid"></div>
+        </div>
+        <div>
+          <div class="pos-team-label"><span class="dot" style="background:var(--opp);"></span>상대팀</div>
+          <div class="pos-grid" id="oppPosGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">02</span>블로킹 인원</h2>
+        <div class="seg" id="blockSeg">
+          <button data-block="4">4인</button>
+          <button data-block="3">3인</button>
+          <button data-block="2" class="active">2인</button>
+          <button data-block="1">1인</button>
+          <button data-block="0">없음</button>
+        </div>
+        <div class="field-note">9인제는 인원이 많아 최대 4명까지 블로킹에 가담할 수 있어요.</div>
+        <div id="coverNote" class="note-box" style="display:none;">이 상황에서는 <b>상대 팀의 블로킹 인원</b>을 의미해요. 상대가 많이 막을수록 우리 팀은 더 촘촘하게 커버해야 해요.</div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">03</span>공격 상황</h2>
+        <label class="field-label" for="scenarioSelect">어떤 상황을 살펴볼까요?</label>
+        <select id="scenarioSelect">
+          <optgroup label="상대 공격 → 우리 팀 수비">
+            <option value="L">상대 좌측(L) 오픈 공격</option>
+            <option value="C">상대 중앙(C) 속공</option>
+            <option value="R">상대 우측(R) 공격</option>
+            <option value="TIMEDIFF">시간차 공격 (페이크 포함)</option>
+            <option value="BACKSLIDE">빽차 공격 (백슬라이드)</option>
+            <option value="BACKA">빽A 공격 (빽토스)</option>
+          </optgroup>
+          <optgroup label="우리 팀 공격 → 리시브·토스 커버">
+            <option value="OUR_L">좌측(L) 공격 시 커버</option>
+            <option value="OUR_C">중앙(C) 속공 시 커버</option>
+            <option value="OUR_R">우측(R) 공격 시 커버</option>
+            <option value="OUR_TIMEDIFF">시간차 공격 시 커버</option>
+            <option value="OUR_BACKSLIDE">빽차 공격 시 커버</option>
+            <option value="OUR_BACKA">빽A 공격 시 커버</option>
+          </optgroup>
+        </select>
+        <div class="field-note">※ 상대 팀의 왼쪽/오른쪽은 상대가 네트를 마주 봤을 때를 기준으로 해요. 화면에서는 좌우가 반대로 보일 수 있어요.</div>
+
+        <div class="edit-divider"></div>
+        <button class="btn" id="btnCustomToggle" style="width:100%;">공격 상황 직접 설정 ▾</button>
+        <div id="customPanel" style="display:none; margin-top:10px;">
+          <label class="field-label">공격 위치</label>
+          <div class="seg" id="customXSeg">
+            <button data-x="30">왼쪽 끝</button>
+            <button data-x="90">왼쪽</button>
+            <button data-x="145">왼쪽 중간</button>
+            <button data-x="200" class="active">중앙</button>
+            <button data-x="255">오른쪽 중간</button>
+            <button data-x="310">오른쪽</button>
+            <button data-x="370">오른쪽 끝</button>
+          </div>
+          <div class="field-note">왼쪽/오른쪽은 그 시나리오의 팀이 네트를 바라볼 때를 기준으로 해요. 상대 팀 시나리오에 저장하면 화면상으로는 좌우가 반대로 배치돼요.</div>
+          <label class="field-label" style="margin-top:8px;">템포(속도)</label>
+          <div class="seg" id="customTempoSeg">
+            <button data-tempo="fast">빠름</button>
+            <button data-tempo="normal" class="active">보통</button>
+            <button data-tempo="slow">느림</button>
+          </div>
+          <div class="check-row" style="margin-top:4px;"><input type="checkbox" id="customFake"><label for="customFake">시간차(페이크) 동작 포함</label></div>
+
+          <div class="check-row" style="margin-top:8px;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
+          <div id="customLandingRow" style="display:none; margin-top:6px;">
+            <div class="seg" id="customLandingSeg">
+              <button data-x="30">왼쪽 끝</button>
+              <button data-x="90">왼쪽</button>
+              <button data-x="145">왼쪽 중간</button>
+              <button data-x="200" class="active">중앙</button>
+              <button data-x="255">오른쪽 중간</button>
+              <button data-x="310">오른쪽</button>
+              <button data-x="370">오른쪽 끝</button>
+            </div>
+            <div class="field-note">공을 받는 팀의 정해진 코트 구역(전위/후위 9구역 중 하나)으로 착지해요 — 오른쪽=레프트 구역, 오른쪽 중간=앞차 구역, 오른쪽 끝=레프트백 구역 (왼쪽은 반대: 라이트·빽차·라이트백). 이 구역은 고정이라 "포지션 배정"을 바꾸거나 선수를 드래그해도 달라지지 않아요.</div>
+          </div>
+
+          <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
+          <select id="customTargetSelect">
+            <optgroup label="상대 공격 → 우리 팀 수비">
+              <option value="L">상대 좌측(L) 오픈 공격</option>
+              <option value="C">상대 중앙(C) 속공</option>
+              <option value="R">상대 우측(R) 공격</option>
+              <option value="TIMEDIFF">시간차 공격 (페이크 포함)</option>
+              <option value="BACKSLIDE">빽차 공격 (백슬라이드)</option>
+              <option value="BACKA">빽A 공격 (빽토스)</option>
+            </optgroup>
+            <optgroup label="우리 팀 공격 → 리시브·토스 커버">
+              <option value="OUR_L">좌측(L) 공격 시 커버</option>
+              <option value="OUR_C">중앙(C) 속공 시 커버</option>
+              <option value="OUR_R">우측(R) 공격 시 커버</option>
+              <option value="OUR_TIMEDIFF">시간차 공격 시 커버</option>
+              <option value="OUR_BACKSLIDE">빽차 공격 시 커버</option>
+              <option value="OUR_BACKA">빽A 공격 시 커버</option>
+            </optgroup>
+          </select>
+          <div class="field-note">선택한 공격 상황의 위치·속도·페이크·착지 방향이 지금 설정한 값으로 덮어써져요. 이름은 그대로 유지되고, 다음에 그 항목을 선택하면 새로 설정한 내용으로 재생돼요.</div>
+          <div class="btn-row" style="margin-top:8px;">
+            <button class="btn primary" id="btnSaveCustom">이 시나리오에 저장(덮어쓰기)</button>
+          </div>
+          <div class="edit-hint" id="customStatus"></div>
+        </div>
+      </div>
+
+    <div class="card">
+      <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
+
+      <div class="preset-input-row">
+        <input type="text" id="presetFolder" placeholder="폴더 (선택, 예: 1학년 3반)" list="folderList" style="flex:0 0 40%;">
+        <datalist id="folderList"></datalist>
+        <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
+        <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
+      </div>
+      <div class="field-note" style="margin-top:0;">같은 폴더 이름을 입력하면 그 폴더 안에 모여요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
+      <div class="preset-list" id="presetList"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
+
+      <div class="edit-divider"></div>
+
+      <label class="field-label">편집 모드</label>
+      <div class="seg" id="editModeSeg">
+        <button data-mode="off" class="active">끔</button>
+        <button data-mode="edit">시작 위치</button>
+        <button data-mode="override">도착 위치</button>
+        <button data-mode="shadow">그림자</button>
+      </div>
+
+      <div id="editTeamRow" style="display:none;">
+        <label class="field-label" style="margin-top:10px;">편집 대상</label>
+        <div class="seg" id="editTeamSeg">
+          <button data-team="all" class="active">전체</button>
+          <button data-team="own">아군</button>
+          <button data-team="opp">상대팀</button>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn" id="btnResetCurrent" disabled>현재 모드 초기화</button>
+      </div>
+
+      <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
+    </div>
+
+    <div>
+      <div class="stage-top">
+        <div class="scenario-title" id="scenarioTitle" role="button" tabindex="0" title="클릭해서 공격 상황 바꾸기">상대 좌측(L) 오픈 공격</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="scenario-tag" id="blockTag">2인 블로킹</div>
+          <button class="btn" id="btnOrientation" style="white-space:nowrap;">세로 보기로 전환</button>
+        </div>
+      </div>
+      <div class="court-wrap">
+        <svg id="court" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="courtGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1F7A64"/>
+              <stop offset="100%" stop-color="#155C4C"/>
+            </linearGradient>
+            <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#D9E4F5"/>
+            </marker>
+          </defs>
+          <g id="sceneGroup">
+            <rect x="14" y="14" width="372" height="732" rx="8" fill="none" stroke="#9C4A2E" stroke-width="6"/>
+            <rect x="18" y="18" width="364" height="724" rx="6" fill="url(#courtGrad)"/>
+            <rect x="20" y="20" width="360" height="720" fill="none" stroke="#F2F6FA" stroke-width="2"/>
+            <line x1="20" y1="260" x2="380" y2="260" stroke="#F2F6FA" stroke-width="1.5" stroke-dasharray="7 6" opacity="0.75"/>
+            <line x1="20" y1="500" x2="380" y2="500" stroke="#F2F6FA" stroke-width="1.5" stroke-dasharray="7 6" opacity="0.75"/>
+            <g id="net">
+              <rect x="14" y="376" width="372" height="8" fill="#0C1524" opacity="0.85"/>
+              <rect x="14" y="374" width="372" height="2.5" fill="#F2F6FA"/>
+              <line x1="20" y1="368" x2="20" y2="392" stroke="#F2B705" stroke-width="3"/>
+              <line x1="380" y1="368" x2="380" y2="392" stroke="#F2B705" stroke-width="3"/>
+            </g>
+            <rect x="20" y="345" width="360" height="70" fill="rgba(242,183,5,0.05)"/>
+            <line x1="20" y1="345" x2="380" y2="345" stroke="#F2B705" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
+            <line x1="20" y1="415" x2="380" y2="415" stroke="#F2B705" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
+            <g id="blockZoneLayer"></g>
+            <g id="shadowLayer"></g>
+            <g id="fanLayer"></g>
+            <g id="arrowLayer"></g>
+            <g id="trailLayer"></g>
+            <g id="oppLayer"></g>
+            <g id="ownLayer"></g>
+            <g id="impactLayer"></g>
+            <g id="ballLayer"><circle id="ball" r="7" fill="#FBC02D" stroke="#7A5A05" stroke-width="1.2"/></g>
+          </g>
+          <g id="oppLabelLayer"></g>
+          <g id="ownLabelLayer"></g>
+        </svg>
+      </div>
+      <div class="timeline-bar">
+        <button class="tl-btn primary" id="btnPlay" aria-label="재생">▶</button>
+        <button class="tl-btn" id="btnReset" aria-label="리셋">⟲</button>
+        <div class="tl-mid">
+          <div class="tl-phase" id="phaseLabel">대기 중 — 재생을 눌러보세요</div>
+          <input type="range" id="timeline" min="0" max="100" value="0" />
+        </div>
+      </div>
+      <div class="legend stage-legend">
+        <div class="row"><span class="dot" style="background:var(--own);"></span>우리 팀 (1~9)</div>
+        <div class="row"><span class="dot" style="background:var(--opp);"></span>상대 팀 (1~9, 포지션 배정 순서)</div>
+        <div class="row"><span class="dot" style="background:var(--ball);"></span>공</div>
+        <div class="row"><span class="ring"></span>공격수 / 블로커</div>
+        <div class="row"><span class="ring decoy"></span>페이크 동작</div>
+        <div class="row"><span class="ring setter"></span>토스(세터)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="desc-block" id="descBlockTag">상대 좌측(L) 오픈 공격 · 2인 블로킹</div>
+      <p class="desc-text" id="descText"></p>
+      <ul class="points" id="descPoints"></ul>
+    </div>
+
+    <div class="card" id="visualAidsCard">
+      <h2><span class="n">05</span>시각 보조</h2>
+      <div class="check-list">
+        <div class="check-row"><input type="checkbox" id="chkArrows"><label for="chkArrows">이동 동선(화살표) 표시</label></div>
+        <div class="check-row"><input type="checkbox" id="chkShadow"><label for="chkShadow">블로킹 그림자(공격 제한 구역) 표시</label></div>
+        <div class="check-row"><input type="checkbox" id="chkFans"><label for="chkFans">수비수별 커버리지 영역(부채꼴) · 네트 앞 블로킹 범위 표시</label></div>
+      </div>
+    </div>
+
+    <div class="card" id="settingsCard">
+      <h2>설정</h2>
+      <div class="field-note" style="margin-top:0;">현재 코드: <b id="settingsCodeLabel">-</b> · <span id="settingsRoleLabel">-</span></div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn" id="btnShareLink">링크 공유</button>
+        <button class="btn" id="btnSaveRoom">변경사항 저장</button>
+      </div>
+      <div id="shareLinkBox" style="display:none; margin-top:8px;">
+        <div class="preset-input-row">
+          <input type="text" id="shareLinkInput" class="login-input" readonly style="margin-top:0;">
+          <button class="btn" id="btnCopyLink" style="white-space:nowrap;">복사</button>
+        </div>
+        <div class="field-note">이 링크를 열면 코드가 자동으로 입력되고, 조회 가능 비밀번호를 넣으면 바로 들어올 수 있어요.</div>
+      </div>
+      <div id="editPwSection" style="display:none;">
+        <div class="edit-divider"></div>
+        <label class="field-label">수정 권한 비밀번호 <span id="editPwStatus" class="field-note" style="display:inline; margin:0;">(설정 안 됨)</span></label>
+        <div class="field-note" style="margin-top:0;">이 비밀번호를 구성원에게 공유하면, 그 사람도 조회만이 아니라 직접 편집(대형·포지션·프리셋 등)할 수 있어요. 코드 삭제 권한은 개설자에게만 남아있어요.</div>
+        <div class="preset-input-row">
+          <input type="password" id="editPwInput" class="login-input" style="margin-top:0;" placeholder="새 수정 권한 비밀번호">
+          <button class="btn" id="btnSetEditPw" style="white-space:nowrap;">설정</button>
+        </div>
+        <button class="btn" id="btnClearEditPw" style="margin-top:8px; width:100%;">수정 권한 비활성화</button>
+      </div>
+      <div class="edit-divider"></div>
+      <div class="btn-row">
+        <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
+        <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C;">이 코드 삭제</button>
+      </div>
+      <div class="edit-hint" id="settingsStatus"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div id="videoCol" class="mode-hidden">
+  <div class="card">
+    <h2>경기 영상</h2>
+    <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서, 아래 대시보드에 직접 그리고 배너로 빠르게 기록하세요.</div>
+    <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
+    <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
+  </div>
+
+  <div class="card">
+    <h2>대시보드 (직접 작성)</h2>
+    <label class="field-label">도구 선택</label>
+    <div class="seg" id="drawToolSeg">
+      <button data-tool="dotRed">🔴 도트</button>
+      <button data-tool="dotBlue">🔵 도트</button>
+      <button data-tool="ball">🏐 공</button>
+      <button data-tool="straight">➡ 직선</button>
+      <button data-tool="curved">➰ 곡선</button>
+      <button data-tool="pigtail">🌀 돼지꼬리</button>
+      <button data-tool="wavy">〰 물결</button>
+      <button data-tool="erase">🗑 지우기</button>
+    </div>
+    <div class="field-note" id="drawStatus">도구를 고른 뒤 코트를 클릭(도트·공)하거나 드래그(화살표)하세요. "지우기"를 고르고 그림을 클릭하면 지워져요.</div>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn" id="btnClearBoard">보드 전체 지우기</button>
+    </div>
+    <div class="court-wrap" style="margin-top:8px;">
+      <svg id="videoCourt" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
+        <defs>
+          <marker id="drawArrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="#F2F6FA"/>
+          </marker>
+        </defs>
+        <rect x="14" y="14" width="732" height="372" rx="8" fill="none" stroke="#9C4A2E" stroke-width="6"/>
+        <rect x="18" y="18" width="724" height="364" rx="6" fill="#1F7A64"/>
+        <rect x="20" y="20" width="720" height="360" fill="none" stroke="#F2F6FA" stroke-width="2"/>
+        <rect x="376" y="14" width="8" height="372" fill="#0C1524" opacity="0.85"/>
+        <g id="videoDotsLayer"></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>빠른 기록 배너</h2>
+    <div class="field-note" style="margin-top:0;">영상을 보다가 멈추고 해당하는 탭을 누르면, 지금 시간 + 지금 대시보드 상태가 함께 기록돼요.</div>
+
+    <div class="banner-block">
+      <div class="banner-title">🔴 상대팀 — 공격 옵션</div>
+      <div class="banner-tabs" id="oppTabs"></div>
+    </div>
+    <div class="banner-block">
+      <div class="banner-title">🔵 우리팀 — 득점</div>
+      <div class="banner-tabs" id="ourScoreTabs"></div>
+    </div>
+    <div class="banner-block">
+      <div class="banner-title">🔵 우리팀 — 미스</div>
+      <div class="banner-tabs" id="ourMissTabs"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>기록</h2>
+    <div id="tallySummary" style="margin-bottom:10px;"></div>
+    <div class="btn-row">
+      <button class="btn" id="btnRecordMoment">🔴 이 순간 자유 기록</button>
+      <button class="btn" id="btnExportRecords">📄 기록 파일로 내보내기</button>
+    </div>
+    <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동하면서, 그때 그려둔 대시보드가 있으면 바로 복원돼요.</div>
+    <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const IDS = [1,2,3,4,5,6,7,8,9];
+  const CANON = {1:80,2:200,3:320,4:80,5:200,6:320,7:80,8:200,9:320};
+
+  const POS_LABEL = {
+    LEFT:'레프트', SETTER:'세터', RIGHT:'라이트',
+    QA:'속공수(A)', QBACKA:'속공수(빽A)', FRONTSLIDE:'앞차', BACKSLIDE:'빽차',
+    LBACK:'레프트백', CBACK:'센터백', RBACK:'라이트백'
+  };
+  const QUICK_TYPES = ['QA','QBACKA','FRONTSLIDE','BACKSLIDE'];
+  const WING_TYPES = ['LEFT','RIGHT'];
+  const BACK_TYPES = ['LBACK','CBACK','RBACK']; // libero-equivalent: never block
+  let POSITIONS = {1:'LEFT',2:'QA',3:'RIGHT',4:'FRONTSLIDE',5:'SETTER',6:'BACKSLIDE',7:'LBACK',8:'CBACK',9:'RBACK'};
+  const DEFAULT_POSITIONS = Object.assign({}, POSITIONS); // frozen snapshot: used for fixed landing zones so they never move
+  // opponent faces the net in the opposite direction from us, so their LEFT/RIGHT (and side-back zones)
+  // are mirrored left-right relative to screen columns compared to our own team's default mapping.
+  let OPP_POSITIONS = {a:'RIGHT',b:'QA',c:'LEFT',d:'BACKSLIDE',e:'SETTER',f:'FRONTSLIDE',g:'RBACK',h:'CBACK',i:'LBACK'};
+  const DEFAULT_OPP_POSITIONS = Object.assign({}, OPP_POSITIONS); // frozen snapshot: used for fixed landing zones
+  function resolveOppByPos(pos, fallback){
+    const found = Object.keys(OPP_POSITIONS).find(id=>OPP_POSITIONS[id]===pos);
+    return found || fallback;
+  }
+
+  // For the custom-scenario "공 착지 방향" picker: each button maps to a role on the RECEIVING
+  // team's side (mirrored left/right, since a ball landing "on the right" as the attacker sees it
+  // sits at the defending team's own-left column). null = center, no role lookup.
+  const LANDING_ROLE_MAP = {30:'RBACK', 90:'RIGHT', 145:'BACKSLIDE', 200:null, 255:'FRONTSLIDE', 310:'LEFT', 370:'LBACK'};
+  function landingForButtonValue(val, isOurAttack){
+    const role = LANDING_ROLE_MAP[val];
+    const fallback = [200, isOurAttack?150:500];
+    if(role==null) return fallback;
+    const posMap = isOurAttack ? DEFAULT_OPP_POSITIONS : DEFAULT_POSITIONS;
+    const zoneMap = isOurAttack ? ORIGINAL_OPP_BASE : ORIGINAL_BASE; // fixed court zone, not the player's live/dragged spot
+    const id = Object.keys(posMap).find(pid=>posMap[pid]===role);
+    if(id==null) return fallback;
+    return zoneMap[id].slice();
+  }
+
+  const ORIGINAL_BASE = {
+    1:[80,440], 2:[200,440], 3:[320,440],
+    4:[80,560], 5:[200,560], 6:[320,560],
+    7:[80,680], 8:[200,680], 9:[320,680]
+  };
+  const ORIGINAL_OPP_BASE = {
+    a:[80,320], b:[200,320], c:[320,320],
+    d:[80,200], e:[200,200], f:[320,200],
+    g:[80,80],  h:[200,80],  i:[320,80]
+  };
+
+  let CUSTOM_BASE = {}; IDS.forEach(id=> CUSTOM_BASE[id]=ORIGINAL_BASE[id].slice());
+  let CUSTOM_OPP_BASE = {}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=> CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice());
+  let TARGET_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {id:[x,y]}
+  let SHADOW_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {cx,cy,rx,ry}
+
+  // ---------- opponent attack scenarios ----------
+  // Net-based left/right: the opponent faces the net (faces "down" the screen toward us),
+  // so their own LEFT appears on screen-RIGHT from our top-down viewing angle.
+  // Each attacker/decoy/setter is an explicit opponent dot id so their run-up is always visible and deliberate.
+  const ATTACKS = {
+    L:{ label:'상대 좌측(L) 오픈 공격', flavor:'세터가 왼쪽으로 공을 올려주면 레프트가 크게 도움닫기를 하는 오픈 공격이에요. 타이밍이 비교적 일정해서 수비 대형을 갖출 시간이 있어요.',
+        x:320, pos:'LEFT', attackerOpp:'f', approachFrom:[300,246], contact:[320,320], setterPos:'SETTER', setterOpp:'e', duration:3000,
+        timing:{approach:0.34,peak:0.48,land:0.6,ballStart:0.48,ballEnd:0.7} },
+    C:{ label:'상대 중앙(C) 속공', flavor:'세터가 짧고 빠르게 붙여 올려주면 센터 선수가 뒤에서부터 달려들어와 때리는 속공이에요. 타이밍이 매우 빨라 블로킹 타이밍을 맞추기 어려워요.',
+        x:200, pos:'QA', attackerOpp:'e', approachFrom:[200,238], contact:[200,318], setterPos:'SETTER', setterOpp:'e', duration:2100,
+        timing:{approach:0.3,peak:0.44,land:0.56,ballStart:0.44,ballEnd:0.62} },
+    R:{ label:'상대 우측(R) 공격', flavor:'세터가 오른쪽으로 공을 올려주면 라이트가 공격하는 상황이에요. 원리는 왼쪽 공격과 같지만 좌우가 반대예요.',
+        x:80, pos:'RIGHT', attackerOpp:'d', approachFrom:[100,246], contact:[80,320], setterPos:'SETTER', setterOpp:'e', duration:3000,
+        timing:{approach:0.34,peak:0.48,land:0.6,ballStart:0.48,ballEnd:0.7} },
+    TIMEDIFF:{ label:'시간차 공격', flavor:'속공 담당 선수가 먼저 네트 앞에 붙어 속공을 하는 척 블로커를 속이고, 세터가 공을 늦게 붙잡고 있다가 뒤에 있던 다른 선수에게 한 박자 늦게 올려줘서 시간차로 공격해요. 블로커가 먼저 속공 쪽으로 반응했다가 뒤늦게 자리를 고쳐야 해요.',
+        x:260, pos:'FRONTSLIDE', attackerOpp:'e', approachFrom:[228,238], contact:[260,320], fakePos:'QA', fakeOpp:'b', fakeContact:[200,320],
+        setterPos:'SETTER', setterOpp:'e', tossStart:0.46, duration:4400,
+        timing:{approach:0.66,peak:0.78,land:0.88,ballStart:0.78,ballEnd:0.94} },
+    BACKSLIDE:{ label:'빽차 공격 (백슬라이드)', flavor:'세터가 공을 띄워주면 반대쪽에 있던 선수가 세터 뒤로 길게 미끄러지듯 대각선으로 이동해 때리는 빽차(백슬라이드) 공격이에요. 이동 거리가 길어 타이밍을 읽기 어려워요.',
+        x:140, pos:'BACKSLIDE', attackerOpp:'f', approachFrom:[220,214], contact:[140,320], setterPos:'SETTER', setterOpp:'e', duration:2500,
+        timing:{approach:0.36,peak:0.5,land:0.62,ballStart:0.5,ballEnd:0.7} },
+    BACKA:{ label:'빽A 공격 (빽토스)', flavor:'템포는 A퀵과 똑같이 빠르지만, 세터가 몸이 향한 방향과 반대로 등 뒤로 짧게 띄우는 "빽토스"를 올려 그 뒤쪽에서 때리는 공격이에요. 세터의 등 뒤에서 공이 오기 때문에 블로커는 훨씬 더 빠르게 반응해야 해요.',
+        x:170, pos:'QBACKA', attackerOpp:'a', approachFrom:[145,320], contact:[170,320], setterPos:'SETTER', setterOpp:'b', backToss:true, duration:1750,
+        timing:{approach:0.32,peak:0.44,land:0.56,ballStart:0.44,ballEnd:0.64} }
+  };
+
+  // ---------- our attack scenarios (we face up toward the net, so our own left = screen-left) ----------
+  // phase.pass: back-row receive -> setter finishes; phase.toss: setter -> attacker (set) finishes; phase.hit: attacker contact -> flight finishes.
+  const OUR_ATTACKS = {
+    OUR_L:{ label:'좌측(L) 공격 시 커버', flavor:'뒤에서 리시브를 받은 공이 세터에게 연결되는 동안 1선의 레프트가 네트에서 한 걸음 물러나 도움닫기를 준비하고, 세터의 토스에 맞춰 다시 네트로 달려들어와 공격하는 상황이에요.', x:80, duration:3000, phase:{pass:0.18,toss:0.44,hit:0.76}, pos:'LEFT', approachOffset:[-18,95] },
+    OUR_C:{ label:'중앙(C) 속공 시 커버', flavor:'뒤에서 리시브를 받은 공이 세터에게 연결되고, 세터가 센터에게 짧고 빠르게 속공을 올리는 상황이에요.', x:200, duration:2200, phase:{pass:0.2,toss:0.4,hit:0.68}, pos:'QA', approachOffset:[0,40] },
+    OUR_R:{ label:'우측(R) 공격 시 커버', flavor:'뒤에서 리시브를 받은 공이 세터에게 연결되는 동안 1선의 라이트가 네트에서 한 걸음 물러나 도움닫기를 준비하고, 세터의 토스에 맞춰 다시 네트로 달려들어와 공격하는 상황이에요.', x:320, duration:3000, phase:{pass:0.18,toss:0.44,hit:0.76}, pos:'RIGHT', approachOffset:[18,95] },
+    OUR_TIMEDIFF:{ label:'시간차 공격 시 커버', flavor:'뒤에서 리시브를 받은 공이 세터에게 연결된 뒤, 우리 팀이 속공을 하는 척 상대를 속이고 다른 선수가 한 박자 늦게 시간차로 공격하는 상황이에요.', x:140, fakeX:200, duration:4200, phase:{pass:0.14,toss:0.62,hit:0.86}, pos:'FRONTSLIDE', approachOffset:[30,55] },
+    OUR_BACKSLIDE:{ label:'빽차 공격 시 커버', flavor:'뒤에서 리시브를 받은 공이 세터에게 연결되고, 세터 뒤로 미끄러지듯 이동한 선수가 빽차(백슬라이드) 공격을 하는 상황이에요.', x:260, duration:2400, phase:{pass:0.16,toss:0.42,hit:0.72}, pos:'BACKSLIDE', approachOffset:[-75,45] },
+    OUR_BACKA:{ label:'빽A 공격 시 커버', flavor:'뒤에서 리시브를 받은 공이 세터에게 연결되고, 세터가 등 뒤로 빽토스를 올려 그 뒤쪽에서 짧고 빠르게 빽A 공격을 하는 상황이에요.', x:170, duration:2100, phase:{pass:0.16,toss:0.38,hit:0.66}, pos:'QBACKA', approachOffset:[22,35] }
+  };
+
+
+  function isOur(s){ return s.indexOf('OUR_')===0; }
+
+  // ---------- helpers ----------
+  function clip(v,lo,hi){ return Math.max(lo,Math.min(hi,v)); }
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function lerpPt(p0,p1,t){ return [lerp(p0[0],p1[0],t), lerp(p0[1],p1[1],t)]; }
+  function easeInOut(t){ t=clip(t,0,1); return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+  function dist(a,b){ return Math.hypot(a[0]-b[0],a[1]-b[1]); }
+  function bezier(p0,p1,p2,t){ const mt=1-t; return [mt*mt*p0[0]+2*mt*t*p1[0]+t*t*p2[0], mt*mt*p0[1]+2*mt*t*p1[1]+t*t*p2[1]]; }
+
+  // ---------- generative defense engine (opponent attacks) ----------
+  function generateDefense(attackX, blockCount, base){
+    const roles={}, targets={};
+    const colX = id => base[id][0];
+
+    if(blockCount===0){
+      IDS.forEach(id=>{
+        if(id<=3){ roles[id]='ready'; targets[id]=[CANON[id],444]; }
+        else if(id<=6){ roles[id]='ready'; targets[id]=[CANON[id],550]; }
+      });
+      assignBackRoles([7,8,9], attackX, roles, targets);
+      return {targets, roles, blockerIds:[]};
+    }
+
+    const front=[1,2,3], mid=[4,5,6], back=[7,8,9];
+    const centerish = Math.abs(attackX-200) < 70;
+    const posBonus = id => {
+      const pos = POSITIONS[id];
+      if(QUICK_TYPES.includes(pos)) return centerish ? -40 : 15;
+      if(WING_TYPES.includes(pos)) return centerish ? 15 : -25;
+      return 0;
+    };
+    const eligible = id => !BACK_TYPES.includes(POSITIONS[id]); // 레프트백·센터백·라이트백(리베로 역할)은 블로킹 제외
+    const byDist=(a,b)=>(Math.abs(colX(a)-attackX)+posBonus(a)) - (Math.abs(colX(b)-attackX)+posBonus(b));
+    const priority = front.filter(eligible).sort(byDist).concat(mid.filter(eligible).sort(byDist), back.filter(eligible).sort(byDist));
+    const blockerIds = priority.slice(0, Math.min(blockCount, priority.length));
+
+    const spread = blockCount>=4 ? 46 : 54;
+    let slots=[];
+    for(let k=0;k<blockCount;k++){ slots.push(attackX+(k-(blockCount-1)/2)*spread); }
+    // shift the whole group inward (instead of clamping each point) so slots never collapse onto each other near the sidelines
+    const lo=46, hi=354;
+    const minSlot=Math.min(...slots), maxSlot=Math.max(...slots);
+    let shift=0;
+    if(minSlot<lo) shift=lo-minSlot; else if(maxSlot>hi) shift=hi-maxSlot;
+    slots = slots.map(s=>s+shift);
+    slots.sort((a,b)=>a-b);
+    const blockersByX = blockerIds.slice().sort((a,b)=>colX(a)-colX(b));
+    blockersByX.forEach((id,i)=>{ roles[id]='block'; targets[id]=[slots[i], 400+(i%2===0?0:6)]; });
+
+    const remFront = front.filter(id=>!blockerIds.includes(id));
+    const remMid = mid.filter(id=>!blockerIds.includes(id));
+    const remBack = back.filter(id=>!blockerIds.includes(id));
+
+    remFront.forEach(id=>{ roles[id]='free'; targets[id]=[CANON[id],428]; });
+
+    const shadowCount = blockCount>=2 ? 1 : 2;
+    const remMidSorted = remMid.slice().sort((a,b)=>Math.abs(CANON[a]-attackX)-Math.abs(CANON[b]-attackX));
+    const shadowIds = remMidSorted.slice(0, Math.min(shadowCount, remMidSorted.length));
+    if(shadowIds.length===2){
+      let x1=attackX-32, x2=attackX+32;
+      const lo=55, hi=345;
+      if(x1<lo){ const d=lo-x1; x1+=d; x2+=d; } else if(x2>hi){ const d=x2-hi; x1-=d; x2-=d; }
+      targets[shadowIds[0]]=[x1, 460+blockCount*5]; roles[shadowIds[0]]='shadow';
+      targets[shadowIds[1]]=[x2, 460+blockCount*5]; roles[shadowIds[1]]='shadow';
+    } else {
+      shadowIds.forEach(id=>{ roles[id]='shadow'; targets[id]=[clip(attackX,55,345), 460+blockCount*5]; });
+    }
+    remMid.filter(id=>!shadowIds.includes(id)).forEach(id=>{ roles[id]='trans'; targets[id]=[CANON[id],560]; });
+
+    assignBackRoles(remBack, attackX, roles, targets);
+    return {targets, roles, blockerIds};
+  }
+
+  function assignBackRoles(remBack, attackX, roles, targets){
+    if(remBack.length===0) return;
+    const centerCase = Math.abs(attackX-200) < 25;
+    if(!centerCase){
+      const sameX = attackX<200 ? 55:345, oppX = attackX<200 ? 345:55;
+      const bySame = remBack.slice().sort((a,b)=>Math.abs(CANON[a]-sameX)-Math.abs(CANON[b]-sameX));
+      const lineId = bySame[0];
+      roles[lineId]='line'; targets[lineId]=[sameX,695];
+      const rest = remBack.filter(id=>id!==lineId);
+      if(rest.length){
+        const byOpp = rest.slice().sort((a,b)=>Math.abs(CANON[a]-oppX)-Math.abs(CANON[b]-oppX));
+        const crossId = byOpp[0];
+        roles[crossId]='cross'; targets[crossId]=[oppX,695];
+        rest.filter(id=>id!==crossId).forEach(id=>{ roles[id]='midback'; targets[id]=[200,705]; });
+      }
+    } else {
+      const sorted = remBack.slice().sort((a,b)=>CANON[a]-CANON[b]);
+      if(sorted.length>=2){
+        roles[sorted[0]]='line'; targets[sorted[0]]=[55,695];
+        roles[sorted[sorted.length-1]]='cross'; targets[sorted[sorted.length-1]]=[345,695];
+        for(let k=1;k<sorted.length-1;k++){ roles[sorted[k]]='midback'; targets[sorted[k]]=[200,705]; }
+      } else { roles[sorted[0]]='midback'; targets[sorted[0]]=[200,700]; }
+    }
+  }
+
+  function pickOppBlockers(attackX, blockCount, base){
+    const front=['a','b','c'], mid=['d','e','f'], back=['g','h','i'];
+    const centerish = Math.abs(attackX-200) < 70;
+    const posBonus = id => {
+      const pos = OPP_POSITIONS[id];
+      if(QUICK_TYPES.includes(pos)) return centerish ? -40 : 15;
+      if(WING_TYPES.includes(pos)) return centerish ? 15 : -25;
+      return 0;
+    };
+    const eligible = id => !BACK_TYPES.includes(OPP_POSITIONS[id]);
+    const byDist=(x,y)=>(Math.abs(base[x][0]-attackX)+posBonus(x)) - (Math.abs(base[y][0]-attackX)+posBonus(y));
+    const priority = front.filter(eligible).sort(byDist).concat(mid.filter(eligible).sort(byDist), back.filter(eligible).sort(byDist));
+    return priority.slice(0, Math.min(blockCount, priority.length));
+  }
+
+  // ---------- generative cover engine (our attacks) ----------
+  function generateCover(attackX, blockCount, base, fakeX, preferredPos){
+    const colX = id => base[id][0];
+    const front=[1,2,3];
+    const byDist=(a,b)=>Math.abs(colX(a)-attackX)-Math.abs(colX(b)-attackX);
+
+    const posMatch = IDS.filter(id=>POSITIONS[id]===preferredPos);
+    let attackerId;
+    if(preferredPos && posMatch.length){ attackerId = posMatch.slice().sort(byDist)[0]; }
+    else { attackerId = front.slice().sort(byDist)[0]; }
+
+    const setterCandidates = IDS.filter(id=>id!==attackerId);
+    const setterMatch = setterCandidates.filter(id=>POSITIONS[id]==='SETTER');
+    let setterId;
+    if(setterMatch.length){ setterId = setterMatch.slice().sort(byDist)[0]; }
+    else { setterId = front.filter(id=>id!==attackerId).slice().sort(byDist)[0] || setterCandidates.slice().sort(byDist)[0]; }
+
+    const others = IDS.filter(id=>id!==attackerId && id!==setterId);
+
+    const roles={}, targets={};
+    roles[attackerId]='attacker'; targets[attackerId]=[attackX,415];
+    const setterX = clip(attackX + (colX(setterId)<attackX? -55:55), 60,340);
+    roles[setterId]='setter'; targets[setterId]=[setterX,447];
+
+    let fakeAttackerId=null;
+    if(fakeX!=null){
+      const byDistFake=(a,b)=>Math.abs(colX(a)-fakeX)-Math.abs(colX(b)-fakeX);
+      const fakeMatch = others.filter(id=>POSITIONS[id]==='QA');
+      fakeAttackerId = (fakeMatch.length?fakeMatch:others).slice().sort(byDistFake)[0];
+    }
+
+    const byCenterDist=(a,b)=>Math.abs(colX(a)-200)-Math.abs(colX(b)-200);
+    const liberoCandidates = others.filter(id=>BACK_TYPES.includes(POSITIONS[id]));
+    const backCandidates = others.filter(id=>id>=7);
+    const receiverPool = liberoCandidates.length ? liberoCandidates : (backCandidates.length ? backCandidates : others);
+    const receiverId = receiverPool.slice().sort(byCenterDist)[0];
+    roles[receiverId]='receive';
+    targets[receiverId]=[clip(colX(receiverId),90,310), 640];
+
+    const radiusBase = 62-blockCount*6;
+    const angles=[150,185,220,255,300,335,15];
+    others.filter(id=>id!==receiverId).forEach((id,i)=>{
+      const ring=Math.floor(i/4);
+      const r=radiusBase+ring*42+(i%4)*8;
+      const ang=angles[i%angles.length]*Math.PI/180;
+      const x=clip(attackX + r*Math.cos(ang), 40,360);
+      const y=clip(430 + r*Math.sin(ang) + 40, 400,730);
+      roles[id]='cover'; targets[id]=[x,y];
+    });
+
+    const oppBlockerIds = pickOppBlockers(attackX, blockCount, CUSTOM_OPP_BASE);
+    const spread= blockCount>=4?42:50;
+    let oppSlots=[];
+    for(let k=0;k<blockCount;k++) oppSlots.push(attackX+(k-(blockCount-1)/2)*spread);
+    { const lo=45, hi=355; const mn=Math.min(...oppSlots), mx=Math.max(...oppSlots);
+      let sh=0; if(mn<lo) sh=lo-mn; else if(mx>hi) sh=hi-mx;
+      oppSlots = oppSlots.map(s=>s+sh); }
+    const landing = blockCount>0 ? [clip(attackX+16,50,350), 460+blockCount*14] : [clip(attackX+30,50,350),130];
+    return {targets, roles, blockerIds:[], oppBlockerIds, oppSlots, ballLanding:landing, attackerId, setterId, fakeAttackerId, receiverId, attackX};
+  }
+
+  function pickLanding(formation, attackX){
+    const shadowIds = Object.keys(formation.roles).filter(id=>formation.roles[id]==='shadow');
+    if(shadowIds.length) return formation.targets[shadowIds[0]];
+    const freeIds = Object.keys(formation.roles).filter(id=>formation.roles[id]==='free'||formation.roles[id]==='ready');
+    if(freeIds.length){
+      freeIds.sort((a,b)=>Math.abs(formation.targets[a][0]-attackX)-Math.abs(formation.targets[b][0]-attackX));
+      return formation.targets[freeIds[0]];
+    }
+    return [200,470];
+  }
+
+  // ---------- state ----------
+  let landscape=true;
+  function toDisplay(p){ return landscape ? [p[1], 400-p[0]] : [p[0],p[1]]; }
+  function fromDisplay(p){ return landscape ? [400-p[1], p[0]] : [p[0],p[1]]; }
+
+  let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
+  let editMode=false, overrideMode=false, shadowMode=false;
+  let editTeamFilter='all'; // 'all' | 'own' | 'opp' -- which team(s) are draggable during 시작 위치 편집
+  let currentDuration = ATTACKS.L.duration;
+  let current={}; IDS.forEach(id=> current[id]=CUSTOM_BASE[id].slice());
+  let ballCurrent=null;
+  let presets=[];
+  let draggingId=null;
+  let shadowDrawing=false, shadowDrawStart=null, tempShadow=null;
+  let BALL_OVERRIDES = {}; // key: scenario+'|'+blockCount -> [x,y] landing point override (only settable via room state import now; no in-app UI)
+
+  const showArrows = ()=>document.getElementById('chkArrows').checked;
+  const showShadow = ()=>document.getElementById('chkShadow').checked;
+  const showFans = ()=>document.getElementById('chkFans').checked;
+
+  function comboKey(){ return scenario+'|'+blockCount; }
+
+  function getFormation(){
+    let f, atk;
+    if(isOur(scenario)){
+      atk = OUR_ATTACKS[scenario];
+      f = generateCover(atk.x, blockCount, CUSTOM_BASE, atk.fakeX, atk.pos);
+    } else {
+      atk = ATTACKS[scenario];
+      f = generateDefense(atk.x, blockCount, CUSTOM_BASE);
+      if(atk.fakeContact){
+        const fakeF = generateDefense(atk.fakeContact[0], blockCount, CUSTOM_BASE);
+        f.fakeTargets = fakeF.targets;
+      }
+      f.ballLanding = pickLanding(f, atk.x);
+    }
+    if(atk.landingOverride) f.ballLanding = atk.landingOverride;
+    const ov = TARGET_OVERRIDES[comboKey()];
+    if(ov){ Object.keys(ov).forEach(id=>{ f.targets[id]=ov[id]; }); }
+    const ballOv = BALL_OVERRIDES[comboKey()];
+    if(ballOv) f.ballLanding = ballOv;
+    return f;
+  }
+
+  function ourAttackerPathAt(atk, base, contact, p){
+    const off = atk.approachOffset || [0,50];
+    const approachFrom = [clip(contact[0]+off[0],40,360), clip(contact[1]+off[1],392,735)];
+    const T = atk.phase;
+    if(p<=T.pass){ return lerpPt(base, approachFrom, easeInOut(p/T.pass)); }
+    if(p<=T.toss){ return lerpPt(approachFrom, contact, easeInOut((p-T.pass)/(T.toss-T.pass))); }
+    if(p<=T.hit){
+      const t=(p-T.toss)/(T.hit-T.toss);
+      const jumpY = -14*Math.sin(Math.PI*t);
+      return [contact[0], contact[1]+jumpY];
+    }
+    return contact.slice();
+  }
+
+  const DEFENSE_MOVE_MS = 1700; // fixed real-world time for a defender to reach their spot, independent of attack tempo
+
+  function desiredOwnAt(p){
+    const f = getFormation();
+    const moveT = easeInOut(clip((p*currentDuration)/DEFENSE_MOVE_MS, 0, 1));
+    const out = {};
+    IDS.forEach(id=>{
+      let pos = lerpPt(CUSTOM_BASE[id], f.targets[id], moveT);
+      if(!isOur(scenario) && f.fakeTargets && f.blockerIds.includes(id)){
+        const fakeT = f.fakeTargets[id], trueT = f.targets[id];
+        if(p<=0.5){ pos = lerpPt(CUSTOM_BASE[id], fakeT, easeInOut(p/0.5)); }
+        else if(p<=0.78){ pos = lerpPt(fakeT, trueT, easeInOut((p-0.5)/0.28)); }
+        else { pos = trueT; }
+      }
+      if(isOur(scenario) && f.attackerId===id){
+        pos = ourAttackerPathAt(OUR_ATTACKS[scenario], CUSTOM_BASE[id], f.targets[id], p);
+      }
+      if(isOur(scenario) && f.fakeAttackerId===id){
+        const base = CUSTOM_BASE[id]; const to=[OUR_ATTACKS[scenario].fakeX,420];
+        if(p<=0.35){ pos = lerpPt(base, to, easeInOut(p/0.35)*0.7); }
+        else if(p<=0.55){ pos = lerpPt(lerpPt(base,to,0.7), base, easeInOut((p-0.35)/0.2)); }
+        else { pos = lerpPt(base, f.targets[id], easeInOut((p-0.55)/0.45)); }
+      }
+      out[id]=pos;
+    });
+    return out;
+  }
+
+  function attackerPathAt(atk, p){
+    const base = CUSTOM_OPP_BASE[resolveOppByPos(atk.pos, atk.attackerOpp)];
+    const T = atk.timing;
+    if(p<=T.approach){ return lerpPt(base, atk.approachFrom, easeInOut(p/T.approach)); }
+    if(p<=T.peak){
+      const t=(p-T.approach)/(T.peak-T.approach);
+      const jumpY = -15*Math.sin(Math.PI*t);
+      const pos = lerpPt(atk.approachFrom, atk.contact, easeInOut(t));
+      return [pos[0], pos[1]+jumpY];
+    }
+    if(p<=T.land){
+      const t=(p-T.peak)/(T.land-T.peak);
+      const jumpY = -15*Math.cos(Math.PI/2*t);
+      return [atk.contact[0], atk.contact[1]+jumpY];
+    }
+    return atk.contact.slice();
+  }
+
+  function fakeOppPosAt(atk, p){
+    const from = CUSTOM_OPP_BASE[resolveOppByPos(atk.fakePos, atk.fakeOpp)], to = atk.fakeContact;
+    if(p<=0.3){ return lerpPt(from, to, easeInOut(p/0.3)*0.75); }
+    if(p<=0.55){ return lerpPt(lerpPt(from,to,0.75), from, easeInOut((p-0.3)/0.25)); }
+    return from.slice();
+  }
+
+  function desiredBallAt(p, formation){
+    if(isOur(scenario)){
+      const atk = OUR_ATTACKS[scenario];
+      const receiverPt=formation.targets[formation.receiverId], setterPt=formation.targets[formation.setterId], attackerPt=formation.targets[formation.attackerId], landing=formation.ballLanding;
+      if(p<=atk.phase.pass){
+        const t=easeInOut(p/atk.phase.pass);
+        return lerpPt(receiverPt, setterPt, t);
+      }
+      if(p<=atk.phase.toss){
+        const t=easeInOut((p-atk.phase.pass)/(atk.phase.toss-atk.phase.pass));
+        return lerpPt(setterPt, attackerPt, t);
+      }
+      if(p<=atk.phase.hit){
+        const t=easeInOut((p-atk.phase.toss)/(atk.phase.hit-atk.phase.toss));
+        return lerpPt(attackerPt, landing, t);
+      }
+      return landing.slice();
+    }
+    const atk = ATTACKS[scenario], T=atk.timing, landing=formation.ballLanding;
+    if(atk.setterOpp){
+      const setterPos = CUSTOM_OPP_BASE[resolveOppByPos(atk.setterPos, atk.setterOpp)];
+      const tossStart = atk.tossStart || 0;
+      const tossEnd = T.peak; // the attacker's approach-to-contact lerp finishes exactly at T.peak (see attackerPathAt) — sync the toss to land there, not at T.approach (which is only the run-up, before the attacker has reached the contact point)
+      if(p<=tossStart) return setterPos.slice();
+      if(p<=tossEnd){
+        const t = easeInOut((p-tossStart)/(tossEnd-tossStart));
+        return lerpPt(setterPos, atk.contact, t);
+      }
+    }
+    if(p<=T.ballStart) return atk.contact.slice();
+    if(p<=T.ballEnd){
+      const t=(p-T.ballStart)/(T.ballEnd-T.ballStart);
+      return lerpPt(atk.contact, landing, easeInOut(t));
+    }
+    return landing.slice();
+  }
+
+  // ---------- text ----------
+  const SCEN_LABEL = {};
+  Object.keys(ATTACKS).forEach(k=>SCEN_LABEL[k]=ATTACKS[k].label);
+  Object.keys(OUR_ATTACKS).forEach(k=>SCEN_LABEL[k]=OUR_ATTACKS[k].label);
+
+  function describeCustomChanges(){
+    const refBase = activePreset ? activePreset.base : ORIGINAL_BASE;
+    const movedOwn = IDS.filter(id => refBase[id] && dist(CUSTOM_BASE[id], refBase[id]) > 15);
+    const ov = TARGET_OVERRIDES[comboKey()];
+    const movedTargets = ov ? Object.keys(ov) : [];
+    const notes = [];
+    if(movedOwn.length){
+      const refName = activePreset ? `저장된 "${activePreset.name}" 대형` : '기본 대형';
+      notes.push(`${movedOwn.join('·')}번은 ${refName}에서 시작 위치를 옮겨둬서, 그 자리부터 움직여요.`);
+    }
+    if(movedTargets.length) notes.push(`${movedTargets.join('·')}번은 도착 위치(동선)를 직접 조정해뒀어요.`);
+    return notes;
+  }
+
+  function buildDescription(){
+    const f = getFormation();
+    if(isOur(scenario)){
+      const atk = OUR_ATTACKS[scenario];
+      const coverIds = IDS.filter(id=>f.roles[id]==='cover' && id!==f.receiverId);
+      const rl = `${POS_LABEL[POSITIONS[f.receiverId]]}(${f.receiverId}번)`, sl=`${POS_LABEL[POSITIONS[f.setterId]]}(${f.setterId}번)`, al=`${POS_LABEL[POSITIONS[f.attackerId]]}(${f.attackerId}번)`;
+      let text = atk.flavor + ` ${rl}이 뒤에서 리시브를 받아 ${sl}에게 연결하고, ${sl}가 ${al}에게 토스를 올려 공격합니다. 나머지 선수들은 공격수 주변에 커버 대형을 만듭니다. `;
+      if(blockCount>0){ text += `상대가 ${blockCount}명 블로킹을 하면 공이 손에 맞고 우리 코트로 튕겨 나올 확률이 높아지므로, 공격수와 가까운 선수일수록 더 바짝 붙어 대비합니다.`; }
+      else { text += "상대가 블로킹을 하지 않으면 공격이 그대로 상대 코트에 꽂힐 가능성이 높아, 커버 대형은 가볍게 유지하고 다음 랠리 전환에 대비합니다."; }
+      if(f.fakeAttackerId) text += ` ${f.fakeAttackerId}번이 속공을 하는 척 먼저 붙었다가 물러나 상대 블로커를 흔듭니다.`;
+      const points = [`${rl} 리시브 → ${sl} 토스 → ${al} 공격`, blockCount>0? `상대 ${blockCount}인 블로킹 대비 촘촘한 커버`:'무블로킹 — 가벼운 커버 대형', `${coverIds.slice(0,2).join('·')}번 등 근접 커버`];
+      if(f.fakeAttackerId) points.push(`${f.fakeAttackerId}번 페이크 동작`);
+      if(scenario==='OUR_BACKA') points.push('세터가 등 뒤로 빽토스');
+      if(atk.customized) points.push('공격 위치·템포 직접 설정됨');
+      describeCustomChanges().forEach(n=>points.push(n));
+      return {text, points};
+    }
+    const atk = ATTACKS[scenario];
+    let text = atk.flavor + ' ';
+    if(blockCount===0){
+      text += "우리 팀은 블로킹 없이 9명 전원이 네트에서 한 걸음 물러나 넓고 고르게 수비 대형을 만듭니다.";
+    } else {
+      const blockerIds = f.blockerIds.slice().sort((a,b)=>a-b);
+      const shadowIds = IDS.filter(id=>f.roles[id]==='shadow');
+      const lineId = IDS.find(id=>f.roles[id]==='line');
+      const crossId = IDS.find(id=>f.roles[id]==='cross');
+      const freeIds = IDS.filter(id=>f.roles[id]==='free');
+      text += `${blockerIds.join('·')}번이 네트 앞에서 ${blockCount===1?'단독':blockCount+'인'} 블로킹을 합니다. `;
+      if(shadowIds.length) text += `${shadowIds.join('·')}번이 블로킹 바로 뒤 그림자 구역에서 짧게 떨어지는 공을 대비합니다. `;
+      if(freeIds.length) text += `${freeIds.join('·')}번은 네트 앞 빈 공간을 지켜 짧은 공에 대비합니다. `;
+      if(lineId && crossId) text += `${lineId}번은 라인, ${crossId}번은 크로스 코너를 맡아 깊은 공격에 대비합니다.`;
+      if(atk.fakeContact) text += ' 처음엔 블로커가 속공(가짜 동작) 쪽으로 반응했다가, 진짜 공격이 나오면 자리를 재빠르게 고쳐야 해요.';
+    }
+    const points = [];
+    if(blockCount>0){ points.push(`${f.blockerIds.slice().sort((a,b)=>a-b).join('·')}번 블로킹 (${blockCount}인)`); }
+    else { points.push('블로킹 없이 전원 수비'); }
+    const shadowIds2 = IDS.filter(id=>f.roles[id]==='shadow');
+    if(shadowIds2.length) points.push(`${shadowIds2.join('·')}번 그림자 커버`);
+    const lineId2 = IDS.find(id=>f.roles[id]==='line'), crossId2 = IDS.find(id=>f.roles[id]==='cross');
+    if(lineId2 && crossId2) points.push(`${lineId2}번 라인 · ${crossId2}번 크로스`);
+    if(atk.fakeContact) points.push('블로커가 페이크에 반응 후 재교정');
+    if(scenario==='BACKA') points.push('세터가 등 뒤로 빽토스 → 뒤에서 공격');
+    if(atk.customized) points.push('공격 위치·템포 직접 설정됨');
+    describeCustomChanges().forEach(n=>points.push(n));
+    return {text, points};
+  }
+
+  function updateTexts(){
+    document.getElementById('scenarioTitle').textContent = SCEN_LABEL[scenario];
+    document.getElementById('blockTag').textContent = blockCount===0 ? '블로킹 없음' : blockCount+'인 블로킹';
+    document.getElementById('descBlockTag').textContent = SCEN_LABEL[scenario] + ' · ' + (blockCount===0?'블로킹 없음':blockCount+'인 블로킹');
+    const d = buildDescription();
+    document.getElementById('descText').textContent = d.text;
+    const ul = document.getElementById('descPoints'); ul.innerHTML='';
+    d.points.forEach(pt=>{ const li=document.createElement('li'); li.textContent=pt; ul.appendChild(li); });
+    document.getElementById('coverNote').style.display = isOur(scenario) ? 'block':'none';
+  }
+
+  // ---------- DOM element creation ----------
+  const oppLayer=document.getElementById('oppLayer'), ownLayer=document.getElementById('ownLayer');
+  const shadowLayer=document.getElementById('shadowLayer'), fanLayer=document.getElementById('fanLayer');
+  const arrowLayer=document.getElementById('arrowLayer'), trailLayer=document.getElementById('trailLayer');
+  const impactLayer=document.getElementById('impactLayer'), ballEl=document.getElementById('ball');
+  const blockZoneLayer=document.getElementById('blockZoneLayer');
+  const courtSvg=document.getElementById('court');
+  const ownLabelLayer=document.getElementById('ownLabelLayer');
+  const oppLabelLayer=document.getElementById('oppLabelLayer');
+  const sceneGroup=document.getElementById('sceneGroup');
+
+  const OPP_NUM = {}; Object.keys(ORIGINAL_OPP_BASE).forEach((id,i)=>OPP_NUM[id]=i+1);
+
+  function toSvgPoint(e){
+    const pt=courtSvg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+    const loc=pt.matrixTransform(courtSvg.getScreenCTM().inverse());
+    return fromDisplay([loc.x, loc.y]); // always returns LOGICAL (pre-rotation) coordinates
+  }
+
+  const oppEls={};
+  Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
+    const g=document.createElementNS(svgNS,'g'); g.setAttribute('class','opp-dot'); g.dataset.id=id;
+    const ring=document.createElementNS(svgNS,'circle'); ring.setAttribute('class','attacker-ring'); ring.setAttribute('r','16');
+    const dring=document.createElementNS(svgNS,'circle'); dring.setAttribute('class','decoy-ring'); dring.setAttribute('r','15');
+    const sring=document.createElementNS(svgNS,'circle'); sring.setAttribute('class','setter-ring'); sring.setAttribute('r','15');
+    const body=document.createElementNS(svgNS,'circle'); body.setAttribute('class','body'); body.setAttribute('r','10');
+    const text=document.createElementNS(svgNS,'text'); text.setAttribute('text-anchor','middle'); text.setAttribute('dy','.35em'); text.textContent=OPP_NUM[id];
+    g.appendChild(ring); g.appendChild(dring); g.appendChild(sring); g.appendChild(body);
+    oppLayer.appendChild(g); oppLabelLayer.appendChild(text); oppEls[id]={g,ring,dring,sring,body,text};
+
+    g.addEventListener('pointerdown', e=>{
+      if(!editMode) return;
+      if(editTeamFilter==='own') return;
+      draggingId=id; g.setPointerCapture(e.pointerId);
+      e.preventDefault(); e.stopPropagation();
+    });
+  });
+
+  const ownEls={};
+  IDS.forEach(id=>{
+    const g=document.createElementNS(svgNS,'g'); g.setAttribute('class','own-dot'); g.dataset.id=id;
+    const aRing=document.createElementNS(svgNS,'circle'); aRing.setAttribute('class','attacker-ring'); aRing.setAttribute('r','17');
+    const sRing=document.createElementNS(svgNS,'circle'); sRing.setAttribute('class','setter-ring'); sRing.setAttribute('r','17');
+    const dRing=document.createElementNS(svgNS,'circle'); dRing.setAttribute('class','decoy-ring'); dRing.setAttribute('r','16');
+    const body=document.createElementNS(svgNS,'circle'); body.setAttribute('class','body'); body.setAttribute('r','12');
+    const text=document.createElementNS(svgNS,'text'); text.setAttribute('text-anchor','middle'); text.setAttribute('dy','.35em'); text.textContent=id;
+    g.appendChild(aRing); g.appendChild(sRing); g.appendChild(dRing); g.appendChild(body);
+    ownLayer.appendChild(g); ownLabelLayer.appendChild(text); ownEls[id]={g,aRing,sRing,dRing,body,text};
+
+    g.addEventListener('pointerdown', e=>{
+      if(!editMode && !overrideMode) return;
+      if(editMode && editTeamFilter==='opp') return;
+      draggingId=id; g.setPointerCapture(e.pointerId);
+      e.preventDefault(); e.stopPropagation();
+    });
+  });
+
+  courtSvg.addEventListener('pointerdown', e=>{
+    if(!shadowMode) return;
+    shadowDrawStart = toSvgPoint(e); shadowDrawing=true;
+    tempShadow = {cx:shadowDrawStart[0], cy:shadowDrawStart[1], rx:6, ry:6};
+    try{ courtSvg.setPointerCapture(e.pointerId); }catch(err){}
+    render();
+  });
+
+  courtSvg.addEventListener('pointermove', e=>{
+    if((editMode||overrideMode) && draggingId!==null){
+      const loc=toSvgPoint(e);
+      const isOpp = Object.prototype.hasOwnProperty.call(CUSTOM_OPP_BASE, draggingId);
+      if(editMode && isOpp){
+        const x=clip(loc[0],40,360), y=clip(loc[1],25,370);
+        CUSTOM_OPP_BASE[draggingId]=[x,y];
+      } else if(editMode){
+        const x=clip(loc[0],40,360), y=clip(loc[1],392,735);
+        CUSTOM_BASE[draggingId]=[x,y]; current[draggingId]=[x,y];
+      } else if(overrideMode){
+        const x=clip(loc[0],40,360), y=clip(loc[1],392,735);
+        const key=comboKey();
+        if(!TARGET_OVERRIDES[key]) TARGET_OVERRIDES[key]={};
+        TARGET_OVERRIDES[key][draggingId]=[x,y];
+        current[draggingId]=[x,y];
+      }
+      render();
+      return;
+    }
+    if(shadowMode && shadowDrawing && shadowDrawStart){
+      const loc=toSvgPoint(e);
+      const cx=(shadowDrawStart[0]+loc[0])/2, cy=(shadowDrawStart[1]+loc[1])/2;
+      const rx=Math.max(10,Math.abs(loc[0]-shadowDrawStart[0])/2), ry=Math.max(10,Math.abs(loc[1]-shadowDrawStart[1])/2);
+      tempShadow={cx,cy,rx,ry};
+      render();
+    }
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(evt=>{
+    courtSvg.addEventListener(evt, ()=>{
+      draggingId=null;
+      if(shadowMode && shadowDrawing && tempShadow){
+        SHADOW_OVERRIDES[comboKey()] = tempShadow;
+      }
+      shadowDrawing=false; shadowDrawStart=null; tempShadow=null;
+      render();
+    });
+  });
+
+  function fanPath(cx,cy,angle,halfAngle,r){
+    const a1=angle-halfAngle, a2=angle+halfAngle;
+    const x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+    const x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
+    return `M ${cx} ${cy} L ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)} Z`;
+  }
+
+  function render(){
+    const f = getFormation();
+    if(!ballCurrent){ ballCurrent = desiredBallAt(progress, f).slice(); }
+    const nearNetPlayers = []; // {x, side:'own'|'opp'} — collected while placing dots, drawn as block-reach zones below
+
+    if(isOur(scenario)){
+      Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
+        const el=oppEls[id]; const base=CUSTOM_OPP_BASE[id];
+        el.body.setAttribute('cx',base[0]); el.body.setAttribute('cy',base[1]);
+        el.ring.setAttribute('cx',base[0]); el.ring.setAttribute('cy',base[1]); el.ring.style.opacity=0;
+        el.dring.style.opacity=0; el.sring.style.opacity=0;
+        const dp=toDisplay(base); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
+      });
+      (f.oppBlockerIds||[]).forEach((id,i)=>{
+        const el=oppEls[id]; const x=f.oppSlots[i]; const jump=-10*Math.sin(Math.PI*Math.min(progress/0.5,1));
+        const y=345+jump;
+        el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
+        el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
+        el.ring.style.opacity=1; el.ring.style.animation='pulseRing 1.4s ease-in-out infinite';
+        const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
+        if(y>=345 && y<=382) nearNetPlayers.push({x, side:'opp'});
+      });
+    } else {
+      const atk = ATTACKS[scenario];
+      const attackerOppId = resolveOppByPos(atk.pos, atk.attackerOpp);
+      const fakeOppIdVal = atk.fakePos!=null||atk.fakeOpp!=null ? resolveOppByPos(atk.fakePos, atk.fakeOpp) : null;
+      const setterOppIdVal = atk.setterOpp ? resolveOppByPos(atk.setterPos, atk.setterOpp) : null;
+      Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
+        const el=oppEls[id]; let pos=CUSTOM_OPP_BASE[id];
+        if(id===attackerOppId) pos=attackerPathAt(atk,progress);
+        else if(fakeOppIdVal && id===fakeOppIdVal) pos=fakeOppPosAt(atk,progress);
+        el.body.setAttribute('cx',pos[0]); el.body.setAttribute('cy',pos[1]);
+        el.ring.setAttribute('cx',pos[0]); el.ring.setAttribute('cy',pos[1]);
+        el.dring.setAttribute('cx',pos[0]); el.dring.setAttribute('cy',pos[1]);
+        el.sring.setAttribute('cx',pos[0]); el.sring.setAttribute('cy',pos[1]);
+        const dp=toDisplay(pos); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
+        el.ring.style.opacity = (id===attackerOppId) ? 1:0;
+        el.ring.style.animation = (id===attackerOppId) ? 'pulseRing 1.4s ease-in-out infinite':'none';
+        const decoyActive = fakeOppIdVal && id===fakeOppIdVal && progress>0.05 && progress<0.55;
+        el.dring.style.opacity = decoyActive ? 1:0;
+        const setterActive = setterOppIdVal && id===setterOppIdVal && progress>=(atk.tossStart||0) && progress<atk.timing.peak+0.03;
+        el.sring.style.opacity = setterActive ? 1:0;
+        if(pos[1]>=345 && pos[1]<=382) nearNetPlayers.push({x:pos[0], side:'opp'});
+      });
+    }
+
+    IDS.forEach(id=>{
+      const p=current[id]; const el=ownEls[id]; const role=f.roles[id];
+      el.body.setAttribute('cx',p[0]); el.body.setAttribute('cy',p[1]);
+      const dp=toDisplay(p); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
+      el.aRing.setAttribute('cx',p[0]); el.aRing.setAttribute('cy',p[1]);
+      el.sRing.setAttribute('cx',p[0]); el.sRing.setAttribute('cy',p[1]);
+      el.dRing.setAttribute('cx',p[0]); el.dRing.setAttribute('cy',p[1]);
+      el.aRing.style.opacity = (role==='attacker') ? 1:0;
+      el.aRing.style.animation = (role==='attacker') ? 'pulseRing 1.4s ease-in-out infinite':'none';
+      el.sRing.style.opacity = (role==='setter') ? 1:0;
+      const ownDecoyActive = isOur(scenario) && f.fakeAttackerId===id && progress>0.05 && progress<0.55;
+      const receiverActive = isOur(scenario) && f.receiverId===id && progress < OUR_ATTACKS[scenario].phase.pass + 0.04;
+      el.dRing.style.opacity = (ownDecoyActive || receiverActive) ? 1:0;
+      el.g.classList.toggle('blocker', role==='block');
+      if(p[1]>=378 && p[1]<=415) nearNetPlayers.push({x:p[0], side:'own'});
+    });
+
+    blockZoneLayer.innerHTML='';
+    if(showFans()){
+      const halfSpan = 34;
+      nearNetPlayers.forEach(pl=>{
+        const x1=clip(pl.x-halfSpan,20,380), x2=clip(pl.x+halfSpan,20,380);
+        const yTop = pl.side==='own' ? 335 : 380;
+        const yBot = pl.side==='own' ? 380 : 425;
+        const rect=document.createElementNS(svgNS,'rect');
+        rect.setAttribute('x',x1); rect.setAttribute('y',yTop);
+        rect.setAttribute('width',x2-x1); rect.setAttribute('height',yBot-yTop);
+        rect.setAttribute('fill', pl.side==='own' ? 'rgba(62,130,247,0.16)' : 'rgba(239,74,74,0.16)');
+        rect.setAttribute('stroke', pl.side==='own' ? 'rgba(157,190,251,0.6)' : 'rgba(248,180,180,0.6)');
+        rect.setAttribute('stroke-width','1'); rect.setAttribute('stroke-dasharray','3 3');
+        blockZoneLayer.appendChild(rect);
+      });
+    }
+
+    const bp = ballCurrent;
+    ballEl.setAttribute('cx',bp[0]); ballEl.setAttribute('cy',bp[1]);
+
+    trailLayer.innerHTML='';
+    [0.035,0.07,0.105].forEach((off,i)=>{
+      const pp = Math.max(0,progress-off);
+      const tp = desiredBallAt(pp, f);
+      const c=document.createElementNS(svgNS,'circle');
+      c.setAttribute('cx',tp[0]); c.setAttribute('cy',tp[1]); c.setAttribute('r', 5-i*1.2);
+      c.setAttribute('fill','#FBC02D'); c.style.opacity = Math.max(0,0.35-i*0.11);
+      trailLayer.appendChild(c);
+    });
+
+    impactLayer.innerHTML='';
+    if(!isOur(scenario)){
+      const atk=ATTACKS[scenario], T=atk.timing;
+      const ip = (progress-T.ballStart)/0.16;
+      if(ip>=0 && ip<=1){
+        const c=document.createElementNS(svgNS,'circle');
+        c.setAttribute('cx',atk.contact[0]); c.setAttribute('cy',atk.contact[1]);
+        c.setAttribute('r', 4+ip*34); c.setAttribute('fill','none');
+        c.setAttribute('stroke','#F2B705'); c.setAttribute('stroke-width', 2.5*(1-ip));
+        c.style.opacity = 0.8*(1-ip);
+        impactLayer.appendChild(c);
+      }
+    }
+
+    shadowLayer.innerHTML='';
+    const key = comboKey();
+    if(shadowMode){
+      const shapeToShow = tempShadow || SHADOW_OVERRIDES[key];
+      if(shapeToShow){
+        const e2=document.createElementNS(svgNS,'ellipse');
+        e2.setAttribute('cx',shapeToShow.cx); e2.setAttribute('cy',shapeToShow.cy);
+        e2.setAttribute('rx',shapeToShow.rx); e2.setAttribute('ry',shapeToShow.ry);
+        e2.setAttribute('fill','rgba(242,183,5,0.22)'); e2.setAttribute('stroke','#F2B705'); e2.setAttribute('stroke-width','2'); e2.setAttribute('stroke-dasharray','5 4');
+        shadowLayer.appendChild(e2);
+      }
+    } else if(showShadow()){
+      if(SHADOW_OVERRIDES[key]){
+        const s=SHADOW_OVERRIDES[key];
+        const e2=document.createElementNS(svgNS,'ellipse');
+        e2.setAttribute('cx',s.cx); e2.setAttribute('cy',s.cy); e2.setAttribute('rx',s.rx); e2.setAttribute('ry',s.ry);
+        e2.setAttribute('fill','rgba(242,183,5,0.18)'); e2.setAttribute('stroke','#F2B705'); e2.setAttribute('stroke-width','1.5'); e2.setAttribute('stroke-dasharray','4 4');
+        e2.style.opacity=Math.min(1,progress*1.6+0.15);
+        shadowLayer.appendChild(e2);
+      } else if(!isOur(scenario)){
+        const blockers=(f.blockerIds||[]).map(id=>current[id]);
+        if(blockers.length){
+          const xs=blockers.map(p=>p[0]);
+          const pad = blockers.length===1?42:16;
+          const xMin=Math.min(...xs)-pad, xMax=Math.max(...xs)+pad;
+          const yTop=384, yBot=384+progress*130+30;
+          const poly=document.createElementNS(svgNS,'polygon');
+          poly.setAttribute('points',`${xMin},${yTop} ${xMax},${yTop} ${xMax-8},${yBot} ${xMin+8},${yBot}`);
+          poly.setAttribute('fill','rgba(242,183,5,0.18)'); poly.setAttribute('stroke','#F2B705');
+          poly.setAttribute('stroke-width','1'); poly.setAttribute('stroke-dasharray','4 4');
+          poly.style.opacity=Math.min(1,progress*1.6);
+          shadowLayer.appendChild(poly);
+        }
+      } else if((f.oppBlockerIds||[]).length){
+        const landing=f.ballLanding;
+        const r=26+(f.oppBlockerIds.length>=2?20:0);
+        const c=document.createElementNS(svgNS,'circle');
+        c.setAttribute('cx',landing[0]); c.setAttribute('cy',landing[1]); c.setAttribute('r',r);
+        c.setAttribute('fill','rgba(242,183,5,0.18)'); c.setAttribute('stroke','#F2B705'); c.setAttribute('stroke-dasharray','4 4');
+        c.style.opacity=Math.min(1,progress*1.4);
+        shadowLayer.appendChild(c);
+      }
+    }
+
+    fanLayer.innerHTML='';
+    if(showFans()){
+      const originPt = isOur(scenario) ? [200,380] : ATTACKS[scenario].contact;
+      IDS.forEach(id=>{
+        const role=f.roles[id];
+        if(role==='attacker'||role==='setter') return;
+        const p=current[id];
+        const radius = role==='block' ? 34 : 58;
+        const angle=Math.atan2(originPt[1]-p[1], originPt[0]-p[0]);
+        const path=document.createElementNS(svgNS,'path');
+        path.setAttribute('d', fanPath(p[0],p[1],angle,0.62,radius));
+        path.setAttribute('fill','rgba(62,130,247,0.16)'); path.setAttribute('stroke','rgba(157,190,251,0.5)'); path.setAttribute('stroke-width','1');
+        path.style.opacity=Math.min(1,progress*1.6);
+        fanLayer.appendChild(path);
+      });
+    }
+
+    arrowLayer.innerHTML='';
+    if(showArrows()){
+      IDS.forEach(id=>{
+        const from=CUSTOM_BASE[id]; const to=f.targets[id];
+        if(!isOur(scenario) && f.fakeTargets && f.blockerIds.includes(id)){
+          const mid=f.fakeTargets[id];
+          if(dist(from,to)<10 && dist(from,mid)<10) return;
+          const poly=document.createElementNS(svgNS,'polyline');
+          poly.setAttribute('points', `${from[0]},${from[1]} ${mid[0]},${mid[1]} ${to[0]},${to[1]}`);
+          poly.setAttribute('fill','none'); poly.setAttribute('stroke','#D9E4F5'); poly.setAttribute('stroke-width','1.6');
+          poly.setAttribute('stroke-dasharray','3 4'); poly.setAttribute('marker-end','url(#arrowHead)');
+          poly.style.opacity=Math.min(0.85,progress*1.7);
+          arrowLayer.appendChild(poly);
+          return;
+        }
+        if(isOur(scenario) && f.attackerId===id){
+          const atk=OUR_ATTACKS[scenario];
+          const off = atk.approachOffset || [0,50];
+          const mid = [clip(to[0]+off[0],40,360), clip(to[1]+off[1],392,735)];
+          if(dist(from,mid)<10 && dist(mid,to)<10) return;
+          const poly=document.createElementNS(svgNS,'polyline');
+          poly.setAttribute('points', `${from[0]},${from[1]} ${mid[0]},${mid[1]} ${to[0]},${to[1]}`);
+          poly.setAttribute('fill','none'); poly.setAttribute('stroke','#D9E4F5'); poly.setAttribute('stroke-width','1.6');
+          poly.setAttribute('stroke-dasharray','3 4'); poly.setAttribute('marker-end','url(#arrowHead)');
+          poly.style.opacity=Math.min(0.85,progress*1.7);
+          arrowLayer.appendChild(poly);
+          return;
+        }
+        if(dist(from,to)<10) return;
+        const line=document.createElementNS(svgNS,'line');
+        line.setAttribute('x1',from[0]); line.setAttribute('y1',from[1]); line.setAttribute('x2',to[0]); line.setAttribute('y2',to[1]);
+        line.setAttribute('stroke','#D9E4F5'); line.setAttribute('stroke-width','1.6'); line.setAttribute('stroke-dasharray','3 4');
+        line.setAttribute('marker-end','url(#arrowHead)'); line.style.opacity=Math.min(0.85,progress*1.7);
+        arrowLayer.appendChild(line);
+      });
+    }
+
+    const pct=Math.round(progress*100);
+    document.getElementById('timeline').value=pct;
+    document.getElementById('timeline').style.setProperty('--pct', pct+'%');
+    document.getElementById('phaseLabel').textContent = phaseText();
+  }
+
+  function phaseText(){
+    if(isOur(scenario)){
+      const atk=OUR_ATTACKS[scenario];
+      if(progress<=0.02) return '대기 중 — 재생을 눌러보세요';
+      if(progress<atk.phase.pass) return '리시브(패스)';
+      if(progress<atk.phase.toss) return '토스';
+      if(progress<atk.phase.hit) return '공격(스파이크)';
+      if(progress<0.92) return '커버 대형 이동 중';
+      return '완료';
+    }
+    const atk=ATTACKS[scenario], T=atk.timing;
+    if(progress<=0.02) return '대기 중 — 재생을 눌러보세요';
+    if(atk.setterOpp && progress>=(atk.tossStart||0) && progress<T.peak) return atk.backToss ? '세터 빽토스' : '세터 토스';
+    if(atk.fakeContact && progress<T.approach*0.7) return '페이크 동작 (속공인 척)';
+    if(progress<T.approach) return '공격수 도움닫기';
+    if(progress<T.land) return '스파이크';
+    if(progress<0.92) return '우리 팀 수비 이동 중';
+    return '수비 완료';
+  }
+
+  // ---------- animation loop ----------
+  function tick(ts){
+    if(lastT===null) lastT=ts;
+    const dt=ts-lastT; lastT=ts;
+    if(playing){
+      progress=Math.min(1, progress+dt/currentDuration);
+      if(progress>=1){ playing=false; updatePlayBtn(); }
+    }
+    const f = getFormation();
+    const dOwn = desiredOwnAt(progress);
+    const dBall = desiredBallAt(progress, f);
+    const smooth = (editMode||overrideMode) ? 1 : 0.22;
+    IDS.forEach(id=>{
+      if((editMode||overrideMode) && draggingId===id) return;
+      current[id][0]+= (dOwn[id][0]-current[id][0])*smooth;
+      current[id][1]+= (dOwn[id][1]-current[id][1])*smooth;
+    });
+    if(!ballCurrent) ballCurrent=dBall.slice();
+    ballCurrent[0]+=(dBall[0]-ballCurrent[0])*smooth;
+    ballCurrent[1]+=(dBall[1]-ballCurrent[1])*smooth;
+    render();
+    requestAnimationFrame(tick);
+  }
+
+  function updatePlayBtn(){ document.getElementById('btnPlay').textContent = playing?'❚❚':'▶'; }
+
+  // ---------- preset UI (start positions) ----------
+  let activePreset = null; // the preset object currently loaded, so re-saving with the same name/folder updates it in place
+
+  function renderPresets(){
+    const list=document.getElementById('presetList');
+    list.innerHTML='';
+    const folderList=document.getElementById('folderList');
+    folderList.innerHTML='';
+    const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f)));
+    folderNames.forEach(f=>{ const opt=document.createElement('option'); opt.value=f; folderList.appendChild(opt); });
+
+    if(presets.length===0){ list.innerHTML='<span class="preset-empty">저장된 시작 대형이 없어요</span>'; return; }
+
+    const groups = {}; const order = [];
+    presets.forEach((p,idx)=>{
+      const key = p.folder || '';
+      if(!groups[key]){ groups[key]=[]; order.push(key); }
+      groups[key].push({p, idx});
+    });
+    order.sort((a,b)=> a===''?1 : b===''?-1 : a.localeCompare(b));
+
+    order.forEach(folderKey=>{
+      const group=document.createElement('div'); group.className='preset-folder-group';
+      if(folderKey){
+        const label=document.createElement('div'); label.className='preset-folder-label';
+        label.textContent='📁 '+folderKey;
+        group.appendChild(label);
+      }
+      const row=document.createElement('div'); row.className='preset-chip-row';
+      groups[folderKey].forEach(({p, idx})=>{
+        const chip=document.createElement('div'); chip.className='preset-chip';
+        if(activePreset===p) chip.classList.add('active');
+        const label=document.createElement('span'); label.textContent=p.name;
+        const x=document.createElement('span'); x.className='x'; x.textContent='✕';
+        chip.appendChild(label); chip.appendChild(x);
+        label.addEventListener('click', ()=>{
+          IDS.forEach(id=>{ CUSTOM_BASE[id]=p.base[id].slice(); });
+          if(p.oppBase) Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ if(p.oppBase[id]) CUSTOM_OPP_BASE[id]=p.oppBase[id].slice(); });
+          activePreset = p;
+          document.getElementById('presetName').value = p.name;
+          document.getElementById('presetFolder').value = p.folder || '';
+          if(!editMode && !overrideMode){ progress=0; playing=false; updatePlayBtn(); }
+          IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
+          renderPresets();
+          updateTexts();
+          render();
+        });
+        x.addEventListener('click', e=>{
+          e.stopPropagation();
+          if(activePreset===p) activePreset=null;
+          presets.splice(idx,1);
+          renderPresets();
+          updateTexts();
+        });
+        row.appendChild(chip);
+      });
+      group.appendChild(row);
+      list.appendChild(group);
+    });
+  }
+
+  // ---------- UI wiring ----------
+  function switchScenario(key){
+    scenario=key;
+    document.getElementById('scenarioSelect').value = key;
+    currentDuration = isOur(scenario) ? OUR_ATTACKS[scenario].duration : ATTACKS[scenario].duration;
+    progress=0; playing=false; updatePlayBtn();
+    IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
+    ballCurrent=null;
+    updateTexts();
+  }
+
+  const scenarioTitleEl = document.getElementById('scenarioTitle');
+  function openScenarioPicker(){
+    const sel = document.getElementById('scenarioSelect');
+    if(typeof sel.showPicker === 'function'){
+      try{ sel.showPicker(); return; }catch(err){}
+    }
+    sel.focus();
+  }
+  scenarioTitleEl.addEventListener('click', openScenarioPicker);
+  scenarioTitleEl.addEventListener('keydown', e=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openScenarioPicker(); }
+  });
+
+  document.getElementById('scenarioSelect').addEventListener('change', e=>{
+    switchScenario(e.target.value);
+  });
+
+  document.querySelectorAll('#blockSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#blockSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      blockCount=Number(btn.dataset.block);
+      updateTexts();
+    });
+  });
+
+  document.getElementById('btnPlay').addEventListener('click', ()=>{
+    if(editMode||overrideMode||shadowMode) return;
+    if(progress>=1) progress=0;
+    playing=!playing; updatePlayBtn();
+  });
+  document.getElementById('btnReset').addEventListener('click', ()=>{
+    playing=false; progress=0; updatePlayBtn();
+    IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
+    ballCurrent=null;
+  });
+  document.getElementById('timeline').addEventListener('input', e=>{
+    if(editMode||overrideMode||shadowMode) return;
+    playing=false; updatePlayBtn(); progress=Number(e.target.value)/100;
+  });
+  ['chkArrows','chkShadow','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
+
+  function setEditMode(mode){
+    editMode = mode==='edit'; overrideMode = mode==='override'; shadowMode = mode==='shadow';
+    playing=false; updatePlayBtn();
+    if(editMode){ progress=0; IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice()); }
+    if(overrideMode){ progress=1; const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice()); }
+    if(shadowMode){ document.getElementById('chkShadow').checked = true; progress=1; const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice()); }
+    document.querySelectorAll('#editModeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
+    document.getElementById('editTeamRow').style.display = editMode ? 'block' : 'none';
+    document.getElementById('btnResetCurrent').disabled = (mode==='off');
+    setModeUI(); render();
+  }
+  document.querySelectorAll('#editModeSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=> setEditMode(btn.dataset.mode));
+  });
+
+
+  document.querySelectorAll('#editTeamSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      editTeamFilter = btn.dataset.team;
+      document.querySelectorAll('#editTeamSeg button').forEach(b=>b.classList.toggle('active', b===btn));
+      setModeUI();
+    });
+  });
+
+  function setModeUI(){
+    courtSvg.classList.toggle('edit-mode', editMode);
+    courtSvg.classList.toggle('override-mode', overrideMode);
+    courtSvg.classList.toggle('shadow-mode', shadowMode);
+    const anyMode = editMode||overrideMode||shadowMode;
+    document.getElementById('btnPlay').disabled = anyMode;
+    document.getElementById('timeline').disabled = anyMode;
+    let hint;
+    if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀 번호를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
+    else if(shadowMode) hint='코트 위를 드래그해 <b>블로킹 그림자 구역</b>을 직접 그릴 수 있어요. 다시 드래그하면 새로 그려집니다. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
+    else if(editMode){
+      const teamWord = editTeamFilter==='own' ? '아군' : editTeamFilter==='opp' ? '상대팀' : '아군·상대팀 전체';
+      hint = `코트 위 ${teamWord} 점을 드래그해 <b>시작 위치</b>를 바꿀 수 있어요. 재생하면 이 위치에서 이동이 시작돼요.`;
+    }
+    else hint = '편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.';
+    document.getElementById('editHintText').innerHTML = hint;
+  }
+
+  document.getElementById('btnResetCurrent').addEventListener('click', ()=>{
+    if(editMode){
+      IDS.forEach(id=>{ CUSTOM_BASE[id]=ORIGINAL_BASE[id].slice(); current[id]=ORIGINAL_BASE[id].slice(); });
+      Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice(); });
+    } else if(overrideMode){
+      delete TARGET_OVERRIDES[comboKey()];
+      const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice());
+    } else if(shadowMode){
+      delete SHADOW_OVERRIDES[comboKey()];
+    }
+    render();
+  });
+  document.getElementById('btnSavePreset').addEventListener('click', ()=>{
+    const input=document.getElementById('presetName');
+    const folderInput=document.getElementById('presetFolder');
+    let name=input.value.trim(); if(!name) name='배치 '+(presets.length+1);
+    const folder=folderInput.value.trim();
+    const baseCopy={}; IDS.forEach(id=>baseCopy[id]=CUSTOM_BASE[id].slice());
+    const oppCopy={}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=>oppCopy[id]=CUSTOM_OPP_BASE[id].slice());
+    // if a preset is currently loaded and the name/folder weren't changed, update it in place;
+    // otherwise fall back to matching by name, or create a brand-new entry.
+    let target = (activePreset && activePreset.name===name && (activePreset.folder||'')===folder) ? activePreset : null;
+    if(!target) target = presets.find(p=>p.name===name && (p.folder||'')===folder);
+    if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; activePreset=target; }
+    else { const created={name, folder, base:baseCopy, oppBase:oppCopy}; presets.push(created); activePreset=created; }
+    renderPresets();
+    updateTexts();
+  });
+
+  // ---------- custom scenario editor ----------
+  document.getElementById('btnCustomToggle').addEventListener('click', ()=>{
+    const panel=document.getElementById('customPanel');
+    const showing = panel.style.display!=='none';
+    panel.style.display = showing ? 'none':'block';
+    document.getElementById('btnCustomToggle').textContent = showing ? '공격 상황 직접 설정 ▾' : '공격 상황 직접 설정 ▴';
+    if(!showing) document.getElementById('customTargetSelect').value = scenario;
+  });
+  document.querySelectorAll('#customXSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#customXSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelectorAll('#customTempoSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#customTempoSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelectorAll('#customLandingSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#customLandingSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.getElementById('customLandingToggle').addEventListener('change', e=>{
+    document.getElementById('customLandingRow').style.display = e.target.checked ? 'block' : 'none';
+  });
+  document.getElementById('btnSaveCustom').addEventListener('click', ()=>{
+    const key = document.getElementById('customTargetSelect').value;
+    const perspX = Number(document.querySelector('#customXSeg button.active').dataset.x);
+    const tempo = document.querySelector('#customTempoSeg button.active').dataset.tempo;
+    const hasFake = document.getElementById('customFake').checked;
+    // 왼쪽/오른쪽은 항상 "그 팀이 네트를 바라볼 때" 기준이라, 상대 팀은 화면 좌우가 뒤집혀요.
+    const x = isOur(key) ? perspX : (400 - perspX);
+
+    if(isOur(key)){
+      const atk = OUR_ATTACKS[key];
+      atk.x = x;
+      atk.duration = {fast:1600, normal:2600, slow:3800}[tempo];
+      atk.phase = hasFake ? {pass:0.14,toss:0.6,hit:0.85} : {pass:0.18,toss:0.44,hit:0.76};
+      if(hasFake) atk.fakeX = 200; else delete atk.fakeX;
+      atk.customized = true;
+    } else {
+      const atk = ATTACKS[key];
+      atk.x = x;
+      atk.contact = [x, 320];
+      atk.approachFrom = [clip(x + (x<200? 25:-25), 40,360), 245];
+      const tempoPreset = {
+        fast:{duration:1900, timing:{approach:0.2,peak:0.34,land:0.46,ballStart:0.34,ballEnd:0.54}},
+        normal:{duration:3000, timing:{approach:0.3,peak:0.46,land:0.6,ballStart:0.46,ballEnd:0.7}},
+        slow:{duration:4200, timing:{approach:0.4,peak:0.56,land:0.7,ballStart:0.56,ballEnd:0.8}}
+      }[tempo];
+      atk.duration = tempoPreset.duration; atk.timing = tempoPreset.timing;
+      if(hasFake){ atk.fakeContact=[200,320]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
+      else{ delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp; }
+      atk.customized = true;
+    }
+
+    const useLanding = document.getElementById('customLandingToggle').checked;
+    if(useLanding){
+      const val = Number(document.querySelector('#customLandingSeg button.active').dataset.x);
+      const landingPt = landingForButtonValue(val, isOur(key));
+      (isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key]).landingOverride = landingPt;
+    } else {
+      delete (isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key]).landingOverride;
+    }
+
+    if(scenario===key) switchScenario(key);
+    const statusEl = document.getElementById('customStatus');
+    statusEl.textContent = `'${SCEN_LABEL[key]}' 시나리오에 저장했어요. 위 목록에서 선택하면 바로 재생돼요.`;
+  });
+
+  function applyOrientation(){
+    courtSvg.setAttribute('viewBox', landscape ? '0 0 760 400' : '0 0 400 760');
+    sceneGroup.setAttribute('transform', landscape ? 'matrix(0,-1,1,0,0,400)' : '');
+    document.getElementById('btnOrientation').textContent = landscape ? '세로 보기로 전환' : '가로 보기로 전환';
+    render();
+  }
+  document.getElementById('btnOrientation').addEventListener('click', ()=>{
+    landscape=!landscape;
+    applyOrientation();
+  });
+
+  // ---------- position assignment UI ----------
+  function renderPosGrid(){
+    const grid = document.getElementById('posGrid');
+    grid.innerHTML='';
+    IDS.forEach(id=>{
+      const item=document.createElement('div'); item.className='pos-item';
+      const num=document.createElement('span'); num.className='num'; num.textContent=id;
+      const sel=document.createElement('select');
+      Object.keys(POS_LABEL).forEach(code=>{
+        const opt=document.createElement('option'); opt.value=code; opt.textContent=POS_LABEL[code];
+        if(POSITIONS[id]===code) opt.selected=true;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', ()=>{ POSITIONS[id]=sel.value; updateTexts(); render(); });
+      item.appendChild(num); item.appendChild(sel);
+      grid.appendChild(item);
+    });
+  }
+
+  function renderOppPosGrid(){
+    const grid = document.getElementById('oppPosGrid');
+    grid.innerHTML='';
+    Object.keys(ORIGINAL_OPP_BASE).forEach((id,i)=>{
+      const item=document.createElement('div'); item.className='pos-item opp';
+      const num=document.createElement('span'); num.className='num'; num.textContent=i+1;
+      const sel=document.createElement('select');
+      Object.keys(POS_LABEL).forEach(code=>{
+        const opt=document.createElement('option'); opt.value=code; opt.textContent=POS_LABEL[code];
+        if(OPP_POSITIONS[id]===code) opt.selected=true;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', ()=>{ OPP_POSITIONS[id]=sel.value; updateTexts(); render(); });
+      item.appendChild(num); item.appendChild(sel);
+      grid.appendChild(item);
+    });
+  }
+
+  // ---------- app mode switcher (전술 시뮬레이션 vs 경기 영상 분석) ----------
+  document.querySelectorAll('#appModeSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#appModeSeg button').forEach(b=>b.classList.toggle('active', b===btn));
+      const mode = btn.dataset.appmode;
+      document.getElementById('mainAppCol').classList.toggle('mode-hidden', mode!=='sim');
+      document.getElementById('videoCol').classList.toggle('mode-hidden', mode!=='video');
+    });
+  });
+
+  // ---------- init ----------
+  updateTexts();
+  updatePlayBtn();
+  setModeUI();
+  renderPresets();
+  renderPosGrid();
+  renderOppPosGrid();
+  applyOrientation();
+  requestAnimationFrame(tick);
+
+  // ---------- login / room code system ----------
+  let roomCode = null, accessLevel = null;
+  const storageOk = !!firebaseDb;
+  function errText(err){
+    if(!err) return '알 수 없는 오류';
+    if(typeof err === 'string') return err;
+    if(err.message) return err.message;
+    try{ return JSON.stringify(err); }catch(e){ return String(err); }
+  }
+
+  // ---------- storage backend (Firestore) ----------
+  // Backend.get(key)      -> resolves to the stored string, or null if missing
+  // Backend.set(key,val)  -> stores a string value
+  // Backend.delete(key)   -> removes a key
+  // Keeping this exact same in/out shape (strings) means nothing else in the app
+  // (fetchRoom, saveRoom, deleteRoom, etc.) has to change when the backend changes.
+  // Single "kv" collection with namespaced keys (all keys start with "vt:") — this means the
+  // Firestore security rule only ever has to check the key prefix, not validate the shape of
+  // whatever data this app happens to store today. If the app's data shape changes later, the
+  // security rule never needs to change. (Pattern borrowed from a companion Firebase project.)
+  const KV_COLLECTION = 'kv';
+  function sanitizeDocId(key){ return String(key).replace(/\//g,'_').slice(0,400); }
+  const Backend = {
+    async get(key){
+      try{
+        const snap = await firebaseDb.collection(KV_COLLECTION).doc(sanitizeDocId(key)).get();
+        if(!snap.exists) return null;
+        const data = snap.data();
+        return typeof data.value === 'string' ? data.value : null;
+      }catch(err){ return null; } // missing/unavailable — treat as "not found"
+    },
+    async set(key, value){
+      await firebaseDb.collection(KV_COLLECTION).doc(sanitizeDocId(key)).set({value:String(value), updatedAt:Date.now()});
+    },
+    async delete(key){
+      try{ await firebaseDb.collection(KV_COLLECTION).doc(sanitizeDocId(key)).delete(); }catch(err){ /* already gone */ }
+    }
+  };
+
+  (async function checkStorageOnce(){
+    const warnEl = document.getElementById('storageWarning');
+    if(!storageOk){
+      warnEl.textContent = '아직 코드 저장 기능은 서버 연결 준비 중이에요. 그래도 아래에서 코드를 만들어보실 수 있고, 실제 저장은 연결 후에 동작해요. 지금 바로 쓰시려면 "코드 없이 계속하기"를 이용해주세요.';
+      warnEl.style.display='block';
+      return;
+    }
+    try{
+      await Backend.set('vt:__probe__', '{"ok":true}');
+      await Backend.delete('vt:__probe__');
+    }catch(err){
+      warnEl.textContent = '아직 코드 저장 기능은 서버 연결 준비 중이에요 (' + errText(err) + '). 지금 바로 쓰시려면 "코드 없이 계속하기"를 이용해주세요.';
+      warnEl.style.display='block';
+    }
+  })();
+
+  // ---------- try to silently resume this device's last code, unless a shared link overrides it ----------
+  (async function tryAutoRejoin(){
+    if(!storageOk) return;
+    const params = new URLSearchParams(location.search);
+    if(params.get('code')) return; // an explicit shared link always wins over a remembered session
+    let lastCode = null;
+    try{ lastCode = localStorage.getItem(LAST_CODE_KEY); }catch(err){ return; }
+    if(!lastCode) return;
+    let rememberedLevel = null;
+    try{ rememberedLevel = localStorage.getItem(deviceRoleKey(lastCode)); }catch(err){}
+    if(!rememberedLevel) return;
+    const statusEl = document.getElementById('autoRejoinStatus');
+    statusEl.textContent = `이 기기에 저장된 코드(${lastCode})로 자동 입장 중...`;
+    statusEl.style.display='block';
+    try{
+      const room = await fetchRoom(lastCode);
+      if(!room){ forgetDevice(lastCode); statusEl.style.display='none'; return; }
+      const hasEditPw = rememberedLevel==='creator' ? !!room.editPassword : undefined;
+      enterApp(lastCode, rememberedLevel, room.state, hasEditPw);
+    }catch(err){
+      statusEl.style.display='none';
+    }
+  })();
+
+  function roomKey(code){ return 'vt:room:'+code.trim().toLowerCase().replace(/[\/\.\s#\[\]]/g,'-'); }
+
+  function serializeRoomState(){
+    return {
+      positions: POSITIONS, oppPositions: OPP_POSITIONS,
+      customBase: CUSTOM_BASE, customOppBase: CUSTOM_OPP_BASE,
+      presets: presets,
+      targetOverrides: TARGET_OVERRIDES, shadowOverrides: SHADOW_OVERRIDES, ballOverrides: BALL_OVERRIDES,
+      attacks: JSON.parse(JSON.stringify(ATTACKS)), ourAttacks: JSON.parse(JSON.stringify(OUR_ATTACKS))
+    };
+  }
+  function applyRoomState(state){
+    if(!state) return;
+    try{
+      if(state.positions) POSITIONS = state.positions;
+      if(state.oppPositions) OPP_POSITIONS = state.oppPositions;
+      if(state.customBase) CUSTOM_BASE = state.customBase;
+      if(state.customOppBase) CUSTOM_OPP_BASE = state.customOppBase;
+      if(state.presets) presets = state.presets;
+      if(state.targetOverrides) TARGET_OVERRIDES = state.targetOverrides;
+      if(state.shadowOverrides) SHADOW_OVERRIDES = state.shadowOverrides;
+      if(state.ballOverrides) BALL_OVERRIDES = state.ballOverrides;
+      if(state.attacks) Object.keys(state.attacks).forEach(k=>{ if(ATTACKS[k]) Object.assign(ATTACKS[k], state.attacks[k]); });
+      if(state.ourAttacks) Object.keys(state.ourAttacks).forEach(k=>{ if(OUR_ATTACKS[k]) Object.assign(OUR_ATTACKS[k], state.ourAttacks[k]); });
+      IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
+    }catch(err){ console.error('applyRoomState failed', err); }
+  }
+
+  async function fetchRoom(code){
+    const raw = await Backend.get(roomKey(code));
+    return raw ? JSON.parse(raw) : null;
+  }
+
+  function lockForViewOnly(){
+    document.querySelectorAll('#posGrid select, #oppPosGrid select').forEach(s=>s.disabled=true);
+    const bc=document.getElementById('btnCustomToggle'); if(bc) bc.disabled=true;
+    const bs=document.getElementById('btnSaveCustom'); if(bs) bs.disabled=true;
+    const bp=document.getElementById('btnSavePreset'); if(bp) bp.disabled=true;
+    document.querySelectorAll('#editModeSeg button').forEach(b=>{ if(b.dataset.mode!=='off') b.disabled=true; });
+    document.getElementById('btnSaveRoom').style.display='none';
+    document.getElementById('btnDeleteRoom').style.display='none';
+  }
+
+  // ---------- this device remembers its last code/role locally (not on the server) ----------
+  // Purely a client-side convenience, mirroring a pattern from a companion Firebase project:
+  // once THIS browser has successfully entered a code, it won't need to retype the password
+  // again on this same device. It grants nothing new server-side — someone without the
+  // password still can't get in on a different device.
+  const LAST_CODE_KEY = 'vt:last-code';
+  function deviceRoleKey(code){ return 'vt:device:'+code; }
+  function rememberDevice(code, level){
+    try{ localStorage.setItem(LAST_CODE_KEY, code); localStorage.setItem(deviceRoleKey(code), level); }catch(err){}
+  }
+  function forgetDevice(code){
+    try{
+      if(localStorage.getItem(LAST_CODE_KEY)===code) localStorage.removeItem(LAST_CODE_KEY);
+      if(code) localStorage.removeItem(deviceRoleKey(code));
+    }catch(err){}
+  }
+
+  function enterApp(code, level, state, hasEditPw){
+    roomCode = code; accessLevel = level;
+    applyRoomState(state);
+    if(code) rememberDevice(code, level);
+    document.getElementById('loginOverlay').style.display='none';
+    document.querySelector('.app').style.display='block';
+    document.getElementById('settingsCodeLabel').textContent = code || '(로컬)';
+    const roleLabels = {creator:'개설자', editor:'수정 권한(구성원)', view:'조회 전용'};
+    document.getElementById('settingsRoleLabel').textContent = roleLabels[level] || '로컬 전용(공유 안 됨)';
+    document.getElementById('editPwSection').style.display = (level==='creator') ? 'block' : 'none';
+    if(level==='creator') document.getElementById('editPwStatus').textContent = hasEditPw ? '(설정됨)' : '(설정 안 됨)';
+    document.getElementById('btnDeleteRoom').style.display = (level==='creator') ? 'inline-block' : 'none';
+    if(!code){
+      document.getElementById('btnShareLink').style.display='none';
+      document.getElementById('btnSaveRoom').style.display='none';
+      document.getElementById('btnDeleteRoom').style.display='none';
+      document.getElementById('btnLogoutRoom').style.display='none';
+    } else if(level==='view'){
+      lockForViewOnly();
+    }
+    renderPosGrid(); renderOppPosGrid(); renderPresets();
+    updateTexts(); render();
+  }
+
+  document.getElementById('btnSkipLogin').addEventListener('click', ()=>{
+    enterApp(null, null, null);
+  });
+
+  document.querySelectorAll('#loginModeSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#loginModeSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('createPane').style.display = btn.dataset.mode==='create' ? 'block':'none';
+      document.getElementById('enterPane').style.display = btn.dataset.mode==='enter' ? 'block':'none';
+    });
+  });
+
+  document.getElementById('btnCreateRoom').addEventListener('click', async ()=>{
+    const statusEl=document.getElementById('createStatus');
+    if(!storageOk){ statusEl.textContent='이 환경에서는 코드 저장을 쓸 수 없어요. "코드 없이 계속하기"를 이용해주세요.'; return; }
+    const code=document.getElementById('createCodeInput').value.trim();
+    const cpw=document.getElementById('createCreatorPw').value;
+    const vpw=document.getElementById('createViewPw').value;
+    if(!code || !cpw || !vpw){ statusEl.textContent='코드와 두 비밀번호를 모두 입력해주세요.'; return; }
+    if(cpw===vpw){ statusEl.textContent='개설자 비밀번호와 조회 비밀번호는 다르게 설정해주세요.'; return; }
+    statusEl.textContent='만드는 중...';
+    try{
+      const existing = await fetchRoom(code);
+      if(existing){ statusEl.textContent='이미 사용 중인 코드예요. 다른 코드를 입력해주세요.'; return; }
+      const room = {creatorPassword:cpw, viewPassword:vpw, editPassword:null, state:serializeRoomState()};
+      await Backend.set(roomKey(code), JSON.stringify(room));
+      enterApp(code, 'creator', room.state, false);
+    }catch(err){
+      statusEl.textContent='코드를 만들지 못했어요: ' + errText(err);
+    }
+  });
+
+  document.getElementById('btnEnterRoom').addEventListener('click', async ()=>{
+    const statusEl=document.getElementById('enterStatus');
+    if(!storageOk){ statusEl.textContent='이 환경에서는 코드 입장을 쓸 수 없어요. "코드 없이 계속하기"를 이용해주세요.'; return; }
+    const code=document.getElementById('enterCodeInput').value.trim();
+    const pw=document.getElementById('enterPwInput').value;
+    if(!code || !pw){ statusEl.textContent='코드와 비밀번호를 모두 입력해주세요.'; return; }
+    statusEl.textContent='확인 중...';
+    try{
+      const room = await fetchRoom(code);
+      if(!room){ statusEl.textContent='존재하지 않는 코드예요.'; return; }
+      if(pw===room.creatorPassword) enterApp(code, 'creator', room.state, !!room.editPassword);
+      else if(room.editPassword && pw===room.editPassword) enterApp(code, 'editor', room.state);
+      else if(pw===room.viewPassword) enterApp(code, 'view', room.state);
+      else statusEl.textContent='비밀번호가 올바르지 않아요.';
+    }catch(err){
+      statusEl.textContent='코드를 불러오지 못했어요: ' + errText(err);
+    }
+  });
+
+  document.getElementById('btnSetEditPw').addEventListener('click', async ()=>{
+    if(accessLevel!=='creator' || !roomCode) return;
+    const statusEl=document.getElementById('settingsStatus');
+    const pw=document.getElementById('editPwInput').value;
+    if(!pw){ statusEl.textContent='수정 권한 비밀번호를 입력해주세요.'; return; }
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      if(pw===room.creatorPassword || pw===room.viewPassword){ statusEl.textContent='개설자·조회 비밀번호와 다르게 설정해주세요.'; return; }
+      room.editPassword = pw;
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      document.getElementById('editPwInput').value='';
+      document.getElementById('editPwStatus').textContent='(설정됨)';
+      statusEl.textContent='수정 권한 비밀번호를 설정했어요. 구성원에게 공유해주세요.';
+    }catch(err){ statusEl.textContent='설정에 실패했어요: ' + errText(err); }
+  });
+
+  document.getElementById('btnClearEditPw').addEventListener('click', async ()=>{
+    if(accessLevel!=='creator' || !roomCode) return;
+    const statusEl=document.getElementById('settingsStatus');
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      room.editPassword = null;
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      document.getElementById('editPwStatus').textContent='(설정 안 됨)';
+      statusEl.textContent='수정 권한을 비활성화했어요.';
+    }catch(err){ statusEl.textContent='처리에 실패했어요: ' + errText(err); }
+  });
+
+  document.getElementById('btnShareLink').addEventListener('click', ()=>{
+    if(!roomCode) return;
+    const url = location.origin + location.pathname + '?code=' + encodeURIComponent(roomCode);
+    document.getElementById('shareLinkInput').value = url;
+    document.getElementById('shareLinkBox').style.display='block';
+  });
+  document.getElementById('btnCopyLink').addEventListener('click', ()=>{
+    const inp=document.getElementById('shareLinkInput');
+    inp.select();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(inp.value).then(()=>{
+        document.getElementById('settingsStatus').textContent='링크를 복사했어요.';
+      }).catch(()=>{ document.getElementById('settingsStatus').textContent='복사에 실패했어요. 직접 선택해 복사해주세요.'; });
+    } else {
+      try{ document.execCommand('copy'); document.getElementById('settingsStatus').textContent='링크를 복사했어요.'; }
+      catch(e){ document.getElementById('settingsStatus').textContent='직접 선택해 복사해주세요.'; }
+    }
+  });
+
+  document.getElementById('btnSaveRoom').addEventListener('click', async ()=>{
+    const statusEl=document.getElementById('settingsStatus');
+    if(!roomCode || accessLevel!=='creator') return;
+    statusEl.textContent='저장하는 중...';
+    try{
+      const room = await fetchRoom(roomCode) || {creatorPassword:'', viewPassword:''};
+      room.state = serializeRoomState();
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      statusEl.textContent='저장했어요.';
+    }catch(err){ statusEl.textContent='저장에 실패했어요: ' + errText(err); }
+  });
+
+  document.getElementById('btnDeleteRoom').addEventListener('click', async ()=>{
+    if(!roomCode || accessLevel!=='creator') return;
+    if(!confirm('정말 이 코드를 삭제할까요? 되돌릴 수 없어요.')) return;
+    try{
+      const existed = await Backend.get(roomKey(roomCode));
+      if(existed) await Backend.delete(roomKey(roomCode));
+    }catch(err){
+      alert('삭제 중 문제가 있었어요: ' + errText(err) + '\n그래도 로그인 화면으로 돌아갑니다.');
+    }
+    forgetDevice(roomCode);
+    location.href = location.pathname;
+  });
+
+  document.getElementById('btnLogoutRoom').addEventListener('click', ()=>{
+    forgetDevice(roomCode);
+    location.href = location.pathname;
+  });
+
+  // pre-fill from a shared link (?code=...)
+  (function initFromUrl(){
+    const params = new URLSearchParams(location.search);
+    const urlCode = params.get('code');
+    if(urlCode){
+      document.querySelectorAll('#loginModeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode==='enter'));
+      document.getElementById('createPane').style.display='none';
+      document.getElementById('enterPane').style.display='block';
+      document.getElementById('enterCodeInput').value = urlCode;
+      document.getElementById('enterCodeInput').readOnly = true;
+    }
+  })();
+
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+  const svgNS = "http://www.w3.org/2000/svg";
+
+  const video = document.getElementById('matchVideo');
+  const fileInput = document.getElementById('videoFileInput');
+  const dotsLayer = document.getElementById('videoDotsLayer');
+  const videoCourtSvg = document.getElementById('videoCourt');
+
+  let currentVideoName = '';
+  fileInput.addEventListener('change', ()=>{
+    const file = fileInput.files && fileInput.files[0];
+    if(!file) return;
+    video.src = URL.createObjectURL(file);
+    currentVideoName = file.name;
+    // note: the drawing board and all records are intentionally kept — switching videos doesn't erase anything.
+  });
+
+  function clip(v,lo,hi){ return Math.max(lo, Math.min(hi, v)); }
+
+  function toVideoSvgPoint(e){
+    const pt = videoCourtSvg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+    const loc = pt.matrixTransform(videoCourtSvg.getScreenCTM().inverse());
+    return [clip(loc.x,20,740), clip(loc.y,20,380)];
+  }
+
+  // ---------- manual drawing board ----------
+  let drawTool = null;
+  let elements = []; // dots/ball: {id,type,x,y}  arrows: {id,type,x1,y1,x2,y2}
+  let elIdCounter = 0;
+  let dragStart = null, dragPreview = null;
+
+  function curvedPath(x1,y1,x2,y2){
+    const mx=(x1+x2)/2, my=(y1+y2)/2;
+    const dx=x2-x1, dy=y2-y1;
+    const len = Math.hypot(dx,dy) || 1;
+    const bulge = Math.min(60, len*0.35);
+    const cx = mx - (dy/len)*bulge, cy = my + (dx/len)*bulge;
+    return `M ${x1},${y1} Q ${cx},${cy} ${x2},${y2}`;
+  }
+  function wavyPath(x1,y1,x2,y2){
+    const segments = 6;
+    const dx=(x2-x1)/segments, dy=(y2-y1)/segments;
+    const len = Math.hypot(x2-x1,y2-y1) || 1;
+    const amp = Math.min(14, len/segments*0.7);
+    const perpX = -dy/len*amp, perpY = dx/len*amp;
+    let d = `M ${x1},${y1}`;
+    for(let i=0;i<segments;i++){
+      const midX = x1+dx*(i+0.5) + (i%2===0? perpX : -perpX);
+      const midY = y1+dy*(i+0.5) + (i%2===0? perpY : -perpY);
+      const endX = x1+dx*(i+1), endY = y1+dy*(i+1);
+      d += ` Q ${midX.toFixed(1)},${midY.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
+    }
+    return d;
+  }
+  function pigtailPath(x1,y1,x2,y2){
+    const r = 9;
+    const loop = `M ${x1},${y1} c ${r},${-r} ${r*2},${r} 0,${r*2} c ${-r*2},${r} ${-r},${-r*2} 0.1,${-r*2}`;
+    return `${loop} M ${x1},${y1} L ${x2},${y2}`;
+  }
+  function pathFor(type,x1,y1,x2,y2){
+    if(type==='straight') return `M ${x1},${y1} L ${x2},${y2}`;
+    if(type==='curved') return curvedPath(x1,y1,x2,y2);
+    if(type==='pigtail') return pigtailPath(x1,y1,x2,y2);
+    if(type==='wavy') return wavyPath(x1,y1,x2,y2);
+    return `M ${x1},${y1} L ${x2},${y2}`;
+  }
+
+  document.querySelectorAll('#drawToolSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#drawToolSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      drawTool = btn.dataset.tool;
+      videoCourtSvg.style.cursor = drawTool==='erase' ? 'not-allowed' : 'crosshair';
+      document.getElementById('drawStatus').textContent = drawTool==='erase'
+        ? '지우고 싶은 도트나 화살표를 코트에서 클릭하세요.'
+        : (['dotRed','dotBlue','ball'].includes(drawTool) ? '코트를 클릭해서 놓으세요.' : '코트를 드래그해서 그리세요.');
+    });
+  });
+
+  videoCourtSvg.addEventListener('pointerdown', e=>{
+    if(!drawTool || drawTool==='erase') return;
+    const pt = toVideoSvgPoint(e);
+    if(drawTool==='dotRed' || drawTool==='dotBlue' || drawTool==='ball'){
+      elements.push({id:++elIdCounter, type:drawTool, x:pt[0], y:pt[1]});
+      renderBoard();
+      return;
+    }
+    dragStart = pt;
+    try{ videoCourtSvg.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  videoCourtSvg.addEventListener('pointermove', e=>{
+    if(!dragStart) return;
+    const pt = toVideoSvgPoint(e);
+    dragPreview = {type:drawTool, x1:dragStart[0], y1:dragStart[1], x2:pt[0], y2:pt[1]};
+    renderBoard();
+  });
+  ['pointerup','pointercancel'].forEach(evt=>{
+    videoCourtSvg.addEventListener(evt, e=>{
+      if(!dragStart) return;
+      const pt = toVideoSvgPoint(e);
+      if(Math.hypot(pt[0]-dragStart[0], pt[1]-dragStart[1]) > 8){
+        elements.push({id:++elIdCounter, type:drawTool, x1:dragStart[0], y1:dragStart[1], x2:pt[0], y2:pt[1]});
+      }
+      dragStart=null; dragPreview=null;
+      renderBoard();
+    });
+  });
+
+  function renderBoard(){
+    dotsLayer.innerHTML='';
+    elements.forEach(el=>{
+      if(el.type==='dotRed' || el.type==='dotBlue' || el.type==='ball'){
+        const c = document.createElementNS(svgNS,'circle');
+        c.setAttribute('cx',el.x); c.setAttribute('cy',el.y);
+        c.setAttribute('r', el.type==='ball' ? 9 : 13);
+        c.setAttribute('fill', el.type==='dotRed' ? '#EF4A4A' : el.type==='dotBlue' ? '#3E82F7' : '#FBC02D');
+        c.setAttribute('stroke', el.type==='ball' ? '#7A5A05' : '#fff'); c.setAttribute('stroke-width','1.3');
+        c.style.cursor='pointer';
+        c.addEventListener('click', ()=>{ if(drawTool==='erase'){ elements=elements.filter(x=>x.id!==el.id); renderBoard(); } });
+        dotsLayer.appendChild(c);
+      } else {
+        const path = document.createElementNS(svgNS,'path');
+        path.setAttribute('d', pathFor(el.type, el.x1, el.y1, el.x2, el.y2));
+        path.setAttribute('fill','none'); path.setAttribute('stroke','#F2F6FA'); path.setAttribute('stroke-width','2.5');
+        path.setAttribute('marker-end','url(#drawArrowHead)');
+        path.style.cursor='pointer'; path.style.pointerEvents='stroke';
+        path.addEventListener('click', ()=>{ if(drawTool==='erase'){ elements=elements.filter(x=>x.id!==el.id); renderBoard(); } });
+        dotsLayer.appendChild(path);
+      }
+    });
+    if(dragPreview){
+      const p = dragPreview;
+      const path = document.createElementNS(svgNS,'path');
+      path.setAttribute('d', pathFor(p.type, p.x1, p.y1, p.x2, p.y2));
+      path.setAttribute('fill','none'); path.setAttribute('stroke','#F2B705'); path.setAttribute('stroke-width','2'); path.setAttribute('stroke-dasharray','4 3');
+      dotsLayer.appendChild(path);
+    }
+  }
+
+  document.getElementById('btnClearBoard').addEventListener('click', ()=>{
+    elements=[]; renderBoard();
+  });
+
+  function captureBoard(){ return elements.length ? JSON.parse(JSON.stringify(elements)) : null; }
+  function restoreBoard(saved){ elements = saved ? JSON.parse(JSON.stringify(saved)) : []; renderBoard(); }
+
+  // ---------- timestamped records ----------
+  let records = []; // {time, label, category, optionLabel, videoName, positions}
+  function fmtTime(sec){
+    sec = Math.max(0, Math.floor(sec||0));
+    const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+    const mm = String(m).padStart(2,'0'), ss = String(s).padStart(2,'0');
+    return h>0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+  }
+
+  function renderRecords(){
+    const list = document.getElementById('recordList');
+    list.innerHTML='';
+    records.forEach((rec, idx)=>{
+      const row = document.createElement('div'); row.className='record-row';
+      const timeBtn = document.createElement('button'); timeBtn.className='btn'; timeBtn.textContent=fmtTime(rec.time);
+      timeBtn.title = rec.videoName ? `영상: ${rec.videoName}` : '';
+      timeBtn.addEventListener('click', ()=>{
+        video.currentTime = rec.time;
+        restoreBoard(rec.positions);
+      });
+      const input = document.createElement('input'); input.type='text'; input.value=rec.label;
+      input.placeholder='메모';
+      input.addEventListener('input', ()=>{ rec.label = input.value; });
+      const saveBtn = document.createElement('button'); saveBtn.className='btn';
+      saveBtn.textContent = rec.positions ? '보드 다시 저장' : '보드 저장';
+      saveBtn.addEventListener('click', ()=>{
+        rec.positions = captureBoard();
+        saveBtn.textContent='저장됨 ✓';
+        setTimeout(()=>{ saveBtn.textContent='보드 다시 저장'; }, 1200);
+      });
+      const del = document.createElement('span'); del.className='x'; del.textContent='✕';
+      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); });
+      row.appendChild(timeBtn); row.appendChild(input); row.appendChild(saveBtn); row.appendChild(del);
+      list.appendChild(row);
+    });
+  }
+
+  document.getElementById('btnRecordMoment').addEventListener('click', ()=>{
+    records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, positions: captureBoard()});
+    renderRecords();
+  });
+
+  // ---------- quick-log banners ----------
+  const OPP_ATTACK_OPTIONS = ['레프트','앞차','백차','백A','A','라이트'];
+  const OUR_SCORE_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리'];
+  const OUR_MISS_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','토스','2단토스','블로킹(다이렉트)','3구처리','디그움직임'];
+
+  function flashBtn(btn){
+    btn.classList.add('flash');
+    setTimeout(()=>btn.classList.remove('flash'), 350);
+  }
+  function logEvent(category, label, btn){
+    records.push({
+      time: video.currentTime||0,
+      label: `[${category}] ${label}`,
+      category, optionLabel: label,
+      videoName: currentVideoName,
+      positions: captureBoard()
+    });
+    renderRecords();
+    renderTally();
+    if(btn) flashBtn(btn);
+  }
+  function buildTabGroup(containerId, options, category){
+    const container = document.getElementById(containerId);
+    options.forEach(label=>{
+      const btn = document.createElement('button');
+      btn.type='button'; btn.textContent=label;
+      btn.addEventListener('click', ()=> logEvent(category, label, btn));
+      container.appendChild(btn);
+    });
+  }
+  buildTabGroup('oppTabs', OPP_ATTACK_OPTIONS, '상대공격');
+  buildTabGroup('ourScoreTabs', OUR_SCORE_OPTIONS, '득점');
+  buildTabGroup('ourMissTabs', OUR_MISS_OPTIONS, '미스');
+
+  function renderTally(){
+    const el = document.getElementById('tallySummary');
+    const counts = {};
+    records.forEach(r=>{
+      if(r.category){ const k=r.category+'|'+r.optionLabel; counts[k]=(counts[k]||0)+1; }
+    });
+    const groupNames = {'상대공격':'🔴 상대팀 공격 옵션', '득점':'🔵 우리팀 득점', '미스':'🔵 우리팀 미스'};
+    const groups = {'상대공격':[], '득점':[], '미스':[]};
+    Object.keys(counts).forEach(k=>{
+      const idx = k.indexOf('|');
+      const cat = k.slice(0,idx), label = k.slice(idx+1);
+      if(groups[cat]) groups[cat].push([label, counts[k]]);
+    });
+    let html='';
+    Object.keys(groups).forEach(cat=>{
+      if(groups[cat].length){
+        groups[cat].sort((a,b)=>b[1]-a[1]);
+        const parts = groups[cat].map(([label,n])=>`${label} ${n}회`).join(', ');
+        html += `<div class="tally-row"><b>${groupNames[cat]}</b>: ${parts}</div>`;
+      }
+    });
+    el.innerHTML = html || '<span class="field-note" style="margin:0;">아직 배너로 기록된 통계가 없어요.</span>';
+  }
+
+  function exportRecords(){
+    if(records.length===0){ alert('내보낼 기록이 없어요.'); return; }
+    let md = `# 경기 영상 기록\n\n생성일시: ${new Date().toLocaleString('ko-KR')}\n\n`;
+    const byVideo = {};
+    records.forEach(r=>{ const key=r.videoName || '(영상 이름 없음)'; if(!byVideo[key]) byVideo[key]=[]; byVideo[key].push(r); });
+    Object.keys(byVideo).forEach(vname=>{
+      md += `## ${vname}\n\n`;
+      byVideo[vname].sort((a,b)=>a.time-b.time).forEach(r=>{
+        md += `### ${fmtTime(r.time)}${r.label ? ' — '+r.label : ''}\n`;
+        if(r.positions && r.positions.length){
+          md += r.positions.map(p=>{
+            if(p.x!==undefined) return `- 도트(${p.type}): (x:${Math.round(p.x)}, y:${Math.round(p.y)})`;
+            return `- 화살표(${p.type}): (${Math.round(p.x1)},${Math.round(p.y1)}) → (${Math.round(p.x2)},${Math.round(p.y2)})`;
+          }).join('\n') + '\n';
+        } else {
+          md += '_(대시보드는 저장되지 않았어요)_\n';
+        }
+        md += '\n';
+      });
+    });
+    const counts = {};
+    records.forEach(r=>{ if(r.category){ const k=r.category+'|'+r.optionLabel; counts[k]=(counts[k]||0)+1; } });
+    if(Object.keys(counts).length){
+      md += `## 통계 요약\n\n`;
+      Object.keys(counts).forEach(k=>{
+        const idx=k.indexOf('|');
+        md += `- ${k.slice(0,idx)} · ${k.slice(idx+1)}: ${counts[k]}회\n`;
+      });
+    }
+    const blob = new Blob([md], {type:'text/markdown;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = '경기_기록_'+new Date().toISOString().slice(0,10)+'.md';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  document.getElementById('btnExportRecords').addEventListener('click', exportRecords);
+
+  renderBoard();
+  renderRecords();
+  renderTally();
+
+})();
+</script>
+</body>
+</html>
