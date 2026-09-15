@@ -186,6 +186,35 @@
   .login-status{ font-size:12.5px; color:var(--accent); margin-top:10px; min-height:1.2em; text-align:center; }
   #settingsCodeLabel, #settingsRoleLabel{ color:var(--text); }
 </style>
+<!-- ======================================================================
+     FIREBASE 연결 설정
+     아래 firebaseConfig의 값들을 Firebase 콘솔에서 발급받은 실제 값으로
+     바꿔주세요 (자세한 방법은 대화창 안내를 참고하세요).
+     값을 바꾸지 않은 채로 두면, 코드 저장 기능은 계속 "준비 중" 상태로
+     남아있고 나머지 시뮬레이터 기능은 평소처럼 그대로 작동해요.
+====================================================================== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAbdsh333whhehTj6cQqxVuwf_2T5bcH8",
+    authDomain: "volleyball-simulation-board.firebaseapp.com",
+    projectId: "volleyball-simulation-board",
+    storageBucket: "volleyball-simulation-board.firebasestorage.app",
+    messagingSenderId: "466737005208",
+    appId: "1:466737005208:web:bcd06f2ceeb83bccad46ed"
+  };
+  let firebaseDb = null;
+  try{
+    if(firebaseConfig.apiKey !== "YOUR_API_KEY"){ // only try once real values are filled in
+      firebase.initializeApp(firebaseConfig);
+      firebaseDb = firebase.firestore();
+    }
+  }catch(err){
+    console.warn('Firebase 초기화 실패:', err);
+    firebaseDb = null;
+  }
+</script>
 </head>
 <body>
 
@@ -1787,7 +1816,7 @@
 
   // ---------- login / room code system ----------
   let roomCode = null, accessLevel = null;
-  const storageOk = (typeof window.storage !== 'undefined');
+  const storageOk = !!firebaseDb;
   function errText(err){
     if(!err) return '알 수 없는 오류';
     if(typeof err === 'string') return err;
@@ -1795,24 +1824,24 @@
     try{ return JSON.stringify(err); }catch(e){ return String(err); }
   }
 
-  // ---------- storage backend (swap this out for Firebase later — see deployment guide at bottom of page) ----------
+  // ---------- storage backend (Firestore) ----------
   // Backend.get(key)      -> resolves to the stored string, or null if missing
   // Backend.set(key,val)  -> stores a string value
   // Backend.delete(key)   -> removes a key
-  // All three return/throw the same way regardless of what's behind them, so the rest of
-  // the app (fetchRoom, saveRoom, deleteRoom, etc.) never needs to change when you swap this.
+  // Keeping this exact same in/out shape (strings) means nothing else in the app
+  // (fetchRoom, saveRoom, deleteRoom, etc.) has to change when the backend changes.
   const Backend = {
     async get(key){
       try{
-        const r = await window.storage.get(key, true);
-        return r ? r.value : null;
-      }catch(err){ return null; } // missing key throws per the storage API — treat as "not found"
+        const snap = await firebaseDb.collection('rooms').doc(key).get();
+        return snap.exists ? JSON.stringify(snap.data()) : null;
+      }catch(err){ return null; } // missing/unavailable — treat as "not found"
     },
     async set(key, value){
-      await window.storage.set(key, value, true);
+      await firebaseDb.collection('rooms').doc(key).set(JSON.parse(value));
     },
     async delete(key){
-      try{ await window.storage.delete(key, true); }catch(err){ /* already gone */ }
+      try{ await firebaseDb.collection('rooms').doc(key).delete(); }catch(err){ /* already gone */ }
     }
   };
 
@@ -1824,7 +1853,7 @@
       return;
     }
     try{
-      await Backend.set('__probe__', '1');
+      await Backend.set('__probe__', '{"ok":true}');
       await Backend.delete('__probe__');
     }catch(err){
       warnEl.textContent = '아직 코드 저장 기능은 서버 연결 준비 중이에요 (' + errText(err) + '). 지금 바로 쓰시려면 "코드 없이 계속하기"를 이용해주세요.';
@@ -1832,7 +1861,7 @@
     }
   })();
 
-  function roomKey(code){ return 'room_'+code.trim().toLowerCase(); }
+  function roomKey(code){ return 'room_'+code.trim().toLowerCase().replace(/[\/\.\s#\[\]]/g,'-'); }
 
   function serializeRoomState(){
     return {
