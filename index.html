@@ -172,9 +172,22 @@
   #videoCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; }
   #videoCol .card{ margin:0 auto; }
   #mainAppCol.mode-hidden, #videoCol.mode-hidden{ display:none; }
-  .mode-seg-wrap{ max-width:1400px; margin:0 auto 20px; padding:0 20px; display:flex; justify-content:center; }
-  .mode-seg-wrap .seg{ max-width:560px; width:100%; padding:6px; gap:4px; }
-  .mode-seg-wrap .seg button{ padding:15px 12px; font-size:15.5px; font-weight:700; white-space:nowrap; }
+  .mode-seg-wrap{ max-width:1400px; margin:0 auto 24px; padding:0 20px; display:flex; justify-content:center; }
+  .mode-seg-wrap .seg{
+    max-width:560px; width:100%; padding:6px; gap:4px;
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    box-shadow:0 6px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+    border-color:var(--border);
+  }
+  .mode-seg-wrap .seg button{
+    padding:15px 12px; font-size:15.5px; font-weight:700; white-space:nowrap;
+    transition:background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, transform 0.15s ease;
+  }
+  .mode-seg-wrap .seg button:not(.active):hover{ background:rgba(255,255,255,0.06); color:var(--text); }
+  .mode-seg-wrap .seg button.active{
+    background:linear-gradient(135deg, #FFD450, var(--accent));
+    box-shadow:0 3px 12px rgba(242,183,5,0.45);
+  }
   .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; }
   .record-row input[type=text]{ flex:1; min-width:0; padding:6px 8px; border-radius:7px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:12px; font-family:inherit; }
   .record-row .btn{ font-size:11.5px; padding:6px 8px; white-space:nowrap; }
@@ -462,6 +475,7 @@
       </div>
       <div class="field-note" style="margin-top:0;">같은 폴더 이름을 입력하면 그 폴더 안에 모여요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
       <div class="preset-list" id="presetList"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
+      <div class="edit-hint" id="autoSaveStatus"></div>
 
       <div class="edit-divider"></div>
 
@@ -514,12 +528,12 @@
           <label class="field-label">공격 위치</label>
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
-            <button data-x="90">왼쪽</button>
-            <button data-x="145">왼쪽 중간</button>
-            <button data-x="200" class="active">중앙</button>
-            <button data-x="255">오른쪽 중간</button>
-            <button data-x="310">오른쪽</button>
             <button data-x="370">오른쪽 끝</button>
+            <button data-x="145">왼쪽 중간</button>
+            <button data-x="255">오른쪽 중간</button>
+            <button data-x="90">왼쪽</button>
+            <button data-x="310">오른쪽</button>
+            <button data-x="200" class="active">중앙</button>
           </div>
           <label class="field-label" style="margin-top:8px;">템포(속도)</label>
           <div class="seg" id="customTempoSeg">
@@ -533,12 +547,12 @@
           <div id="customLandingRow" style="display:none; margin-top:6px;">
             <div class="seg" id="customLandingSeg">
               <button data-x="30">왼쪽 끝</button>
-              <button data-x="90">왼쪽</button>
-              <button data-x="145">왼쪽 중간</button>
-              <button data-x="200" class="active">중앙</button>
-              <button data-x="255">오른쪽 중간</button>
-              <button data-x="310">오른쪽</button>
               <button data-x="370">오른쪽 끝</button>
+              <button data-x="145">왼쪽 중간</button>
+              <button data-x="255">오른쪽 중간</button>
+              <button data-x="90">왼쪽</button>
+              <button data-x="310">오른쪽</button>
+              <button data-x="200" class="active">중앙</button>
             </div>
           </div>
 
@@ -1265,8 +1279,10 @@
   });
   ['pointerup','pointercancel','pointerleave'].forEach(evt=>{
     courtSvg.addEventListener(evt, ()=>{
+      const wasDragging = draggingId!==null;
       draggingId=null;
       render();
+      if(wasDragging && (editMode||overrideMode)) scheduleAutoSave();
     });
   });
 
@@ -1536,6 +1552,7 @@
           renderPresets();
           updateTexts();
           render();
+          scheduleAutoSave();
         });
         x.addEventListener('click', e=>{
           e.stopPropagation();
@@ -1543,6 +1560,7 @@
           presets.splice(idx,1);
           renderPresets();
           updateTexts();
+          scheduleAutoSave();
         });
         row.appendChild(chip);
       });
@@ -1656,6 +1674,7 @@
       const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice());
     }
     render();
+    scheduleAutoSave();
   });
   document.getElementById('btnSavePreset').addEventListener('click', ()=>{
     const input=document.getElementById('presetName');
@@ -1672,6 +1691,7 @@
     else { const created={name, folder, base:baseCopy, oppBase:oppCopy}; presets.push(created); activePreset=created; }
     renderPresets();
     updateTexts();
+    scheduleAutoSave();
   });
 
   // ---------- custom scenario editor ----------
@@ -1784,6 +1804,7 @@
     if(scenario===key) switchScenario(key);
     const statusEl = document.getElementById('customStatus');
     statusEl.textContent = `'${SCEN_LABEL[key]}' 시나리오에 저장했어요. 위 목록에서 선택하면 바로 재생돼요.`;
+    scheduleAutoSave();
   });
 
   function applyOrientation(){
@@ -1810,7 +1831,7 @@
         if(POSITIONS[id]===code) opt.selected=true;
         sel.appendChild(opt);
       });
-      sel.addEventListener('change', ()=>{ POSITIONS[id]=sel.value; updateTexts(); render(); });
+      sel.addEventListener('change', ()=>{ POSITIONS[id]=sel.value; updateTexts(); render(); scheduleAutoSave(); });
       item.appendChild(num); item.appendChild(sel);
       grid.appendChild(item);
     });
@@ -1828,7 +1849,7 @@
         if(OPP_POSITIONS[id]===code) opt.selected=true;
         sel.appendChild(opt);
       });
-      sel.addEventListener('change', ()=>{ OPP_POSITIONS[id]=sel.value; updateTexts(); render(); });
+      sel.addEventListener('change', ()=>{ OPP_POSITIONS[id]=sel.value; updateTexts(); render(); scheduleAutoSave(); });
       item.appendChild(num); item.appendChild(sel);
       grid.appendChild(item);
     });
@@ -1934,6 +1955,31 @@
   })();
 
   function roomKey(code){ return 'vt:room:'+code.trim().toLowerCase().replace(/[\/\.\s#\[\]]/g,'-'); }
+
+  // ---------- auto-save: any meaningful edit to room data gets persisted automatically ----------
+  // Without this, "저장" on a preset (or any other edit) only changed things in this tab's memory —
+  // leaving via 다른 코드로 전환 (or just closing the tab) silently threw that work away, since only
+  // the separate, easy-to-miss "변경사항 저장" button actually wrote to the server.
+  let autoSaveTimer = null;
+  function scheduleAutoSave(){
+    if(!roomCode || (accessLevel!=='creator' && accessLevel!=='editor')) return;
+    const statusEl = document.getElementById('autoSaveStatus');
+    if(statusEl) statusEl.textContent = '저장 대기 중...';
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(doAutoSave, 900);
+  }
+  async function doAutoSave(){
+    const statusEl = document.getElementById('autoSaveStatus');
+    if(statusEl) statusEl.textContent = '저장하는 중...';
+    try{
+      const room = await fetchRoom(roomCode) || {creatorPassword:'', viewPassword:''};
+      room.state = serializeRoomState();
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      if(statusEl) statusEl.textContent = '✓ 자동 저장됨 (' + new Date().toLocaleTimeString('ko-KR') + ')';
+    }catch(err){
+      if(statusEl) statusEl.textContent = '자동 저장 실패: ' + errText(err);
+    }
+  }
 
   function serializeRoomState(){
     return {
@@ -2138,7 +2184,7 @@
 
   document.getElementById('btnSaveRoom').addEventListener('click', async ()=>{
     const statusEl=document.getElementById('settingsStatus');
-    if(!roomCode || accessLevel!=='creator') return;
+    if(!roomCode || (accessLevel!=='creator' && accessLevel!=='editor')) return;
     statusEl.textContent='저장하는 중...';
     try{
       const room = await fetchRoom(roomCode) || {creatorPassword:'', viewPassword:''};
@@ -2161,7 +2207,9 @@
     location.href = location.pathname;
   });
 
-  document.getElementById('btnLogoutRoom').addEventListener('click', ()=>{
+  document.getElementById('btnLogoutRoom').addEventListener('click', async ()=>{
+    // flush any pending auto-save immediately so a last-second edit isn't lost by navigating away
+    if(autoSaveTimer){ clearTimeout(autoSaveTimer); autoSaveTimer=null; try{ await doAutoSave(); }catch(err){} }
     forgetDevice(roomCode);
     location.href = location.pathname;
   });
