@@ -1013,8 +1013,13 @@
       let pos = lerpPt(CUSTOM_BASE[id], f.targets[id], moveT);
       if(!isOur(scenario) && f.fakeTargets && f.blockerIds.includes(id)){
         const fakeT = f.fakeTargets[id], trueT = f.targets[id];
-        if(p<=0.5){ pos = lerpPt(CUSTOM_BASE[id], fakeT, easeInOut(p/0.5)); }
-        else if(p<=0.78){ pos = lerpPt(fakeT, trueT, easeInOut((p-0.5)/0.28)); }
+        // Scaled to this scenario's own peak timing (like the decoy's own motion) so the blocker's
+        // fake-react-then-correct sequence stays in sync no matter what tempo is set — it used to
+        // be pinned to fixed fractions (0.5/0.78) tuned only for the original, much longer duration.
+        const peak = ATTACKS[scenario].timing.peak;
+        const reactEnd = peak*0.6, correctEnd = peak*0.95;
+        if(p<=reactEnd){ pos = lerpPt(CUSTOM_BASE[id], fakeT, easeInOut(p/reactEnd)); }
+        else if(p<=correctEnd){ pos = lerpPt(fakeT, trueT, easeInOut((p-reactEnd)/(correctEnd-reactEnd))); }
         else { pos = trueT; }
       }
       if(isOur(scenario) && f.attackerId===id){
