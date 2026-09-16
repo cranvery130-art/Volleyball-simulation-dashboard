@@ -203,6 +203,11 @@
     #cardPresets, #cardAttack{ grid-row:1/-1; position:sticky; top:16px; align-self:start; max-height:calc(100vh - 32px); overflow-y:auto; }
     #cardPresets{ grid-column:1; }
     #cardAttack{ grid-column:3; }
+    #cardPresets .preset-input-row{ flex-direction:column; }
+    #cardPresets .preset-input-row input[type=text]{ flex:none !important; width:100%; }
+    #cardPresets .preset-input-row button{ width:100%; }
+    #cardPresets #editModeSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; }
+    #cardPresets #editModeSeg button{ border-radius:8px; flex:none; }
   }
 </style>
 <!-- ======================================================================
@@ -340,10 +345,8 @@
             <option value="OUR_BACKA">빽A 공격 시 커버</option>
           </optgroup>
         </select>
-        <div class="field-note">※ 상대 팀의 왼쪽/오른쪽은 상대가 네트를 마주 봤을 때를 기준으로 해요. 화면에서는 좌우가 반대로 보일 수 있어요.</div>
 
-        <div class="edit-divider"></div>
-        <button class="btn" id="btnCustomToggle" style="width:100%;">공격 상황 직접 설정 ▾</button>
+        <button class="btn" id="btnCustomToggle" style="width:100%; margin-top:10px;">공격 상황 직접 설정 ▾</button>
         <div id="customPanel" style="display:none; margin-top:10px;">
           <label class="field-label">공격 위치</label>
           <div class="seg" id="customXSeg">
@@ -355,7 +358,6 @@
             <button data-x="310">오른쪽</button>
             <button data-x="370">오른쪽 끝</button>
           </div>
-          <div class="field-note">왼쪽/오른쪽은 그 시나리오의 팀이 네트를 바라볼 때를 기준으로 해요. 상대 팀 시나리오에 저장하면 화면상으로는 좌우가 반대로 배치돼요.</div>
           <label class="field-label" style="margin-top:8px;">템포(속도)</label>
           <div class="seg" id="customTempoSeg">
             <button data-tempo="fast">빠름</button>
@@ -375,7 +377,6 @@
               <button data-x="310">오른쪽</button>
               <button data-x="370">오른쪽 끝</button>
             </div>
-            <div class="field-note">공을 받는 팀의 정해진 코트 구역(전위/후위 9구역 중 하나)으로 착지해요 — 오른쪽=레프트 구역, 오른쪽 중간=앞차 구역, 오른쪽 끝=레프트백 구역 (왼쪽은 반대: 라이트·빽차·라이트백). 이 구역은 고정이라 "포지션 배정"을 바꾸거나 선수를 드래그해도 달라지지 않아요.</div>
           </div>
 
           <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
@@ -397,11 +398,18 @@
               <option value="OUR_BACKA">빽A 공격 시 커버</option>
             </optgroup>
           </select>
-          <div class="field-note">선택한 공격 상황의 위치·속도·페이크·착지 방향이 지금 설정한 값으로 덮어써져요. 이름은 그대로 유지되고, 다음에 그 항목을 선택하면 새로 설정한 내용으로 재생돼요.</div>
           <div class="btn-row" style="margin-top:8px;">
             <button class="btn primary" id="btnSaveCustom">이 시나리오에 저장(덮어쓰기)</button>
           </div>
           <div class="edit-hint" id="customStatus"></div>
+        </div>
+
+        <div class="edit-divider"></div>
+        <button class="btn" id="btnAttackInfoToggle" style="width:100%;">ℹ️ 참고사항 ▾</button>
+        <div id="attackInfoPanel" class="note-box" style="display:none; margin-top:8px;">
+          <p style="margin:0 0 8px;">왼쪽/오른쪽은 항상 <b>그 팀이 네트를 바라볼 때</b> 기준이에요. 상대 팀 시나리오는 화면에서 좌우가 반대로 보여요.</p>
+          <p style="margin:0 0 8px;">착지는 정해진 코트 9구역 중 하나로 고정돼요 — 오른쪽 계열은 레프트·앞차·레프트백 구역, 왼쪽 계열은 라이트·빽차·라이트백 구역이에요. 포지션 배정을 바꾸거나 선수를 드래그해도 이 구역 자체는 달라지지 않아요.</p>
+          <p style="margin:0;">저장하면 선택한 공격 상황의 위치·속도·페이크·착지가 지금 값으로 덮어써지고, 이름은 그대로 유지돼요.</p>
         </div>
       </div>
 
@@ -1734,6 +1742,12 @@
       document.getElementById('customTargetSelect').value = scenario;
       syncCustomPanelToScenario(scenario);
     }
+  });
+  document.getElementById('btnAttackInfoToggle').addEventListener('click', ()=>{
+    const panel = document.getElementById('attackInfoPanel');
+    const showing = panel.style.display!=='none';
+    panel.style.display = showing ? 'none' : 'block';
+    document.getElementById('btnAttackInfoToggle').textContent = showing ? 'ℹ️ 참고사항 ▾' : 'ℹ️ 참고사항 ▴';
   });
   document.getElementById('customTargetSelect').addEventListener('change', e=>{
     syncCustomPanelToScenario(e.target.value);
