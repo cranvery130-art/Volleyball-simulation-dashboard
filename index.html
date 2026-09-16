@@ -687,7 +687,7 @@
         timing:{approach:0.34,peak:0.48,land:0.6,ballStart:0.48,ballEnd:0.7} },
     TIMEDIFF:{ label:'시간차 공격', flavor:'속공 담당 선수가 먼저 네트 앞에 붙어 속공을 하는 척 블로커를 속이고, 세터가 공을 늦게 붙잡고 있다가 뒤에 있던 다른 선수에게 한 박자 늦게 올려줘서 시간차로 공격해요. 블로커가 먼저 속공 쪽으로 반응했다가 뒤늦게 자리를 고쳐야 해요.',
         x:260, pos:'FRONTSLIDE', attackerOpp:'e', approachFrom:[228,238], contact:[260,320], fakePos:'QA', fakeOpp:'b', fakeContact:[200,320],
-        setterPos:'SETTER', setterOpp:'e', tossStart:0.46, duration:4400,
+        setterPos:'SETTER', setterOpp:'e', duration:4400,
         timing:{approach:0.66,peak:0.78,land:0.88,ballStart:0.78,ballEnd:0.94} },
     BACKSLIDE:{ label:'빽차 공격 (백슬라이드)', flavor:'세터가 공을 띄워주면 반대쪽에 있던 선수가 세터 뒤로 길게 미끄러지듯 대각선으로 이동해 때리는 빽차(백슬라이드) 공격이에요. 이동 거리가 길어 타이밍을 읽기 어려워요.',
         x:140, pos:'BACKSLIDE', attackerOpp:'f', approachFrom:[220,214], contact:[140,320], setterPos:'SETTER', setterOpp:'e', duration:2500,
@@ -710,6 +710,7 @@
 
 
   function isOur(s){ return s.indexOf('OUR_')===0; }
+
 
   // ---------- helpers ----------
   function clip(v,lo,hi){ return Math.max(lo,Math.min(hi,v)); }
@@ -900,6 +901,19 @@
   function toDisplay(p){ return landscape ? [p[1], 400-p[0]] : [p[0],p[1]]; }
   function fromDisplay(p){ return landscape ? [400-p[1], p[0]] : [p[0],p[1]]; }
 
+  // ---------- built-in defaults for each opponent scenario's "공격 상황 직접 설정" ----------
+  // These match the specific position/tempo/landing combination each attack is meant to represent
+  // by default; the panel and the actual playback both reflect this from the start, no manual
+  // "저장(덮어쓰기)" step needed. Users can still override any of them the same way as before.
+  // (applyScenarioCustom is defined further below as a function declaration, so it's already
+  // available here regardless of source order.)
+  applyScenarioCustom('L', 30, 'normal', false, true, 370, false);
+  applyScenarioCustom('C', 200, 'fast', false, true, 255, false);
+  applyScenarioCustom('R', 370, 'normal', false, true, 30, false);
+  applyScenarioCustom('TIMEDIFF', 90, 'normal', true, true, 255, false);
+  applyScenarioCustom('BACKSLIDE', 310, 'normal', false, true, 145, false);
+  applyScenarioCustom('BACKA', 200, 'normal', false, true, 145, false);
+
   let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
   let editMode=false, overrideMode=false, shadowMode=false;
   let editTeamFilter='all'; // 'all' | 'own' | 'opp' -- which team(s) are draggable during 시작 위치 편집
@@ -999,10 +1013,20 @@
     return atk.contact.slice();
   }
 
+  // Scenarios with a decoy (fakeContact) need the real toss to start only after the decoy has
+  // fully retreated (see fakeOppPosAt); scenarios without one can toss from the very start. Deriving
+  // this from atk.timing.peak (rather than a fixed stored fraction) keeps it correct automatically
+  // whenever the tempo/duration changes.
+  function tossStartFor(atk){ return atk.fakeContact ? atk.timing.peak*0.87 : (atk.tossStart||0); }
+
   function fakeOppPosAt(atk, p){
     const from = CUSTOM_OPP_BASE[resolveOppByPos(atk.fakePos, atk.fakeOpp)], to = atk.fakeContact;
-    if(p<=0.3){ return lerpPt(from, to, easeInOut(p/0.3)*0.75); }
-    if(p<=0.55){ return lerpPt(lerpPt(from,to,0.75), from, easeInOut((p-0.3)/0.25)); }
+    // Scaled to this scenario's own peak timing (not a fixed fraction of the whole timeline) so the
+    // decoy always finishes retreating well before the real attack peaks, no matter what tempo is set.
+    const fakeInEnd = atk.timing.peak * 0.55;
+    const fakeOutEnd = atk.timing.peak * 0.85;
+    if(p<=fakeInEnd){ return lerpPt(from, to, easeInOut(p/fakeInEnd)*0.75); }
+    if(p<=fakeOutEnd){ return lerpPt(lerpPt(from,to,0.75), from, easeInOut((p-fakeInEnd)/(fakeOutEnd-fakeInEnd))); }
     return from.slice();
   }
 
@@ -1027,7 +1051,7 @@
     const atk = ATTACKS[scenario], T=atk.timing, landing=formation.ballLanding;
     if(atk.setterOpp){
       const setterPos = CUSTOM_OPP_BASE[resolveOppByPos(atk.setterPos, atk.setterOpp)];
-      const tossStart = atk.tossStart || 0;
+      const tossStart = tossStartFor(atk);
       const tossEnd = T.peak; // the attacker's approach-to-contact lerp finishes exactly at T.peak (see attackerPathAt) — sync the toss to land there, not at T.approach (which is only the run-up, before the attacker has reached the contact point)
       if(p<=tossStart) return setterPos.slice();
       if(p<=tossEnd){
@@ -1271,7 +1295,7 @@
         el.ring.style.animation = (id===attackerOppId) ? 'pulseRing 1.4s ease-in-out infinite':'none';
         const decoyActive = fakeOppIdVal && id===fakeOppIdVal && progress>0.05 && progress<0.55;
         el.dring.style.opacity = decoyActive ? 1:0;
-        const setterActive = setterOppIdVal && id===setterOppIdVal && progress>=(atk.tossStart||0) && progress<atk.timing.peak+0.03;
+        const setterActive = setterOppIdVal && id===setterOppIdVal && progress>=tossStartFor(atk) && progress<atk.timing.peak+0.03;
         el.sring.style.opacity = setterActive ? 1:0;
         if(pos[1]>=345 && pos[1]<=382) nearNetPlayers.push({x:pos[0], side:'opp'});
       });
@@ -1454,7 +1478,7 @@
     }
     const atk=ATTACKS[scenario], T=atk.timing;
     if(progress<=0.02) return '대기 중 — 재생을 눌러보세요';
-    if(atk.setterOpp && progress>=(atk.tossStart||0) && progress<T.peak) return atk.backToss ? '세터 빽토스' : '세터 토스';
+    if(atk.setterOpp && progress>=tossStartFor(atk) && progress<T.peak) return atk.backToss ? '세터 빽토스' : '세터 토스';
     if(atk.fakeContact && progress<T.approach*0.7) return '페이크 동작 (속공인 척)';
     if(progress<T.approach) return '공격수 도움닫기';
     if(progress<T.land) return '스파이크';
@@ -1575,6 +1599,10 @@
 
   document.getElementById('scenarioSelect').addEventListener('change', e=>{
     switchScenario(e.target.value);
+    if(document.getElementById('customPanel').style.display!=='none'){
+      document.getElementById('customTargetSelect').value = e.target.value;
+      syncCustomPanelToScenario(e.target.value);
+    }
   });
 
   document.querySelectorAll('#blockSeg button').forEach(btn=>{
@@ -1679,7 +1707,13 @@
     const showing = panel.style.display!=='none';
     panel.style.display = showing ? 'none':'block';
     document.getElementById('btnCustomToggle').textContent = showing ? '공격 상황 직접 설정 ▾' : '공격 상황 직접 설정 ▴';
-    if(!showing) document.getElementById('customTargetSelect').value = scenario;
+    if(!showing){
+      document.getElementById('customTargetSelect').value = scenario;
+      syncCustomPanelToScenario(scenario);
+    }
+  });
+  document.getElementById('customTargetSelect').addEventListener('change', e=>{
+    syncCustomPanelToScenario(e.target.value);
   });
   document.querySelectorAll('#customXSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -1702,21 +1736,19 @@
   document.getElementById('customLandingToggle').addEventListener('change', e=>{
     document.getElementById('customLandingRow').style.display = e.target.checked ? 'block' : 'none';
   });
-  document.getElementById('btnSaveCustom').addEventListener('click', ()=>{
-    const key = document.getElementById('customTargetSelect').value;
-    const perspX = Number(document.querySelector('#customXSeg button.active').dataset.x);
-    const tempo = document.querySelector('#customTempoSeg button.active').dataset.tempo;
-    const hasFake = document.getElementById('customFake').checked;
-    // 왼쪽/오른쪽은 항상 "그 팀이 네트를 바라볼 때" 기준이라, 상대 팀은 화면 좌우가 뒤집혀요.
+  // Applies a "직접 설정" combination directly to a scenario's data, exactly like using the panel
+  // and clicking 저장(덮어쓰기) would — used both by that button and to seed each scenario's
+  // built-in defaults at startup. Also stores the raw panel values on the scenario (_panel) so the
+  // panel can be synced back to whatever is actually active whenever the scenario is opened.
+  function applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, markCustomized){
     const x = isOur(key) ? perspX : (400 - perspX);
-
     if(isOur(key)){
       const atk = OUR_ATTACKS[key];
       atk.x = x;
       atk.duration = {fast:1600, normal:2600, slow:3800}[tempo];
       atk.phase = hasFake ? {pass:0.14,toss:0.6,hit:0.85} : {pass:0.18,toss:0.44,hit:0.76};
       if(hasFake) atk.fakeX = 200; else delete atk.fakeX;
-      atk.customized = true;
+      if(markCustomized) atk.customized = true;
     } else {
       const atk = ATTACKS[key];
       atk.x = x;
@@ -1730,17 +1762,45 @@
       atk.duration = tempoPreset.duration; atk.timing = tempoPreset.timing;
       if(hasFake){ atk.fakeContact=[200,320]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
       else{ delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp; }
-      atk.customized = true;
+      if(markCustomized) atk.customized = true;
     }
-
-    const useLanding = document.getElementById('customLandingToggle').checked;
+    const target = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
     if(useLanding){
-      const val = Number(document.querySelector('#customLandingSeg button.active').dataset.x);
-      const landingPt = landingForButtonValue(val, isOur(key));
-      (isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key]).landingOverride = landingPt;
+      target.landingOverride = landingForButtonValue(landingVal, isOur(key));
     } else {
-      delete (isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key]).landingOverride;
+      delete target.landingOverride;
     }
+    target._panel = {perspX, tempo, hasFake, useLanding, landingVal};
+  }
+
+  function syncCustomPanelToScenario(key){
+    const atk = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
+    const p = atk._panel;
+    if(!p) return; // no recorded panel state (shouldn't normally happen) — leave panel as-is
+    document.querySelectorAll('#customXSeg button').forEach(b=>b.classList.toggle('active', Number(b.dataset.x)===p.perspX));
+    document.querySelectorAll('#customTempoSeg button').forEach(b=>b.classList.toggle('active', b.dataset.tempo===p.tempo));
+    document.getElementById('customFake').checked = p.hasFake;
+    document.getElementById('customLandingToggle').checked = p.useLanding;
+    document.getElementById('customLandingRow').style.display = p.useLanding ? 'block' : 'none';
+    if(p.useLanding){
+      document.querySelectorAll('#customLandingSeg button').forEach(b=>b.classList.toggle('active', Number(b.dataset.x)===p.landingVal));
+    }
+  }
+
+  // ---------- built-in defaults for each opponent scenario's "공격 상황 직접 설정" ----------
+  // These match the specific position/tempo/landing combination each attack is meant to represent
+  // by default; the panel and the actual playback both reflect this from the start, no manual
+  // "저장(덮어쓰기)" step needed. Users can still override any of them the same way as before.
+  // (Applied earlier, right after ATTACKS/OUR_ATTACKS are defined — see below.)
+
+  document.getElementById('btnSaveCustom').addEventListener('click', ()=>{
+    const key = document.getElementById('customTargetSelect').value;
+    const perspX = Number(document.querySelector('#customXSeg button.active').dataset.x);
+    const tempo = document.querySelector('#customTempoSeg button.active').dataset.tempo;
+    const hasFake = document.getElementById('customFake').checked;
+    const useLanding = document.getElementById('customLandingToggle').checked;
+    const landingVal = useLanding ? Number(document.querySelector('#customLandingSeg button.active').dataset.x) : null;
+    applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, true);
 
     if(scenario===key) switchScenario(key);
     const statusEl = document.getElementById('customStatus');
