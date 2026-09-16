@@ -112,13 +112,6 @@
   .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
   .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .preset-chip{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; font-size:12px; cursor:pointer; }
-  .scenario-preset-grid{ display:flex; flex-direction:column; gap:6px; }
-  .scenario-preset-chip{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); font-size:12.5px; cursor:pointer; text-align:left; color:var(--text-dim); font-family:inherit; }
-  .scenario-preset-chip .name{ flex:1; }
-  .scenario-preset-chip .badge{ font-size:10.5px; padding:2px 7px; border-radius:999px; background:var(--panel); color:var(--text-dim); flex:none; }
-  .scenario-preset-chip.saved{ background:rgba(242,183,5,0.12); border-color:rgba(242,183,5,0.5); color:var(--text); }
-  .scenario-preset-chip.saved .badge{ background:var(--accent); color:#241b02; font-weight:700; }
-  .scenario-preset-chip.current{ outline:2px solid var(--accent); outline-offset:1px; }
   .preset-chip.active{ border-color:var(--accent); }
   .preset-chip:hover{ border-color:var(--accent); }
   .preset-chip .x{ width:16px; height:16px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--text-dim); }
@@ -475,11 +468,12 @@
       <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
 
       <label class="field-label">시나리오별 대형</label>
-      <div class="scenario-preset-grid" id="presetScenarioPick"></div>
-      <div class="field-note" style="margin-top:0;">채워진 항목은 이미 저장된 대형이에요 — 누르면 바로 불러와요. 비어있는 항목을 누르면 그 상황으로 전환되고, 도트를 편집한 뒤 저장하면 그 항목이 채워져요. 저장한 뒤에도 계속 이어서 편집·저장할 수 있어요.</div>
+      <select id="presetScenarioPick">
+        <option value="">직접 이름 입력...</option>
+      </select>
+      <div class="field-note" style="margin-top:0;">목록에서 고르면 그 상황으로 바로 전환되고, 이름·폴더 칸이 자동으로 채워져요. 이미 저장된 상황이면 바로 불러와요. 아래에서 도트를 편집하고 저장하면 이 상황의 대형으로 저장돼요. 목록에 없는 걸 더 만들고 싶으면 "직접 이름 입력..."을 고른 채로 아래 이름 칸에 적어 저장하세요.</div>
 
       <div class="edit-divider"></div>
-      <div class="field-note" style="margin-top:0;">목록에 없는 대형을 더 만들고 싶으면 아래에 직접 이름을 적어 저장하세요.</div>
       <label class="field-label" style="margin-top:0;">폴더</label>
       <select id="presetFolderSelect">
         <option value="">(폴더 없음)</option>
@@ -1197,13 +1191,12 @@
   Object.keys(OUR_ATTACKS).forEach(k=>SCEN_LABEL[k]=OUR_ATTACKS[k].label);
 
   const PRESET_SCENARIO_FOLDER = '시나리오별 대형';
-  const SCENARIO_ORDER = [...Object.keys(ATTACKS), ...Object.keys(OUR_ATTACKS)];
 
   function pickScenario(key){
     switchScenario(key);
     const existing = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
     if(existing){
-      loadPreset(existing); // renders the grid itself
+      loadPreset(existing);
     } else {
       activePreset = null;
       document.getElementById('presetName').value = SCEN_LABEL[key];
@@ -1213,21 +1206,24 @@
     }
   }
 
-  function renderScenarioPresetPick(){
-    const grid = document.getElementById('presetScenarioPick');
-    grid.innerHTML = '';
-    SCENARIO_ORDER.forEach(key=>{
-      const saved = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'scenario-preset-chip' + (saved?' saved':'') + (key===scenario?' current':'');
-      const name = document.createElement('span'); name.className='name'; name.textContent = SCEN_LABEL[key];
-      const badge = document.createElement('span'); badge.className='badge'; badge.textContent = saved ? '저장됨' : '비어있음';
-      chip.appendChild(name); chip.appendChild(badge);
-      chip.addEventListener('click', ()=> pickScenario(key));
-      grid.appendChild(chip);
+  (function buildPresetScenarioPick(){
+    const sel = document.getElementById('presetScenarioPick');
+    const g1 = document.createElement('optgroup'); g1.label = '상대 공격 → 우리 팀 수비';
+    Object.keys(ATTACKS).forEach(k=>{
+      const opt=document.createElement('option'); opt.value=k; opt.textContent=SCEN_LABEL[k]; g1.appendChild(opt);
     });
-  }
+    const g2 = document.createElement('optgroup'); g2.label = '우리 팀 공격 → 리시브·토스 커버';
+    Object.keys(OUR_ATTACKS).forEach(k=>{
+      const opt=document.createElement('option'); opt.value=k; opt.textContent=SCEN_LABEL[k]; g2.appendChild(opt);
+    });
+    sel.appendChild(g1); sel.appendChild(g2);
+  })();
+  document.getElementById('presetScenarioPick').addEventListener('change', e=>{
+    const key = e.target.value;
+    if(!key) return; // "직접 이름 입력" — leave fields as-is for a custom preset
+    pickScenario(key);
+    e.target.value = ''; // reset to the placeholder so picking the same scenario again still fires a change
+  });
 
   function describeCustomChanges(){
     const refBase = activePreset ? activePreset.base : ORIGINAL_BASE;
@@ -1652,7 +1648,6 @@
   }
 
   function renderPresets(){
-    renderScenarioPresetPick();
     const list=document.getElementById('presetList');
     list.innerHTML='';
     const folderSelect=document.getElementById('presetFolderSelect');
@@ -1714,7 +1709,6 @@
     IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
     ballCurrent=null;
     updateTexts();
-    renderScenarioPresetPick();
     setModeUI();
   }
 
