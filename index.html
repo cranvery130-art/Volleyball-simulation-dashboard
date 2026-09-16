@@ -68,6 +68,8 @@
   .check-row label{ cursor:pointer; }
   .check-list{ display:flex; flex-wrap:wrap; gap:4px 24px; }
   .desc-with-aids{ display:flex; gap:22px; flex-wrap:wrap; margin-top:6px; }
+  .video-split-row{ display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; }
+  .video-split-col{ flex:1 1 380px; min-width:0; }
   .desc-main{ flex:1 1 300px; min-width:0; }
   .desc-aids{ flex:0 0 230px; border-left:1px solid var(--border); padding-left:18px; }
   .desc-aids .check-list{ display:flex; flex-direction:column; gap:2px; }
@@ -170,9 +172,10 @@
   #desktopSplit{ display:flex; flex-direction:column; }
   #mainAppCol{ min-width:0; max-width:1400px; margin:0 auto; width:100%; }
   #videoCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; }
+  #settingsCol{ min-width:0; max-width:700px; margin:20px auto 0; width:100%; padding:0 20px; }
   #videoCol .card{ margin:0 auto; }
   #mainAppCol.mode-hidden, #videoCol.mode-hidden{ display:none; }
-  .mode-seg-wrap{ max-width:1400px; margin:0 auto 24px; padding:0 20px; display:flex; justify-content:center; }
+  .mode-seg-wrap{ max-width:1400px; margin:0 auto 24px; padding:0 20px; display:flex; justify-content:center; align-items:center; gap:12px; }
   .mode-seg-wrap .seg{
     max-width:560px; width:100%; padding:6px; gap:4px;
     background:linear-gradient(180deg, var(--panel), var(--panel-2));
@@ -188,7 +191,7 @@
     background:linear-gradient(135deg, #FFD450, var(--accent));
     box-shadow:0 3px 12px rgba(242,183,5,0.45);
   }
-  .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; }
+  .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; flex-wrap:wrap; }
   .record-row input[type=text]{ flex:1; min-width:0; padding:6px 8px; border-radius:7px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:12px; font-family:inherit; }
   .record-row .btn{ font-size:11.5px; padding:6px 8px; white-space:nowrap; }
   .record-row .x{ width:20px; height:20px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--text-dim); cursor:pointer; flex:none; }
@@ -303,7 +306,9 @@
   <div class="seg" id="appModeSeg">
     <button data-appmode="sim" class="active">🏐 전술 시뮬레이션</button>
     <button data-appmode="video">🎥 경기 영상 분석</button>
+    <button data-appmode="settings" id="btnModeSettings" style="display:none;">⚙️ 설정</button>
   </div>
+  <button class="btn" id="btnLocalExit" style="display:none;">🚪 나가기</button>
 </div>
 <div id="mainAppCol">
 <div class="app" style="display:none;">
@@ -430,96 +435,70 @@
       </div>
     </div>
 
-    <div class="card" id="settingsCard">
-      <h2>설정</h2>
-      <div class="field-note" style="margin-top:0;">현재 코드: <b id="settingsCodeLabel">-</b> · <span id="settingsRoleLabel">-</span></div>
-      <div class="btn-row" style="margin-top:8px;">
-        <button class="btn" id="btnShareLink">링크 공유</button>
-        <button class="btn" id="btnSaveRoom">변경사항 저장</button>
-      </div>
-      <div id="shareLinkBox" style="display:none; margin-top:8px;">
-        <div class="preset-input-row">
-          <input type="text" id="shareLinkInput" class="login-input" readonly style="margin-top:0;">
-          <button class="btn" id="btnCopyLink" style="white-space:nowrap;">복사</button>
-        </div>
-        <div class="field-note">이 링크를 열면 코드가 자동으로 입력되고, 조회 가능 비밀번호를 넣으면 바로 들어올 수 있어요.</div>
-      </div>
-      <div id="editPwSection" style="display:none;">
-        <div class="edit-divider"></div>
-        <label class="field-label">수정 권한 비밀번호 <span id="editPwStatus" class="field-note" style="display:inline; margin:0;">(설정 안 됨)</span></label>
-        <div class="field-note" style="margin-top:0;">이 비밀번호를 구성원에게 공유하면, 그 사람도 조회만이 아니라 직접 편집(대형·포지션·프리셋 등)할 수 있어요. 코드 삭제 권한은 개설자에게만 남아있어요.</div>
-        <div class="preset-input-row">
-          <input type="password" id="editPwInput" class="login-input" style="margin-top:0;" placeholder="새 수정 권한 비밀번호">
-          <button class="btn" id="btnSetEditPw" style="white-space:nowrap;">설정</button>
-        </div>
-        <button class="btn" id="btnClearEditPw" style="margin-top:8px; width:100%;">수정 권한 비활성화</button>
-      </div>
-      <div class="edit-divider"></div>
-      <div class="btn-row">
-        <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
-        <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C;">이 코드 삭제</button>
-      </div>
-      <div class="edit-hint" id="settingsStatus"></div>
-    </div>
+    
 
   
 </div>
 <div class="card" id="cardPresets">
       <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
 
-      <label class="field-label">시나리오별 대형</label>
-      <select id="presetScenarioPick">
-        <option value="">직접 이름 입력...</option>
-      </select>
-      <div class="field-note" style="margin-top:0;">목록에서 고르면 그 상황으로 바로 전환되고, 이름·폴더 칸이 자동으로 채워져요. 이미 저장된 상황이면 바로 불러와요. 아래에서 도트를 편집하고 저장하면 이 상황의 대형으로 저장돼요. 목록에 없는 걸 더 만들고 싶으면 "직접 이름 입력..."을 고른 채로 아래 이름 칸에 적어 저장하세요.</div>
+      <div id="presetEditControls">
+        <label class="field-label">시나리오별 대형</label>
+        <select id="presetScenarioPick">
+          <option value="">직접 이름 입력...</option>
+        </select>
+        <div class="field-note" style="margin-top:0;">목록에서 고르면 그 상황으로 바로 전환되고, 이름·폴더 칸이 자동으로 채워져요. 이미 저장된 상황이면 바로 불러와요. 아래에서 도트를 편집하고 저장하면 이 상황의 대형으로 저장돼요. 목록에 없는 걸 더 만들고 싶으면 "직접 이름 입력..."을 고른 채로 아래 이름 칸에 적어 저장하세요.</div>
 
-      <div class="edit-divider"></div>
-      <label class="field-label" style="margin-top:0;">폴더</label>
-      <select id="presetFolderSelect">
-        <option value="">(폴더 없음)</option>
-        <option value="__new__">+ 새 폴더 만들기...</option>
-      </select>
-      <input type="text" id="presetFolderNew" class="login-input" placeholder="새 폴더 이름 (예: 1학년 3반)" style="display:none; margin-top:6px;">
-      <div class="preset-input-row" style="margin-top:8px;">
-        <input type="hidden" id="presetFolder">
-        <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
-        <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
+        <div class="edit-divider"></div>
+        <label class="field-label" style="margin-top:0;">폴더</label>
+        <select id="presetFolderSelect">
+          <option value="">(폴더 없음)</option>
+          <option value="__new__">+ 새 폴더 만들기...</option>
+        </select>
+        <input type="text" id="presetFolderNew" class="login-input" placeholder="새 폴더 이름 (예: 1학년 3반)" style="display:none; margin-top:6px;">
+        <div class="preset-input-row" style="margin-top:8px;">
+          <input type="hidden" id="presetFolder">
+          <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
+          <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
+        </div>
+        <div class="field-note" style="margin-top:0;">폴더를 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
       </div>
-      <div class="field-note" style="margin-top:0;">폴더를 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
       <div class="preset-list" id="presetList"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
       <div class="edit-hint" id="autoSaveStatus"></div>
 
-      <div class="edit-divider"></div>
+      <div id="editModeSection">
+        <div class="edit-divider"></div>
 
-      <label class="field-label">편집 모드</label>
-      <div class="seg" id="editModeSeg">
-        <button data-mode="off" class="active">끔</button>
-        <button data-mode="edit">시작 위치</button>
-        <button data-mode="override">도착 위치</button>
-      </div>
-
-      <div id="overridePhaseRow" style="display:none; margin-top:8px;">
-        <label class="field-label" style="margin-top:0;">어느 시점을 편집할까요?</label>
-        <div class="seg" id="overridePhaseSeg">
-          <button data-phase="final" class="active">최종 도착 위치</button>
-          <button data-phase="fake">반응(페이크) 위치</button>
+        <label class="field-label">편집 모드</label>
+        <div class="seg" id="editModeSeg">
+          <button data-mode="off" class="active">끔</button>
+          <button data-mode="edit">시작 위치</button>
+          <button data-mode="override">도착 위치</button>
         </div>
-      </div>
 
-      <div id="editTeamRow" style="display:none;">
-        <label class="field-label" style="margin-top:10px;">편집 대상</label>
-        <div class="seg" id="editTeamSeg">
-          <button data-team="all" class="active">전체</button>
-          <button data-team="own">아군</button>
-          <button data-team="opp">상대팀</button>
+        <div id="overridePhaseRow" style="display:none; margin-top:8px;">
+          <label class="field-label" style="margin-top:0;">어느 시점을 편집할까요?</label>
+          <div class="seg" id="overridePhaseSeg">
+            <button data-phase="final" class="active">최종 도착 위치</button>
+            <button data-phase="fake">반응(페이크) 위치</button>
+          </div>
         </div>
-      </div>
 
-      <div class="btn-row" style="margin-top:10px;">
-        <button class="btn" id="btnResetCurrent" disabled>현재 모드 초기화</button>
-      </div>
+        <div id="editTeamRow" style="display:none;">
+          <label class="field-label" style="margin-top:10px;">편집 대상</label>
+          <div class="seg" id="editTeamSeg">
+            <button data-team="all" class="active">전체</button>
+            <button data-team="own">아군</button>
+            <button data-team="opp">상대팀</button>
+          </div>
+        </div>
 
-      <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn" id="btnResetCurrent" disabled>현재 모드 초기화</button>
+        </div>
+
+        <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
+      </div>
     </div>
 <div class="card" id="cardAttack">
         <h2><span class="n">03</span>공격 상황</h2>
@@ -543,6 +522,7 @@
           </optgroup>
         </select>
 
+        <div id="attackCustomControls">
         <button class="btn primary" id="btnCustomToggle" style="width:100%; margin-top:10px;">공격 상황 직접 설정 ▾</button>
         <div id="customPanel" style="display:none; margin-top:10px;">
           <label class="field-label">공격 위치</label>
@@ -600,6 +580,7 @@
           </div>
           <div class="edit-hint" id="customStatus"></div>
         </div>
+        </div>
 
         <div class="edit-divider"></div>
         <button class="btn" id="btnAttackInfoToggle" style="width:100%;">ℹ️ 참고사항 ▾</button>
@@ -614,33 +595,36 @@
 </div>
 
 <div id="videoCol" class="mode-hidden">
-  <div class="card">
-    <h2>경기 영상</h2>
-    <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서, 아래 대시보드에 직접 그리고 배너로 빠르게 기록하세요.</div>
-    <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
-    <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
-  </div>
-
-  <div class="card">
-    <h2>대시보드 (직접 작성)</h2>
-    <label class="field-label">도구 선택</label>
-    <div class="seg" id="drawToolSeg">
-      <button data-tool="dotRed">🔴 도트</button>
-      <button data-tool="dotBlue">🔵 도트</button>
-      <button data-tool="ball">🏐 공</button>
-      <button data-tool="straight">➡ 직선</button>
-      <button data-tool="curved">➰ 곡선</button>
-      <button data-tool="pigtail">🌀 돼지꼬리</button>
-      <button data-tool="wavy">〰 물결</button>
-      <button data-tool="erase">🗑 지우기</button>
+  <div class="video-split-row">
+    <div class="video-split-col">
+      <div class="card">
+        <h2>경기 영상</h2>
+        <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서, 오른쪽 대시보드에 직접 그리고 배너로 빠르게 기록하세요.</div>
+        <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
+        <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
+      </div>
     </div>
-    <div class="field-note" id="drawStatus">도구를 고른 뒤 코트를 클릭(도트·공)하거나 드래그(화살표)하세요. "지우기"를 고르고 그림을 클릭하면 지워져요.</div>
-    <div class="btn-row" style="margin-top:8px;">
-      <button class="btn" id="btnClearBoard">보드 전체 지우기</button>
-    </div>
-    <div class="court-wrap" style="margin-top:8px;">
-      <svg id="videoCourt" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
-        <defs>
+    <div class="video-split-col">
+      <div class="card">
+        <h2>대시보드 (직접 작성)</h2>
+        <label class="field-label">도구 선택</label>
+        <div class="seg" id="drawToolSeg">
+          <button data-tool="dotRed">🔴 도트</button>
+          <button data-tool="dotBlue">🔵 도트</button>
+          <button data-tool="ball">🏐 공</button>
+          <button data-tool="straight">➡ 직선</button>
+          <button data-tool="curved">➰ 곡선</button>
+          <button data-tool="pigtail">🌀 돼지꼬리</button>
+          <button data-tool="wavy">〰 물결</button>
+          <button data-tool="erase">🗑 지우기</button>
+        </div>
+        <div class="field-note" id="drawStatus">도구를 고른 뒤 코트를 클릭(도트·공)하거나 드래그(화살표)하세요. "지우기"를 고르고 그림을 클릭하면 지워져요.</div>
+        <div class="btn-row" style="margin-top:8px;">
+          <button class="btn" id="btnClearBoard">보드 전체 지우기</button>
+        </div>
+        <div class="court-wrap" style="margin-top:8px;">
+          <svg id="videoCourt" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
+            <defs>
           <marker id="drawArrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 Z" fill="#F2F6FA"/>
           </marker>
@@ -651,6 +635,8 @@
         <rect x="376" y="14" width="8" height="372" fill="#0C1524" opacity="0.85"/>
         <g id="videoDotsLayer"></g>
       </svg>
+    </div>
+  </div>
     </div>
   </div>
 
@@ -683,6 +669,39 @@
     <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
   </div>
 </div>
+</div>
+
+<div id="settingsCol" class="mode-hidden">
+  <div class="card" id="settingsCard">
+    <h2>설정</h2>
+    <div class="field-note" style="margin-top:0;">현재 코드: <b id="settingsCodeLabel">-</b> · <span id="settingsRoleLabel">-</span></div>
+
+    <div id="roomManageControls">
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn" id="btnShareLink">링크 공유</button>
+        <button class="btn" id="btnSaveRoom">변경사항 저장</button>
+      </div>
+      <div id="shareLinkBox" style="display:none; margin-top:8px;">
+        <div class="preset-input-row">
+          <input type="text" id="shareLinkInput" class="login-input" readonly style="margin-top:0;">
+          <button class="btn" id="btnCopyLink" style="white-space:nowrap;">복사</button>
+        </div>
+        <div class="field-note">이 링크를 열면 코드가 자동으로 입력되고, 조회 가능 비밀번호를 넣으면 이름을 적고 바로 들어올 수 있어요.</div>
+      </div>
+    </div>
+
+    <div class="edit-divider"></div>
+    <h2 style="font-size:14px;">구성원 관리</h2>
+    <div class="field-note" style="margin-top:0;">링크로 들어와서 이름을 적고 가입한 구성원 목록이에요. 포지션과 대회 출전 여부를 지정할 수 있고, 포지션별로 묶어서 보여줘요.</div>
+    <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
+
+    <div class="edit-divider"></div>
+    <div class="btn-row">
+      <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
+      <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C; display:none;">이 코드 삭제</button>
+    </div>
+    <div class="edit-hint" id="settingsStatus"></div>
+  </div>
 </div>
 
 <script>
@@ -2028,13 +2047,14 @@
     });
   }
 
-  // ---------- app mode switcher (전술 시뮬레이션 vs 경기 영상 분석) ----------
+  // ---------- app mode switcher (전술 시뮬레이션 / 경기 영상 분석 / 설정) ----------
   document.querySelectorAll('#appModeSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#appModeSeg button').forEach(b=>b.classList.toggle('active', b===btn));
       const mode = btn.dataset.appmode;
       document.getElementById('mainAppCol').classList.toggle('mode-hidden', mode!=='sim');
       document.getElementById('videoCol').classList.toggle('mode-hidden', mode!=='video');
+      document.getElementById('settingsCol').classList.toggle('mode-hidden', mode!=='settings');
     });
   });
 
@@ -2050,6 +2070,7 @@
 
   // ---------- login / room code system ----------
   let roomCode = null, accessLevel = null;
+  const LAST_CODE_KEY = 'vt:last-code'; // moved up front: tryAutoRejoin (below) runs immediately and needs this synchronously
   const storageOk = !!firebaseDb;
   function errText(err){
     if(!err) return '알 수 없는 오류';
@@ -2120,8 +2141,15 @@
     try{
       const room = await fetchRoom(lastCode);
       if(!room){ forgetDevice(lastCode); statusEl.style.display='none'; return; }
-      const hasEditPw = rememberedLevel==='creator' ? !!room.editPassword : undefined;
-      enterApp(lastCode, rememberedLevel, room.state, hasEditPw);
+      let savedMemberId = null;
+      try{ savedMemberId = localStorage.getItem(deviceMemberKey(lastCode)); }catch(err){}
+      let finalLevel = rememberedLevel, finalMemberId = savedMemberId;
+      if(savedMemberId){
+        const member = (room.members||[]).find(m=>m.id===savedMemberId);
+        if(member) finalLevel = member.role; // pick up any promotion/demotion made since the last visit
+        else finalMemberId = null; // member entry is gone somehow — fall back to the remembered role as a best guess
+      }
+      enterApp(lastCode, finalLevel, room.state, finalMemberId);
     }catch(err){
       statusEl.style.display='none';
     }
@@ -2205,11 +2233,12 @@
   }
 
   function lockForViewOnly(){
+    // hide (not just disable) editor-only controls entirely, per the "view via link" default:
+    // only the simulation, description, position assignment, and read-only saved-formation
+    // browsing stay visible.
+    const hideIds = ['presetEditControls','editModeSection','attackCustomControls','autoSaveStatus'];
+    hideIds.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
     document.querySelectorAll('#posGrid select, #oppPosGrid select').forEach(s=>s.disabled=true);
-    const bc=document.getElementById('btnCustomToggle'); if(bc) bc.disabled=true;
-    const bs=document.getElementById('btnSaveCustom'); if(bs) bs.disabled=true;
-    const bp=document.getElementById('btnSavePreset'); if(bp) bp.disabled=true;
-    document.querySelectorAll('#editModeSeg button').forEach(b=>{ if(b.dataset.mode!=='off') b.disabled=true; });
     document.getElementById('btnSaveRoom').style.display='none';
     document.getElementById('btnDeleteRoom').style.display='none';
   }
@@ -2219,30 +2248,39 @@
   // once THIS browser has successfully entered a code, it won't need to retype the password
   // again on this same device. It grants nothing new server-side — someone without the
   // password still can't get in on a different device.
-  const LAST_CODE_KEY = 'vt:last-code';
   function deviceRoleKey(code){ return 'vt:device:'+code; }
-  function rememberDevice(code, level){
-    try{ localStorage.setItem(LAST_CODE_KEY, code); localStorage.setItem(deviceRoleKey(code), level); }catch(err){}
+  function deviceMemberKey(code){ return 'vt:member:'+code; }
+  function rememberDevice(code, level, memberId){
+    try{
+      localStorage.setItem(LAST_CODE_KEY, code);
+      localStorage.setItem(deviceRoleKey(code), level);
+      if(memberId) localStorage.setItem(deviceMemberKey(code), memberId);
+      else localStorage.removeItem(deviceMemberKey(code));
+    }catch(err){}
   }
   function forgetDevice(code){
     try{
       if(localStorage.getItem(LAST_CODE_KEY)===code) localStorage.removeItem(LAST_CODE_KEY);
-      if(code) localStorage.removeItem(deviceRoleKey(code));
+      if(code){ localStorage.removeItem(deviceRoleKey(code)); localStorage.removeItem(deviceMemberKey(code)); }
     }catch(err){}
   }
 
-  function enterApp(code, level, state, hasEditPw){
-    roomCode = code; accessLevel = level;
+  let myMemberId = null;
+  let roomMembers = []; // cached member list for the currently open room (creator view)
+
+  function enterApp(code, level, state, memberId){
+    roomCode = code; accessLevel = level; myMemberId = memberId || null;
     applyRoomState(state);
-    if(code) rememberDevice(code, level);
+    if(code) rememberDevice(code, level, memberId);
     document.getElementById('loginOverlay').style.display='none';
     document.querySelector('.app').style.display='block';
     document.getElementById('settingsCodeLabel').textContent = code || '(로컬)';
     const roleLabels = {creator:'개설자', editor:'수정 권한(구성원)', view:'조회 전용'};
     document.getElementById('settingsRoleLabel').textContent = roleLabels[level] || '로컬 전용(공유 안 됨)';
-    document.getElementById('editPwSection').style.display = (level==='creator') ? 'block' : 'none';
-    if(level==='creator') document.getElementById('editPwStatus').textContent = hasEditPw ? '(설정됨)' : '(설정 안 됨)';
     document.getElementById('btnDeleteRoom').style.display = (level==='creator') ? 'inline-block' : 'none';
+    document.getElementById('btnModeSettings').style.display = (level==='creator'||level==='editor') ? 'inline-block' : 'none';
+    document.getElementById('roomManageControls').style.display = (level==='creator'||level==='editor') ? 'block' : 'none';
+    document.getElementById('btnLocalExit').style.display = (!code) ? 'inline-block' : 'none';
     if(!code){
       document.getElementById('btnShareLink').style.display='none';
       document.getElementById('btnSaveRoom').style.display='none';
@@ -2251,12 +2289,129 @@
     } else if(level==='view'){
       lockForViewOnly();
     }
+    if((level==='creator'||level==='editor') && code){
+      fetchRoom(code).then(room=>{ roomMembers = (room && room.members) || []; renderMemberList(); });
+    }
     renderPosGrid(); renderOppPosGrid(); renderPresets();
     updateTexts(); render();
   }
 
+  function roleLabel(role){ return {creator:'개설자', editor:'수정 권한', view:'조회'}[role] || role; }
+
+  const MEMBER_STATUS_OPTIONS = ['무관','코치','주전','후보'];
+
+  function renderMemberList(){
+    const wrap = document.getElementById('memberList');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!roomMembers.length){ wrap.innerHTML = '<span class="preset-empty">아직 링크로 들어와서 이름을 적은 구성원이 없어요.</span>'; return; }
+
+    // group members by their assigned position (position label, or "포지션 미지정")
+    const groups = {};
+    const order = [];
+    roomMembers.forEach(m=>{
+      const key = m.position && POS_LABEL[m.position] ? m.position : '';
+      const label = key ? POS_LABEL[key] : '포지션 미지정';
+      if(!groups[label]){ groups[label]=[]; order.push(label); }
+      groups[label].push(m);
+    });
+    order.sort((a,b)=> a==='포지션 미지정' ? 1 : b==='포지션 미지정' ? -1 : 0);
+
+    order.forEach(groupLabel=>{
+      const groupDiv = document.createElement('div');
+      const heading = document.createElement('div'); heading.className='field-label'; heading.style.marginTop='0';
+      heading.textContent = `${groupLabel} (${groups[groupLabel].length}명)`;
+      groupDiv.appendChild(heading);
+      const list = document.createElement('div'); list.style.display='flex'; list.style.flexDirection='column'; list.style.gap='8px'; list.style.marginTop='6px';
+      groups[groupLabel].forEach(m=>{
+        const row = document.createElement('div'); row.className='record-row';
+        const label = document.createElement('span'); label.style.flex='1 1 100px'; label.textContent = `${m.name} — ${roleLabel(m.role)} · ${m.status||'무관'}`;
+        row.appendChild(label);
+
+        const posSel = document.createElement('select'); posSel.style.width='auto'; posSel.style.flex='0 0 auto';
+        const noneOpt=document.createElement('option'); noneOpt.value=''; noneOpt.textContent='포지션 없음'; posSel.appendChild(noneOpt);
+        Object.keys(POS_LABEL).forEach(code=>{
+          const opt=document.createElement('option'); opt.value=code; opt.textContent=POS_LABEL[code];
+          if((m.position||'')===code) opt.selected=true;
+          posSel.appendChild(opt);
+        });
+        posSel.addEventListener('change', ()=> updateMember(m.id, {position: posSel.value}));
+        row.appendChild(posSel);
+
+        const statusSel = document.createElement('select'); statusSel.style.width='auto'; statusSel.style.flex='0 0 auto';
+        MEMBER_STATUS_OPTIONS.forEach(s=>{
+          const opt=document.createElement('option'); opt.value=s; opt.textContent=s;
+          if((m.status||'무관')===s) opt.selected=true;
+          statusSel.appendChild(opt);
+        });
+        statusSel.addEventListener('change', ()=> updateMember(m.id, {status: statusSel.value}));
+        row.appendChild(statusSel);
+
+        if(accessLevel==='creator'){
+          if(m.role!=='editor'){
+            const b1=document.createElement('button'); b1.className='btn'; b1.textContent='수정권한 부여';
+            b1.addEventListener('click', ()=>grantRole(m.id,'editor'));
+            row.appendChild(b1);
+          }
+          if(m.role!=='creator'){
+            const b2=document.createElement('button'); b2.className='btn'; b2.textContent='개설자 권한 부여';
+            b2.addEventListener('click', ()=>grantRole(m.id,'creator'));
+            row.appendChild(b2);
+          }
+          if(m.role!=='view'){
+            const b3=document.createElement('button'); b3.className='btn'; b3.textContent='조회로';
+            b3.addEventListener('click', ()=>grantRole(m.id,'view'));
+            row.appendChild(b3);
+          }
+        }
+        list.appendChild(row);
+      });
+      groupDiv.appendChild(list);
+      wrap.appendChild(groupDiv);
+    });
+  }
+
+  async function grantRole(memberId, role){
+    if(accessLevel!=='creator' || !roomCode) return;
+    const statusEl = document.getElementById('settingsStatus');
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      room.members = room.members || [];
+      const m = room.members.find(x=>x.id===memberId);
+      if(!m) return;
+      m.role = role;
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      roomMembers = room.members;
+      renderMemberList();
+      statusEl.textContent = `${m.name}님에게 ${roleLabel(role)} 권한을 부여했어요.`;
+    }catch(err){ statusEl.textContent = '권한 변경에 실패했어요: ' + errText(err); }
+  }
+
+  async function updateMember(memberId, patch){
+    if(accessLevel!=='creator' && accessLevel!=='editor') return;
+    if(!roomCode) return;
+    const statusEl = document.getElementById('settingsStatus');
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      room.members = room.members || [];
+      const m = room.members.find(x=>x.id===memberId);
+      if(!m) return;
+      Object.assign(m, patch);
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      roomMembers = room.members;
+      renderMemberList();
+      if(statusEl) statusEl.textContent = `${m.name}님 정보를 업데이트했어요.`;
+    }catch(err){ if(statusEl) statusEl.textContent = '업데이트에 실패했어요: ' + errText(err); }
+  }
+
   document.getElementById('btnSkipLogin').addEventListener('click', ()=>{
     enterApp(null, null, null);
+  });
+
+  document.getElementById('btnLocalExit').addEventListener('click', ()=>{
+    location.href = location.pathname;
   });
 
   document.querySelectorAll('#loginModeSeg button').forEach(btn=>{
@@ -2280,13 +2435,15 @@
     try{
       const existing = await fetchRoom(code);
       if(existing){ statusEl.textContent='이미 사용 중인 코드예요. 다른 코드를 입력해주세요.'; return; }
-      const room = {creatorPassword:cpw, viewPassword:vpw, editPassword:null, state:serializeRoomState()};
+      const room = {creatorPassword:cpw, viewPassword:vpw, members:[], state:serializeRoomState()};
       await Backend.set(roomKey(code), JSON.stringify(room));
-      enterApp(code, 'creator', room.state, false);
+      enterApp(code, 'creator', room.state, null);
     }catch(err){
       statusEl.textContent='코드를 만들지 못했어요: ' + errText(err);
     }
   });
+
+  function newMemberId(){ return 'mem_'+Math.random().toString(36).slice(2,10); }
 
   document.getElementById('btnEnterRoom').addEventListener('click', async ()=>{
     const statusEl=document.getElementById('enterStatus');
@@ -2298,43 +2455,25 @@
     try{
       const room = await fetchRoom(code);
       if(!room){ statusEl.textContent='존재하지 않는 코드예요.'; return; }
-      if(pw===room.creatorPassword) enterApp(code, 'creator', room.state, !!room.editPassword);
-      else if(room.editPassword && pw===room.editPassword) enterApp(code, 'editor', room.state);
-      else if(pw===room.viewPassword) enterApp(code, 'view', room.state);
-      else statusEl.textContent='비밀번호가 올바르지 않아요.';
+      if(pw===room.creatorPassword){ enterApp(code, 'creator', room.state, null); return; }
+      if(pw===room.viewPassword){
+        room.members = room.members || [];
+        const savedMemberId = (function(){ try{ return localStorage.getItem(deviceMemberKey(code)); }catch(e){ return null; } })();
+        let member = savedMemberId ? room.members.find(m=>m.id===savedMemberId) : null;
+        if(!member){
+          let name = (prompt('이름을 입력해주세요 (개설자가 구성원 목록에서 알아볼 수 있어요):') || '').trim().slice(0,20);
+          if(!name) name = '이름 없음';
+          member = {id:newMemberId(), name, role:'view', position:'', status:'무관'};
+          room.members.push(member);
+          await Backend.set(roomKey(code), JSON.stringify(room));
+        }
+        enterApp(code, member.role, room.state, member.id);
+        return;
+      }
+      statusEl.textContent='비밀번호가 올바르지 않아요.';
     }catch(err){
       statusEl.textContent='코드를 불러오지 못했어요: ' + errText(err);
     }
-  });
-
-  document.getElementById('btnSetEditPw').addEventListener('click', async ()=>{
-    if(accessLevel!=='creator' || !roomCode) return;
-    const statusEl=document.getElementById('settingsStatus');
-    const pw=document.getElementById('editPwInput').value;
-    if(!pw){ statusEl.textContent='수정 권한 비밀번호를 입력해주세요.'; return; }
-    try{
-      const room = await fetchRoom(roomCode);
-      if(!room) return;
-      if(pw===room.creatorPassword || pw===room.viewPassword){ statusEl.textContent='개설자·조회 비밀번호와 다르게 설정해주세요.'; return; }
-      room.editPassword = pw;
-      await Backend.set(roomKey(roomCode), JSON.stringify(room));
-      document.getElementById('editPwInput').value='';
-      document.getElementById('editPwStatus').textContent='(설정됨)';
-      statusEl.textContent='수정 권한 비밀번호를 설정했어요. 구성원에게 공유해주세요.';
-    }catch(err){ statusEl.textContent='설정에 실패했어요: ' + errText(err); }
-  });
-
-  document.getElementById('btnClearEditPw').addEventListener('click', async ()=>{
-    if(accessLevel!=='creator' || !roomCode) return;
-    const statusEl=document.getElementById('settingsStatus');
-    try{
-      const room = await fetchRoom(roomCode);
-      if(!room) return;
-      room.editPassword = null;
-      await Backend.set(roomKey(roomCode), JSON.stringify(room));
-      document.getElementById('editPwStatus').textContent='(설정 안 됨)';
-      statusEl.textContent='수정 권한을 비활성화했어요.';
-    }catch(err){ statusEl.textContent='처리에 실패했어요: ' + errText(err); }
   });
 
   document.getElementById('btnShareLink').addEventListener('click', ()=>{
