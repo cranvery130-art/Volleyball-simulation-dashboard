@@ -467,6 +467,12 @@
 <div class="card" id="cardPresets">
       <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
 
+      <label class="field-label">빠른 선택: 지금 있는 공격·수비 상황</label>
+      <select id="presetScenarioPick">
+        <option value="">직접 이름 입력...</option>
+      </select>
+      <div class="field-note" style="margin-top:0;">목록에서 고르면 그 상황으로 바로 전환되고, 이름·폴더 칸이 자동으로 채워져요. 아래에서 도트를 편집하고 저장하면 이 상황의 대형으로 저장돼요. 목록에 없는 걸 더 만들고 싶으면 아래 이름 칸에 직접 적어서 저장하세요.</div>
+
       <div class="preset-input-row">
         <input type="text" id="presetFolder" placeholder="폴더 (선택, 예: 1학년 3반)" list="folderList" style="flex:0 0 40%;">
         <datalist id="folderList"></datalist>
@@ -1127,6 +1133,35 @@
   Object.keys(ATTACKS).forEach(k=>SCEN_LABEL[k]=ATTACKS[k].label);
   Object.keys(OUR_ATTACKS).forEach(k=>SCEN_LABEL[k]=OUR_ATTACKS[k].label);
 
+  (function buildPresetScenarioPick(){
+    const sel = document.getElementById('presetScenarioPick');
+    const g1 = document.createElement('optgroup'); g1.label = '상대 공격 → 우리 팀 수비';
+    Object.keys(ATTACKS).forEach(k=>{
+      const opt=document.createElement('option'); opt.value=k; opt.textContent=SCEN_LABEL[k]; g1.appendChild(opt);
+    });
+    const g2 = document.createElement('optgroup'); g2.label = '우리 팀 공격 → 리시브·토스 커버';
+    Object.keys(OUR_ATTACKS).forEach(k=>{
+      const opt=document.createElement('option'); opt.value=k; opt.textContent=SCEN_LABEL[k]; g2.appendChild(opt);
+    });
+    sel.appendChild(g1); sel.appendChild(g2);
+  })();
+
+  const PRESET_SCENARIO_FOLDER = '시나리오별 대형';
+  document.getElementById('presetScenarioPick').addEventListener('change', e=>{
+    const key = e.target.value;
+    if(!key) return; // "직접 이름 입력" — leave fields as-is for a custom preset
+    switchScenario(key);
+    const existing = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
+    if(existing){
+      loadPreset(existing);
+    } else {
+      activePreset = null;
+      document.getElementById('presetName').value = SCEN_LABEL[key];
+      document.getElementById('presetFolder').value = PRESET_SCENARIO_FOLDER;
+      renderPresets();
+    }
+  });
+
   function describeCustomChanges(){
     const refBase = activePreset ? activePreset.base : ORIGINAL_BASE;
     const movedOwn = IDS.filter(id => refBase[id] && dist(CUSTOM_BASE[id], refBase[id]) > 15);
@@ -1509,6 +1544,20 @@
   // ---------- preset UI (start positions) ----------
   let activePreset = null; // the preset object currently loaded, so re-saving with the same name/folder updates it in place
 
+  function loadPreset(p){
+    IDS.forEach(id=>{ CUSTOM_BASE[id]=p.base[id].slice(); });
+    if(p.oppBase) Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ if(p.oppBase[id]) CUSTOM_OPP_BASE[id]=p.oppBase[id].slice(); });
+    activePreset = p;
+    document.getElementById('presetName').value = p.name;
+    document.getElementById('presetFolder').value = p.folder || '';
+    if(!editMode && !overrideMode){ progress=0; playing=false; updatePlayBtn(); }
+    IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
+    renderPresets();
+    updateTexts();
+    render();
+    scheduleAutoSave();
+  }
+
   function renderPresets(){
     const list=document.getElementById('presetList');
     list.innerHTML='';
@@ -1541,19 +1590,7 @@
         const label=document.createElement('span'); label.textContent=p.name;
         const x=document.createElement('span'); x.className='x'; x.textContent='✕';
         chip.appendChild(label); chip.appendChild(x);
-        label.addEventListener('click', ()=>{
-          IDS.forEach(id=>{ CUSTOM_BASE[id]=p.base[id].slice(); });
-          if(p.oppBase) Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ if(p.oppBase[id]) CUSTOM_OPP_BASE[id]=p.oppBase[id].slice(); });
-          activePreset = p;
-          document.getElementById('presetName').value = p.name;
-          document.getElementById('presetFolder').value = p.folder || '';
-          if(!editMode && !overrideMode){ progress=0; playing=false; updatePlayBtn(); }
-          IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
-          renderPresets();
-          updateTexts();
-          render();
-          scheduleAutoSave();
-        });
+        label.addEventListener('click', ()=> loadPreset(p));
         x.addEventListener('click', e=>{
           e.stopPropagation();
           if(activePreset===p) activePreset=null;
