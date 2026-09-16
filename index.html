@@ -28,6 +28,7 @@
     .card{ padding:13px; }
     .btn-row .btn{ min-width:0; flex-basis:100%; }
     .check-row input, .pos-item .num{ width:18px; height:18px; }
+    .mode-seg-wrap .seg button{ font-size:12.5px; padding:13px 4px; }
   }
   @media (max-width:700px){
     .own-dot circle.body{ r:16px; }
@@ -171,8 +172,9 @@
   #videoCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; }
   #videoCol .card{ margin:0 auto; }
   #mainAppCol.mode-hidden, #videoCol.mode-hidden{ display:none; }
-  .mode-seg-wrap{ max-width:1400px; margin:0 auto 16px; padding:0 20px; }
-  .mode-seg-wrap .seg{ max-width:420px; }
+  .mode-seg-wrap{ max-width:1400px; margin:0 auto 20px; padding:0 20px; display:flex; justify-content:center; }
+  .mode-seg-wrap .seg{ max-width:560px; width:100%; padding:6px; gap:4px; }
+  .mode-seg-wrap .seg button{ padding:15px 12px; font-size:15.5px; font-weight:700; white-space:nowrap; }
   .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; }
   .record-row input[type=text]{ flex:1; min-width:0; padding:6px 8px; border-radius:7px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:12px; font-family:inherit; }
   .record-row .btn{ font-size:11.5px; padding:6px 8px; white-space:nowrap; }
@@ -1953,9 +1955,28 @@
     }catch(err){ console.error('applyRoomState failed', err); }
   }
 
+  // one-time migration: an earlier version of this app stored rooms directly under
+  // rooms/{room_<code>} instead of the current kv/{vt:room:<code>} scheme. If the new
+  // location has nothing, check the old one — and if found, copy it forward automatically
+  // so previously saved formations aren't lost, and future loads use the new location.
+  function legacyRoomKey(code){ return 'room_'+code.trim().toLowerCase(); }
+  async function fetchLegacyRoom(code){
+    if(!firebaseDb) return null;
+    try{
+      const snap = await firebaseDb.collection('rooms').doc(legacyRoomKey(code)).get();
+      return snap.exists ? snap.data() : null;
+    }catch(err){ return null; } // most likely blocked by security rules, or none exists — either way, nothing to migrate
+  }
+
   async function fetchRoom(code){
     const raw = await Backend.get(roomKey(code));
-    return raw ? JSON.parse(raw) : null;
+    if(raw) return JSON.parse(raw);
+    const legacy = await fetchLegacyRoom(code);
+    if(legacy){
+      try{ await Backend.set(roomKey(code), JSON.stringify(legacy)); }catch(err){}
+      return legacy;
+    }
+    return null;
   }
 
   function lockForViewOnly(){
