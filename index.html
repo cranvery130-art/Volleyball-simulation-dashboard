@@ -112,13 +112,6 @@
   .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
   .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .preset-chip{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; font-size:12px; cursor:pointer; }
-  .scenario-preset-grid{ display:flex; flex-direction:column; gap:6px; }
-  .scenario-preset-chip{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); font-size:12.5px; cursor:pointer; text-align:left; color:var(--text-dim); font-family:inherit; }
-  .scenario-preset-chip .name{ flex:1; }
-  .scenario-preset-chip .badge{ font-size:10.5px; padding:2px 7px; border-radius:999px; background:var(--panel); color:var(--text-dim); flex:none; }
-  .scenario-preset-chip.saved{ background:rgba(242,183,5,0.12); border-color:rgba(242,183,5,0.5); color:var(--text); }
-  .scenario-preset-chip.saved .badge{ background:var(--accent); color:#241b02; font-weight:700; }
-  .scenario-preset-chip.current{ outline:2px solid var(--accent); outline-offset:1px; }
   .preset-chip.active{ border-color:var(--accent); }
   .preset-chip:hover{ border-color:var(--accent); }
   .preset-chip .x{ width:16px; height:16px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--text-dim); }
@@ -474,12 +467,6 @@
 <div class="card" id="cardPresets">
       <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
 
-      <label class="field-label">시나리오별 대형</label>
-      <div class="scenario-preset-grid" id="presetScenarioPick"></div>
-      <div class="field-note" style="margin-top:0;">채워진 항목은 이미 저장된 대형이에요 — 누르면 바로 불러와요. 비어있는 항목을 누르면 그 상황으로 전환되고, 도트를 편집한 뒤 저장하면 그 항목이 채워져요. 저장한 뒤에도 계속 이어서 편집·저장할 수 있어요.</div>
-
-      <div class="edit-divider"></div>
-      <div class="field-note" style="margin-top:0;">목록에 없는 대형을 더 만들고 싶으면 아래에 직접 이름을 적어 저장하세요.</div>
       <div class="preset-input-row">
         <input type="text" id="presetFolder" placeholder="폴더 (선택, 예: 1학년 3반)" list="folderList" style="flex:0 0 40%;">
         <datalist id="folderList"></datalist>
@@ -497,6 +484,14 @@
         <button data-mode="off" class="active">끔</button>
         <button data-mode="edit">시작 위치</button>
         <button data-mode="override">도착 위치</button>
+      </div>
+
+      <div id="overridePhaseRow" style="display:none; margin-top:8px;">
+        <label class="field-label" style="margin-top:0;">어느 시점을 편집할까요?</label>
+        <div class="seg" id="overridePhaseSeg">
+          <button data-phase="final" class="active">최종 도착 위치</button>
+          <button data-phase="fake">반응(페이크) 위치</button>
+        </div>
       </div>
 
       <div id="editTeamRow" style="display:none;">
@@ -735,6 +730,7 @@
   let CUSTOM_BASE = {}; IDS.forEach(id=> CUSTOM_BASE[id]=ORIGINAL_BASE[id].slice());
   let CUSTOM_OPP_BASE = {}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=> CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice());
   let TARGET_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {id:[x,y]}
+  let FAKE_TARGET_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {id:[x,y]} — where a blocker reacts to the fake, before correcting to the true target
 
   // ---------- opponent attack scenarios ----------
   // Net-based left/right: the opponent faces the net (faces "down" the screen toward us),
@@ -981,6 +977,7 @@
 
   let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
   let editMode=false, overrideMode=false;
+  let overridePhase='final'; // 'final' | 'fake' — which waypoint 도착 위치 editing is currently targeting
   let editTeamFilter='all'; // 'all' | 'own' | 'opp' -- which team(s) are draggable during 시작 위치 편집
   let currentDuration = ATTACKS.L.duration;
   let current={}; IDS.forEach(id=> current[id]=CUSTOM_BASE[id].slice());
@@ -994,6 +991,34 @@
 
   function comboKey(){ return scenario+'|'+blockCount; }
 
+  const BLOCK_REACH = 34; // half-width of a blocker's effective reach along the net, in court units
+  const NET_Y = 380;
+
+  // Checks whether the ball's straight path from the attacker's contact point to its would-be
+  // landing spot passes through a blocker's reach at the net. One blocker in range -> the ball
+  // is touched and deflected onward. Two or more overlapping -> the ball is stopped outright.
+  function computeBlockOutcome(f, atk, rawLanding){
+    if(isOur(scenario)) return null; // this models US blocking THEIR attack, not the reverse
+    if(!f.blockerIds || !f.blockerIds.length) return null;
+    const contact = atk.contact;
+    if((contact[1]-NET_Y)*(rawLanding[1]-NET_Y) >= 0) return null; // path doesn't cross the net between these points
+    const t = (NET_Y - contact[1]) / (rawLanding[1] - contact[1]);
+    const netX = clip(contact[0] + (rawLanding[0]-contact[0])*t, 20, 380);
+    const touching = f.blockerIds.filter(id=>{
+      const bx = f.targets[id] ? f.targets[id][0] : null;
+      return bx!==null && Math.abs(netX-bx) <= BLOCK_REACH;
+    });
+    if(touching.length>=2){
+      return {type:'blocked', netX, netY:NET_Y, blockers:touching, restPoint:[netX, NET_Y-26]};
+    }
+    if(touching.length===1){
+      const dir = rawLanding[0]-contact[0];
+      const deflectX = clip(netX + (dir>=0?1:-1)*44, 20, 380);
+      return {type:'deflected', netX, netY:NET_Y, blockers:touching, restPoint:[deflectX, NET_Y+58]};
+    }
+    return null;
+  }
+
   function getFormation(){
     let f, atk;
     if(isOur(scenario)){
@@ -1005,6 +1030,8 @@
       if(atk.fakeContact){
         const fakeF = generateDefense(atk.fakeContact[0], blockCount, CUSTOM_BASE);
         f.fakeTargets = fakeF.targets;
+        const fov = FAKE_TARGET_OVERRIDES[comboKey()];
+        if(fov){ Object.keys(fov).forEach(id=>{ f.fakeTargets[id]=fov[id]; }); }
       }
       f.ballLanding = pickLanding(f, atk.x);
     }
@@ -1013,6 +1040,10 @@
     if(ov){ Object.keys(ov).forEach(id=>{ f.targets[id]=ov[id]; }); }
     const ballOv = BALL_OVERRIDES[comboKey()];
     if(ballOv) f.ballLanding = ballOv;
+    if(!isOur(scenario)){
+      f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
+      if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+    }
     return f;
   }
 
@@ -1129,8 +1160,15 @@
     }
     if(p<=T.ballStart) return atk.contact.slice();
     if(p<=T.ballEnd){
-      const t=(p-T.ballStart)/(T.ballEnd-T.ballStart);
-      return lerpPt(atk.contact, landing, easeInOut(t));
+      const t=easeInOut((p-T.ballStart)/(T.ballEnd-T.ballStart));
+      const bo = formation.blockOutcome;
+      if(bo){
+        const netPt=[bo.netX,bo.netY];
+        const split = bo.type==='blocked' ? 0.55 : 0.5;
+        if(t<=split) return lerpPt(atk.contact, netPt, t/split);
+        return lerpPt(netPt, landing, (t-split)/(1-split));
+      }
+      return lerpPt(atk.contact, landing, t);
     }
     return landing.slice();
   }
@@ -1139,38 +1177,6 @@
   const SCEN_LABEL = {};
   Object.keys(ATTACKS).forEach(k=>SCEN_LABEL[k]=ATTACKS[k].label);
   Object.keys(OUR_ATTACKS).forEach(k=>SCEN_LABEL[k]=OUR_ATTACKS[k].label);
-
-  const PRESET_SCENARIO_FOLDER = '시나리오별 대형';
-  const SCENARIO_ORDER = [...Object.keys(ATTACKS), ...Object.keys(OUR_ATTACKS)];
-
-  function pickScenario(key){
-    switchScenario(key);
-    const existing = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
-    if(existing){
-      loadPreset(existing); // renders the grid itself
-    } else {
-      activePreset = null;
-      document.getElementById('presetName').value = SCEN_LABEL[key];
-      document.getElementById('presetFolder').value = PRESET_SCENARIO_FOLDER;
-      renderScenarioPresetPick();
-    }
-  }
-
-  function renderScenarioPresetPick(){
-    const grid = document.getElementById('presetScenarioPick');
-    grid.innerHTML = '';
-    SCENARIO_ORDER.forEach(key=>{
-      const saved = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'scenario-preset-chip' + (saved?' saved':'') + (key===scenario?' current':'');
-      const name = document.createElement('span'); name.className='name'; name.textContent = SCEN_LABEL[key];
-      const badge = document.createElement('span'); badge.className='badge'; badge.textContent = saved ? '저장됨' : '비어있음';
-      chip.appendChild(name); chip.appendChild(badge);
-      chip.addEventListener('click', ()=> pickScenario(key));
-      grid.appendChild(chip);
-    });
-  }
 
   function describeCustomChanges(){
     const refBase = activePreset ? activePreset.base : ORIGINAL_BASE;
@@ -1183,6 +1189,9 @@
       notes.push(`${movedOwn.join('·')}번은 ${refName}에서 시작 위치를 옮겨둬서, 그 자리부터 움직여요.`);
     }
     if(movedTargets.length) notes.push(`${movedTargets.join('·')}번은 도착 위치(동선)를 직접 조정해뒀어요.`);
+    const fov = FAKE_TARGET_OVERRIDES[comboKey()];
+    const movedFake = fov ? Object.keys(fov) : [];
+    if(movedFake.length) notes.push(`${movedFake.join('·')}번은 페이크에 반응하는 위치를 직접 조정해뒀어요.`);
     return notes;
   }
 
@@ -1218,6 +1227,11 @@
       if(freeIds.length) text += `${freeIds.join('·')}번은 네트 앞 빈 공간을 지켜 짧은 공에 대비합니다. `;
       if(lineId && crossId) text += `${lineId}번은 라인, ${crossId}번은 크로스 코너를 맡아 깊은 공격에 대비합니다.`;
       if(atk.fakeContact) text += ' 처음엔 블로커가 속공(가짜 동작) 쪽으로 반응했다가, 진짜 공격이 나오면 자리를 재빠르게 고쳐야 해요.';
+      if(f.blockOutcome && f.blockOutcome.type==='blocked'){
+        text += ` 공이 ${f.blockOutcome.blockers.join('·')}번의 블로킹 범위가 겹치는 지점을 지나면서 완전히 막혀, 네트를 넘지 못하고 상대 코트로 떨어집니다.`;
+      } else if(f.blockOutcome && f.blockOutcome.type==='deflected'){
+        text += ` 공이 ${f.blockOutcome.blockers.join('·')}번의 블로킹에 맞고 방향이 꺾여, 네트 가까이 짧게 떨어집니다.`;
+      }
     }
     const points = [];
     if(blockCount>0){ points.push(`${f.blockerIds.slice().sort((a,b)=>a-b).join('·')}번 블로킹 (${blockCount}인)`); }
@@ -1227,6 +1241,8 @@
     const lineId2 = IDS.find(id=>f.roles[id]==='line'), crossId2 = IDS.find(id=>f.roles[id]==='cross');
     if(lineId2 && crossId2) points.push(`${lineId2}번 라인 · ${crossId2}번 크로스`);
     if(atk.fakeContact) points.push('블로커가 페이크에 반응 후 재교정');
+    if(f.blockOutcome && f.blockOutcome.type==='blocked') points.push(`🚫 ${f.blockOutcome.blockers.join('·')}번 블로킹 완전 차단`);
+    else if(f.blockOutcome && f.blockOutcome.type==='deflected') points.push(`🔸 ${f.blockOutcome.blockers.join('·')}번 블로킹에 맞고 짧게 떨어짐`);
     if(scenario==='BACKA') points.push('세터가 등 뒤로 빽토스 → 뒤에서 공격');
     if(atk.customized) points.push('공격 위치·템포 직접 설정됨');
     describeCustomChanges().forEach(n=>points.push(n));
@@ -1314,8 +1330,9 @@
       } else if(overrideMode){
         const x=clip(loc[0],40,360), y=clip(loc[1],392,735);
         const key=comboKey();
-        if(!TARGET_OVERRIDES[key]) TARGET_OVERRIDES[key]={};
-        TARGET_OVERRIDES[key][draggingId]=[x,y];
+        const store = (overridePhase==='fake') ? FAKE_TARGET_OVERRIDES : TARGET_OVERRIDES;
+        if(!store[key]) store[key]={};
+        store[key][draggingId]=[x,y];
         current[draggingId]=[x,y];
       }
       render();
@@ -1443,6 +1460,20 @@
         c.style.opacity = 0.8*(1-ip);
         impactLayer.appendChild(c);
       }
+      if(f.blockOutcome){
+        const split = f.blockOutcome.type==='blocked' ? 0.55 : 0.5;
+        const hitProgress = T.ballStart + (T.ballEnd-T.ballStart)*split;
+        const bip = (progress-hitProgress)/0.14;
+        if(bip>=0 && bip<=1){
+          const blockColor = f.blockOutcome.type==='blocked' ? '#EF4A4A' : '#9DBEFB';
+          const c2=document.createElementNS(svgNS,'circle');
+          c2.setAttribute('cx',f.blockOutcome.netX); c2.setAttribute('cy',f.blockOutcome.netY);
+          c2.setAttribute('r', 5+bip*30); c2.setAttribute('fill','none');
+          c2.setAttribute('stroke',blockColor); c2.setAttribute('stroke-width', 3*(1-bip));
+          c2.style.opacity = 0.9*(1-bip);
+          impactLayer.appendChild(c2);
+        }
+      }
     }
 
     fanLayer.innerHTML='';
@@ -1569,7 +1600,6 @@
   }
 
   function renderPresets(){
-    renderScenarioPresetPick();
     const list=document.getElementById('presetList');
     list.innerHTML='';
     const folderList=document.getElementById('folderList');
@@ -1626,7 +1656,7 @@
     IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
     ballCurrent=null;
     updateTexts();
-    renderScenarioPresetPick();
+    setModeUI();
   }
 
   const scenarioTitleEl = document.getElementById('scenarioTitle');
@@ -1675,11 +1705,22 @@
   });
   ['chkArrows','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
 
+  function currentHasFake(){ return !isOur(scenario) && !!ATTACKS[scenario].fakeContact; }
+
+  function applyOverridePhase(){
+    if(overridePhase==='fake' && currentHasFake()){
+      progress = ATTACKS[scenario].timing.peak*0.6; // matches desiredOwnAt's reactEnd — shows blockers exactly at their fake-reaction spot
+    } else {
+      progress = 1;
+    }
+    const d=desiredOwnAt(progress); IDS.forEach(id=>current[id]=d[id].slice());
+  }
+
   function setEditMode(mode){
     editMode = mode==='edit'; overrideMode = mode==='override';
     playing=false; updatePlayBtn();
     if(editMode){ progress=0; IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice()); }
-    if(overrideMode){ progress=1; const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice()); }
+    if(overrideMode){ overridePhase='final'; document.querySelectorAll('#overridePhaseSeg button').forEach(b=>b.classList.toggle('active', b.dataset.phase==='final')); applyOverridePhase(); }
     document.querySelectorAll('#editModeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
     document.getElementById('editTeamRow').style.display = editMode ? 'block' : 'none';
     document.getElementById('btnResetCurrent').disabled = (mode==='off');
@@ -1689,6 +1730,14 @@
     btn.addEventListener('click', ()=> setEditMode(btn.dataset.mode));
   });
 
+  document.querySelectorAll('#overridePhaseSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      overridePhase = btn.dataset.phase;
+      document.querySelectorAll('#overridePhaseSeg button').forEach(b=>b.classList.toggle('active', b===btn));
+      applyOverridePhase();
+      setModeUI(); render();
+    });
+  });
 
   document.querySelectorAll('#editTeamSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -1704,8 +1753,12 @@
     const anyMode = editMode||overrideMode;
     document.getElementById('btnPlay').disabled = anyMode;
     document.getElementById('timeline').disabled = anyMode;
+    const showPhaseRow = overrideMode && currentHasFake();
+    document.getElementById('overridePhaseRow').style.display = showPhaseRow ? 'block' : 'none';
+    if(overrideMode && overridePhase==='fake' && !currentHasFake()){ overridePhase='final'; applyOverridePhase(); }
     let hint;
-    if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀 번호를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
+    if(overrideMode && overridePhase==='fake') hint='상대의 페이크(시간차) 동작에 <b>우리 블로커가 처음 반응해서 이동하는 위치</b>를 드래그로 정할 수 있어요. 이후 진짜 공격이 나오면 최종 도착 위치로 다시 고쳐 서요.';
+    else if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀 번호를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
     else if(editMode){
       const teamWord = editTeamFilter==='own' ? '아군' : editTeamFilter==='opp' ? '상대팀' : '아군·상대팀 전체';
       hint = `코트 위 ${teamWord} 점을 드래그해 <b>시작 위치</b>를 바꿀 수 있어요. 재생하면 이 위치에서 이동이 시작돼요.`;
@@ -1719,8 +1772,9 @@
       IDS.forEach(id=>{ CUSTOM_BASE[id]=ORIGINAL_BASE[id].slice(); current[id]=ORIGINAL_BASE[id].slice(); });
       Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice(); });
     } else if(overrideMode){
-      delete TARGET_OVERRIDES[comboKey()];
-      const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice());
+      if(overridePhase==='fake'){ delete FAKE_TARGET_OVERRIDES[comboKey()]; }
+      else{ delete TARGET_OVERRIDES[comboKey()]; }
+      applyOverridePhase();
     }
     render();
     scheduleAutoSave();
@@ -2035,7 +2089,7 @@
       positions: POSITIONS, oppPositions: OPP_POSITIONS,
       customBase: CUSTOM_BASE, customOppBase: CUSTOM_OPP_BASE,
       presets: presets,
-      targetOverrides: TARGET_OVERRIDES, ballOverrides: BALL_OVERRIDES,
+      targetOverrides: TARGET_OVERRIDES, fakeTargetOverrides: FAKE_TARGET_OVERRIDES, ballOverrides: BALL_OVERRIDES,
       attacks: JSON.parse(JSON.stringify(ATTACKS)), ourAttacks: JSON.parse(JSON.stringify(OUR_ATTACKS))
     };
   }
@@ -2048,6 +2102,7 @@
       if(state.customOppBase) CUSTOM_OPP_BASE = state.customOppBase;
       if(state.presets) presets = state.presets;
       if(state.targetOverrides) TARGET_OVERRIDES = state.targetOverrides;
+      if(state.fakeTargetOverrides) FAKE_TARGET_OVERRIDES = state.fakeTargetOverrides;
       if(state.ballOverrides) BALL_OVERRIDES = state.ballOverrides;
       if(state.attacks) Object.keys(state.attacks).forEach(k=>{ if(ATTACKS[k]) Object.assign(ATTACKS[k], state.attacks[k]); });
       if(state.ourAttacks) Object.keys(state.ourAttacks).forEach(k=>{ if(OUR_ATTACKS[k]) Object.assign(OUR_ATTACKS[k], state.ourAttacks[k]); });
