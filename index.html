@@ -112,6 +112,13 @@
   .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
   .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .preset-chip{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; font-size:12px; cursor:pointer; }
+  .scenario-preset-grid{ display:flex; flex-direction:column; gap:6px; }
+  .scenario-preset-chip{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); font-size:12.5px; cursor:pointer; text-align:left; color:var(--text-dim); font-family:inherit; }
+  .scenario-preset-chip .name{ flex:1; }
+  .scenario-preset-chip .badge{ font-size:10.5px; padding:2px 7px; border-radius:999px; background:var(--panel); color:var(--text-dim); flex:none; }
+  .scenario-preset-chip.saved{ background:rgba(242,183,5,0.12); border-color:rgba(242,183,5,0.5); color:var(--text); }
+  .scenario-preset-chip.saved .badge{ background:var(--accent); color:#241b02; font-weight:700; }
+  .scenario-preset-chip.current{ outline:2px solid var(--accent); outline-offset:1px; }
   .preset-chip.active{ border-color:var(--accent); }
   .preset-chip:hover{ border-color:var(--accent); }
   .preset-chip .x{ width:16px; height:16px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--text-dim); }
@@ -467,13 +474,24 @@
 <div class="card" id="cardPresets">
       <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
 
-      <div class="preset-input-row">
-        <input type="text" id="presetFolder" placeholder="폴더 (선택, 예: 1학년 3반)" list="folderList" style="flex:0 0 40%;">
-        <datalist id="folderList"></datalist>
+      <label class="field-label">시나리오별 대형</label>
+      <div class="scenario-preset-grid" id="presetScenarioPick"></div>
+      <div class="field-note" style="margin-top:0;">채워진 항목은 이미 저장된 대형이에요 — 누르면 바로 불러와요. 비어있는 항목을 누르면 그 상황으로 전환되고, 도트를 편집한 뒤 저장하면 그 항목이 채워져요. 저장한 뒤에도 계속 이어서 편집·저장할 수 있어요.</div>
+
+      <div class="edit-divider"></div>
+      <div class="field-note" style="margin-top:0;">목록에 없는 대형을 더 만들고 싶으면 아래에 직접 이름을 적어 저장하세요.</div>
+      <label class="field-label" style="margin-top:0;">폴더</label>
+      <select id="presetFolderSelect">
+        <option value="">(폴더 없음)</option>
+        <option value="__new__">+ 새 폴더 만들기...</option>
+      </select>
+      <input type="text" id="presetFolderNew" class="login-input" placeholder="새 폴더 이름 (예: 1학년 3반)" style="display:none; margin-top:6px;">
+      <div class="preset-input-row" style="margin-top:8px;">
+        <input type="hidden" id="presetFolder">
         <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
         <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
       </div>
-      <div class="field-note" style="margin-top:0;">같은 폴더 이름을 입력하면 그 폴더 안에 모여요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
+      <div class="field-note" style="margin-top:0;">폴더를 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
       <div class="preset-list" id="presetList"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
       <div class="edit-hint" id="autoSaveStatus"></div>
 
@@ -1178,6 +1196,39 @@
   Object.keys(ATTACKS).forEach(k=>SCEN_LABEL[k]=ATTACKS[k].label);
   Object.keys(OUR_ATTACKS).forEach(k=>SCEN_LABEL[k]=OUR_ATTACKS[k].label);
 
+  const PRESET_SCENARIO_FOLDER = '시나리오별 대형';
+  const SCENARIO_ORDER = [...Object.keys(ATTACKS), ...Object.keys(OUR_ATTACKS)];
+
+  function pickScenario(key){
+    switchScenario(key);
+    const existing = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
+    if(existing){
+      loadPreset(existing); // renders the grid itself
+    } else {
+      activePreset = null;
+      document.getElementById('presetName').value = SCEN_LABEL[key];
+      document.getElementById('presetFolder').value = PRESET_SCENARIO_FOLDER;
+      document.getElementById('presetFolderNew').style.display = 'none';
+      renderPresets();
+    }
+  }
+
+  function renderScenarioPresetPick(){
+    const grid = document.getElementById('presetScenarioPick');
+    grid.innerHTML = '';
+    SCENARIO_ORDER.forEach(key=>{
+      const saved = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'scenario-preset-chip' + (saved?' saved':'') + (key===scenario?' current':'');
+      const name = document.createElement('span'); name.className='name'; name.textContent = SCEN_LABEL[key];
+      const badge = document.createElement('span'); badge.className='badge'; badge.textContent = saved ? '저장됨' : '비어있음';
+      chip.appendChild(name); chip.appendChild(badge);
+      chip.addEventListener('click', ()=> pickScenario(key));
+      grid.appendChild(chip);
+    });
+  }
+
   function describeCustomChanges(){
     const refBase = activePreset ? activePreset.base : ORIGINAL_BASE;
     const movedOwn = IDS.filter(id => refBase[id] && dist(CUSTOM_BASE[id], refBase[id]) > 15);
@@ -1591,6 +1642,7 @@
     activePreset = p;
     document.getElementById('presetName').value = p.name;
     document.getElementById('presetFolder').value = p.folder || '';
+    document.getElementById('presetFolderNew').style.display = 'none';
     if(!editMode && !overrideMode){ progress=0; playing=false; updatePlayBtn(); }
     IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
     renderPresets();
@@ -1600,12 +1652,18 @@
   }
 
   function renderPresets(){
+    renderScenarioPresetPick();
     const list=document.getElementById('presetList');
     list.innerHTML='';
-    const folderList=document.getElementById('folderList');
-    folderList.innerHTML='';
-    const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f)));
-    folderNames.forEach(f=>{ const opt=document.createElement('option'); opt.value=f; folderList.appendChild(opt); });
+    const folderSelect=document.getElementById('presetFolderSelect');
+    const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f))).sort((a,b)=>a.localeCompare(b));
+    const currentFolderValue = document.getElementById('presetFolder').value;
+    const newFolderInput = document.getElementById('presetFolderNew');
+    const isCreatingNew = newFolderInput.style.display!=='none';
+    folderSelect.innerHTML = '<option value="">(폴더 없음)</option>';
+    folderNames.forEach(f=>{ const opt=document.createElement('option'); opt.value=f; opt.textContent='📁 '+f; folderSelect.appendChild(opt); });
+    const newOpt=document.createElement('option'); newOpt.value='__new__'; newOpt.textContent='+ 새 폴더 만들기...'; folderSelect.appendChild(newOpt);
+    folderSelect.value = isCreatingNew ? '__new__' : (folderNames.includes(currentFolderValue) ? currentFolderValue : '');
 
     if(presets.length===0){ list.innerHTML='<span class="preset-empty">저장된 시작 대형이 없어요</span>'; return; }
 
@@ -1656,6 +1714,7 @@
     IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
     ballCurrent=null;
     updateTexts();
+    renderScenarioPresetPick();
     setModeUI();
   }
 
@@ -1779,6 +1838,23 @@
     render();
     scheduleAutoSave();
   });
+  document.getElementById('presetFolderSelect').addEventListener('change', e=>{
+    const val = e.target.value;
+    const newFolderInput = document.getElementById('presetFolderNew');
+    if(val==='__new__'){
+      newFolderInput.style.display='block';
+      newFolderInput.value='';
+      newFolderInput.focus();
+      document.getElementById('presetFolder').value = '';
+    } else {
+      newFolderInput.style.display='none';
+      document.getElementById('presetFolder').value = val;
+    }
+  });
+  document.getElementById('presetFolderNew').addEventListener('input', e=>{
+    document.getElementById('presetFolder').value = e.target.value.trim();
+  });
+
   document.getElementById('btnSavePreset').addEventListener('click', ()=>{
     const input=document.getElementById('presetName');
     const folderInput=document.getElementById('presetFolder');
