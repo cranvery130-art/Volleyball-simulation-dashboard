@@ -46,6 +46,7 @@
   .topbar .sub{ color:var(--text-dim); font-size:13.5px; display:block; margin-top:4px; }
 
   .column{ display:flex; flex-direction:column; gap:14px; }
+  .center-stack{ display:flex; flex-direction:column; gap:14px; }
 
   .card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; }
   .card h2{ font-size:15px; font-weight:600; color:var(--text); margin-bottom:10px; }
@@ -68,7 +69,9 @@
   .desc-with-aids{ display:flex; gap:22px; flex-wrap:wrap; margin-top:6px; }
   .desc-main{ flex:1 1 300px; min-width:0; }
   .desc-aids{ flex:0 0 230px; border-left:1px solid var(--border); padding-left:18px; }
-  .desc-aids .check-list{ flex-direction:column; gap:6px; }
+  .desc-aids .check-list{ display:flex; flex-direction:column; gap:2px; }
+  .desc-aids .check-row{ padding:5px 2px; align-items:flex-start; line-height:1.35; font-size:12.5px; }
+  .desc-aids .check-row input{ margin-top:2px; flex:none; }
   @media (max-width:700px){
     .desc-aids{ flex-basis:100%; border-left:none; padding-left:0; border-top:1px solid var(--border); padding-top:10px; margin-top:4px; }
   }
@@ -140,7 +143,6 @@
   svg#court.edit-mode .own-dot circle.body{ stroke-dasharray:3 2; stroke-width:2.5; }
   svg#court.edit-mode .opp-dot circle.body{ stroke-dasharray:3 2; stroke-width:2.5; }
   svg#court.override-mode .own-dot circle.body{ stroke:#F2B705; stroke-width:2.5; }
-  svg#court.shadow-mode{ cursor:crosshair; }
 
   @keyframes pulseRing{ 0%{ stroke-opacity:0.9; } 70%{ stroke-opacity:0.15; } 100%{ stroke-opacity:0.9; } }
 
@@ -194,20 +196,23 @@
     #mainAppCol{ max-width:2400px; }
     .app{ max-width:none; }
     .column{
-      display:grid;
-      grid-template-columns: 320px minmax(0,1fr) 360px;
-      align-items:start;
+      display:flex;
+      flex-direction:row;
+      align-items:flex-start;
       gap:20px;
     }
-    .column > *{ grid-column:2; }
-    #cardPresets, #cardAttack{ grid-row:1/-1; position:sticky; top:16px; align-self:start; max-height:calc(100vh - 32px); overflow-y:auto; }
-    #cardPresets{ grid-column:1; }
-    #cardAttack{ grid-column:3; }
+    .center-stack{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:16px; order:0; }
+    #cardPresets, #cardAttack{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; }
+    #cardPresets{ flex:0 0 320px; order:-1; }
+    #cardAttack{ flex:0 0 360px; order:1; }
     #cardPresets .preset-input-row{ flex-direction:column; }
     #cardPresets .preset-input-row input[type=text]{ flex:none !important; width:100%; }
     #cardPresets .preset-input-row button{ width:100%; }
-    #cardPresets #editModeSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; }
+    #cardPresets #editModeSeg{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; border-radius:12px; }
     #cardPresets #editModeSeg button{ border-radius:8px; flex:none; }
+    #customXSeg, #customLandingSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; padding:4px; }
+    #customXSeg button, #customLandingSeg button{ white-space:nowrap; border-radius:8px; flex:none; padding:8px 4px; font-size:11px; }
+    #customXSeg button:last-child, #customLandingSeg button:last-child{ grid-column:1/-1; }
   }
 </style>
 <!-- ======================================================================
@@ -295,6 +300,8 @@
   </div>
 
   <div class="column">
+<div class="center-stack">
+
 
     <div class="card">
       <h2><span class="n">01</span>포지션 배정</h2>
@@ -324,7 +331,161 @@
         <div id="coverNote" class="note-box" style="display:none;">이 상황에서는 <b>상대 팀의 블로킹 인원</b>을 의미해요. 상대가 많이 막을수록 우리 팀은 더 촘촘하게 커버해야 해요.</div>
       </div>
 
-      <div class="card" id="cardAttack">
+      
+
+    <div>
+      <div class="stage-top">
+        <div class="scenario-title" id="scenarioTitle" role="button" tabindex="0" title="클릭해서 공격 상황 바꾸기">상대 좌측(L) 오픈 공격</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="scenario-tag" id="blockTag">2인 블로킹</div>
+          <button class="btn" id="btnOrientation" style="white-space:nowrap;">세로 보기로 전환</button>
+        </div>
+      </div>
+      <div class="court-wrap">
+        <svg id="court" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="courtGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1F7A64"/>
+              <stop offset="100%" stop-color="#155C4C"/>
+            </linearGradient>
+            <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#D9E4F5"/>
+            </marker>
+          </defs>
+          <g id="sceneGroup">
+            <rect x="14" y="14" width="372" height="732" rx="8" fill="none" stroke="#9C4A2E" stroke-width="6"/>
+            <rect x="18" y="18" width="364" height="724" rx="6" fill="url(#courtGrad)"/>
+            <rect x="20" y="20" width="360" height="720" fill="none" stroke="#F2F6FA" stroke-width="2"/>
+            <line x1="20" y1="260" x2="380" y2="260" stroke="#F2F6FA" stroke-width="1.5" stroke-dasharray="7 6" opacity="0.75"/>
+            <line x1="20" y1="500" x2="380" y2="500" stroke="#F2F6FA" stroke-width="1.5" stroke-dasharray="7 6" opacity="0.75"/>
+            <g id="net">
+              <rect x="14" y="376" width="372" height="8" fill="#0C1524" opacity="0.85"/>
+              <rect x="14" y="374" width="372" height="2.5" fill="#F2F6FA"/>
+              <line x1="20" y1="368" x2="20" y2="392" stroke="#F2B705" stroke-width="3"/>
+              <line x1="380" y1="368" x2="380" y2="392" stroke="#F2B705" stroke-width="3"/>
+            </g>
+            <rect x="20" y="345" width="360" height="70" fill="rgba(242,183,5,0.05)"/>
+            <line x1="20" y1="345" x2="380" y2="345" stroke="#F2B705" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
+            <line x1="20" y1="415" x2="380" y2="415" stroke="#F2B705" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
+            <g id="blockZoneLayer"></g>
+            <g id="fanLayer"></g>
+            <g id="arrowLayer"></g>
+            <g id="trailLayer"></g>
+            <g id="oppLayer"></g>
+            <g id="ownLayer"></g>
+            <g id="impactLayer"></g>
+            <g id="ballLayer"><circle id="ball" r="7" fill="#FBC02D" stroke="#7A5A05" stroke-width="1.2"/></g>
+          </g>
+          <g id="oppLabelLayer"></g>
+          <g id="ownLabelLayer"></g>
+        </svg>
+      </div>
+      <div class="timeline-bar">
+        <button class="tl-btn primary" id="btnPlay" aria-label="재생">▶</button>
+        <button class="tl-btn" id="btnReset" aria-label="리셋">⟲</button>
+        <div class="tl-mid">
+          <div class="tl-phase" id="phaseLabel">대기 중 — 재생을 눌러보세요</div>
+          <input type="range" id="timeline" min="0" max="100" value="0" />
+        </div>
+      </div>
+      <div class="legend stage-legend">
+        <div class="row"><span class="dot" style="background:var(--own);"></span>우리 팀 (1~9)</div>
+        <div class="row"><span class="dot" style="background:var(--opp);"></span>상대 팀 (1~9, 포지션 배정 순서)</div>
+        <div class="row"><span class="dot" style="background:var(--ball);"></span>공</div>
+        <div class="row"><span class="ring"></span>공격수 / 블로커</div>
+        <div class="row"><span class="ring decoy"></span>페이크 동작</div>
+        <div class="row"><span class="ring setter"></span>토스(세터)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="desc-block" id="descBlockTag">상대 좌측(L) 오픈 공격 · 2인 블로킹</div>
+      <div class="desc-with-aids">
+        <div class="desc-main">
+          <p class="desc-text" id="descText"></p>
+          <ul class="points" id="descPoints"></ul>
+        </div>
+        <div class="desc-aids">
+          <div class="field-label" style="margin-top:0;">시각 보조</div>
+          <div class="check-list">
+            <div class="check-row"><input type="checkbox" id="chkArrows"><label for="chkArrows">이동 동선(화살표) 표시</label></div>
+            <div class="check-row"><input type="checkbox" id="chkFans"><label for="chkFans">수비수별 커버리지 영역(부채꼴) · 네트 앞 블로킹 범위 표시</label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="settingsCard">
+      <h2>설정</h2>
+      <div class="field-note" style="margin-top:0;">현재 코드: <b id="settingsCodeLabel">-</b> · <span id="settingsRoleLabel">-</span></div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn" id="btnShareLink">링크 공유</button>
+        <button class="btn" id="btnSaveRoom">변경사항 저장</button>
+      </div>
+      <div id="shareLinkBox" style="display:none; margin-top:8px;">
+        <div class="preset-input-row">
+          <input type="text" id="shareLinkInput" class="login-input" readonly style="margin-top:0;">
+          <button class="btn" id="btnCopyLink" style="white-space:nowrap;">복사</button>
+        </div>
+        <div class="field-note">이 링크를 열면 코드가 자동으로 입력되고, 조회 가능 비밀번호를 넣으면 바로 들어올 수 있어요.</div>
+      </div>
+      <div id="editPwSection" style="display:none;">
+        <div class="edit-divider"></div>
+        <label class="field-label">수정 권한 비밀번호 <span id="editPwStatus" class="field-note" style="display:inline; margin:0;">(설정 안 됨)</span></label>
+        <div class="field-note" style="margin-top:0;">이 비밀번호를 구성원에게 공유하면, 그 사람도 조회만이 아니라 직접 편집(대형·포지션·프리셋 등)할 수 있어요. 코드 삭제 권한은 개설자에게만 남아있어요.</div>
+        <div class="preset-input-row">
+          <input type="password" id="editPwInput" class="login-input" style="margin-top:0;" placeholder="새 수정 권한 비밀번호">
+          <button class="btn" id="btnSetEditPw" style="white-space:nowrap;">설정</button>
+        </div>
+        <button class="btn" id="btnClearEditPw" style="margin-top:8px; width:100%;">수정 권한 비활성화</button>
+      </div>
+      <div class="edit-divider"></div>
+      <div class="btn-row">
+        <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
+        <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C;">이 코드 삭제</button>
+      </div>
+      <div class="edit-hint" id="settingsStatus"></div>
+    </div>
+
+  
+</div>
+<div class="card" id="cardPresets">
+      <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
+
+      <div class="preset-input-row">
+        <input type="text" id="presetFolder" placeholder="폴더 (선택, 예: 1학년 3반)" list="folderList" style="flex:0 0 40%;">
+        <datalist id="folderList"></datalist>
+        <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
+        <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
+      </div>
+      <div class="field-note" style="margin-top:0;">같은 폴더 이름을 입력하면 그 폴더 안에 모여요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
+      <div class="preset-list" id="presetList"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
+
+      <div class="edit-divider"></div>
+
+      <label class="field-label">편집 모드</label>
+      <div class="seg" id="editModeSeg">
+        <button data-mode="off" class="active">끔</button>
+        <button data-mode="edit">시작 위치</button>
+        <button data-mode="override">도착 위치</button>
+      </div>
+
+      <div id="editTeamRow" style="display:none;">
+        <label class="field-label" style="margin-top:10px;">편집 대상</label>
+        <div class="seg" id="editTeamSeg">
+          <button data-team="all" class="active">전체</button>
+          <button data-team="own">아군</button>
+          <button data-team="opp">상대팀</button>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn" id="btnResetCurrent" disabled>현재 모드 초기화</button>
+      </div>
+
+      <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
+    </div>
+<div class="card" id="cardAttack">
         <h2><span class="n">03</span>공격 상황</h2>
         <label class="field-label" for="scenarioSelect">어떤 상황을 살펴볼까요?</label>
         <select id="scenarioSelect">
@@ -346,7 +507,7 @@
           </optgroup>
         </select>
 
-        <button class="btn" id="btnCustomToggle" style="width:100%; margin-top:10px;">공격 상황 직접 설정 ▾</button>
+        <button class="btn primary" id="btnCustomToggle" style="width:100%; margin-top:10px;">공격 상황 직접 설정 ▾</button>
         <div id="customPanel" style="display:none; margin-top:10px;">
           <label class="field-label">공격 위치</label>
           <div class="seg" id="customXSeg">
@@ -412,162 +573,7 @@
           <p style="margin:0;">저장하면 선택한 공격 상황의 위치·속도·페이크·착지가 지금 값으로 덮어써지고, 이름은 그대로 유지돼요.</p>
         </div>
       </div>
-
-    <div class="card" id="cardPresets">
-      <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
-
-      <div class="preset-input-row">
-        <input type="text" id="presetFolder" placeholder="폴더 (선택, 예: 1학년 3반)" list="folderList" style="flex:0 0 40%;">
-        <datalist id="folderList"></datalist>
-        <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
-        <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
-      </div>
-      <div class="field-note" style="margin-top:0;">같은 폴더 이름을 입력하면 그 폴더 안에 모여요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
-      <div class="preset-list" id="presetList"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
-
-      <div class="edit-divider"></div>
-
-      <label class="field-label">편집 모드</label>
-      <div class="seg" id="editModeSeg">
-        <button data-mode="off" class="active">끔</button>
-        <button data-mode="edit">시작 위치</button>
-        <button data-mode="override">도착 위치</button>
-        <button data-mode="shadow">그림자</button>
-      </div>
-
-      <div id="editTeamRow" style="display:none;">
-        <label class="field-label" style="margin-top:10px;">편집 대상</label>
-        <div class="seg" id="editTeamSeg">
-          <button data-team="all" class="active">전체</button>
-          <button data-team="own">아군</button>
-          <button data-team="opp">상대팀</button>
-        </div>
-      </div>
-
-      <div class="btn-row" style="margin-top:10px;">
-        <button class="btn" id="btnResetCurrent" disabled>현재 모드 초기화</button>
-      </div>
-
-      <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
-    </div>
-
-    <div>
-      <div class="stage-top">
-        <div class="scenario-title" id="scenarioTitle" role="button" tabindex="0" title="클릭해서 공격 상황 바꾸기">상대 좌측(L) 오픈 공격</div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <div class="scenario-tag" id="blockTag">2인 블로킹</div>
-          <button class="btn" id="btnOrientation" style="white-space:nowrap;">세로 보기로 전환</button>
-        </div>
-      </div>
-      <div class="court-wrap">
-        <svg id="court" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="courtGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#1F7A64"/>
-              <stop offset="100%" stop-color="#155C4C"/>
-            </linearGradient>
-            <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 Z" fill="#D9E4F5"/>
-            </marker>
-          </defs>
-          <g id="sceneGroup">
-            <rect x="14" y="14" width="372" height="732" rx="8" fill="none" stroke="#9C4A2E" stroke-width="6"/>
-            <rect x="18" y="18" width="364" height="724" rx="6" fill="url(#courtGrad)"/>
-            <rect x="20" y="20" width="360" height="720" fill="none" stroke="#F2F6FA" stroke-width="2"/>
-            <line x1="20" y1="260" x2="380" y2="260" stroke="#F2F6FA" stroke-width="1.5" stroke-dasharray="7 6" opacity="0.75"/>
-            <line x1="20" y1="500" x2="380" y2="500" stroke="#F2F6FA" stroke-width="1.5" stroke-dasharray="7 6" opacity="0.75"/>
-            <g id="net">
-              <rect x="14" y="376" width="372" height="8" fill="#0C1524" opacity="0.85"/>
-              <rect x="14" y="374" width="372" height="2.5" fill="#F2F6FA"/>
-              <line x1="20" y1="368" x2="20" y2="392" stroke="#F2B705" stroke-width="3"/>
-              <line x1="380" y1="368" x2="380" y2="392" stroke="#F2B705" stroke-width="3"/>
-            </g>
-            <rect x="20" y="345" width="360" height="70" fill="rgba(242,183,5,0.05)"/>
-            <line x1="20" y1="345" x2="380" y2="345" stroke="#F2B705" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
-            <line x1="20" y1="415" x2="380" y2="415" stroke="#F2B705" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
-            <g id="blockZoneLayer"></g>
-            <g id="shadowLayer"></g>
-            <g id="fanLayer"></g>
-            <g id="arrowLayer"></g>
-            <g id="trailLayer"></g>
-            <g id="oppLayer"></g>
-            <g id="ownLayer"></g>
-            <g id="impactLayer"></g>
-            <g id="ballLayer"><circle id="ball" r="7" fill="#FBC02D" stroke="#7A5A05" stroke-width="1.2"/></g>
-          </g>
-          <g id="oppLabelLayer"></g>
-          <g id="ownLabelLayer"></g>
-        </svg>
-      </div>
-      <div class="timeline-bar">
-        <button class="tl-btn primary" id="btnPlay" aria-label="재생">▶</button>
-        <button class="tl-btn" id="btnReset" aria-label="리셋">⟲</button>
-        <div class="tl-mid">
-          <div class="tl-phase" id="phaseLabel">대기 중 — 재생을 눌러보세요</div>
-          <input type="range" id="timeline" min="0" max="100" value="0" />
-        </div>
-      </div>
-      <div class="legend stage-legend">
-        <div class="row"><span class="dot" style="background:var(--own);"></span>우리 팀 (1~9)</div>
-        <div class="row"><span class="dot" style="background:var(--opp);"></span>상대 팀 (1~9, 포지션 배정 순서)</div>
-        <div class="row"><span class="dot" style="background:var(--ball);"></span>공</div>
-        <div class="row"><span class="ring"></span>공격수 / 블로커</div>
-        <div class="row"><span class="ring decoy"></span>페이크 동작</div>
-        <div class="row"><span class="ring setter"></span>토스(세터)</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="desc-block" id="descBlockTag">상대 좌측(L) 오픈 공격 · 2인 블로킹</div>
-      <div class="desc-with-aids">
-        <div class="desc-main">
-          <p class="desc-text" id="descText"></p>
-          <ul class="points" id="descPoints"></ul>
-        </div>
-        <div class="desc-aids">
-          <div class="field-label" style="margin-top:0;">시각 보조</div>
-          <div class="check-list">
-            <div class="check-row"><input type="checkbox" id="chkArrows"><label for="chkArrows">이동 동선(화살표) 표시</label></div>
-            <div class="check-row"><input type="checkbox" id="chkShadow"><label for="chkShadow">블로킹 그림자(공격 제한 구역) 표시</label></div>
-            <div class="check-row"><input type="checkbox" id="chkFans"><label for="chkFans">수비수별 커버리지 영역(부채꼴) · 네트 앞 블로킹 범위 표시</label></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" id="settingsCard">
-      <h2>설정</h2>
-      <div class="field-note" style="margin-top:0;">현재 코드: <b id="settingsCodeLabel">-</b> · <span id="settingsRoleLabel">-</span></div>
-      <div class="btn-row" style="margin-top:8px;">
-        <button class="btn" id="btnShareLink">링크 공유</button>
-        <button class="btn" id="btnSaveRoom">변경사항 저장</button>
-      </div>
-      <div id="shareLinkBox" style="display:none; margin-top:8px;">
-        <div class="preset-input-row">
-          <input type="text" id="shareLinkInput" class="login-input" readonly style="margin-top:0;">
-          <button class="btn" id="btnCopyLink" style="white-space:nowrap;">복사</button>
-        </div>
-        <div class="field-note">이 링크를 열면 코드가 자동으로 입력되고, 조회 가능 비밀번호를 넣으면 바로 들어올 수 있어요.</div>
-      </div>
-      <div id="editPwSection" style="display:none;">
-        <div class="edit-divider"></div>
-        <label class="field-label">수정 권한 비밀번호 <span id="editPwStatus" class="field-note" style="display:inline; margin:0;">(설정 안 됨)</span></label>
-        <div class="field-note" style="margin-top:0;">이 비밀번호를 구성원에게 공유하면, 그 사람도 조회만이 아니라 직접 편집(대형·포지션·프리셋 등)할 수 있어요. 코드 삭제 권한은 개설자에게만 남아있어요.</div>
-        <div class="preset-input-row">
-          <input type="password" id="editPwInput" class="login-input" style="margin-top:0;" placeholder="새 수정 권한 비밀번호">
-          <button class="btn" id="btnSetEditPw" style="white-space:nowrap;">설정</button>
-        </div>
-        <button class="btn" id="btnClearEditPw" style="margin-top:8px; width:100%;">수정 권한 비활성화</button>
-      </div>
-      <div class="edit-divider"></div>
-      <div class="btn-row">
-        <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
-        <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C;">이 코드 삭제</button>
-      </div>
-      <div class="edit-hint" id="settingsStatus"></div>
-    </div>
-
-  </div>
+</div>
 </div>
 </div>
 
@@ -700,7 +706,6 @@
   let CUSTOM_BASE = {}; IDS.forEach(id=> CUSTOM_BASE[id]=ORIGINAL_BASE[id].slice());
   let CUSTOM_OPP_BASE = {}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=> CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice());
   let TARGET_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {id:[x,y]}
-  let SHADOW_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {cx,cy,rx,ry}
 
   // ---------- opponent attack scenarios ----------
   // Net-based left/right: the opponent faces the net (faces "down" the screen toward us),
@@ -797,19 +802,19 @@
 
     remFront.forEach(id=>{ roles[id]='free'; targets[id]=[CANON[id],428]; });
 
-    const shadowCount = blockCount>=2 ? 1 : 2;
+    const nearCoverCount = blockCount>=2 ? 1 : 2;
     const remMidSorted = remMid.slice().sort((a,b)=>Math.abs(CANON[a]-attackX)-Math.abs(CANON[b]-attackX));
-    const shadowIds = remMidSorted.slice(0, Math.min(shadowCount, remMidSorted.length));
-    if(shadowIds.length===2){
+    const nearCoverIds = remMidSorted.slice(0, Math.min(nearCoverCount, remMidSorted.length));
+    if(nearCoverIds.length===2){
       let x1=attackX-32, x2=attackX+32;
       const lo=55, hi=345;
       if(x1<lo){ const d=lo-x1; x1+=d; x2+=d; } else if(x2>hi){ const d=x2-hi; x1-=d; x2-=d; }
-      targets[shadowIds[0]]=[x1, 460+blockCount*5]; roles[shadowIds[0]]='shadow';
-      targets[shadowIds[1]]=[x2, 460+blockCount*5]; roles[shadowIds[1]]='shadow';
+      targets[nearCoverIds[0]]=[x1, 460+blockCount*5]; roles[nearCoverIds[0]]='nearcover';
+      targets[nearCoverIds[1]]=[x2, 460+blockCount*5]; roles[nearCoverIds[1]]='nearcover';
     } else {
-      shadowIds.forEach(id=>{ roles[id]='shadow'; targets[id]=[clip(attackX,55,345), 460+blockCount*5]; });
+      nearCoverIds.forEach(id=>{ roles[id]='nearcover'; targets[id]=[clip(attackX,55,345), 460+blockCount*5]; });
     }
-    remMid.filter(id=>!shadowIds.includes(id)).forEach(id=>{ roles[id]='trans'; targets[id]=[CANON[id],560]; });
+    remMid.filter(id=>!nearCoverIds.includes(id)).forEach(id=>{ roles[id]='trans'; targets[id]=[CANON[id],560]; });
 
     assignBackRoles(remBack, attackX, roles, targets);
     return {targets, roles, blockerIds};
@@ -917,8 +922,8 @@
   }
 
   function pickLanding(formation, attackX){
-    const shadowIds = Object.keys(formation.roles).filter(id=>formation.roles[id]==='shadow');
-    if(shadowIds.length) return formation.targets[shadowIds[0]];
+    const nearCoverIds = Object.keys(formation.roles).filter(id=>formation.roles[id]==='nearcover');
+    if(nearCoverIds.length) return formation.targets[nearCoverIds[0]];
     const freeIds = Object.keys(formation.roles).filter(id=>formation.roles[id]==='free'||formation.roles[id]==='ready');
     if(freeIds.length){
       freeIds.sort((a,b)=>Math.abs(formation.targets[a][0]-attackX)-Math.abs(formation.targets[b][0]-attackX));
@@ -946,18 +951,16 @@
   applyScenarioCustom('BACKA', 200, 'normal', false, true, 145, false);
 
   let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
-  let editMode=false, overrideMode=false, shadowMode=false;
+  let editMode=false, overrideMode=false;
   let editTeamFilter='all'; // 'all' | 'own' | 'opp' -- which team(s) are draggable during 시작 위치 편집
   let currentDuration = ATTACKS.L.duration;
   let current={}; IDS.forEach(id=> current[id]=CUSTOM_BASE[id].slice());
   let ballCurrent=null;
   let presets=[];
   let draggingId=null;
-  let shadowDrawing=false, shadowDrawStart=null, tempShadow=null;
   let BALL_OVERRIDES = {}; // key: scenario+'|'+blockCount -> [x,y] landing point override (only settable via room state import now; no in-app UI)
 
   const showArrows = ()=>document.getElementById('chkArrows').checked;
-  const showShadow = ()=>document.getElementById('chkShadow').checked;
   const showFans = ()=>document.getElementById('chkFans').checked;
 
   function comboKey(){ return scenario+'|'+blockCount; }
@@ -1140,12 +1143,12 @@
       text += "우리 팀은 블로킹 없이 9명 전원이 네트에서 한 걸음 물러나 넓고 고르게 수비 대형을 만듭니다.";
     } else {
       const blockerIds = f.blockerIds.slice().sort((a,b)=>a-b);
-      const shadowIds = IDS.filter(id=>f.roles[id]==='shadow');
+      const nearCoverIds = IDS.filter(id=>f.roles[id]==='nearcover');
       const lineId = IDS.find(id=>f.roles[id]==='line');
       const crossId = IDS.find(id=>f.roles[id]==='cross');
       const freeIds = IDS.filter(id=>f.roles[id]==='free');
       text += `${blockerIds.join('·')}번이 네트 앞에서 ${blockCount===1?'단독':blockCount+'인'} 블로킹을 합니다. `;
-      if(shadowIds.length) text += `${shadowIds.join('·')}번이 블로킹 바로 뒤 그림자 구역에서 짧게 떨어지는 공을 대비합니다. `;
+      if(nearCoverIds.length) text += `${nearCoverIds.join('·')}번이 블로킹 바로 뒤에서 짧게 떨어지는 공을 대비합니다. `;
       if(freeIds.length) text += `${freeIds.join('·')}번은 네트 앞 빈 공간을 지켜 짧은 공에 대비합니다. `;
       if(lineId && crossId) text += `${lineId}번은 라인, ${crossId}번은 크로스 코너를 맡아 깊은 공격에 대비합니다.`;
       if(atk.fakeContact) text += ' 처음엔 블로커가 속공(가짜 동작) 쪽으로 반응했다가, 진짜 공격이 나오면 자리를 재빠르게 고쳐야 해요.';
@@ -1153,8 +1156,8 @@
     const points = [];
     if(blockCount>0){ points.push(`${f.blockerIds.slice().sort((a,b)=>a-b).join('·')}번 블로킹 (${blockCount}인)`); }
     else { points.push('블로킹 없이 전원 수비'); }
-    const shadowIds2 = IDS.filter(id=>f.roles[id]==='shadow');
-    if(shadowIds2.length) points.push(`${shadowIds2.join('·')}번 그림자 커버`);
+    const nearCoverIds2 = IDS.filter(id=>f.roles[id]==='nearcover');
+    if(nearCoverIds2.length) points.push(`${nearCoverIds2.join('·')}번 근접 커버`);
     const lineId2 = IDS.find(id=>f.roles[id]==='line'), crossId2 = IDS.find(id=>f.roles[id]==='cross');
     if(lineId2 && crossId2) points.push(`${lineId2}번 라인 · ${crossId2}번 크로스`);
     if(atk.fakeContact) points.push('블로커가 페이크에 반응 후 재교정');
@@ -1177,7 +1180,7 @@
 
   // ---------- DOM element creation ----------
   const oppLayer=document.getElementById('oppLayer'), ownLayer=document.getElementById('ownLayer');
-  const shadowLayer=document.getElementById('shadowLayer'), fanLayer=document.getElementById('fanLayer');
+  const fanLayer=document.getElementById('fanLayer');
   const arrowLayer=document.getElementById('arrowLayer'), trailLayer=document.getElementById('trailLayer');
   const impactLayer=document.getElementById('impactLayer'), ballEl=document.getElementById('ball');
   const blockZoneLayer=document.getElementById('blockZoneLayer');
@@ -1232,14 +1235,6 @@
     });
   });
 
-  courtSvg.addEventListener('pointerdown', e=>{
-    if(!shadowMode) return;
-    shadowDrawStart = toSvgPoint(e); shadowDrawing=true;
-    tempShadow = {cx:shadowDrawStart[0], cy:shadowDrawStart[1], rx:6, ry:6};
-    try{ courtSvg.setPointerCapture(e.pointerId); }catch(err){}
-    render();
-  });
-
   courtSvg.addEventListener('pointermove', e=>{
     if((editMode||overrideMode) && draggingId!==null){
       const loc=toSvgPoint(e);
@@ -1260,21 +1255,10 @@
       render();
       return;
     }
-    if(shadowMode && shadowDrawing && shadowDrawStart){
-      const loc=toSvgPoint(e);
-      const cx=(shadowDrawStart[0]+loc[0])/2, cy=(shadowDrawStart[1]+loc[1])/2;
-      const rx=Math.max(10,Math.abs(loc[0]-shadowDrawStart[0])/2), ry=Math.max(10,Math.abs(loc[1]-shadowDrawStart[1])/2);
-      tempShadow={cx,cy,rx,ry};
-      render();
-    }
   });
   ['pointerup','pointercancel','pointerleave'].forEach(evt=>{
     courtSvg.addEventListener(evt, ()=>{
       draggingId=null;
-      if(shadowMode && shadowDrawing && tempShadow){
-        SHADOW_OVERRIDES[comboKey()] = tempShadow;
-      }
-      shadowDrawing=false; shadowDrawStart=null; tempShadow=null;
       render();
     });
   });
@@ -1390,50 +1374,6 @@
         c.setAttribute('stroke','#F2B705'); c.setAttribute('stroke-width', 2.5*(1-ip));
         c.style.opacity = 0.8*(1-ip);
         impactLayer.appendChild(c);
-      }
-    }
-
-    shadowLayer.innerHTML='';
-    const key = comboKey();
-    if(shadowMode){
-      const shapeToShow = tempShadow || SHADOW_OVERRIDES[key];
-      if(shapeToShow){
-        const e2=document.createElementNS(svgNS,'ellipse');
-        e2.setAttribute('cx',shapeToShow.cx); e2.setAttribute('cy',shapeToShow.cy);
-        e2.setAttribute('rx',shapeToShow.rx); e2.setAttribute('ry',shapeToShow.ry);
-        e2.setAttribute('fill','rgba(242,183,5,0.22)'); e2.setAttribute('stroke','#F2B705'); e2.setAttribute('stroke-width','2'); e2.setAttribute('stroke-dasharray','5 4');
-        shadowLayer.appendChild(e2);
-      }
-    } else if(showShadow()){
-      if(SHADOW_OVERRIDES[key]){
-        const s=SHADOW_OVERRIDES[key];
-        const e2=document.createElementNS(svgNS,'ellipse');
-        e2.setAttribute('cx',s.cx); e2.setAttribute('cy',s.cy); e2.setAttribute('rx',s.rx); e2.setAttribute('ry',s.ry);
-        e2.setAttribute('fill','rgba(242,183,5,0.18)'); e2.setAttribute('stroke','#F2B705'); e2.setAttribute('stroke-width','1.5'); e2.setAttribute('stroke-dasharray','4 4');
-        e2.style.opacity=Math.min(1,progress*1.6+0.15);
-        shadowLayer.appendChild(e2);
-      } else if(!isOur(scenario)){
-        const blockers=(f.blockerIds||[]).map(id=>current[id]);
-        if(blockers.length){
-          const xs=blockers.map(p=>p[0]);
-          const pad = blockers.length===1?42:16;
-          const xMin=Math.min(...xs)-pad, xMax=Math.max(...xs)+pad;
-          const yTop=384, yBot=384+progress*130+30;
-          const poly=document.createElementNS(svgNS,'polygon');
-          poly.setAttribute('points',`${xMin},${yTop} ${xMax},${yTop} ${xMax-8},${yBot} ${xMin+8},${yBot}`);
-          poly.setAttribute('fill','rgba(242,183,5,0.18)'); poly.setAttribute('stroke','#F2B705');
-          poly.setAttribute('stroke-width','1'); poly.setAttribute('stroke-dasharray','4 4');
-          poly.style.opacity=Math.min(1,progress*1.6);
-          shadowLayer.appendChild(poly);
-        }
-      } else if((f.oppBlockerIds||[]).length){
-        const landing=f.ballLanding;
-        const r=26+(f.oppBlockerIds.length>=2?20:0);
-        const c=document.createElementNS(svgNS,'circle');
-        c.setAttribute('cx',landing[0]); c.setAttribute('cy',landing[1]); c.setAttribute('r',r);
-        c.setAttribute('fill','rgba(242,183,5,0.18)'); c.setAttribute('stroke','#F2B705'); c.setAttribute('stroke-dasharray','4 4');
-        c.style.opacity=Math.min(1,progress*1.4);
-        shadowLayer.appendChild(c);
       }
     }
 
@@ -1646,7 +1586,7 @@
   });
 
   document.getElementById('btnPlay').addEventListener('click', ()=>{
-    if(editMode||overrideMode||shadowMode) return;
+    if(editMode||overrideMode) return;
     if(progress>=1) progress=0;
     playing=!playing; updatePlayBtn();
   });
@@ -1656,17 +1596,16 @@
     ballCurrent=null;
   });
   document.getElementById('timeline').addEventListener('input', e=>{
-    if(editMode||overrideMode||shadowMode) return;
+    if(editMode||overrideMode) return;
     playing=false; updatePlayBtn(); progress=Number(e.target.value)/100;
   });
-  ['chkArrows','chkShadow','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
+  ['chkArrows','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
 
   function setEditMode(mode){
-    editMode = mode==='edit'; overrideMode = mode==='override'; shadowMode = mode==='shadow';
+    editMode = mode==='edit'; overrideMode = mode==='override';
     playing=false; updatePlayBtn();
     if(editMode){ progress=0; IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice()); }
     if(overrideMode){ progress=1; const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice()); }
-    if(shadowMode){ document.getElementById('chkShadow').checked = true; progress=1; const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice()); }
     document.querySelectorAll('#editModeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
     document.getElementById('editTeamRow').style.display = editMode ? 'block' : 'none';
     document.getElementById('btnResetCurrent').disabled = (mode==='off');
@@ -1688,13 +1627,11 @@
   function setModeUI(){
     courtSvg.classList.toggle('edit-mode', editMode);
     courtSvg.classList.toggle('override-mode', overrideMode);
-    courtSvg.classList.toggle('shadow-mode', shadowMode);
-    const anyMode = editMode||overrideMode||shadowMode;
+    const anyMode = editMode||overrideMode;
     document.getElementById('btnPlay').disabled = anyMode;
     document.getElementById('timeline').disabled = anyMode;
     let hint;
     if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀 번호를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
-    else if(shadowMode) hint='코트 위를 드래그해 <b>블로킹 그림자 구역</b>을 직접 그릴 수 있어요. 다시 드래그하면 새로 그려집니다. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
     else if(editMode){
       const teamWord = editTeamFilter==='own' ? '아군' : editTeamFilter==='opp' ? '상대팀' : '아군·상대팀 전체';
       hint = `코트 위 ${teamWord} 점을 드래그해 <b>시작 위치</b>를 바꿀 수 있어요. 재생하면 이 위치에서 이동이 시작돼요.`;
@@ -1710,8 +1647,6 @@
     } else if(overrideMode){
       delete TARGET_OVERRIDES[comboKey()];
       const d=desiredOwnAt(1); IDS.forEach(id=>current[id]=d[id].slice());
-    } else if(shadowMode){
-      delete SHADOW_OVERRIDES[comboKey()];
     }
     render();
   });
@@ -1998,7 +1933,7 @@
       positions: POSITIONS, oppPositions: OPP_POSITIONS,
       customBase: CUSTOM_BASE, customOppBase: CUSTOM_OPP_BASE,
       presets: presets,
-      targetOverrides: TARGET_OVERRIDES, shadowOverrides: SHADOW_OVERRIDES, ballOverrides: BALL_OVERRIDES,
+      targetOverrides: TARGET_OVERRIDES, ballOverrides: BALL_OVERRIDES,
       attacks: JSON.parse(JSON.stringify(ATTACKS)), ourAttacks: JSON.parse(JSON.stringify(OUR_ATTACKS))
     };
   }
@@ -2011,7 +1946,6 @@
       if(state.customOppBase) CUSTOM_OPP_BASE = state.customOppBase;
       if(state.presets) presets = state.presets;
       if(state.targetOverrides) TARGET_OVERRIDES = state.targetOverrides;
-      if(state.shadowOverrides) SHADOW_OVERRIDES = state.shadowOverrides;
       if(state.ballOverrides) BALL_OVERRIDES = state.ballOverrides;
       if(state.attacks) Object.keys(state.attacks).forEach(k=>{ if(ATTACKS[k]) Object.assign(ATTACKS[k], state.attacks[k]); });
       if(state.ourAttacks) Object.keys(state.ourAttacks).forEach(k=>{ if(OUR_ATTACKS[k]) Object.assign(OUR_ATTACKS[k], state.ourAttacks[k]); });
