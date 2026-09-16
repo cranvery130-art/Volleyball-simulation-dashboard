@@ -175,15 +175,16 @@
   #settingsCol{ min-width:0; max-width:700px; margin:20px auto 0; width:100%; padding:0 20px; }
   #videoCol .card{ margin:0 auto; }
   #mainAppCol.mode-hidden, #videoCol.mode-hidden{ display:none; }
-  .mode-seg-wrap{ max-width:1400px; margin:0 auto 24px; padding:0 20px; display:flex; justify-content:center; align-items:center; gap:12px; }
+  .mode-seg-wrap{ max-width:1400px; margin:0 auto 24px; padding:0 20px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:12px; }
   .mode-seg-wrap .seg{
-    max-width:560px; width:100%; padding:6px; gap:4px;
+    max-width:720px; width:100%; padding:6px; gap:4px;
     background:linear-gradient(180deg, var(--panel), var(--panel-2));
     box-shadow:0 6px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
     border-color:var(--border);
   }
   .mode-seg-wrap .seg button{
-    padding:15px 12px; font-size:15.5px; font-weight:700; white-space:nowrap;
+    padding:14px 10px; font-size:14.5px; font-weight:700; white-space:nowrap;
+    display:flex; align-items:center; justify-content:center; gap:6px;
     transition:background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, transform 0.15s ease;
   }
   .mode-seg-wrap .seg button:not(.active):hover{ background:rgba(255,255,255,0.06); color:var(--text); }
@@ -191,6 +192,14 @@
     background:linear-gradient(135deg, #FFD450, var(--accent));
     box-shadow:0 3px 12px rgba(242,183,5,0.45);
   }
+  #btnLocalExit{
+    padding:14px 18px; font-size:14.5px; font-weight:700; white-space:nowrap;
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid rgba(239,74,74,0.4); color:#F2A9A9; border-radius:999px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+    transition:background 0.22s ease, color 0.22s ease;
+  }
+  #btnLocalExit:hover{ background:rgba(239,74,74,0.16); color:#fff; }
   .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; flex-wrap:wrap; }
   .record-row input[type=text]{ flex:1; min-width:0; padding:6px 8px; border-radius:7px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:12px; font-family:inherit; }
   .record-row .btn{ font-size:11.5px; padding:6px 8px; white-space:nowrap; }
@@ -463,7 +472,11 @@
         </div>
         <div class="field-note" style="margin-top:0;">폴더를 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
       </div>
-      <div class="preset-list" id="presetList"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
+      <label class="field-label">저장된 대형 불러오기</label>
+      <select id="presetLoadSelect">
+        <option value="">불러올 대형 선택...</option>
+      </select>
+      <div class="preset-list" id="presetList" style="margin-top:10px;"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
       <div class="edit-hint" id="autoSaveStatus"></div>
 
       <div id="editModeSection">
@@ -693,6 +706,25 @@
     <div class="edit-divider"></div>
     <h2 style="font-size:14px;">구성원 관리</h2>
     <div class="field-note" style="margin-top:0;">링크로 들어와서 이름을 적고 가입한 구성원 목록이에요. 포지션과 대회 출전 여부를 지정할 수 있고, 포지션별로 묶어서 보여줘요.</div>
+    <div id="memberFilters" style="margin-top:10px;">
+      <label class="field-label" style="margin-top:0;">성별 필터</label>
+      <div class="check-list" id="filterGenderRow">
+        <div class="check-row"><input type="checkbox" class="filterGender" value="남" checked><label>남</label></div>
+        <div class="check-row"><input type="checkbox" class="filterGender" value="여" checked><label>여</label></div>
+        <div class="check-row"><input type="checkbox" class="filterGender" value="" checked><label>미지정</label></div>
+      </div>
+      <label class="field-label">대회 출전 상태 필터</label>
+      <div class="check-list" id="filterStatusRow">
+        <div class="check-row"><input type="checkbox" class="filterStatus" value="코치" checked><label>코치</label></div>
+        <div class="check-row"><input type="checkbox" class="filterStatus" value="주전" checked><label>주전</label></div>
+        <div class="check-row"><input type="checkbox" class="filterStatus" value="후보" checked><label>후보</label></div>
+        <div class="check-row"><input type="checkbox" class="filterStatus" value="무관" checked><label>무관</label></div>
+      </div>
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn" id="btnFilterSelectAll">전체 선택</button>
+        <button class="btn" id="btnFilterDeselectAll">전체 해제</button>
+      </div>
+    </div>
     <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
 
     <div class="edit-divider"></div>
@@ -1652,6 +1684,9 @@
   let activePreset = null; // the preset object currently loaded, so re-saving with the same name/folder updates it in place
 
   function loadPreset(p){
+    if(p.scenario && p.scenario!==scenario && (ATTACKS[p.scenario]||OUR_ATTACKS[p.scenario])){
+      switchScenario(p.scenario); // make sure the actual saved-for scenario plays, not whatever was showing before
+    }
     IDS.forEach(id=>{ CUSTOM_BASE[id]=p.base[id].slice(); });
     if(p.oppBase) Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ if(p.oppBase[id]) CUSTOM_OPP_BASE[id]=p.oppBase[id].slice(); });
     activePreset = p;
@@ -1669,6 +1704,21 @@
   function renderPresets(){
     const list=document.getElementById('presetList');
     list.innerHTML='';
+
+    // dropdown for quickly loading any saved preset, grouped by folder
+    const loadSelect = document.getElementById('presetLoadSelect');
+    loadSelect.innerHTML = '<option value="">불러올 대형 선택...</option>';
+    const byFolder = {};
+    presets.forEach((p,idx)=>{ const f=p.folder||'(폴더 없음)'; if(!byFolder[f]) byFolder[f]=[]; byFolder[f].push(idx); });
+    Object.keys(byFolder).sort((a,b)=>a==='(폴더 없음)'?1:b==='(폴더 없음)'?-1:a.localeCompare(b)).forEach(folderName=>{
+      const grp = document.createElement('optgroup'); grp.label = '📁 '+folderName;
+      byFolder[folderName].forEach(idx=>{
+        const opt=document.createElement('option'); opt.value=idx; opt.textContent=presets[idx].name;
+        grp.appendChild(opt);
+      });
+      loadSelect.appendChild(grp);
+    });
+
     const folderSelect=document.getElementById('presetFolderSelect');
     const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f))).sort((a,b)=>a.localeCompare(b));
     const currentFolderValue = document.getElementById('presetFolder').value;
@@ -1868,6 +1918,14 @@
     document.getElementById('presetFolder').value = e.target.value.trim();
   });
 
+  document.getElementById('presetLoadSelect').addEventListener('change', e=>{
+    const idx = e.target.value;
+    if(idx==='') return;
+    const p = presets[Number(idx)];
+    if(p) loadPreset(p);
+    e.target.value = ''; // reset to placeholder so re-selecting the same item still fires change
+  });
+
   document.getElementById('btnSavePreset').addEventListener('click', ()=>{
     const input=document.getElementById('presetName');
     const folderInput=document.getElementById('presetFolder');
@@ -1879,8 +1937,8 @@
     // otherwise fall back to matching by name, or create a brand-new entry.
     let target = (activePreset && activePreset.name===name && (activePreset.folder||'')===folder) ? activePreset : null;
     if(!target) target = presets.find(p=>p.name===name && (p.folder||'')===folder);
-    if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; activePreset=target; }
-    else { const created={name, folder, base:baseCopy, oppBase:oppCopy}; presets.push(created); activePreset=created; }
+    if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; target.scenario=scenario; activePreset=target; }
+    else { const created={name, folder, base:baseCopy, oppBase:oppCopy, scenario}; presets.push(created); activePreset=created; }
     renderPresets();
     updateTexts();
     scheduleAutoSave();
@@ -2300,16 +2358,28 @@
 
   const MEMBER_STATUS_OPTIONS = ['무관','코치','주전','후보'];
 
+  function getMemberFilter(){
+    const genders = Array.from(document.querySelectorAll('.filterGender:checked')).map(el=>el.value);
+    const statuses = Array.from(document.querySelectorAll('.filterStatus:checked')).map(el=>el.value);
+    return {genders, statuses};
+  }
+
   function renderMemberList(){
     const wrap = document.getElementById('memberList');
     if(!wrap) return;
     wrap.innerHTML = '';
     if(!roomMembers.length){ wrap.innerHTML = '<span class="preset-empty">아직 링크로 들어와서 이름을 적은 구성원이 없어요.</span>'; return; }
 
+    const filter = getMemberFilter();
+    const visibleMembers = roomMembers.filter(m=>
+      filter.genders.includes(m.gender||'') && filter.statuses.includes(m.status||'무관')
+    );
+    if(!visibleMembers.length){ wrap.innerHTML = '<span class="preset-empty">필터에 해당하는 구성원이 없어요.</span>'; return; }
+
     // group members by their assigned position (position label, or "포지션 미지정")
     const groups = {};
     const order = [];
-    roomMembers.forEach(m=>{
+    visibleMembers.forEach(m=>{
       const key = m.position && POS_LABEL[m.position] ? m.position : '';
       const label = key ? POS_LABEL[key] : '포지션 미지정';
       if(!groups[label]){ groups[label]=[]; order.push(label); }
@@ -2325,8 +2395,17 @@
       const list = document.createElement('div'); list.style.display='flex'; list.style.flexDirection='column'; list.style.gap='8px'; list.style.marginTop='6px';
       groups[groupLabel].forEach(m=>{
         const row = document.createElement('div'); row.className='record-row';
-        const label = document.createElement('span'); label.style.flex='1 1 100px'; label.textContent = `${m.name} — ${roleLabel(m.role)} · ${m.status||'무관'}`;
+        const label = document.createElement('span'); label.style.flex='1 1 100px'; label.textContent = `${m.name}${m.gender?' ('+m.gender+')':''} — ${roleLabel(m.role)} · ${m.status||'무관'}`;
         row.appendChild(label);
+
+        const genderSel = document.createElement('select'); genderSel.style.width='auto'; genderSel.style.flex='0 0 auto';
+        [['','미지정'],['남','남'],['여','여']].forEach(([val,text])=>{
+          const opt=document.createElement('option'); opt.value=val; opt.textContent=text;
+          if((m.gender||'')===val) opt.selected=true;
+          genderSel.appendChild(opt);
+        });
+        genderSel.addEventListener('change', ()=> updateMember(m.id, {gender: genderSel.value}));
+        row.appendChild(genderSel);
 
         const posSel = document.createElement('select'); posSel.style.width='auto'; posSel.style.flex='0 0 auto';
         const noneOpt=document.createElement('option'); noneOpt.value=''; noneOpt.textContent='포지션 없음'; posSel.appendChild(noneOpt);
@@ -2406,6 +2485,18 @@
     }catch(err){ if(statusEl) statusEl.textContent = '업데이트에 실패했어요: ' + errText(err); }
   }
 
+  document.querySelectorAll('.filterGender, .filterStatus').forEach(cb=>{
+    cb.addEventListener('change', renderMemberList);
+  });
+  document.getElementById('btnFilterSelectAll').addEventListener('click', ()=>{
+    document.querySelectorAll('.filterGender, .filterStatus').forEach(cb=>cb.checked=true);
+    renderMemberList();
+  });
+  document.getElementById('btnFilterDeselectAll').addEventListener('click', ()=>{
+    document.querySelectorAll('.filterGender, .filterStatus').forEach(cb=>cb.checked=false);
+    renderMemberList();
+  });
+
   document.getElementById('btnSkipLogin').addEventListener('click', ()=>{
     enterApp(null, null, null);
   });
@@ -2463,7 +2554,7 @@
         if(!member){
           let name = (prompt('이름을 입력해주세요 (개설자가 구성원 목록에서 알아볼 수 있어요):') || '').trim().slice(0,20);
           if(!name) name = '이름 없음';
-          member = {id:newMemberId(), name, role:'view', position:'', status:'무관'};
+          member = {id:newMemberId(), name, role:'view', position:'', status:'무관', gender:''};
           room.members.push(member);
           await Backend.set(roomKey(code), JSON.stringify(room));
         }
