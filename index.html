@@ -28,7 +28,6 @@
     .card{ padding:13px; }
     .btn-row .btn{ min-width:0; flex-basis:100%; }
     .check-row input, .pos-item .num{ width:18px; height:18px; }
-    #visualAidsCard{ max-width:none; }
   }
   @media (max-width:700px){
     .own-dot circle.body{ r:16px; }
@@ -66,7 +65,13 @@
   .check-row input{ width:16px; height:16px; accent-color:var(--accent); cursor:pointer; }
   .check-row label{ cursor:pointer; }
   .check-list{ display:flex; flex-wrap:wrap; gap:4px 24px; }
-  #visualAidsCard{ align-self:flex-start; max-width:640px; width:100%; }
+  .desc-with-aids{ display:flex; gap:22px; flex-wrap:wrap; margin-top:6px; }
+  .desc-main{ flex:1 1 300px; min-width:0; }
+  .desc-aids{ flex:0 0 230px; border-left:1px solid var(--border); padding-left:18px; }
+  .desc-aids .check-list{ flex-direction:column; gap:6px; }
+  @media (max-width:700px){
+    .desc-aids{ flex-basis:100%; border-left:none; padding-left:0; border-top:1px solid var(--border); padding-top:10px; margin-top:4px; }
+  }
 
   .legend{ display:flex; flex-wrap:wrap; gap:8px 18px; font-size:12.5px; color:var(--text-dim); }
   .legend.stage-legend{ margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
@@ -185,6 +190,19 @@
   .login-input{ width:100%; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-size:14px; font-family:inherit; margin-top:4px; }
   .login-status{ font-size:12.5px; color:var(--accent); margin-top:10px; min-height:1.2em; text-align:center; }
   #settingsCodeLabel, #settingsRoleLabel{ color:var(--text); }
+  @media (min-width:1600px){
+    .app{ max-width:1900px; }
+    .column{
+      display:grid;
+      grid-template-columns: 300px minmax(0,1fr) 340px;
+      align-items:start;
+      gap:20px;
+    }
+    .column > *{ grid-column:2; }
+    #cardPresets, #cardAttack{ grid-row:1/-1; position:sticky; top:16px; align-self:start; max-height:calc(100vh - 32px); overflow-y:auto; }
+    #cardPresets{ grid-column:1; }
+    #cardAttack{ grid-column:3; }
+  }
 </style>
 <!-- ======================================================================
      FIREBASE 연결 설정
@@ -300,7 +318,7 @@
         <div id="coverNote" class="note-box" style="display:none;">이 상황에서는 <b>상대 팀의 블로킹 인원</b>을 의미해요. 상대가 많이 막을수록 우리 팀은 더 촘촘하게 커버해야 해요.</div>
       </div>
 
-      <div class="card">
+      <div class="card" id="cardAttack">
         <h2><span class="n">03</span>공격 상황</h2>
         <label class="field-label" for="scenarioSelect">어떤 상황을 살펴볼까요?</label>
         <select id="scenarioSelect">
@@ -386,7 +404,7 @@
         </div>
       </div>
 
-    <div class="card">
+    <div class="card" id="cardPresets">
       <h2><span class="n">04</span>대형 저장 &amp; 편집</h2>
 
       <div class="preset-input-row">
@@ -492,16 +510,19 @@
 
     <div class="card">
       <div class="desc-block" id="descBlockTag">상대 좌측(L) 오픈 공격 · 2인 블로킹</div>
-      <p class="desc-text" id="descText"></p>
-      <ul class="points" id="descPoints"></ul>
-    </div>
-
-    <div class="card" id="visualAidsCard">
-      <h2><span class="n">05</span>시각 보조</h2>
-      <div class="check-list">
-        <div class="check-row"><input type="checkbox" id="chkArrows"><label for="chkArrows">이동 동선(화살표) 표시</label></div>
-        <div class="check-row"><input type="checkbox" id="chkShadow"><label for="chkShadow">블로킹 그림자(공격 제한 구역) 표시</label></div>
-        <div class="check-row"><input type="checkbox" id="chkFans"><label for="chkFans">수비수별 커버리지 영역(부채꼴) · 네트 앞 블로킹 범위 표시</label></div>
+      <div class="desc-with-aids">
+        <div class="desc-main">
+          <p class="desc-text" id="descText"></p>
+          <ul class="points" id="descPoints"></ul>
+        </div>
+        <div class="desc-aids">
+          <div class="field-label" style="margin-top:0;">시각 보조</div>
+          <div class="check-list">
+            <div class="check-row"><input type="checkbox" id="chkArrows"><label for="chkArrows">이동 동선(화살표) 표시</label></div>
+            <div class="check-row"><input type="checkbox" id="chkShadow"><label for="chkShadow">블로킹 그림자(공격 제한 구역) 표시</label></div>
+            <div class="check-row"><input type="checkbox" id="chkFans"><label for="chkFans">수비수별 커버리지 영역(부채꼴) · 네트 앞 블로킹 범위 표시</label></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -629,11 +650,12 @@
   const QUICK_TYPES = ['QA','QBACKA','FRONTSLIDE','BACKSLIDE'];
   const WING_TYPES = ['LEFT','RIGHT'];
   const BACK_TYPES = ['LBACK','CBACK','RBACK']; // libero-equivalent: never block
-  let POSITIONS = {1:'LEFT',2:'QA',3:'RIGHT',4:'FRONTSLIDE',5:'SETTER',6:'BACKSLIDE',7:'LBACK',8:'CBACK',9:'RBACK'};
+  let POSITIONS = {1:'LEFT',2:'SETTER',3:'RIGHT',4:'QA',5:'FRONTSLIDE',6:'BACKSLIDE',7:'LBACK',8:'CBACK',9:'RBACK'};
   const DEFAULT_POSITIONS = Object.assign({}, POSITIONS); // frozen snapshot: used for fixed landing zones so they never move
   // opponent faces the net in the opposite direction from us, so their LEFT/RIGHT (and side-back zones)
   // are mirrored left-right relative to screen columns compared to our own team's default mapping.
-  let OPP_POSITIONS = {a:'RIGHT',b:'QA',c:'LEFT',d:'BACKSLIDE',e:'SETTER',f:'FRONTSLIDE',g:'RBACK',h:'CBACK',i:'LBACK'};
+  // Non-directional roles (SETTER/QA/FRONTSLIDE/BACKSLIDE/CBACK) use the SAME number as our team.
+  let OPP_POSITIONS = {a:'RIGHT',b:'SETTER',c:'LEFT',d:'QA',e:'FRONTSLIDE',f:'BACKSLIDE',g:'RBACK',h:'CBACK',i:'LBACK'};
   const DEFAULT_OPP_POSITIONS = Object.assign({}, OPP_POSITIONS); // frozen snapshot: used for fixed landing zones
   function resolveOppByPos(pos, fallback){
     const found = Object.keys(OPP_POSITIONS).find(id=>OPP_POSITIONS[id]===pos);
