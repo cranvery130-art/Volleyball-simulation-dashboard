@@ -28,7 +28,9 @@
     .card{ padding:13px; }
     .btn-row .btn{ min-width:0; flex-basis:100%; }
     .check-row input, .pos-item .num{ width:18px; height:18px; }
-    .mode-seg-wrap .seg button{ font-size:12.5px; padding:13px 4px; }
+    .mode-seg-wrap{ padding:8px 12px; }
+    .tab-bar button{ font-size:12px; padding:8px 10px; }
+    .code-pill{ font-size:11.5px; padding:6px 10px; }
   }
   @media (max-width:700px){
     .own-dot circle.body{ r:16px; }
@@ -174,30 +176,26 @@
   #videoCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; }
   #settingsCol{ min-width:0; max-width:700px; margin:20px auto 0; width:100%; padding:0 20px; }
   #videoCol .card{ margin:0 auto; }
-  #mainAppCol.mode-hidden, #videoCol.mode-hidden{ display:none; }
-  .mode-seg-wrap{ max-width:1400px; margin:0 auto 24px; padding:0 20px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:12px; }
-  .mode-seg-wrap .seg{
-    max-width:720px; width:100%; padding:6px; gap:4px;
-    background:linear-gradient(180deg, var(--panel), var(--panel-2));
-    box-shadow:0 6px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
-    border-color:var(--border);
+  #mainAppCol.mode-hidden, #videoCol.mode-hidden, #settingsCol.mode-hidden{ display:none; }
+  .mode-seg-wrap{
+    max-width:1400px; margin:0 auto 24px; padding:10px 16px; display:flex; flex-wrap:wrap; align-items:center; gap:12px;
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.22);
   }
-  .mode-seg-wrap .seg button{
-    padding:14px 10px; font-size:14.5px; font-weight:700; white-space:nowrap;
-    display:flex; align-items:center; justify-content:center; gap:6px;
-    transition:background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, transform 0.15s ease;
+  .code-pill{ padding:8px 14px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; font-size:12.5px; color:var(--text-dim); white-space:nowrap; }
+  .code-pill b{ color:var(--text); }
+  .tab-bar{ display:flex; flex-wrap:wrap; gap:4px; flex:1; }
+  .tab-bar button{
+    display:flex; align-items:center; gap:6px; padding:9px 14px; border:none; background:transparent;
+    color:var(--text-dim); font-size:13.5px; font-weight:600; font-family:inherit; white-space:nowrap;
+    border-radius:10px; cursor:pointer; transition:background 0.2s ease, color 0.2s ease;
   }
-  .mode-seg-wrap .seg button:not(.active):hover{ background:rgba(255,255,255,0.06); color:var(--text); }
-  .mode-seg-wrap .seg button.active{
-    background:linear-gradient(135deg, #FFD450, var(--accent));
-    box-shadow:0 3px 12px rgba(242,183,5,0.45);
-  }
+  .tab-bar button:not(.active):hover{ background:rgba(255,255,255,0.06); color:var(--text); }
+  .tab-bar button.active{ background:var(--accent); color:#241b02; }
   #btnLocalExit{
-    padding:14px 18px; font-size:14.5px; font-weight:700; white-space:nowrap;
-    background:linear-gradient(180deg, var(--panel), var(--panel-2));
-    border:1px solid rgba(239,74,74,0.4); color:#F2A9A9; border-radius:999px;
-    box-shadow:0 6px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
-    transition:background 0.22s ease, color 0.22s ease;
+    padding:9px 16px; font-size:13.5px; font-weight:600; white-space:nowrap;
+    background:transparent; border:1px solid rgba(239,74,74,0.4); color:#F2A9A9; border-radius:10px;
+    transition:background 0.2s ease, color 0.2s ease;
   }
   #btnLocalExit:hover{ background:rgba(239,74,74,0.16); color:#fff; }
   .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; flex-wrap:wrap; }
@@ -312,7 +310,8 @@
 
 <div id="desktopSplit">
 <div class="mode-seg-wrap">
-  <div class="seg" id="appModeSeg">
+  <div class="code-pill" id="topCodePill">코드: <b id="topCodeLabel">-</b></div>
+  <div class="tab-bar" id="appModeSeg">
     <button data-appmode="sim" class="active">🏐 전술 시뮬레이션</button>
     <button data-appmode="video">🎥 경기 영상 분석</button>
     <button data-appmode="settings" id="btnModeSettings" style="display:none;">⚙️ 설정</button>
@@ -346,19 +345,6 @@
         </div>
       </div>
     </div>
-
-    <div class="card">
-      <h2><span class="n">02</span>블로킹 인원</h2>
-        <div class="seg" id="blockSeg">
-          <button data-block="4">4인</button>
-          <button data-block="3">3인</button>
-          <button data-block="2" class="active">2인</button>
-          <button data-block="1">1인</button>
-          <button data-block="0">없음</button>
-        </div>
-        <div class="field-note">9인제는 인원이 많아 최대 4명까지 블로킹에 가담할 수 있어요.</div>
-        <div id="coverNote" class="note-box" style="display:none;">이 상황에서는 <b>상대 팀의 블로킹 인원</b>을 의미해요. 상대가 많이 막을수록 우리 팀은 더 촘촘하게 커버해야 해요.</div>
-      </div>
 
       
 
@@ -453,9 +439,7 @@
 
       <div id="presetEditControls">
         <label class="field-label">시나리오별 대형</label>
-        <select id="presetScenarioPick">
-          <option value="">직접 이름 입력...</option>
-        </select>
+        <select id="presetScenarioPick"></select>
 
         <div class="edit-divider"></div>
         <label class="field-label" style="margin-top:0;">폴더</label>
@@ -473,15 +457,23 @@
         <div class="edit-divider"></div>
         <button class="btn" id="btnPresetInfoToggle" style="width:100%;">ℹ️ 참고사항 ▾</button>
         <div id="presetInfoPanel" class="note-box" style="display:none; margin-top:8px;">
-          <p style="margin:0 0 8px;"><b>시나리오별 대형</b> — 목록에서 고르면 그 상황으로 바로 전환되고, 이름·폴더 칸이 자동으로 채워져요. 이미 저장된 상황이면 바로 불러와요. 아래에서 도트를 편집하고 저장하면 이 상황의 대형으로 저장돼요. 목록에 없는 걸 더 만들고 싶으면 "직접 이름 입력..."을 고른 채로 아래 이름 칸에 적어 저장하세요.</p>
+          <p style="margin:0 0 8px;"><b>시나리오별 대형</b> — 목록에서 고르면 그 상황으로 바로 전환돼요. 이미 저장된 상황이면 자동으로 불러오고, 없으면 이름·폴더 칸이 채워져서 바로 저장할 수 있어요.</p>
           <p style="margin:0;"><b>폴더</b> — 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</p>
         </div>
       </div>
-      <label class="field-label">저장된 대형 불러오기</label>
-      <select id="presetLoadSelect">
-        <option value="">불러올 대형 선택...</option>
-      </select>
-      <div class="preset-list" id="presetList" style="margin-top:10px;"><span class="preset-empty">저장된 시작 대형이 없어요</span></div>
+      <div style="display:flex; align-items:flex-end; gap:8px; margin-top:0;">
+        <div style="flex:1;">
+          <label class="field-label">저장된 대형 불러오기</label>
+          <select id="presetLoadSelect">
+            <option value="">불러올 대형 선택...</option>
+          </select>
+        </div>
+        <button class="btn" id="btnPresetSearchToggle" title="폴더 검색" style="flex:none;">🔍 찾기</button>
+      </div>
+      <div id="presetSearchBox" style="display:none; margin-top:8px;">
+        <input type="text" id="presetSearchInput" class="login-input" placeholder="폴더 이름으로 검색 (예: 위드나인)" style="margin-top:0;">
+        <div class="preset-list" id="presetList" style="margin-top:10px;"></div>
+      </div>
       <div class="edit-hint" id="autoSaveStatus"></div>
 
       <div id="editModeSection">
@@ -520,29 +512,9 @@
     </div>
 <div class="card" id="cardAttack">
         <h2><span class="n">03</span>공격 상황</h2>
-        <label class="field-label" for="scenarioSelect">어떤 상황을 살펴볼까요?</label>
-        <select id="scenarioSelect">
-          <optgroup label="상대 공격 → 우리 팀 수비">
-            <option value="L">상대 좌측(L) 오픈 공격</option>
-            <option value="C">상대 중앙(C) 속공</option>
-            <option value="R">상대 우측(R) 공격</option>
-            <option value="TIMEDIFF">시간차 공격 (페이크 포함)</option>
-            <option value="BACKSLIDE">빽차 공격 (백슬라이드)</option>
-            <option value="BACKA">빽A 공격 (빽토스)</option>
-          </optgroup>
-          <optgroup label="우리 팀 공격 → 리시브·토스 커버">
-            <option value="OUR_L">좌측(L) 공격 시 커버</option>
-            <option value="OUR_C">중앙(C) 속공 시 커버</option>
-            <option value="OUR_R">우측(R) 공격 시 커버</option>
-            <option value="OUR_TIMEDIFF">시간차 공격 시 커버</option>
-            <option value="OUR_BACKSLIDE">빽차 공격 시 커버</option>
-            <option value="OUR_BACKA">빽A 공격 시 커버</option>
-          </optgroup>
-        </select>
 
         <div id="attackCustomControls">
-        <button class="btn primary" id="btnCustomToggle" style="width:100%; margin-top:10px;">공격 상황 직접 설정 ▾</button>
-        <div id="customPanel" style="display:none; margin-top:10px;">
+        <div id="customPanel" style="margin-top:10px;">
           <label class="field-label">공격 위치</label>
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
@@ -1011,6 +983,7 @@
     { const lo=45, hi=355; const mn=Math.min(...oppSlots), mx=Math.max(...oppSlots);
       let sh=0; if(mn<lo) sh=lo-mn; else if(mx>hi) sh=hi-mx;
       oppSlots = oppSlots.map(s=>s+sh); }
+    oppBlockerIds.forEach((id,i)=>{ targets[id]=[oppSlots[i], 345]; }); // stored in the same targets object as our own IDs so the override system (drag-in-zone) can reach them too
     const landing = blockCount>0 ? [clip(attackX+16,50,350), 460+blockCount*14] : [clip(attackX+30,50,350),130];
     return {targets, roles, blockerIds:[], oppBlockerIds, oppSlots, ballLanding:landing, attackerId, setterId, fakeAttackerId, receiverId, attackX};
   }
@@ -1058,7 +1031,7 @@
   const showArrows = ()=>document.getElementById('chkArrows').checked;
   const showFans = ()=>document.getElementById('chkFans').checked;
 
-  function comboKey(){ return scenario+'|'+blockCount; }
+  function comboKey(){ return scenario; } // block count is no longer a separate configurable axis — it's derived from where dots actually sit
 
   const BLOCK_REACH = 34; // half-width of a blocker's effective reach along the net, in court units
   const NET_Y = 380;
@@ -1110,8 +1083,27 @@
     const ballOv = BALL_OVERRIDES[comboKey()];
     if(ballOv) f.ballLanding = ballOv;
     if(!isOur(scenario)){
+      // Blocking is no longer a separate number you pick — it's derived from where the dots actually
+      // sit. Anyone whose (possibly dragged) final spot lands in the net-side blocking zone acts as a
+      // blocker; drag someone in or out and they will (or won't) participate, live.
+      const derivedBlockerIds = IDS.filter(id => f.targets[id] && f.targets[id][1]>=378 && f.targets[id][1]<=415);
+      const oldBlockerSet = new Set(f.blockerIds);
+      const newBlockerSet = new Set(derivedBlockerIds);
+      IDS.forEach(id=>{
+        if(newBlockerSet.has(id) && !oldBlockerSet.has(id)) f.roles[id]='block';
+        else if(!newBlockerSet.has(id) && oldBlockerSet.has(id)) f.roles[id]='trans';
+      });
+      f.blockerIds = derivedBlockerIds;
+      blockCount = f.blockerIds.length;
       f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
       if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+    } else {
+      // same idea, mirrored: which opponent letters end up in THEIR near-net zone (after any drag
+      // override) are the ones who actually block our attack — identical rule to our own team's side.
+      const derivedOppBlockerIds = Object.keys(ORIGINAL_OPP_BASE).filter(id => f.targets[id] && f.targets[id][1]>=25 && f.targets[id][1]<=378);
+      f.oppBlockerIds = derivedOppBlockerIds.sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
+      f.oppSlots = f.oppBlockerIds.map(id=>f.targets[id][0]);
+      blockCount = f.oppBlockerIds.length;
     }
     return f;
   }
@@ -1276,10 +1268,7 @@
     sel.appendChild(g1); sel.appendChild(g2);
   })();
   document.getElementById('presetScenarioPick').addEventListener('change', e=>{
-    const key = e.target.value;
-    if(!key) return; // "직접 이름 입력" — leave fields as-is for a custom preset
-    pickScenario(key);
-    e.target.value = ''; // reset to the placeholder so picking the same scenario again still fires a change
+    pickScenario(e.target.value);
   });
 
   function describeCustomChanges(){
@@ -1361,7 +1350,6 @@
     document.getElementById('descText').textContent = d.text;
     const ul = document.getElementById('descPoints'); ul.innerHTML='';
     d.points.forEach(pt=>{ const li=document.createElement('li'); li.textContent=pt; ul.appendChild(li); });
-    document.getElementById('coverNote').style.display = isOur(scenario) ? 'block':'none';
   }
 
   // ---------- DOM element creation ----------
@@ -1395,10 +1383,13 @@
     oppLayer.appendChild(g); oppLabelLayer.appendChild(text); oppEls[id]={g,ring,dring,sring,body,text};
 
     g.addEventListener('pointerdown', e=>{
-      if(!editMode) return;
-      if(editTeamFilter==='own') return;
-      draggingId=id; g.setPointerCapture(e.pointerId);
-      e.preventDefault(); e.stopPropagation();
+      if(editMode && editTeamFilter!=='own'){
+        draggingId=id; g.setPointerCapture(e.pointerId);
+        e.preventDefault(); e.stopPropagation();
+      } else if(overrideMode && isOur(scenario)){
+        draggingId=id; g.setPointerCapture(e.pointerId);
+        e.preventDefault(); e.stopPropagation();
+      }
     });
   });
 
@@ -1432,12 +1423,14 @@
         const x=clip(loc[0],40,360), y=clip(loc[1],392,735);
         CUSTOM_BASE[draggingId]=[x,y]; current[draggingId]=[x,y];
       } else if(overrideMode){
-        const x=clip(loc[0],40,360), y=clip(loc[1],392,735);
+        const isOppDrag = Object.prototype.hasOwnProperty.call(CUSTOM_OPP_BASE, draggingId);
+        const x=clip(loc[0],40,360);
+        const y = isOppDrag ? clip(loc[1],25,378) : clip(loc[1],392,735);
         const key=comboKey();
         const store = (overridePhase==='fake') ? FAKE_TARGET_OVERRIDES : TARGET_OVERRIDES;
         if(!store[key]) store[key]={};
         store[key][draggingId]=[x,y];
-        current[draggingId]=[x,y];
+        if(!isOppDrag) current[draggingId]=[x,y];
       }
       render();
       return;
@@ -1472,14 +1465,14 @@
         el.dring.style.opacity=0; el.sring.style.opacity=0;
         const dp=toDisplay(base); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
       });
-      (f.oppBlockerIds||[]).forEach((id,i)=>{
-        const el=oppEls[id]; const x=f.oppSlots[i]; const jump=-10*Math.sin(Math.PI*Math.min(progress/0.5,1));
-        const y=345+jump;
+      (f.oppBlockerIds||[]).forEach(id=>{
+        const el=oppEls[id]; const jump=-10*Math.sin(Math.PI*Math.min(progress/0.5,1));
+        const x=f.targets[id][0], y=f.targets[id][1]+jump;
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
         el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
         el.ring.style.opacity=1; el.ring.style.animation='pulseRing 1.4s ease-in-out infinite';
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
-        if(y>=345 && y<=382) nearNetPlayers.push({x, side:'opp'});
+        if(y>=25 && y<=378) nearNetPlayers.push({x, side:'opp'});
       });
     } else {
       const atk = ATTACKS[scenario];
@@ -1735,14 +1728,27 @@
     const newOpt=document.createElement('option'); newOpt.value='__new__'; newOpt.textContent='+ 새 폴더 만들기...'; folderSelect.appendChild(newOpt);
     folderSelect.value = isCreatingNew ? '__new__' : (folderNames.includes(currentFolderValue) ? currentFolderValue : '');
 
+    if(presets.length===0){ /* nothing saved yet — search results function will show its own empty message */ }
+    renderPresetSearchResults();
+  }
+
+  function renderPresetSearchResults(){
+    const list=document.getElementById('presetList');
+    list.innerHTML='';
+    const box = document.getElementById('presetSearchBox');
+    if(box.style.display==='none') return; // collapsed — don't render anything until the user opens the search
+    const query = document.getElementById('presetSearchInput').value.trim().toLowerCase();
+    if(!query){ list.innerHTML='<span class="preset-empty">폴더 이름을 입력해서 검색해보세요.</span>'; return; }
     if(presets.length===0){ list.innerHTML='<span class="preset-empty">저장된 시작 대형이 없어요</span>'; return; }
 
     const groups = {}; const order = [];
     presets.forEach((p,idx)=>{
       const key = p.folder || '';
+      if(!key.toLowerCase().includes(query)) return; // only folders matching the search
       if(!groups[key]){ groups[key]=[]; order.push(key); }
       groups[key].push({p, idx});
     });
+    if(!order.length){ list.innerHTML='<span class="preset-empty">일치하는 폴더가 없어요.</span>'; return; }
     order.sort((a,b)=> a===''?1 : b===''?-1 : a.localeCompare(b));
 
     order.forEach(folderKey=>{
@@ -1778,7 +1784,9 @@
   // ---------- UI wiring ----------
   function switchScenario(key){
     scenario=key;
-    document.getElementById('scenarioSelect').value = key;
+    document.getElementById('presetScenarioPick').value = key;
+    document.getElementById('customTargetSelect').value = key;
+    syncCustomPanelToScenario(key);
     currentDuration = isOur(scenario) ? OUR_ATTACKS[scenario].duration : ATTACKS[scenario].duration;
     progress=0; playing=false; updatePlayBtn();
     IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
@@ -1789,7 +1797,7 @@
 
   const scenarioTitleEl = document.getElementById('scenarioTitle');
   function openScenarioPicker(){
-    const sel = document.getElementById('scenarioSelect');
+    const sel = document.getElementById('presetScenarioPick');
     if(typeof sel.showPicker === 'function'){
       try{ sel.showPicker(); return; }catch(err){}
     }
@@ -1798,23 +1806,6 @@
   scenarioTitleEl.addEventListener('click', openScenarioPicker);
   scenarioTitleEl.addEventListener('keydown', e=>{
     if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openScenarioPicker(); }
-  });
-
-  document.getElementById('scenarioSelect').addEventListener('change', e=>{
-    switchScenario(e.target.value);
-    if(document.getElementById('customPanel').style.display!=='none'){
-      document.getElementById('customTargetSelect').value = e.target.value;
-      syncCustomPanelToScenario(e.target.value);
-    }
-  });
-
-  document.querySelectorAll('#blockSeg button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#blockSeg button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      blockCount=Number(btn.dataset.block);
-      updateTexts();
-    });
   });
 
   document.getElementById('btnPlay').addEventListener('click', ()=>{
@@ -1924,6 +1915,15 @@
     document.getElementById('presetFolder').value = e.target.value.trim();
   });
 
+  document.getElementById('btnPresetSearchToggle').addEventListener('click', ()=>{
+    const box = document.getElementById('presetSearchBox');
+    const showing = box.style.display!=='none';
+    box.style.display = showing ? 'none' : 'block';
+    if(!showing) document.getElementById('presetSearchInput').focus();
+    renderPresetSearchResults();
+  });
+  document.getElementById('presetSearchInput').addEventListener('input', renderPresetSearchResults);
+
   document.getElementById('presetLoadSelect').addEventListener('change', e=>{
     const idx = e.target.value;
     if(idx==='') return;
@@ -1951,16 +1951,6 @@
   });
 
   // ---------- custom scenario editor ----------
-  document.getElementById('btnCustomToggle').addEventListener('click', ()=>{
-    const panel=document.getElementById('customPanel');
-    const showing = panel.style.display!=='none';
-    panel.style.display = showing ? 'none':'block';
-    document.getElementById('btnCustomToggle').textContent = showing ? '공격 상황 직접 설정 ▾' : '공격 상황 직접 설정 ▴';
-    if(!showing){
-      document.getElementById('customTargetSelect').value = scenario;
-      syncCustomPanelToScenario(scenario);
-    }
-  });
   document.getElementById('btnAttackInfoToggle').addEventListener('click', ()=>{
     const panel = document.getElementById('attackInfoPanel');
     const showing = panel.style.display!=='none';
@@ -2129,6 +2119,9 @@
   });
 
   // ---------- init ----------
+  document.getElementById('presetScenarioPick').value = scenario;
+  document.getElementById('customTargetSelect').value = scenario;
+  syncCustomPanelToScenario(scenario);
   updateTexts();
   updatePlayBtn();
   setModeUI();
@@ -2345,6 +2338,7 @@
     document.getElementById('loginOverlay').style.display='none';
     document.querySelector('.app').style.display='block';
     document.getElementById('settingsCodeLabel').textContent = code || '(로컬)';
+    document.getElementById('topCodeLabel').textContent = code || '로컬';
     const roleLabels = {creator:'개설자', editor:'수정 권한(구성원)', view:'조회 전용'};
     document.getElementById('settingsRoleLabel').textContent = roleLabels[level] || '로컬 전용(공유 안 됨)';
     document.getElementById('btnDeleteRoom').style.display = (level==='creator') ? 'inline-block' : 'none';
