@@ -114,6 +114,9 @@
   .preset-list{ display:flex; flex-direction:column; gap:10px; }
   .preset-folder-group{ display:flex; flex-direction:column; gap:6px; }
   .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
+  .zone-check-row{ display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:6px; }
+  .zone-check-row label{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-dim); cursor:pointer; white-space:nowrap; }
+  .zone-check-row input{ width:14px; height:14px; margin:0; }
   .folder-action{ cursor:pointer; font-size:12px; padding:2px 5px; border-radius:6px; flex:none; opacity:0.75; }
   .folder-action:hover{ opacity:1; background:rgba(255,255,255,0.08); }
   .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
@@ -383,6 +386,7 @@
             <rect x="20" y="345" width="360" height="70" fill="rgba(242,183,5,0.05)"/>
             <line x1="20" y1="345" x2="380" y2="345" stroke="#F2B705" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
             <line x1="20" y1="415" x2="380" y2="415" stroke="#F2B705" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
+            <g id="zoneHighlightLayer"></g>
             <g id="blockZoneLayer"></g>
             <g id="fanLayer"></g>
             <g id="arrowLayer"></g>
@@ -526,6 +530,16 @@
             <button data-x="310">오른쪽</button>
             <button data-x="200" class="active">중앙</button>
           </div>
+          <div class="zone-check-row" id="attackZoneChecks" data-zone-group="attack">
+            <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
+            <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
+            <label><input type="checkbox" data-zone-x="145">왼쪽 중간</label>
+            <label><input type="checkbox" data-zone-x="255">오른쪽 중간</label>
+            <label><input type="checkbox" data-zone-x="90">왼쪽</label>
+            <label><input type="checkbox" data-zone-x="310">오른쪽</label>
+            <label><input type="checkbox" data-zone-x="200">중앙</label>
+          </div>
+          <div class="field-note" style="margin-top:2px;">체크하면 그 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
           <label class="field-label" style="margin-top:8px;">템포(속도)</label>
           <div class="seg" id="customTempoSeg">
             <button data-tempo="fast">빠름</button>
@@ -545,6 +559,16 @@
               <button data-x="310">오른쪽</button>
               <button data-x="200" class="active">중앙</button>
             </div>
+            <div class="zone-check-row" id="landingZoneChecks" data-zone-group="landing">
+              <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
+              <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
+              <label><input type="checkbox" data-zone-x="145">왼쪽 중간</label>
+              <label><input type="checkbox" data-zone-x="255">오른쪽 중간</label>
+              <label><input type="checkbox" data-zone-x="90">왼쪽</label>
+              <label><input type="checkbox" data-zone-x="310">오른쪽</label>
+              <label><input type="checkbox" data-zone-x="200">중앙</label>
+            </div>
+            <div class="field-note" style="margin-top:2px;">체크하면 그 착지 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
           </div>
 
           <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
@@ -1818,6 +1842,40 @@
   }
 
   // ---------- UI wiring ----------
+  // ---------- zone preview (attack position / landing direction checkboxes) — purely visual, never touches CUSTOM_BASE/overrides ----------
+  const activeZoneXs = { attack: new Set(), landing: new Set() };
+  function drawZoneHighlights(){
+    const layer = document.getElementById('zoneHighlightLayer');
+    if(!layer) return;
+    layer.innerHTML = '';
+    const bandHalf = 25;
+    const drawGroup = (group, fillColor, strokeColor) => {
+      const useOwnHalf = (group==='attack') ? isOur(scenario) : !isOur(scenario);
+      const y0 = useOwnHalf ? 385 : 22, y1 = useOwnHalf ? 738 : 375;
+      activeZoneXs[group].forEach(val=>{
+        const x0 = clip(val-bandHalf, 20, 380), x1 = clip(val+bandHalf, 20, 380);
+        const rect = document.createElementNS(svgNS,'rect');
+        rect.setAttribute('x', x0); rect.setAttribute('y', y0);
+        rect.setAttribute('width', x1-x0); rect.setAttribute('height', y1-y0);
+        rect.setAttribute('fill', fillColor);
+        rect.setAttribute('stroke', strokeColor);
+        rect.setAttribute('stroke-width','1.5');
+        rect.setAttribute('stroke-dasharray','4 3');
+        layer.appendChild(rect);
+      });
+    };
+    drawGroup('attack', 'rgba(66,165,245,0.18)', 'rgba(66,165,245,0.7)');
+    drawGroup('landing', 'rgba(242,183,5,0.18)', 'rgba(242,183,5,0.7)');
+  }
+  document.querySelectorAll('#attackZoneChecks input, #landingZoneChecks input').forEach(cb=>{
+    cb.addEventListener('change', e=>{
+      const group = e.target.closest('.zone-check-row').dataset.zoneGroup;
+      const val = Number(e.target.dataset.zoneX);
+      if(e.target.checked) activeZoneXs[group].add(val); else activeZoneXs[group].delete(val);
+      drawZoneHighlights();
+    });
+  });
+
   function switchScenario(key){
     scenario=key;
     document.getElementById('presetScenarioPick').value = key;
@@ -1829,6 +1887,7 @@
     ballCurrent=null;
     updateTexts();
     setModeUI();
+    drawZoneHighlights();
   }
 
   const scenarioTitleEl = document.getElementById('scenarioTitle');
@@ -2161,6 +2220,7 @@
   updateTexts();
   updatePlayBtn();
   setModeUI();
+  drawZoneHighlights();
   renderPresets();
   renderPosGrid();
   renderOppPosGrid();
