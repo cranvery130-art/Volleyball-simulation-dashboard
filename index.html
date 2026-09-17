@@ -1061,16 +1061,18 @@
     return null;
   }
 
+  const BASELINE_BLOCK_COUNT = 2; // fixed reference used only to compute the auto-generated starting formation (roles for near-cover/line/cross/etc. on everyone who ISN'T dragged); the *effective*, on-screen blocker count is derived separately from where dots actually sit, and must never feed back into this line — otherwise dragging one dot into the zone changes blockCount, which changes the baseline, which can pull in more dots next frame, snowballing.
+
   function getFormation(){
     let f, atk;
     if(isOur(scenario)){
       atk = OUR_ATTACKS[scenario];
-      f = generateCover(atk.x, blockCount, CUSTOM_BASE, atk.fakeX, atk.pos);
+      f = generateCover(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE, atk.fakeX, atk.pos);
     } else {
       atk = ATTACKS[scenario];
-      f = generateDefense(atk.x, blockCount, CUSTOM_BASE);
+      f = generateDefense(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE);
       if(atk.fakeContact){
-        const fakeF = generateDefense(atk.fakeContact[0], blockCount, CUSTOM_BASE);
+        const fakeF = generateDefense(atk.fakeContact[0], BASELINE_BLOCK_COUNT, CUSTOM_BASE);
         f.fakeTargets = fakeF.targets;
         const fov = FAKE_TARGET_OVERRIDES[comboKey()];
         if(fov){ Object.keys(fov).forEach(id=>{ f.fakeTargets[id]=fov[id]; }); }
