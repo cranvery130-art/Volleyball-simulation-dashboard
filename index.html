@@ -1687,10 +1687,20 @@
   // ---------- preset UI (start positions) ----------
   let activePreset = null; // the preset object currently loaded, so re-saving with the same name/folder updates it in place
 
+  function resolveScenarioForPreset(p){
+    if(p.scenario && (ATTACKS[p.scenario]||OUR_ATTACKS[p.scenario])) return p.scenario;
+    // older presets saved before scenario-tagging existed don't have p.scenario — fall back to
+    // matching by name against the scenario labels (covers anything saved via "시나리오별 대형",
+    // where the preset name is exactly the scenario's label)
+    return Object.keys(SCEN_LABEL).find(key => SCEN_LABEL[key]===p.name) || null;
+  }
+
   function loadPreset(p){
-    if(p.scenario && p.scenario!==scenario && (ATTACKS[p.scenario]||OUR_ATTACKS[p.scenario])){
-      switchScenario(p.scenario); // make sure the actual saved-for scenario plays, not whatever was showing before
+    const targetScenario = resolveScenarioForPreset(p);
+    if(targetScenario && targetScenario!==scenario){
+      switchScenario(targetScenario); // make sure the actual saved-for scenario plays, not whatever was showing before
     }
+    if(targetScenario && !p.scenario){ p.scenario = targetScenario; scheduleAutoSave(); } // self-heal: tag it now so this preset resolves directly next time
     IDS.forEach(id=>{ CUSTOM_BASE[id]=p.base[id].slice(); });
     if(p.oppBase) Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ if(p.oppBase[id]) CUSTOM_OPP_BASE[id]=p.oppBase[id].slice(); });
     activePreset = p;
