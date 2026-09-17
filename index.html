@@ -1468,8 +1468,11 @@
         const dp=toDisplay(base); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
       });
       (f.oppBlockerIds||[]).forEach(id=>{
-        const el=oppEls[id]; const jump=-10*Math.sin(Math.PI*Math.min(progress/0.5,1));
-        const x=f.targets[id][0], y=f.targets[id][1]+jump;
+        const el=oppEls[id];
+        const moveT = editMode ? 0 : easeInOut(clip((progress*currentDuration)/DEFENSE_MOVE_MS, 0, 1));
+        const pos = lerpPt(CUSTOM_OPP_BASE[id], f.targets[id], moveT);
+        const jump=-10*Math.sin(Math.PI*Math.min(progress/0.5,1))*moveT;
+        const x=pos[0], y=pos[1]+jump;
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
         el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
         el.ring.style.opacity=1; el.ring.style.animation='pulseRing 1.4s ease-in-out infinite';
