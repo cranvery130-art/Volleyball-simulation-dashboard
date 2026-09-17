@@ -1003,7 +1003,8 @@
       roles[id]='cover'; targets[id]=[x,y];
     });
 
-    const oppBlockerIds = pickOppBlockers(attackX, blockCount, CUSTOM_OPP_BASE);
+    const oppBlockerIds = pickOppBlockers(attackX, blockCount, CUSTOM_OPP_BASE)
+      .sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]); // spatial (left-to-right) order, not priority order — otherwise slot i doesn't line up with blocker i's actual side
     const spread= blockCount>=4?42:50;
     let oppSlots=[];
     for(let k=0;k<blockCount;k++) oppSlots.push(attackX+(k-(blockCount-1)/2)*spread);
