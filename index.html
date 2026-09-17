@@ -114,6 +114,8 @@
   .preset-list{ display:flex; flex-direction:column; gap:10px; }
   .preset-folder-group{ display:flex; flex-direction:column; gap:6px; }
   .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
+  .folder-action{ cursor:pointer; font-size:12px; padding:2px 5px; border-radius:6px; flex:none; opacity:0.75; }
+  .folder-action:hover{ opacity:1; background:rgba(255,255,255,0.08); }
   .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .preset-chip{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; font-size:12px; cursor:pointer; }
   .preset-chip.active{ border-color:var(--accent); }
@@ -352,7 +354,6 @@
       <div class="stage-top">
         <div class="scenario-title" id="scenarioTitle" role="button" tabindex="0" title="클릭해서 공격 상황 바꾸기">상대 좌측(L) 오픈 공격</div>
         <div style="display:flex; align-items:center; gap:8px;">
-          <div class="scenario-tag" id="blockTag">2인 블로킹</div>
           <button class="btn" id="btnOrientation" style="white-space:nowrap;">세로 보기로 전환</button>
         </div>
       </div>
@@ -1346,7 +1347,6 @@
 
   function updateTexts(){
     document.getElementById('scenarioTitle').textContent = SCEN_LABEL[scenario];
-    document.getElementById('blockTag').textContent = blockCount===0 ? '블로킹 없음' : blockCount+'인 블로킹';
     document.getElementById('descBlockTag').textContent = SCEN_LABEL[scenario] + ' · ' + (blockCount===0?'블로킹 없음':blockCount+'인 블로킹');
     const d = buildDescription();
     document.getElementById('descText').textContent = d.text;
@@ -1756,9 +1756,31 @@
     order.forEach(folderKey=>{
       const group=document.createElement('div'); group.className='preset-folder-group';
       if(folderKey){
-        const label=document.createElement('div'); label.className='preset-folder-label';
-        label.textContent='📁 '+folderKey;
-        group.appendChild(label);
+        const labelRow=document.createElement('div'); labelRow.className='preset-folder-label';
+        const labelText=document.createElement('span'); labelText.textContent='📁 '+folderKey; labelText.style.flex='1';
+        labelRow.appendChild(labelText);
+        const renameBtn=document.createElement('span'); renameBtn.className='folder-action'; renameBtn.title='폴더 이름 바꾸기'; renameBtn.textContent='✏️';
+        renameBtn.addEventListener('click', e=>{
+          e.stopPropagation();
+          const newName = (prompt(`'${folderKey}' 폴더의 새 이름을 입력하세요:`, folderKey) || '').trim();
+          if(!newName || newName===folderKey) return;
+          presets.forEach(p=>{ if((p.folder||'')===folderKey) p.folder = newName; });
+          if(document.getElementById('presetFolder').value===folderKey) document.getElementById('presetFolder').value = newName;
+          renderPresets();
+          scheduleAutoSave();
+        });
+        const delBtn=document.createElement('span'); delBtn.className='folder-action'; delBtn.title='폴더 전체 삭제'; delBtn.textContent='🗑️';
+        delBtn.addEventListener('click', e=>{
+          e.stopPropagation();
+          if(!confirm(`'${folderKey}' 폴더 안의 대형 ${groups[folderKey].length}개를 전부 삭제할까요? 되돌릴 수 없어요.`)) return;
+          if(activePreset && (activePreset.folder||'')===folderKey) activePreset=null;
+          presets = presets.filter(p=>(p.folder||'')!==folderKey);
+          renderPresets();
+          updateTexts();
+          scheduleAutoSave();
+        });
+        labelRow.appendChild(renameBtn); labelRow.appendChild(delBtn);
+        group.appendChild(labelRow);
       }
       const row=document.createElement('div'); row.className='preset-chip-row';
       groups[folderKey].forEach(({p, idx})=>{
