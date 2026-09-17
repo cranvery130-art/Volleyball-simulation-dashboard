@@ -1475,7 +1475,6 @@
         const x=pos[0], y=pos[1]+jump;
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
         el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
-        el.ring.style.opacity=1; el.ring.style.animation='pulseRing 1.4s ease-in-out infinite';
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
         if(y>=25 && y<=378) nearNetPlayers.push({x, side:'opp'});
       });
