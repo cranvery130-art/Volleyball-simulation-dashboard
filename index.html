@@ -539,6 +539,10 @@
             <label><input type="checkbox" data-zone-x="310">오른쪽</label>
             <label><input type="checkbox" data-zone-x="200">중앙</label>
           </div>
+          <div class="btn-row" style="margin-top:6px;">
+            <button class="btn" id="btnAttackZoneSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
+            <button class="btn" id="btnAttackZoneDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
+          </div>
           <div class="field-note" style="margin-top:2px;">체크하면 그 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
           <label class="field-label" style="margin-top:8px;">템포(속도)</label>
           <div class="seg" id="customTempoSeg">
@@ -567,6 +571,10 @@
               <label><input type="checkbox" data-zone-x="90">왼쪽</label>
               <label><input type="checkbox" data-zone-x="310">오른쪽</label>
               <label><input type="checkbox" data-zone-x="200">중앙</label>
+            </div>
+            <div class="btn-row" style="margin-top:6px;">
+              <button class="btn" id="btnLandingZoneSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
+              <button class="btn" id="btnLandingZoneDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
             </div>
             <div class="field-note" style="margin-top:2px;">체크하면 그 착지 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
           </div>
@@ -705,29 +713,38 @@
       </div>
     </div>
 
-    <div class="edit-divider"></div>
-    <h2 style="font-size:14px;">구성원 관리</h2>
-    <div class="field-note" style="margin-top:0;">링크로 들어와서 이름을 적고 가입한 구성원 목록이에요. 포지션과 대회 출전 여부를 지정할 수 있고, 포지션별로 묶어서 보여줘요.</div>
-    <div id="memberFilters" style="margin-top:10px;">
-      <label class="field-label" style="margin-top:0;">성별 필터</label>
-      <div class="check-list" id="filterGenderRow">
-        <div class="check-row"><input type="checkbox" class="filterGender" value="남" checked><label>남</label></div>
-        <div class="check-row"><input type="checkbox" class="filterGender" value="여" checked><label>여</label></div>
-        <div class="check-row"><input type="checkbox" class="filterGender" value="" checked><label>미지정</label></div>
-      </div>
-      <label class="field-label">대회 출전 상태 필터</label>
-      <div class="check-list" id="filterStatusRow">
-        <div class="check-row"><input type="checkbox" class="filterStatus" value="코치" checked><label>코치</label></div>
-        <div class="check-row"><input type="checkbox" class="filterStatus" value="주전" checked><label>주전</label></div>
-        <div class="check-row"><input type="checkbox" class="filterStatus" value="후보" checked><label>후보</label></div>
-        <div class="check-row"><input type="checkbox" class="filterStatus" value="무관" checked><label>무관</label></div>
-      </div>
-      <div class="btn-row" style="margin-top:6px;">
-        <button class="btn" id="btnFilterSelectAll">전체 선택</button>
-        <button class="btn" id="btnFilterDeselectAll">전체 해제</button>
-      </div>
+    <div id="activityLogSection">
+      <div class="edit-divider"></div>
+      <h2 style="font-size:14px;">수정·저장 활동 로그</h2>
+      <div class="field-note" style="margin-top:0;">누가 마지막에 대형이나 공격 상황을 수정·저장했는지 최근 순서로 보여줘요.</div>
+      <div id="activityLogList" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
     </div>
-    <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
+
+    <div id="memberManageSection">
+      <div class="edit-divider"></div>
+      <h2 style="font-size:14px;">구성원 관리</h2>
+      <div class="field-note" style="margin-top:0;">링크로 들어와서 이름을 적고 가입한 구성원 목록이에요. 포지션과 대회 출전 여부를 지정할 수 있고, 포지션별로 묶어서 보여줘요.</div>
+      <div id="memberFilters" style="margin-top:10px;">
+        <label class="field-label" style="margin-top:0;">성별 필터</label>
+        <div class="check-list" id="filterGenderRow">
+          <div class="check-row"><input type="checkbox" class="filterGender" value="남" checked><label>남</label></div>
+          <div class="check-row"><input type="checkbox" class="filterGender" value="여" checked><label>여</label></div>
+          <div class="check-row"><input type="checkbox" class="filterGender" value="" checked><label>미지정</label></div>
+        </div>
+        <label class="field-label">대회 출전 상태 필터</label>
+        <div class="check-list" id="filterStatusRow">
+          <div class="check-row"><input type="checkbox" class="filterStatus" value="코치" checked><label>코치</label></div>
+          <div class="check-row"><input type="checkbox" class="filterStatus" value="주전" checked><label>주전</label></div>
+          <div class="check-row"><input type="checkbox" class="filterStatus" value="후보" checked><label>후보</label></div>
+          <div class="check-row"><input type="checkbox" class="filterStatus" value="무관" checked><label>무관</label></div>
+        </div>
+        <div class="btn-row" style="margin-top:6px;">
+          <button class="btn" id="btnFilterSelectAll">전체 선택</button>
+          <button class="btn" id="btnFilterDeselectAll">전체 해제</button>
+        </div>
+      </div>
+      <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
+    </div>
 
     <div class="edit-divider"></div>
     <div class="btn-row">
@@ -1875,6 +1892,18 @@
       drawZoneHighlights();
     });
   });
+  function setZoneGroupChecked(rowId, group, checked){
+    document.querySelectorAll('#'+rowId+' input').forEach(cb=>{
+      cb.checked = checked;
+      const val = Number(cb.dataset.zoneX);
+      if(checked) activeZoneXs[group].add(val); else activeZoneXs[group].delete(val);
+    });
+    drawZoneHighlights();
+  }
+  document.getElementById('btnAttackZoneSelectAll').addEventListener('click', ()=> setZoneGroupChecked('attackZoneChecks','attack',true));
+  document.getElementById('btnAttackZoneDeselectAll').addEventListener('click', ()=> setZoneGroupChecked('attackZoneChecks','attack',false));
+  document.getElementById('btnLandingZoneSelectAll').addEventListener('click', ()=> setZoneGroupChecked('landingZoneChecks','landing',true));
+  document.getElementById('btnLandingZoneDeselectAll').addEventListener('click', ()=> setZoneGroupChecked('landingZoneChecks','landing',false));
 
   function switchScenario(key){
     scenario=key;
@@ -2040,6 +2069,7 @@
     if(!target) target = presets.find(p=>p.name===name && (p.folder||'')===folder);
     if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; target.scenario=scenario; activePreset=target; }
     else { const created={name, folder, base:baseCopy, oppBase:oppCopy, scenario}; presets.push(created); activePreset=created; }
+    pendingActionDescription = `'${name}' 대형을 저장했어요`;
     renderPresets();
     updateTexts();
     scheduleAutoSave();
@@ -2151,6 +2181,7 @@
     if(scenario===key) switchScenario(key);
     const statusEl = document.getElementById('customStatus');
     statusEl.textContent = `'${SCEN_LABEL[key]}' 시나리오에 저장했어요. 위 목록에서 선택하면 바로 재생돼요.`;
+    pendingActionDescription = `'${SCEN_LABEL[key]}' 공격 상황을 수정했어요`;
     scheduleAutoSave();
   });
 
@@ -2331,11 +2362,14 @@
   async function doAutoSave(){
     const statusEl = document.getElementById('autoSaveStatus');
     if(statusEl) statusEl.textContent = '저장하는 중...';
+    const actionForThisSave = pendingActionDescription;
+    pendingActionDescription = '대형을 수정했어요'; // reset to the generic default for the next unlabeled save
     try{
       const room = await fetchRoom(roomCode) || {creatorPassword:'', viewPassword:''};
       room.state = serializeRoomState();
       await Backend.set(roomKey(roomCode), JSON.stringify(room));
       if(statusEl) statusEl.textContent = '✓ 자동 저장됨 (' + new Date().toLocaleTimeString('ko-KR') + ')';
+      logActivity(actionForThisSave);
     }catch(err){
       if(statusEl) statusEl.textContent = '자동 저장 실패: ' + errText(err);
     }
@@ -2425,6 +2459,8 @@
   }
 
   let myMemberId = null;
+  let myDisplayName = null;
+  let pendingActionDescription = '대형을 수정했어요'; // default description logged by doAutoSave; specific actions (preset save, custom scenario save) override this just before triggering the save
   let roomMembers = []; // cached member list for the currently open room (creator view)
 
   function enterApp(code, level, state, memberId){
@@ -2437,9 +2473,12 @@
     document.getElementById('topCodeLabel').textContent = code || '로컬';
     const roleLabels = {creator:'개설자', editor:'수정 권한(구성원)', view:'조회 전용'};
     document.getElementById('settingsRoleLabel').textContent = roleLabels[level] || '로컬 전용(공유 안 됨)';
+    myDisplayName = (level==='creator') ? '개설자' : null;
     document.getElementById('btnDeleteRoom').style.display = (level==='creator') ? 'inline-block' : 'none';
     document.getElementById('btnModeSettings').style.display = (level==='creator'||level==='editor') ? 'inline-block' : 'none';
-    document.getElementById('roomManageControls').style.display = (level==='creator'||level==='editor') ? 'block' : 'none';
+    document.getElementById('roomManageControls').style.display = (level==='creator') ? 'block' : 'none';
+    document.getElementById('memberManageSection').style.display = (level==='creator') ? 'block' : 'none';
+    document.getElementById('activityLogSection').style.display = (level==='creator'||level==='editor') ? 'block' : 'none';
     document.getElementById('btnLocalExit').style.display = (!code) ? 'inline-block' : 'none';
     if(!code){
       document.getElementById('btnShareLink').style.display='none';
@@ -2450,13 +2489,51 @@
       lockForViewOnly();
     }
     if((level==='creator'||level==='editor') && code){
-      fetchRoom(code).then(room=>{ roomMembers = (room && room.members) || []; renderMemberList(); });
+      fetchRoom(code).then(room=>{
+        roomMembers = (room && room.members) || [];
+        if(level==='editor' && myMemberId){
+          const me = roomMembers.find(m=>m.id===myMemberId);
+          if(me) myDisplayName = me.name;
+        }
+        if(level==='creator') renderMemberList();
+        renderActivityLog((room && room.activityLog) || []);
+      });
     }
     renderPosGrid(); renderOppPosGrid(); renderPresets();
     updateTexts(); render();
   }
 
   function roleLabel(role){ return {creator:'개설자', editor:'수정 권한', view:'조회'}[role] || role; }
+
+  function renderActivityLog(log){
+    const wrap = document.getElementById('activityLogList');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!log || !log.length){ wrap.innerHTML = '<span class="preset-empty">아직 수정·저장 기록이 없어요.</span>'; return; }
+    log.slice().reverse().forEach(entry=>{
+      const row = document.createElement('div'); row.className='record-row';
+      const label = document.createElement('span'); label.style.flex='1';
+      const time = new Date(entry.at).toLocaleString('ko-KR', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'});
+      label.textContent = `${time} · ${entry.name} — ${entry.action}`;
+      row.appendChild(label);
+      wrap.appendChild(row);
+    });
+  }
+
+  const ACTIVITY_LOG_MAX = 30;
+  async function logActivity(action){
+    if(!roomCode || (accessLevel!=='creator' && accessLevel!=='editor')) return;
+    const name = myDisplayName || (accessLevel==='creator' ? '개설자' : '이름 미상');
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      room.activityLog = room.activityLog || [];
+      room.activityLog.push({name, action, at: Date.now()});
+      if(room.activityLog.length > ACTIVITY_LOG_MAX) room.activityLog = room.activityLog.slice(-ACTIVITY_LOG_MAX);
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      renderActivityLog(room.activityLog);
+    }catch(err){ /* best-effort — a failed log write shouldn't block the actual save */ }
+  }
 
   const MEMBER_STATUS_OPTIONS = ['무관','코치','주전','후보'];
 
