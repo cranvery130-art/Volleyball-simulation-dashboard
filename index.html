@@ -456,7 +456,6 @@
         <select id="presetScenarioPick">
           <option value="">직접 이름 입력...</option>
         </select>
-        <div class="field-note" style="margin-top:0;">목록에서 고르면 그 상황으로 바로 전환되고, 이름·폴더 칸이 자동으로 채워져요. 이미 저장된 상황이면 바로 불러와요. 아래에서 도트를 편집하고 저장하면 이 상황의 대형으로 저장돼요. 목록에 없는 걸 더 만들고 싶으면 "직접 이름 입력..."을 고른 채로 아래 이름 칸에 적어 저장하세요.</div>
 
         <div class="edit-divider"></div>
         <label class="field-label" style="margin-top:0;">폴더</label>
@@ -470,7 +469,13 @@
           <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
           <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
         </div>
-        <div class="field-note" style="margin-top:0;">폴더를 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</div>
+
+        <div class="edit-divider"></div>
+        <button class="btn" id="btnPresetInfoToggle" style="width:100%;">ℹ️ 참고사항 ▾</button>
+        <div id="presetInfoPanel" class="note-box" style="display:none; margin-top:8px;">
+          <p style="margin:0 0 8px;"><b>시나리오별 대형</b> — 목록에서 고르면 그 상황으로 바로 전환되고, 이름·폴더 칸이 자동으로 채워져요. 이미 저장된 상황이면 바로 불러와요. 아래에서 도트를 편집하고 저장하면 이 상황의 대형으로 저장돼요. 목록에 없는 걸 더 만들고 싶으면 "직접 이름 입력..."을 고른 채로 아래 이름 칸에 적어 저장하세요.</p>
+          <p style="margin:0;"><b>폴더</b> — 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요.</p>
+        </div>
       </div>
       <label class="field-label">저장된 대형 불러오기</label>
       <select id="presetLoadSelect">
@@ -1960,6 +1965,12 @@
     const showing = panel.style.display!=='none';
     panel.style.display = showing ? 'none' : 'block';
     document.getElementById('btnAttackInfoToggle').textContent = showing ? 'ℹ️ 참고사항 ▾' : 'ℹ️ 참고사항 ▴';
+  });
+  document.getElementById('btnPresetInfoToggle').addEventListener('click', ()=>{
+    const panel = document.getElementById('presetInfoPanel');
+    const showing = panel.style.display!=='none';
+    panel.style.display = showing ? 'none' : 'block';
+    document.getElementById('btnPresetInfoToggle').textContent = showing ? 'ℹ️ 참고사항 ▾' : 'ℹ️ 참고사항 ▴';
   });
   document.getElementById('customTargetSelect').addEventListener('change', e=>{
     syncCustomPanelToScenario(e.target.value);
