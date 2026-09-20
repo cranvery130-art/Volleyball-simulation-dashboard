@@ -70,8 +70,11 @@
   .check-row label{ cursor:pointer; }
   .check-list{ display:flex; flex-wrap:wrap; gap:4px 24px; }
   .desc-with-aids{ display:flex; gap:22px; flex-wrap:wrap; margin-top:6px; }
-  .video-split-row{ display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; }
-  .video-split-col{ flex:1 1 380px; min-width:0; }
+  .video-grid{ display:flex; gap:16px; align-items:stretch; height:calc(100vh - 200px); min-height:560px; }
+  .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+  .video-grid-card{ flex:1 1 50%; min-height:0; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
+  .video-grid-card #matchVideo{ flex:none; }
+  .video-grid-card .court-wrap{ flex:1 1 auto; min-height:0; }
   .desc-main{ flex:1 1 300px; min-width:0; }
   .desc-aids{ flex:0 0 230px; border-left:1px solid var(--border); padding-left:18px; }
   .desc-aids .check-list{ display:flex; flex-direction:column; gap:2px; }
@@ -79,6 +82,9 @@
   .desc-aids .check-row input{ margin-top:2px; flex:none; }
   @media (max-width:700px){
     .desc-aids{ flex-basis:100%; border-left:none; padding-left:0; border-top:1px solid var(--border); padding-top:10px; margin-top:4px; }
+    .video-grid{ flex-direction:column; height:auto; min-height:0; }
+    .video-grid-col{ overflow:visible; }
+    .video-grid-card{ overflow:visible; max-height:none; }
   }
 
   .legend{ display:flex; flex-wrap:wrap; gap:8px 18px; font-size:12.5px; color:var(--text-dim); }
@@ -182,7 +188,9 @@
   #desktopSplit{ display:flex; flex-direction:column; }
   #mainAppCol{ min-width:0; max-width:1400px; margin:0 auto; width:100%; }
   #videoCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; }
-  #settingsCol{ min-width:0; max-width:700px; margin:20px auto 0; width:100%; padding:0 20px; }
+  #settingsCol{ min-width:0; max-width:1000px; margin:20px auto 0; width:100%; padding:0 20px; }
+  .settings-columns{ display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; }
+  .settings-col{ flex:1 1 320px; min-width:0; }
   #videoCol .card{ margin:0 auto; }
   #mainAppCol.mode-hidden, #videoCol.mode-hidden, #settingsCol.mode-hidden{ display:none; }
   .mode-seg-wrap{
@@ -533,6 +541,12 @@
             <button data-x="310">오른쪽</button>
             <button data-x="200" class="active">중앙</button>
           </div>
+          <label class="field-label" style="margin-top:8px;">깊이 (네트에서 얼마나 떨어져 있는지)</label>
+          <div class="seg" id="attackDepthSeg">
+            <button data-depth="front" class="active">앞쪽</button>
+            <button data-depth="mid">중앙</button>
+            <button data-depth="back">뒤쪽</button>
+          </div>
           <div class="zone-check-row" id="attackZoneChecks" data-zone-group="attack">
             <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
             <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
@@ -565,6 +579,12 @@
               <button data-x="90">왼쪽</button>
               <button data-x="310">오른쪽</button>
               <button data-x="200" class="active">중앙</button>
+            </div>
+            <label class="field-label" style="margin-top:8px;">깊이 (네트에서 얼마나 떨어져 있는지)</label>
+            <div class="seg" id="landingDepthSeg">
+              <button data-depth="front">앞쪽</button>
+              <button data-depth="mid" class="active">중앙</button>
+              <button data-depth="back">뒤쪽</button>
             </div>
           </div>
           <div class="zone-check-row" id="landingZoneChecks" data-zone-group="landing" style="margin-top:6px;">
@@ -621,17 +641,16 @@
 </div>
 
 <div id="videoCol" class="mode-hidden">
-  <div class="video-split-row">
-    <div class="video-split-col">
-      <div class="card">
+  <div class="video-grid">
+    <div class="video-grid-col">
+      <div class="card video-grid-card">
         <h2>경기 영상</h2>
-        <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서, 오른쪽 대시보드에 직접 그리고 배너로 빠르게 기록하세요.</div>
+        <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서, 아래 대시보드에 직접 그리고 배너로 빠르게 기록하세요.</div>
         <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
+        <div class="field-note" id="lastVideoHint" style="display:none; margin-top:4px;"></div>
         <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
       </div>
-    </div>
-    <div class="video-split-col">
-      <div class="card">
+      <div class="card video-grid-card">
         <h2>대시보드 (직접 작성)</h2>
         <label class="field-label">도구 선택</label>
         <div class="seg" id="drawToolSeg">
@@ -662,37 +681,38 @@
         <g id="videoDotsLayer"></g>
       </svg>
     </div>
-  </div>
+      </div>
     </div>
-  </div>
+    <div class="video-grid-col">
+      <div class="card video-grid-card">
+        <h2>빠른 기록 배너</h2>
+        <div class="field-note" style="margin-top:0;">영상을 보다가 멈추고 해당하는 탭을 누르면, 지금 시간 + 지금 대시보드 상태가 함께 기록돼요. 멈춘 채로 여러 탭을 누르면 하나의 기록으로 합쳐져요.</div>
 
-  <div class="card">
-    <h2>빠른 기록 배너</h2>
-    <div class="field-note" style="margin-top:0;">영상을 보다가 멈추고 해당하는 탭을 누르면, 지금 시간 + 지금 대시보드 상태가 함께 기록돼요.</div>
-
-    <div class="banner-block">
-      <div class="banner-title">🔴 상대팀 — 공격 옵션</div>
-      <div class="banner-tabs" id="oppTabs"></div>
+        <div class="banner-block">
+          <div class="banner-title">🔴 상대팀 — 득점 옵션</div>
+          <div class="banner-tabs" id="oppTabs"></div>
+        </div>
+        <div class="banner-block">
+          <div class="banner-title">🔵 우리팀 — 득점</div>
+          <div class="banner-tabs" id="ourScoreTabs"></div>
+        </div>
+        <div class="banner-block">
+          <div class="banner-title">🔵 우리팀 — 미스</div>
+          <div class="banner-tabs" id="ourMissTabs"></div>
+        </div>
+      </div>
+      <div class="card video-grid-card">
+        <h2>기록</h2>
+        <div id="tallySummary" style="margin-bottom:10px;"></div>
+        <div class="btn-row">
+          <button class="btn" id="btnRecordMoment">🔴 이 순간 자유 기록</button>
+          <button class="btn" id="btnExportExcel">📊 엑셀로 내보내기</button>
+          <button class="btn" id="btnExportSheets">📄 구글시트용으로 내보내기</button>
+        </div>
+        <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동하면서, 그때 그려둔 대시보드가 있으면 바로 복원돼요.</div>
+        <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
     </div>
-    <div class="banner-block">
-      <div class="banner-title">🔵 우리팀 — 득점</div>
-      <div class="banner-tabs" id="ourScoreTabs"></div>
-    </div>
-    <div class="banner-block">
-      <div class="banner-title">🔵 우리팀 — 미스</div>
-      <div class="banner-tabs" id="ourMissTabs"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>기록</h2>
-    <div id="tallySummary" style="margin-bottom:10px;"></div>
-    <div class="btn-row">
-      <button class="btn" id="btnRecordMoment">🔴 이 순간 자유 기록</button>
-      <button class="btn" id="btnExportRecords">📄 기록 파일로 내보내기</button>
-    </div>
-    <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동하면서, 그때 그려둔 대시보드가 있으면 바로 복원돼요.</div>
-    <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
   </div>
 </div>
 </div>
@@ -702,59 +722,79 @@
     <h2>설정</h2>
     <div class="field-note" style="margin-top:0;">현재 코드: <b id="settingsCodeLabel">-</b> · <span id="settingsRoleLabel">-</span></div>
 
-    <div id="roomManageControls">
-      <div class="btn-row" style="margin-top:8px;">
-        <button class="btn" id="btnShareLink">링크 공유</button>
-        <button class="btn" id="btnSaveRoom">변경사항 저장</button>
-      </div>
-      <div id="shareLinkBox" style="display:none; margin-top:8px;">
-        <div class="preset-input-row">
-          <input type="text" id="shareLinkInput" class="login-input" readonly style="margin-top:0;">
-          <button class="btn" id="btnCopyLink" style="white-space:nowrap;">복사</button>
+    <div class="settings-columns">
+      <div id="settingsLeftCol" class="settings-col">
+        <div id="roomManageControls">
+          <div class="btn-row" style="margin-top:8px;">
+            <button class="btn" id="btnShareLink">링크 공유</button>
+            <button class="btn" id="btnSaveRoom">변경사항 저장</button>
+          </div>
+          <div id="shareLinkBox" style="display:none; margin-top:8px;">
+            <div class="preset-input-row">
+              <input type="text" id="shareLinkInput" class="login-input" readonly style="margin-top:0;">
+              <button class="btn" id="btnCopyLink" style="white-space:nowrap;">복사</button>
+            </div>
+            <div class="field-note">이 링크를 열면 코드가 자동으로 입력되고, 조회 가능 비밀번호를 넣으면 이름을 적고 바로 들어올 수 있어요.</div>
+          </div>
         </div>
-        <div class="field-note">이 링크를 열면 코드가 자동으로 입력되고, 조회 가능 비밀번호를 넣으면 이름을 적고 바로 들어올 수 있어요.</div>
-      </div>
-    </div>
 
-    <div id="activityLogSection">
-      <div class="edit-divider"></div>
-      <h2 style="font-size:14px;">수정·저장 활동 로그</h2>
-      <div class="field-note" style="margin-top:0;">누가 마지막에 대형이나 공격 상황을 수정·저장했는지 최근 순서로 보여줘요.</div>
-      <div id="activityLogList" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
-    </div>
+        <div id="passwordChangeSection">
+          <div class="edit-divider"></div>
+          <h2 style="font-size:14px;">비밀번호 변경</h2>
+          <label class="field-label" style="margin-top:0;">개설자 비밀번호</label>
+          <div class="preset-input-row">
+            <input type="text" id="newCreatorPwInput" class="login-input" placeholder="새 개설자 비밀번호" style="margin-top:0;">
+            <button class="btn" id="btnChangeCreatorPw" style="white-space:nowrap;">변경</button>
+          </div>
+          <label class="field-label">조회 비밀번호</label>
+          <div class="preset-input-row">
+            <input type="text" id="newViewPwInput" class="login-input" placeholder="새 조회 비밀번호" style="margin-top:0;">
+            <button class="btn" id="btnChangeViewPw" style="white-space:nowrap;">변경</button>
+          </div>
+        </div>
 
-    <div id="memberManageSection">
-      <div class="edit-divider"></div>
-      <h2 style="font-size:14px;">구성원 관리</h2>
-      <div class="field-note" style="margin-top:0;">링크로 들어와서 이름을 적고 가입한 구성원 목록이에요. 포지션과 대회 출전 여부를 지정할 수 있고, 포지션별로 묶어서 보여줘요.</div>
-      <div id="memberFilters" style="margin-top:10px;">
-        <label class="field-label" style="margin-top:0;">성별 필터</label>
-        <div class="check-list" id="filterGenderRow">
-          <div class="check-row"><input type="checkbox" class="filterGender" value="남" checked><label>남</label></div>
-          <div class="check-row"><input type="checkbox" class="filterGender" value="여" checked><label>여</label></div>
-          <div class="check-row"><input type="checkbox" class="filterGender" value="" checked><label>미지정</label></div>
+        <div id="memberManageSection">
+          <div class="edit-divider"></div>
+          <h2 style="font-size:14px;">구성원 관리</h2>
+          <div class="field-note" style="margin-top:0;">링크로 들어와서 이름을 적고 가입한 구성원 목록이에요. 포지션과 대회 출전 여부를 지정할 수 있고, 포지션별로 묶어서 보여줘요.</div>
+          <div id="memberFilters" style="margin-top:10px;">
+            <label class="field-label" style="margin-top:0;">성별 필터</label>
+            <div class="check-list" id="filterGenderRow">
+              <div class="check-row"><input type="checkbox" class="filterGender" value="남" checked><label>남</label></div>
+              <div class="check-row"><input type="checkbox" class="filterGender" value="여" checked><label>여</label></div>
+              <div class="check-row"><input type="checkbox" class="filterGender" value="" checked><label>미지정</label></div>
+            </div>
+            <label class="field-label">대회 출전 상태 필터</label>
+            <div class="check-list" id="filterStatusRow">
+              <div class="check-row"><input type="checkbox" class="filterStatus" value="코치" checked><label>코치</label></div>
+              <div class="check-row"><input type="checkbox" class="filterStatus" value="주전" checked><label>주전</label></div>
+              <div class="check-row"><input type="checkbox" class="filterStatus" value="후보" checked><label>후보</label></div>
+              <div class="check-row"><input type="checkbox" class="filterStatus" value="무관" checked><label>무관</label></div>
+            </div>
+            <div class="btn-row" style="margin-top:6px;">
+              <button class="btn" id="btnFilterSelectAll">전체 선택</button>
+              <button class="btn" id="btnFilterDeselectAll">전체 해제</button>
+            </div>
+          </div>
+          <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
         </div>
-        <label class="field-label">대회 출전 상태 필터</label>
-        <div class="check-list" id="filterStatusRow">
-          <div class="check-row"><input type="checkbox" class="filterStatus" value="코치" checked><label>코치</label></div>
-          <div class="check-row"><input type="checkbox" class="filterStatus" value="주전" checked><label>주전</label></div>
-          <div class="check-row"><input type="checkbox" class="filterStatus" value="후보" checked><label>후보</label></div>
-          <div class="check-row"><input type="checkbox" class="filterStatus" value="무관" checked><label>무관</label></div>
+
+        <div class="edit-divider"></div>
+        <div class="btn-row">
+          <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
+          <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C; display:none;">이 코드 삭제</button>
         </div>
-        <div class="btn-row" style="margin-top:6px;">
-          <button class="btn" id="btnFilterSelectAll">전체 선택</button>
-          <button class="btn" id="btnFilterDeselectAll">전체 해제</button>
+        <div class="edit-hint" id="settingsStatus"></div>
+      </div>
+
+      <div id="settingsRightCol" class="settings-col">
+        <div id="activityLogSection">
+          <h2 style="font-size:14px; margin-top:0;">수정·저장 활동 로그</h2>
+          <div class="field-note" style="margin-top:0;">누가 마지막에 대형이나 공격 상황을 수정·저장했는지 최근 순서로 보여줘요.</div>
+          <div id="activityLogList" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
         </div>
       </div>
-      <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
     </div>
-
-    <div class="edit-divider"></div>
-    <div class="btn-row">
-      <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
-      <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C; display:none;">이 코드 삭제</button>
-    </div>
-    <div class="edit-hint" id="settingsStatus"></div>
   </div>
 </div>
 
@@ -790,15 +830,31 @@
   // team's side (mirrored left/right, since a ball landing "on the right" as the attacker sees it
   // sits at the defending team's own-left column). null = center, no role lookup.
   const LANDING_ROLE_MAP = {30:'RBACK', 90:'RIGHT', 145:'BACKSLIDE', 200:null, 255:'FRONTSLIDE', 310:'LEFT', 370:'LBACK'};
-  function landingForButtonValue(val, isOurAttack){
+  // Depth (앞쪽/중앙/뒤쪽) is a separate axis from left-right, independent of which of the 7 LR
+  // buttons is picked. It reuses the same front/mid/back row Y-values the fixed 9-zone grid already
+  // has, just applied as a free choice instead of being locked to whichever role a given LR value maps to.
+  const OWN_ROW_Y = {front:440, mid:560, back:680};
+  const OPP_ROW_Y = {front:320, mid:200, back:80};
+  function depthRowY(depthKey, isOurAttack){
+    const rows = isOurAttack ? OPP_ROW_Y : OWN_ROW_Y; // a landing target sits on the OPPOSING team's court
+    return rows[depthKey] != null ? rows[depthKey] : rows.mid;
+  }
+  function attackContactRowY(depthKey, isOurAttack){
+    const rows = isOurAttack ? OWN_ROW_Y : OPP_ROW_Y; // the attacker stands on THEIR OWN court
+    return rows[depthKey] != null ? rows[depthKey] : rows.front;
+  }
+  function landingForButtonValue(val, isOurAttack, depthKey){
     const role = LANDING_ROLE_MAP[val];
     const fallback = [200, isOurAttack?150:500];
-    if(role==null) return fallback;
+    if(role==null){
+      return depthKey ? [fallback[0], depthRowY(depthKey, isOurAttack)] : fallback;
+    }
     const posMap = isOurAttack ? DEFAULT_OPP_POSITIONS : DEFAULT_POSITIONS;
     const zoneMap = isOurAttack ? ORIGINAL_OPP_BASE : ORIGINAL_BASE; // fixed court zone, not the player's live/dragged spot
     const id = Object.keys(posMap).find(pid=>posMap[pid]===role);
-    if(id==null) return fallback;
-    return zoneMap[id].slice();
+    if(id==null) return depthKey ? [fallback[0], depthRowY(depthKey, isOurAttack)] : fallback;
+    const naturalPos = zoneMap[id];
+    return [naturalPos[0], depthKey ? depthRowY(depthKey, isOurAttack) : naturalPos[1]];
   }
 
   const ORIGINAL_BASE = {
@@ -971,7 +1027,8 @@
   }
 
   // ---------- generative cover engine (our attacks) ----------
-  function generateCover(attackX, blockCount, base, fakeX, preferredPos){
+  function generateCover(attackX, blockCount, base, fakeX, preferredPos, attackY){
+    const ay = attackY!=null ? attackY : 415;
     const colX = id => base[id][0];
     const front=[1,2,3];
     const byDist=(a,b)=>Math.abs(colX(a)-attackX)-Math.abs(colX(b)-attackX);
@@ -990,7 +1047,7 @@
     const others = IDS.filter(id=>id!==attackerId && id!==setterId);
 
     const roles={}, targets={};
-    roles[attackerId]='attacker'; targets[attackerId]=[attackX,415];
+    roles[attackerId]='attacker'; targets[attackerId]=[attackX,ay];
     const setterX = clip(attackX + (colX(setterId)<attackX? -55:55), 60,340);
     roles[setterId]='setter'; targets[setterId]=[setterX,447];
 
@@ -1075,12 +1132,12 @@
   // "저장(덮어쓰기)" step needed. Users can still override any of them the same way as before.
   // (applyScenarioCustom is defined further below as a function declaration, so it's already
   // available here regardless of source order.)
-  applyScenarioCustom('L', 30, 'normal', false, true, 370, false);
-  applyScenarioCustom('C', 200, 'fast', false, true, 255, false);
-  applyScenarioCustom('R', 370, 'normal', false, true, 30, false);
-  applyScenarioCustom('TIMEDIFF', 90, 'normal', true, true, 255, false);
-  applyScenarioCustom('BACKSLIDE', 310, 'normal', false, true, 145, false);
-  applyScenarioCustom('BACKA', 200, 'normal', false, true, 145, false);
+  applyScenarioCustom('L', 30, 'normal', false, true, 370, false, 'front', 'back');
+  applyScenarioCustom('C', 200, 'fast', false, true, 255, false, 'front', 'mid');
+  applyScenarioCustom('R', 370, 'normal', false, true, 30, false, 'front', 'back');
+  applyScenarioCustom('TIMEDIFF', 90, 'normal', true, true, 255, false, 'front', 'mid');
+  applyScenarioCustom('BACKSLIDE', 310, 'normal', false, true, 145, false, 'front', 'mid');
+  applyScenarioCustom('BACKA', 200, 'normal', false, true, 145, false, 'front', 'mid');
 
   let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
   let editMode=false, overrideMode=false;
@@ -1107,7 +1164,7 @@
   function computeBlockOutcome(f, atk, rawLanding){
     const blockers = isOur(scenario) ? f.oppBlockerIds : f.blockerIds;
     if(!blockers || !blockers.length) return null;
-    const contact = isOur(scenario) ? [atk.x, 415] : atk.contact;
+    const contact = isOur(scenario) ? [atk.x, (atk.attackDepthY!=null?atk.attackDepthY:415)] : atk.contact;
     if((contact[1]-NET_Y)*(rawLanding[1]-NET_Y) >= 0) return null; // path doesn't cross the net between these points
     const t = (NET_Y - contact[1]) / (rawLanding[1] - contact[1]);
     const netX = clip(contact[0] + (rawLanding[0]-contact[0])*t, 20, 380);
@@ -1133,7 +1190,7 @@
     let f, atk;
     if(isOur(scenario)){
       atk = OUR_ATTACKS[scenario];
-      f = generateCover(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE, atk.fakeX, atk.pos);
+      f = generateCover(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE, atk.fakeX, atk.pos, atk.attackDepthY);
       if(f.fakeOppTargets){
         const fov = FAKE_TARGET_OVERRIDES[comboKey()];
         if(fov){ Object.keys(fov).forEach(id=>{ f.fakeOppTargets[id]=fov[id]; }); }
@@ -2180,6 +2237,18 @@
       btn.classList.add('active');
     });
   });
+  document.querySelectorAll('#attackDepthSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#attackDepthSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelectorAll('#landingDepthSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#landingDepthSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
   document.getElementById('customLandingToggle').addEventListener('change', e=>{
     document.getElementById('customLandingRow').style.display = e.target.checked ? 'block' : 'none';
   });
@@ -2187,7 +2256,9 @@
   // and clicking 저장(덮어쓰기) would — used both by that button and to seed each scenario's
   // built-in defaults at startup. Also stores the raw panel values on the scenario (_panel) so the
   // panel can be synced back to whatever is actually active whenever the scenario is opened.
-  function applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, markCustomized){
+  function applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, markCustomized, attackDepth, landingDepth){
+    attackDepth = attackDepth || 'front';
+    landingDepth = landingDepth || 'mid';
     const x = isOur(key) ? perspX : (400 - perspX);
     if(isOur(key)){
       const atk = OUR_ATTACKS[key];
@@ -2195,11 +2266,12 @@
       atk.duration = {fast:1600, normal:2600, slow:3800}[tempo];
       atk.phase = hasFake ? {pass:0.14,toss:0.6,hit:0.85} : {pass:0.18,toss:0.44,hit:0.76};
       if(hasFake) atk.fakeX = 200; else delete atk.fakeX;
+      atk.attackDepthY = attackContactRowY(attackDepth, true);
       if(markCustomized) atk.customized = true;
     } else {
       const atk = ATTACKS[key];
       atk.x = x;
-      atk.contact = [x, 320];
+      atk.contact = [x, attackContactRowY(attackDepth, false)];
       atk.approachFrom = [clip(x + (x<200? 25:-25), 40,360), 245];
       const tempoPreset = {
         fast:{duration:1900, timing:{approach:0.2,peak:0.34,land:0.46,ballStart:0.34,ballEnd:0.54}},
@@ -2207,17 +2279,17 @@
         slow:{duration:4200, timing:{approach:0.4,peak:0.56,land:0.7,ballStart:0.56,ballEnd:0.8}}
       }[tempo];
       atk.duration = tempoPreset.duration; atk.timing = tempoPreset.timing;
-      if(hasFake){ atk.fakeContact=[200,320]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
+      if(hasFake){ atk.fakeContact=[200, attackContactRowY(attackDepth, false)]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
       else{ delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp; }
       if(markCustomized) atk.customized = true;
     }
     const target = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
     if(useLanding){
-      target.landingOverride = landingForButtonValue(landingVal, isOur(key));
+      target.landingOverride = landingForButtonValue(landingVal, isOur(key), landingDepth);
     } else {
       delete target.landingOverride;
     }
-    target._panel = {perspX, tempo, hasFake, useLanding, landingVal};
+    target._panel = {perspX, tempo, hasFake, useLanding, landingVal, attackDepth, landingDepth};
   }
 
   function syncCustomPanelToScenario(key){
@@ -2232,6 +2304,8 @@
     if(p.useLanding){
       document.querySelectorAll('#customLandingSeg button').forEach(b=>b.classList.toggle('active', Number(b.dataset.x)===p.landingVal));
     }
+    document.querySelectorAll('#attackDepthSeg button').forEach(b=>b.classList.toggle('active', b.dataset.depth===(p.attackDepth||'front')));
+    document.querySelectorAll('#landingDepthSeg button').forEach(b=>b.classList.toggle('active', b.dataset.depth===(p.landingDepth||'mid')));
   }
 
   // ---------- built-in defaults for each opponent scenario's "공격 상황 직접 설정" ----------
@@ -2247,7 +2321,9 @@
     const hasFake = document.getElementById('customFake').checked;
     const useLanding = document.getElementById('customLandingToggle').checked;
     const landingVal = useLanding ? Number(document.querySelector('#customLandingSeg button.active').dataset.x) : null;
-    applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, true);
+    const attackDepth = document.querySelector('#attackDepthSeg button.active').dataset.depth;
+    const landingDepth = document.querySelector('#landingDepthSeg button.active').dataset.depth;
+    applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, true, attackDepth, landingDepth);
 
     if(scenario===key) switchScenario(key);
     const statusEl = document.getElementById('customStatus');
@@ -2408,7 +2484,12 @@
       if(savedMemberId){
         const member = (room.members||[]).find(m=>m.id===savedMemberId);
         if(member) finalLevel = member.role; // pick up any promotion/demotion made since the last visit
-        else finalMemberId = null; // member entry is gone somehow — fall back to the remembered role as a best guess
+        else{
+          // the creator removed this member — access is revoked, so cached credentials shouldn't auto-enter anymore
+          forgetDevice(lastCode);
+          statusEl.style.display='none';
+          return;
+        }
       }
       enterApp(lastCode, finalLevel, room.state, finalMemberId);
     }catch(err){
@@ -2430,6 +2511,7 @@
     clearTimeout(autoSaveTimer);
     autoSaveTimer = setTimeout(doAutoSave, 900);
   }
+  window.scheduleAutoSave = scheduleAutoSave; // bridge so the separate video-analysis script can trigger the same debounced save
   async function doAutoSave(){
     const statusEl = document.getElementById('autoSaveStatus');
     if(statusEl) statusEl.textContent = '저장하는 중...';
@@ -2452,7 +2534,8 @@
       customBase: CUSTOM_BASE, customOppBase: CUSTOM_OPP_BASE,
       presets: presets,
       targetOverrides: TARGET_OVERRIDES, fakeTargetOverrides: FAKE_TARGET_OVERRIDES, ballOverrides: BALL_OVERRIDES,
-      attacks: JSON.parse(JSON.stringify(ATTACKS)), ourAttacks: JSON.parse(JSON.stringify(OUR_ATTACKS))
+      attacks: JSON.parse(JSON.stringify(ATTACKS)), ourAttacks: JSON.parse(JSON.stringify(OUR_ATTACKS)),
+      videoAnalysis: window.getVideoAnalysisState ? window.getVideoAnalysisState() : undefined
     };
   }
   function applyRoomState(state){
@@ -2469,6 +2552,7 @@
       if(state.attacks) Object.keys(state.attacks).forEach(k=>{ if(ATTACKS[k]) Object.assign(ATTACKS[k], state.attacks[k]); });
       if(state.ourAttacks) Object.keys(state.ourAttacks).forEach(k=>{ if(OUR_ATTACKS[k]) Object.assign(OUR_ATTACKS[k], state.ourAttacks[k]); });
       IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
+      if(state.videoAnalysis && window.applyVideoAnalysisState) window.applyVideoAnalysisState(state.videoAnalysis);
     }catch(err){ console.error('applyRoomState failed', err); }
   }
 
@@ -2547,8 +2631,7 @@
     myDisplayName = (level==='creator') ? '개설자' : null;
     document.getElementById('btnDeleteRoom').style.display = (level==='creator') ? 'inline-block' : 'none';
     document.getElementById('btnModeSettings').style.display = (level==='creator'||level==='editor') ? 'inline-block' : 'none';
-    document.getElementById('roomManageControls').style.display = (level==='creator') ? 'block' : 'none';
-    document.getElementById('memberManageSection').style.display = (level==='creator') ? 'block' : 'none';
+    document.getElementById('settingsLeftCol').style.display = (level==='creator') ? 'block' : 'none';
     document.getElementById('activityLogSection').style.display = (level==='creator'||level==='editor') ? 'block' : 'none';
     document.getElementById('btnLocalExit').style.display = (!code) ? 'inline-block' : 'none';
     if(!code){
@@ -2692,6 +2775,11 @@
             b3.addEventListener('click', ()=>grantRole(m.id,'view'));
             row.appendChild(b3);
           }
+          const delBtn=document.createElement('button'); delBtn.className='btn'; delBtn.style.background='#5A2020'; delBtn.style.borderColor='#7A2C2C'; delBtn.textContent='삭제';
+          delBtn.addEventListener('click', ()=>{
+            if(confirm(`'${m.name}'님을 구성원 목록에서 삭제할까요? 이 사람이 가진 권한도 함께 사라져요.`)) removeMember(m.id);
+          });
+          row.appendChild(delBtn);
         }
         list.appendChild(row);
       });
@@ -2716,6 +2804,56 @@
       statusEl.textContent = `${m.name}님에게 ${roleLabel(role)} 권한을 부여했어요.`;
     }catch(err){ statusEl.textContent = '권한 변경에 실패했어요: ' + errText(err); }
   }
+
+  async function removeMember(memberId){
+    if(accessLevel!=='creator' || !roomCode) return;
+    const statusEl = document.getElementById('settingsStatus');
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      room.members = room.members || [];
+      const m = room.members.find(x=>x.id===memberId);
+      if(!m) return;
+      room.members = room.members.filter(x=>x.id!==memberId);
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      roomMembers = room.members;
+      renderMemberList();
+      statusEl.textContent = `${m.name}님을 구성원 목록에서 삭제했어요.`;
+    }catch(err){ statusEl.textContent = '삭제에 실패했어요: ' + errText(err); }
+  }
+
+  document.getElementById('btnChangeCreatorPw').addEventListener('click', async ()=>{
+    if(accessLevel!=='creator' || !roomCode) return;
+    const statusEl = document.getElementById('settingsStatus');
+    const input = document.getElementById('newCreatorPwInput');
+    const newPw = input.value.trim();
+    if(!newPw){ statusEl.textContent='새 개설자 비밀번호를 입력해주세요.'; return; }
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      if(newPw === room.viewPassword){ statusEl.textContent='조회 비밀번호와 다르게 설정해주세요.'; return; }
+      room.creatorPassword = newPw;
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      input.value = '';
+      statusEl.textContent = '개설자 비밀번호를 변경했어요.';
+    }catch(err){ statusEl.textContent = '변경에 실패했어요: ' + errText(err); }
+  });
+  document.getElementById('btnChangeViewPw').addEventListener('click', async ()=>{
+    if(accessLevel!=='creator' || !roomCode) return;
+    const statusEl = document.getElementById('settingsStatus');
+    const input = document.getElementById('newViewPwInput');
+    const newPw = input.value.trim();
+    if(!newPw){ statusEl.textContent='새 조회 비밀번호를 입력해주세요.'; return; }
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      if(newPw === room.creatorPassword){ statusEl.textContent='개설자 비밀번호와 다르게 설정해주세요.'; return; }
+      room.viewPassword = newPw;
+      await Backend.set(roomKey(roomCode), JSON.stringify(room));
+      input.value = '';
+      statusEl.textContent = '조회 비밀번호를 변경했어요.';
+    }catch(err){ statusEl.textContent = '변경에 실패했어요: ' + errText(err); }
+  });
 
   async function updateMember(memberId, patch){
     if(accessLevel!=='creator' && accessLevel!=='editor') return;
@@ -2802,8 +2940,8 @@
         const savedMemberId = (function(){ try{ return localStorage.getItem(deviceMemberKey(code)); }catch(e){ return null; } })();
         let member = savedMemberId ? room.members.find(m=>m.id===savedMemberId) : null;
         if(!member){
-          let name = (prompt('이름을 입력해주세요 (개설자가 구성원 목록에서 알아볼 수 있어요):') || '').trim().slice(0,20);
-          if(!name) name = '이름 없음';
+          const name = (prompt('이름을 입력해주세요 (개설자가 구성원 목록에서 알아볼 수 있어요):') || '').trim().slice(0,20);
+          if(!name){ statusEl.textContent='이름을 입력해야 그룹에 들어갈 수 있어요.'; return; }
           member = {id:newMemberId(), name, role:'view', position:'', status:'무관', gender:''};
           room.members.push(member);
           await Backend.set(roomKey(code), JSON.stringify(room));
@@ -2900,7 +3038,9 @@
     if(!file) return;
     video.src = URL.createObjectURL(file);
     currentVideoName = file.name;
+    document.getElementById('lastVideoHint').style.display = 'none';
     // note: the drawing board and all records are intentionally kept — switching videos doesn't erase anything.
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
 
   function clip(v,lo,hi){ return Math.max(lo, Math.min(hi, v)); }
@@ -2995,6 +3135,7 @@
   });
 
   function renderBoard(){
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
     dotsLayer.innerHTML='';
     elements.forEach(el=>{
       if(el.type==='dotRed' || el.type==='dotBlue' || el.type==='ball'){
@@ -3054,16 +3195,17 @@
       });
       const input = document.createElement('input'); input.type='text'; input.value=rec.label;
       input.placeholder='메모';
-      input.addEventListener('input', ()=>{ rec.label = input.value; });
+      input.addEventListener('input', ()=>{ rec.label = input.value; if(window.scheduleAutoSave) window.scheduleAutoSave(); });
       const saveBtn = document.createElement('button'); saveBtn.className='btn';
       saveBtn.textContent = rec.positions ? '보드 다시 저장' : '보드 저장';
       saveBtn.addEventListener('click', ()=>{
         rec.positions = captureBoard();
         saveBtn.textContent='저장됨 ✓';
         setTimeout(()=>{ saveBtn.textContent='보드 다시 저장'; }, 1200);
+        if(window.scheduleAutoSave) window.scheduleAutoSave();
       });
       const del = document.createElement('span'); del.className='x'; del.textContent='✕';
-      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); });
+      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
       row.appendChild(timeBtn); row.appendChild(input); row.appendChild(saveBtn); row.appendChild(del);
       list.appendChild(row);
     });
@@ -3072,28 +3214,43 @@
   document.getElementById('btnRecordMoment').addEventListener('click', ()=>{
     records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, positions: captureBoard()});
     renderRecords();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
 
   // ---------- quick-log banners ----------
-  const OPP_ATTACK_OPTIONS = ['레프트','앞차','백차','백A','A','라이트'];
-  const OUR_SCORE_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리'];
-  const OUR_MISS_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','토스','2단토스','블로킹(다이렉트)','3구처리','디그움직임'];
+  const OPP_ATTACK_OPTIONS = ['레프트','앞차','백차','백A','A','라이트','블로킹'];
+  const OUR_SCORE_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리','블로킹'];
+  const OUR_MISS_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','토스','2단토스','블로킹(다이렉트)','3구처리','디그움직임','서브캐치','블로킹(빈틈)','블로킹(터치아웃)'];
 
   function flashBtn(btn){
     btn.classList.add('flash');
     setTimeout(()=>btn.classList.remove('flash'), 350);
   }
+  let activeMergeRecord = null; // a record created while paused stays open for merging until the video plays or seeks away
+  video.addEventListener('play', ()=>{ activeMergeRecord = null; });
+  video.addEventListener('seeking', ()=>{ activeMergeRecord = null; });
+
   function logEvent(category, label, btn){
-    records.push({
-      time: video.currentTime||0,
-      label: `[${category}] ${label}`,
-      category, optionLabel: label,
-      videoName: currentVideoName,
-      positions: captureBoard()
-    });
+    const now = video.currentTime||0;
+    if(video.paused && activeMergeRecord && Math.abs(activeMergeRecord.time - now) < 0.05){
+      activeMergeRecord.entries.push({category, optionLabel:label});
+      activeMergeRecord.label = activeMergeRecord.entries.map(e=>`[${e.category}] ${e.optionLabel}`).join(' + ');
+    } else {
+      const rec = {
+        time: now,
+        entries: [{category, optionLabel:label}],
+        label: `[${category}] ${label}`,
+        category, optionLabel: label,
+        videoName: currentVideoName,
+        positions: captureBoard()
+      };
+      records.push(rec);
+      if(video.paused) activeMergeRecord = rec;
+    }
     renderRecords();
     renderTally();
     if(btn) flashBtn(btn);
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
   }
   function buildTabGroup(containerId, options, category){
     const container = document.getElementById(containerId);
@@ -3112,9 +3269,10 @@
     const el = document.getElementById('tallySummary');
     const counts = {};
     records.forEach(r=>{
-      if(r.category){ const k=r.category+'|'+r.optionLabel; counts[k]=(counts[k]||0)+1; }
+      const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
+      entries.forEach(e=>{ const k=e.category+'|'+e.optionLabel; counts[k]=(counts[k]||0)+1; });
     });
-    const groupNames = {'상대공격':'🔴 상대팀 공격 옵션', '득점':'🔵 우리팀 득점', '미스':'🔵 우리팀 미스'};
+    const groupNames = {'상대공격':'🔴 상대팀 득점 옵션', '득점':'🔵 우리팀 득점', '미스':'🔵 우리팀 미스'};
     const groups = {'상대공격':[], '득점':[], '미스':[]};
     Object.keys(counts).forEach(k=>{
       const idx = k.indexOf('|');
@@ -3132,43 +3290,64 @@
     el.innerHTML = html || '<span class="field-note" style="margin:0;">아직 배너로 기록된 통계가 없어요.</span>';
   }
 
-  function exportRecords(){
-    if(records.length===0){ alert('내보낼 기록이 없어요.'); return; }
-    let md = `# 경기 영상 기록\n\n생성일시: ${new Date().toLocaleString('ko-KR')}\n\n`;
-    const byVideo = {};
-    records.forEach(r=>{ const key=r.videoName || '(영상 이름 없음)'; if(!byVideo[key]) byVideo[key]=[]; byVideo[key].push(r); });
-    Object.keys(byVideo).forEach(vname=>{
-      md += `## ${vname}\n\n`;
-      byVideo[vname].sort((a,b)=>a.time-b.time).forEach(r=>{
-        md += `### ${fmtTime(r.time)}${r.label ? ' — '+r.label : ''}\n`;
-        if(r.positions && r.positions.length){
-          md += r.positions.map(p=>{
-            if(p.x!==undefined) return `- 도트(${p.type}): (x:${Math.round(p.x)}, y:${Math.round(p.y)})`;
-            return `- 화살표(${p.type}): (${Math.round(p.x1)},${Math.round(p.y1)}) → (${Math.round(p.x2)},${Math.round(p.y2)})`;
-          }).join('\n') + '\n';
-        } else {
-          md += '_(대시보드는 저장되지 않았어요)_\n';
-        }
-        md += '\n';
-      });
+  function csvEscape(v){
+    const s = String(v==null?'':v);
+    if(/[",\r\n]/.test(s)) return '"'+s.replace(/"/g,'""')+'"';
+    return s;
+  }
+  function buildRecordsCSV(){
+    const header = ['영상','시간','카테고리','옵션','메모'];
+    const rows = [header];
+    records.slice().sort((a,b)=>{
+      const av=a.videoName||'', bv=b.videoName||'';
+      if(av!==bv) return av.localeCompare(bv);
+      return a.time-b.time;
+    }).forEach(r=>{
+      const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
+      if(entries.length){
+        entries.forEach(e=>{ rows.push([r.videoName||'', fmtTime(r.time), e.category, e.optionLabel, r.label||'']); });
+      } else {
+        rows.push([r.videoName||'', fmtTime(r.time), '', '', r.label||'']);
+      }
     });
-    const counts = {};
-    records.forEach(r=>{ if(r.category){ const k=r.category+'|'+r.optionLabel; counts[k]=(counts[k]||0)+1; } });
-    if(Object.keys(counts).length){
-      md += `## 통계 요약\n\n`;
-      Object.keys(counts).forEach(k=>{
-        const idx=k.indexOf('|');
-        md += `- ${k.slice(0,idx)} · ${k.slice(idx+1)}: ${counts[k]}회\n`;
-      });
-    }
-    const blob = new Blob([md], {type:'text/markdown;charset=utf-8'});
+    return rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
+  }
+  function downloadCSV(content, filename, withBOM){
+    const blob = new Blob([withBOM?'\uFEFF':'', content], {type:'text/csv;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = '경기_기록_'+new Date().toISOString().slice(0,10)+'.md';
+    a.href = url; a.download = filename;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
-  document.getElementById('btnExportRecords').addEventListener('click', exportRecords);
+  document.getElementById('btnExportExcel').addEventListener('click', ()=>{
+    if(records.length===0){ alert('내보낼 기록이 없어요.'); return; }
+    // BOM included so Excel reliably shows Korean text correctly when the CSV is double-clicked open
+    downloadCSV(buildRecordsCSV(), '경기_기록_'+new Date().toISOString().slice(0,10)+'.csv', true);
+  });
+  document.getElementById('btnExportSheets').addEventListener('click', ()=>{
+    if(records.length===0){ alert('내보낼 기록이 없어요.'); return; }
+    downloadCSV(buildRecordsCSV(), '경기_기록_구글시트용_'+new Date().toISOString().slice(0,10)+'.csv', false);
+  });
+
+  window.getVideoAnalysisState = () => ({
+    records,
+    currentVideoName,
+    currentBoard: captureBoard()
+  });
+  window.applyVideoAnalysisState = (vs) => {
+    if(!vs) return;
+    records = vs.records || [];
+    currentVideoName = vs.currentVideoName || '';
+    if(vs.currentBoard) restoreBoard(vs.currentBoard);
+    if(currentVideoName && !video.src){
+      const hint = document.getElementById('lastVideoHint');
+      hint.textContent = `마지막에 사용한 영상: ${currentVideoName} — 같은 파일을 다시 첨부하면 이어서 볼 수 있어요.`;
+      hint.style.display = 'block';
+    }
+    renderRecords();
+    renderTally();
+  };
 
   renderBoard();
   renderRecords();
