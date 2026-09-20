@@ -138,6 +138,9 @@
   svg#court{ width:100%; height:auto; display:block; touch-action:none; }
 
   .own-dot circle.body{ fill:var(--own); stroke:#0E2F63; stroke-width:1.5; }
+  .block-hand{ opacity:0; pointer-events:none; }
+  .own-dot .block-hand{ fill:#1E4FBE; stroke:#0E2F63; stroke-width:1; }
+  .opp-dot .block-hand{ fill:#B23A3A; stroke:#7A2020; stroke-width:1; }
   .own-dot.blocker circle.body{ fill:#1E4FBE; }
   #ownLabelLayer text{ fill:#fff; font-family:'Barlow Condensed'; font-weight:700; font-size:13px; pointer-events:none; }
   #oppLabelLayer text{ fill:#fff; font-family:'Barlow Condensed'; font-weight:700; font-size:11.5px; pointer-events:none; }
@@ -563,21 +566,21 @@
               <button data-x="310">오른쪽</button>
               <button data-x="200" class="active">중앙</button>
             </div>
-            <div class="zone-check-row" id="landingZoneChecks" data-zone-group="landing">
-              <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
-              <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
-              <label><input type="checkbox" data-zone-x="145">왼쪽 중간</label>
-              <label><input type="checkbox" data-zone-x="255">오른쪽 중간</label>
-              <label><input type="checkbox" data-zone-x="90">왼쪽</label>
-              <label><input type="checkbox" data-zone-x="310">오른쪽</label>
-              <label><input type="checkbox" data-zone-x="200">중앙</label>
-            </div>
-            <div class="btn-row" style="margin-top:6px;">
-              <button class="btn" id="btnLandingZoneSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
-              <button class="btn" id="btnLandingZoneDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
-            </div>
-            <div class="field-note" style="margin-top:2px;">체크하면 그 착지 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
           </div>
+          <div class="zone-check-row" id="landingZoneChecks" data-zone-group="landing" style="margin-top:6px;">
+            <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
+            <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
+            <label><input type="checkbox" data-zone-x="145">왼쪽 중간</label>
+            <label><input type="checkbox" data-zone-x="255">오른쪽 중간</label>
+            <label><input type="checkbox" data-zone-x="90">왼쪽</label>
+            <label><input type="checkbox" data-zone-x="310">오른쪽</label>
+            <label><input type="checkbox" data-zone-x="200">중앙</label>
+          </div>
+          <div class="btn-row" style="margin-top:6px;">
+            <button class="btn" id="btnLandingZoneSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
+            <button class="btn" id="btnLandingZoneDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
+          </div>
+          <div class="field-note" style="margin-top:2px;">체크하면 그 착지 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
 
           <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
           <select id="customTargetSelect">
@@ -1026,8 +1029,28 @@
       let sh=0; if(mn<lo) sh=lo-mn; else if(mx>hi) sh=hi-mx;
       oppSlots = oppSlots.map(s=>s+sh); }
     oppBlockerIds.forEach((id,i)=>{ targets[id]=[oppSlots[i], 345]; }); // stored in the same targets object as our own IDs so the override system (drag-in-zone) can reach them too
-    const landing = blockCount>0 ? [clip(attackX+16,50,350), 460+blockCount*14] : [clip(attackX+30,50,350),130];
-    return {targets, roles, blockerIds:[], oppBlockerIds, oppSlots, ballLanding:landing, attackerId, setterId, fakeAttackerId, receiverId, attackX};
+
+    // If this attack has a decoy (fakeX set), the opponent blockers should react to the DECOY first,
+    // then correct to the real attack — mirroring how our own blockers react to the opponent's fake
+    // in the other direction. Compute that fake-reaction layout the same way as the real one.
+    let fakeOppTargets = null;
+    if(fakeX!=null){
+      const fakeOppBlockerIds = pickOppBlockers(fakeX, blockCount, CUSTOM_OPP_BASE)
+        .sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
+      let fakeSlots=[];
+      for(let k=0;k<blockCount;k++) fakeSlots.push(fakeX+(k-(blockCount-1)/2)*spread);
+      { const lo=45, hi=355; const mn=Math.min(...fakeSlots), mx=Math.max(...fakeSlots);
+        let sh=0; if(mn<lo) sh=lo-mn; else if(mx>hi) sh=hi-mx;
+        fakeSlots = fakeSlots.map(s=>s+sh); }
+      fakeOppTargets = {};
+      fakeOppBlockerIds.forEach((id,i)=>{ fakeOppTargets[id]=[fakeSlots[i], 345]; });
+    }
+    // Default flight target when no explicit landing direction is set: a spike has to cross the net
+    // into the opponent's court — NOT stay on our own side. (Previously this fell back to a point on
+    // OUR side meant for "where a deflected ball comes back for cover", which meant the ball never
+    // actually crossed the net in the simulation unless a landing direction was explicitly set.)
+    const landing = [clip(attackX+16,50,350), 150];
+    return {targets, roles, blockerIds:[], oppBlockerIds, oppSlots, fakeOppTargets, ballLanding:landing, attackerId, setterId, fakeAttackerId, receiverId, attackX};
   }
 
   function pickLanding(formation, attackX){
@@ -1082,23 +1105,24 @@
   // landing spot passes through a blocker's reach at the net. One blocker in range -> the ball
   // is touched and deflected onward. Two or more overlapping -> the ball is stopped outright.
   function computeBlockOutcome(f, atk, rawLanding){
-    if(isOur(scenario)) return null; // this models US blocking THEIR attack, not the reverse
-    if(!f.blockerIds || !f.blockerIds.length) return null;
-    const contact = atk.contact;
+    const blockers = isOur(scenario) ? f.oppBlockerIds : f.blockerIds;
+    if(!blockers || !blockers.length) return null;
+    const contact = isOur(scenario) ? [atk.x, 415] : atk.contact;
     if((contact[1]-NET_Y)*(rawLanding[1]-NET_Y) >= 0) return null; // path doesn't cross the net between these points
     const t = (NET_Y - contact[1]) / (rawLanding[1] - contact[1]);
     const netX = clip(contact[0] + (rawLanding[0]-contact[0])*t, 20, 380);
-    const touching = f.blockerIds.filter(id=>{
+    const touching = blockers.filter(id=>{
       const bx = f.targets[id] ? f.targets[id][0] : null;
       return bx!==null && Math.abs(netX-bx) <= BLOCK_REACH;
     });
+    const towardAttacker = isOur(scenario) ? 1 : -1; // which side of the net the deflected/blocked ball rests on, relative to whoever is attacking
     if(touching.length>=2){
-      return {type:'blocked', netX, netY:NET_Y, blockers:touching, restPoint:[netX, NET_Y-26]};
+      return {type:'blocked', netX, netY:NET_Y, blockers:touching, restPoint:[netX, NET_Y+towardAttacker*26]};
     }
     if(touching.length===1){
       const dir = rawLanding[0]-contact[0];
       const deflectX = clip(netX + (dir>=0?1:-1)*44, 20, 380);
-      return {type:'deflected', netX, netY:NET_Y, blockers:touching, restPoint:[deflectX, NET_Y+58]};
+      return {type:'deflected', netX, netY:NET_Y, blockers:touching, restPoint:[deflectX, NET_Y-towardAttacker*58]};
     }
     return null;
   }
@@ -1110,6 +1134,10 @@
     if(isOur(scenario)){
       atk = OUR_ATTACKS[scenario];
       f = generateCover(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE, atk.fakeX, atk.pos);
+      if(f.fakeOppTargets){
+        const fov = FAKE_TARGET_OVERRIDES[comboKey()];
+        if(fov){ Object.keys(fov).forEach(id=>{ f.fakeOppTargets[id]=fov[id]; }); }
+      }
     } else {
       atk = ATTACKS[scenario];
       f = generateDefense(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE);
@@ -1148,6 +1176,8 @@
       f.oppBlockerIds = derivedOppBlockerIds.sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
       f.oppSlots = f.oppBlockerIds.map(id=>f.targets[id][0]);
       blockCount = f.oppBlockerIds.length;
+      f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
+      if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
     }
     return f;
   }
@@ -1414,6 +1444,14 @@
     return fromDisplay([loc.x, loc.y]); // always returns LOGICAL (pre-rotation) coordinates
   }
 
+  function makeHandPair(){
+    // "raised hands" blocking indicator: two small rects with a gap between them, like a blocker's
+    // hands reaching up with a seam a ball could slip through. Positioned/oriented per-frame in render().
+    const hand1=document.createElementNS(svgNS,'rect'); hand1.setAttribute('class','block-hand'); hand1.setAttribute('width','9'); hand1.setAttribute('height','7'); hand1.setAttribute('rx','1.5');
+    const hand2=document.createElementNS(svgNS,'rect'); hand2.setAttribute('class','block-hand'); hand2.setAttribute('width','9'); hand2.setAttribute('height','7'); hand2.setAttribute('rx','1.5');
+    return {hand1, hand2};
+  }
+
   const oppEls={};
   Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
     const g=document.createElementNS(svgNS,'g'); g.setAttribute('class','opp-dot'); g.dataset.id=id;
@@ -1421,9 +1459,10 @@
     const dring=document.createElementNS(svgNS,'circle'); dring.setAttribute('class','decoy-ring'); dring.setAttribute('r','15');
     const sring=document.createElementNS(svgNS,'circle'); sring.setAttribute('class','setter-ring'); sring.setAttribute('r','15');
     const body=document.createElementNS(svgNS,'circle'); body.setAttribute('class','body'); body.setAttribute('r','10');
+    const {hand1, hand2} = makeHandPair();
     const text=document.createElementNS(svgNS,'text'); text.setAttribute('text-anchor','middle'); text.setAttribute('dy','.35em'); text.textContent=OPP_NUM[id];
-    g.appendChild(ring); g.appendChild(dring); g.appendChild(sring); g.appendChild(body);
-    oppLayer.appendChild(g); oppLabelLayer.appendChild(text); oppEls[id]={g,ring,dring,sring,body,text};
+    g.appendChild(ring); g.appendChild(dring); g.appendChild(sring); g.appendChild(body); g.appendChild(hand1); g.appendChild(hand2);
+    oppLayer.appendChild(g); oppLabelLayer.appendChild(text); oppEls[id]={g,ring,dring,sring,body,hand1,hand2,text};
 
     g.addEventListener('pointerdown', e=>{
       if(editMode && editTeamFilter!=='own'){
@@ -1443,9 +1482,10 @@
     const sRing=document.createElementNS(svgNS,'circle'); sRing.setAttribute('class','setter-ring'); sRing.setAttribute('r','17');
     const dRing=document.createElementNS(svgNS,'circle'); dRing.setAttribute('class','decoy-ring'); dRing.setAttribute('r','16');
     const body=document.createElementNS(svgNS,'circle'); body.setAttribute('class','body'); body.setAttribute('r','12');
+    const {hand1, hand2} = makeHandPair();
     const text=document.createElementNS(svgNS,'text'); text.setAttribute('text-anchor','middle'); text.setAttribute('dy','.35em'); text.textContent=id;
-    g.appendChild(aRing); g.appendChild(sRing); g.appendChild(dRing); g.appendChild(body);
-    ownLayer.appendChild(g); ownLabelLayer.appendChild(text); ownEls[id]={g,aRing,sRing,dRing,body,text};
+    g.appendChild(aRing); g.appendChild(sRing); g.appendChild(dRing); g.appendChild(body); g.appendChild(hand1); g.appendChild(hand2);
+    ownLayer.appendChild(g); ownLabelLayer.appendChild(text); ownEls[id]={g,aRing,sRing,dRing,body,hand1,hand2,text};
 
     g.addEventListener('pointerdown', e=>{
       if(!editMode && !overrideMode) return;
@@ -1506,17 +1546,35 @@
         el.body.setAttribute('cx',base[0]); el.body.setAttribute('cy',base[1]);
         el.ring.setAttribute('cx',base[0]); el.ring.setAttribute('cy',base[1]); el.ring.style.opacity=0;
         el.dring.style.opacity=0; el.sring.style.opacity=0;
+        el.hand1.style.opacity=0; el.hand2.style.opacity=0;
         const dp=toDisplay(base); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
       });
       (f.oppBlockerIds||[]).forEach(id=>{
         const el=oppEls[id];
-        const moveT = editMode ? 0 : easeInOut(clip((progress*currentDuration)/DEFENSE_MOVE_MS, 0, 1));
-        const pos = lerpPt(CUSTOM_OPP_BASE[id], f.targets[id], moveT);
-        const jump=-10*Math.sin(Math.PI*Math.min(progress/0.5,1))*moveT;
+        let pos;
+        if(editMode){
+          pos = CUSTOM_OPP_BASE[id];
+        } else if(f.fakeOppTargets && f.fakeOppTargets[id]){
+          // same react-to-decoy-then-correct sequence as our own blockers get, mirrored for the opponent
+          const fakeT = f.fakeOppTargets[id], trueT = f.targets[id];
+          const peak = OUR_ATTACKS[scenario].phase.hit;
+          const reactEnd = peak*0.6, correctEnd = peak*0.95;
+          if(progress<=reactEnd){ pos = lerpPt(CUSTOM_OPP_BASE[id], fakeT, easeInOut(progress/reactEnd)); }
+          else if(progress<=correctEnd){ pos = lerpPt(fakeT, trueT, easeInOut((progress-reactEnd)/(correctEnd-reactEnd))); }
+          else { pos = trueT; }
+        } else {
+          const moveT = easeInOut(clip((progress*currentDuration)/DEFENSE_MOVE_MS, 0, 1));
+          pos = lerpPt(CUSTOM_OPP_BASE[id], f.targets[id], moveT);
+        }
+        const jump = editMode ? 0 : -10*Math.sin(Math.PI*Math.min(progress/0.5,1));
         const x=pos[0], y=pos[1]+jump;
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
         el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
+        const hx = x-4.5;
+        el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',y+12); el.hand2.setAttribute('width',9); el.hand2.setAttribute('height',7);
+        el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',y+23); el.hand1.setAttribute('width',9); el.hand1.setAttribute('height',7);
+        el.hand1.style.opacity=1; el.hand2.style.opacity=1;
         if(y>=25 && y<=378) nearNetPlayers.push({x, side:'opp'});
       });
     } else {
@@ -1532,6 +1590,7 @@
         el.ring.setAttribute('cx',pos[0]); el.ring.setAttribute('cy',pos[1]);
         el.dring.setAttribute('cx',pos[0]); el.dring.setAttribute('cy',pos[1]);
         el.sring.setAttribute('cx',pos[0]); el.sring.setAttribute('cy',pos[1]);
+        el.hand1.style.opacity=0; el.hand2.style.opacity=0;
         const dp=toDisplay(pos); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
         el.ring.style.opacity = (id===attackerOppId) ? 1:0;
         el.ring.style.animation = (id===attackerOppId) ? 'pulseRing 1.4s ease-in-out infinite':'none';
@@ -1557,6 +1616,14 @@
       const receiverActive = isOur(scenario) && f.receiverId===id && progress < OUR_ATTACKS[scenario].phase.pass + 0.04;
       el.dRing.style.opacity = (ownDecoyActive || receiverActive) ? 1:0;
       el.g.classList.toggle('blocker', role==='block');
+      if(role==='block'){
+        const hx = p[0]-4.5;
+        el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',p[1]-21); el.hand2.setAttribute('width',9); el.hand2.setAttribute('height',7);
+        el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',p[1]-32); el.hand1.setAttribute('width',9); el.hand1.setAttribute('height',7);
+        el.hand1.style.opacity=1; el.hand2.style.opacity=1;
+      } else {
+        el.hand1.style.opacity=0; el.hand2.style.opacity=0;
+      }
       if(p[1]>=378 && p[1]<=415) nearNetPlayers.push({x:p[0], side:'own'});
     });
 
@@ -1948,11 +2015,15 @@
   });
   ['chkArrows','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
 
-  function currentHasFake(){ return !isOur(scenario) && !!ATTACKS[scenario].fakeContact; }
+  function currentHasFake(){
+    if(isOur(scenario)) return OUR_ATTACKS[scenario].fakeX!=null;
+    return !!ATTACKS[scenario].fakeContact;
+  }
 
   function applyOverridePhase(){
     if(overridePhase==='fake' && currentHasFake()){
-      progress = ATTACKS[scenario].timing.peak*0.6; // matches desiredOwnAt's reactEnd — shows blockers exactly at their fake-reaction spot
+      const peak = isOur(scenario) ? OUR_ATTACKS[scenario].phase.hit : ATTACKS[scenario].timing.peak;
+      progress = peak*0.6; // matches the react-then-correct timing used for both directions — shows blockers exactly at their fake-reaction spot
     } else {
       progress = 1;
     }
