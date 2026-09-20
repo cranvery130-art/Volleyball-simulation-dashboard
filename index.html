@@ -1504,8 +1504,8 @@
   function makeHandPair(){
     // "raised hands" blocking indicator: two small rects with a gap between them, like a blocker's
     // hands reaching up with a seam a ball could slip through. Positioned/oriented per-frame in render().
-    const hand1=document.createElementNS(svgNS,'rect'); hand1.setAttribute('class','block-hand'); hand1.setAttribute('width','9'); hand1.setAttribute('height','7'); hand1.setAttribute('rx','1.5');
-    const hand2=document.createElementNS(svgNS,'rect'); hand2.setAttribute('class','block-hand'); hand2.setAttribute('width','9'); hand2.setAttribute('height','7'); hand2.setAttribute('rx','1.5');
+    const hand1=document.createElementNS(svgNS,'rect'); hand1.setAttribute('class','block-hand'); hand1.setAttribute('width','14'); hand1.setAttribute('height','10'); hand1.setAttribute('rx','2');
+    const hand2=document.createElementNS(svgNS,'rect'); hand2.setAttribute('class','block-hand'); hand2.setAttribute('width','14'); hand2.setAttribute('height','10'); hand2.setAttribute('rx','2');
     return {hand1, hand2};
   }
 
@@ -1628,11 +1628,16 @@
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
         el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
-        const hx = x-4.5;
-        el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',y+12); el.hand2.setAttribute('width',9); el.hand2.setAttribute('height',7);
-        el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',y+23); el.hand1.setAttribute('width',9); el.hand1.setAttribute('height',7);
-        el.hand1.style.opacity=1; el.hand2.style.opacity=1;
-        if(y>=25 && y<=378) nearNetPlayers.push({x, side:'opp'});
+        const inOppZone = y>=25 && y<=378;
+        if(inOppZone){
+          const hx = x-7;
+          el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',y+14); el.hand2.setAttribute('width',14); el.hand2.setAttribute('height',10);
+          el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',y+30); el.hand1.setAttribute('width',14); el.hand1.setAttribute('height',10);
+          el.hand1.style.opacity=1; el.hand2.style.opacity=1;
+          nearNetPlayers.push({x, side:'opp'});
+        } else {
+          el.hand1.style.opacity=0; el.hand2.style.opacity=0;
+        }
       });
     } else {
       const atk = ATTACKS[scenario];
@@ -1672,16 +1677,17 @@
       const ownDecoyActive = isOur(scenario) && f.fakeAttackerId===id && progress>0.05 && progress<0.55;
       const receiverActive = isOur(scenario) && f.receiverId===id && progress < OUR_ATTACKS[scenario].phase.pass + 0.04;
       el.dRing.style.opacity = (ownDecoyActive || receiverActive) ? 1:0;
-      el.g.classList.toggle('blocker', role==='block');
-      if(role==='block'){
-        const hx = p[0]-4.5;
-        el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',p[1]-21); el.hand2.setAttribute('width',9); el.hand2.setAttribute('height',7);
-        el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',p[1]-32); el.hand1.setAttribute('width',9); el.hand1.setAttribute('height',7);
+      const inOwnZone = p[1]>=378 && p[1]<=415;
+      el.g.classList.toggle('blocker', inOwnZone);
+      if(inOwnZone){
+        const hx = p[0]-7;
+        el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',p[1]-26); el.hand2.setAttribute('width',14); el.hand2.setAttribute('height',10);
+        el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',p[1]-42); el.hand1.setAttribute('width',14); el.hand1.setAttribute('height',10);
         el.hand1.style.opacity=1; el.hand2.style.opacity=1;
       } else {
         el.hand1.style.opacity=0; el.hand2.style.opacity=0;
       }
-      if(p[1]>=378 && p[1]<=415) nearNetPlayers.push({x:p[0], side:'own'});
+      if(inOwnZone) nearNetPlayers.push({x:p[0], side:'own'});
     });
 
     blockZoneLayer.innerHTML='';
