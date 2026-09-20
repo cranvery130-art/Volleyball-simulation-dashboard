@@ -1630,9 +1630,9 @@
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
         const inOppZone = y>=25 && y<=378;
         if(inOppZone){
-          const hx = x-7;
-          el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',y+14); el.hand2.setAttribute('width',14); el.hand2.setAttribute('height',10);
-          el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',y+30); el.hand1.setAttribute('width',14); el.hand1.setAttribute('height',10);
+          const hy = y+16;
+          el.hand1.setAttribute('x',x-15); el.hand1.setAttribute('y',hy); el.hand1.setAttribute('width',12); el.hand1.setAttribute('height',10);
+          el.hand2.setAttribute('x',x+3); el.hand2.setAttribute('y',hy); el.hand2.setAttribute('width',12); el.hand2.setAttribute('height',10);
           el.hand1.style.opacity=1; el.hand2.style.opacity=1;
           nearNetPlayers.push({x, side:'opp'});
         } else {
@@ -1680,9 +1680,11 @@
       const inOwnZone = p[1]>=378 && p[1]<=415;
       el.g.classList.toggle('blocker', inOwnZone);
       if(inOwnZone){
-        const hx = p[0]-7;
-        el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',p[1]-26); el.hand2.setAttribute('width',14); el.hand2.setAttribute('height',10);
-        el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',p[1]-42); el.hand1.setAttribute('width',14); el.hand1.setAttribute('height',10);
+        // both hands reach the SAME distance toward the net, side by side along the net line —
+        // NOT stacked toward/away from the net, which would line them up in a row with the dot instead.
+        const hy = p[1]-24;
+        el.hand1.setAttribute('x',p[0]-15); el.hand1.setAttribute('y',hy); el.hand1.setAttribute('width',12); el.hand1.setAttribute('height',10);
+        el.hand2.setAttribute('x',p[0]+3); el.hand2.setAttribute('y',hy); el.hand2.setAttribute('width',12); el.hand2.setAttribute('height',10);
         el.hand1.style.opacity=1; el.hand2.style.opacity=1;
       } else {
         el.hand1.style.opacity=0; el.hand2.style.opacity=0;
