@@ -834,6 +834,7 @@
   let CUSTOM_OPP_BASE = {}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=> CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice());
   let TARGET_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {id:[x,y]}
   let FAKE_TARGET_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {id:[x,y]} — where a blocker reacts to the fake, before correcting to the true target
+  let BALL_OVERRIDES = {}; // key: scenario+'|'+blockCount -> [x,y] landing point override (only settable via room state import now; no in-app UI) — declared here (not further down) because applyScenarioCustom, which references it, is already called at the top level below during startup
 
   // ---------- opponent attack scenarios ----------
   // Net-based left/right: the opponent faces the net (faces "down" the screen toward us),
@@ -1110,7 +1111,6 @@
   let ballCurrent=null;
   let presets=[];
   let draggingId=null;
-  let BALL_OVERRIDES = {}; // key: scenario+'|'+blockCount -> [x,y] landing point override (only settable via room state import now; no in-app UI)
 
   const showArrows = ()=>document.getElementById('chkArrows').checked;
   const showFans = ()=>document.getElementById('chkFans').checked;
