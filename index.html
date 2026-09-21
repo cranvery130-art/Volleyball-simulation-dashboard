@@ -539,24 +539,20 @@
           <label class="field-label">공격 위치</label>
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
-            <button data-x="370">오른쪽 끝</button>
             <button data-x="145">왼쪽 중간</button>
-            <button data-x="255">오른쪽 중간</button>
-            <button data-x="90">왼쪽</button>
-            <button data-x="310">오른쪽</button>
             <button data-x="200" class="active">중앙</button>
+            <button data-x="255">오른쪽 중간</button>
+            <button data-x="370">오른쪽 끝</button>
           </div>
           <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
             <label class="field-label" style="margin-top:0; white-space:nowrap;">위치 미리보기</label>
             <select id="attackZonePreviewSelect" style="flex:1;">
               <option value="">보지 않음</option>
               <option value="30">왼쪽 끝</option>
-              <option value="370">오른쪽 끝</option>
               <option value="145">왼쪽 중간</option>
-              <option value="255">오른쪽 중간</option>
-              <option value="90">왼쪽</option>
-              <option value="310">오른쪽</option>
               <option value="200">중앙</option>
+              <option value="255">오른쪽 중간</option>
+              <option value="370">오른쪽 끝</option>
             </select>
           </div>
           <div class="field-note" style="margin-top:2px;">고르면 그 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
@@ -1101,8 +1097,8 @@
   applyScenarioCustom('L', 30, 'normal', false, true, 0, 2, false);
   applyScenarioCustom('C', 200, 'fast', false, true, 1, 1, false);
   applyScenarioCustom('R', 370, 'normal', false, true, 2, 2, false);
-  applyScenarioCustom('TIMEDIFF', 90, 'normal', true, true, 1, 1, false);
-  applyScenarioCustom('BACKSLIDE', 310, 'normal', false, true, 2, 1, false);
+  applyScenarioCustom('TIMEDIFF', 145, 'normal', true, true, 1, 1, false);
+  applyScenarioCustom('BACKSLIDE', 255, 'normal', false, true, 2, 1, false);
   applyScenarioCustom('BACKA', 200, 'normal', false, true, 2, 1, false);
 
   let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
@@ -1190,8 +1186,13 @@
       });
       f.blockerIds = derivedBlockerIds;
       blockCount = f.blockerIds.length;
-      f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
-      if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+      // A directly-set landing spot is a deliberate, precise placement for demonstration —
+      // it shouldn't get silently redirected just because a default/auto-positioned blocker
+      // happens to sit near the flight path.
+      if(!atk.landingOverride){
+        f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
+        if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+      }
     } else {
       // same idea, mirrored: which opponent letters end up in THEIR near-net zone (after any drag
       // override) are the ones who actually block our attack — identical rule to our own team's side.
@@ -1199,8 +1200,10 @@
       f.oppBlockerIds = derivedOppBlockerIds.sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
       f.oppSlots = f.oppBlockerIds.map(id=>f.targets[id][0]);
       blockCount = f.oppBlockerIds.length;
-      f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
-      if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+      if(!atk.landingOverride){
+        f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
+        if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+      }
     }
     return f;
   }
@@ -1287,6 +1290,30 @@
     return from.slice();
   }
 
+  function isFrontRowLanding(landing, isOurAttack){
+    const frontY = isOurAttack ? OPP_ROW_Y.front : OWN_ROW_Y.front;
+    return Math.abs(landing[1]-frontY) < 30;
+  }
+  function nearestBlockerDist(landing, formation, isOurAttack){
+    const ids = isOurAttack ? formation.oppBlockerIds : formation.blockerIds;
+    if(!ids || !ids.length) return Infinity;
+    return Math.min(...ids.map(id => formation.targets[id] ? Math.abs(formation.targets[id][0]-landing[0]) : Infinity));
+  }
+  function isTipNearBlock(landing, formation, isOurAttack){
+    return isFrontRowLanding(landing, isOurAttack) && nearestBlockerDist(landing, formation, isOurAttack) <= 120;
+  }
+  function ballFlightPoint(contact, landing, t, formation, isOurAttack){
+    // a shot placed right behind (or within about one court zone of) the block, dropping just
+    // past the front row, gets a hooked/parabolic path instead of a flat line — as if it barely
+    // cleared the blockers' hands before dropping — rather than a normal straight attack.
+    if(isTipNearBlock(landing, formation, isOurAttack)){
+      const midX = (contact[0]+landing[0])/2 + (landing[0]>=contact[0] ? 14 : -14);
+      const hookY = NET_Y + (isOurAttack ? -10 : 10);
+      return bezier(contact, [midX, hookY], landing, t);
+    }
+    return lerpPt(contact, landing, t);
+  }
+
   function desiredBallAt(p, formation){
     if(isOur(scenario)){
       const atk = OUR_ATTACKS[scenario];
@@ -1301,7 +1328,7 @@
       }
       if(p<=atk.phase.hit){
         const t=easeInOut((p-atk.phase.toss)/(atk.phase.hit-atk.phase.toss));
-        return lerpPt(attackerPt, landing, t);
+        return ballFlightPoint(attackerPt, landing, t, formation, true);
       }
       return landing.slice();
     }
@@ -1326,7 +1353,7 @@
         if(t<=split) return lerpPt(atk.contact, netPt, t/split);
         return lerpPt(netPt, landing, (t-split)/(1-split));
       }
-      return lerpPt(atk.contact, landing, t);
+      return ballFlightPoint(atk.contact, landing, t, formation, false);
     }
     return landing.slice();
   }
@@ -1643,7 +1670,8 @@
       const ownDecoyActive = isOur(scenario) && f.fakeAttackerId===id && progress>0.05 && progress<0.55;
       const receiverActive = isOur(scenario) && f.receiverId===id && progress < OUR_ATTACKS[scenario].phase.pass + 0.04;
       el.dRing.style.opacity = (ownDecoyActive || receiverActive) ? 1:0;
-      const inOwnZone = p[1]>=378 && p[1]<=415;
+      const isAttackingRole = role==='attacker' || (isOur(scenario) && f.fakeAttackerId===id);
+      const inOwnZone = (p[1]>=378 && p[1]<=415) && !isAttackingRole;
       el.g.classList.toggle('blocker', inOwnZone);
       if(inOwnZone){
         // both hands reach the SAME distance toward the net, side by side along the net line —
@@ -2223,6 +2251,7 @@
     const target = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
     if(useLanding){
       target.landingOverride = nineZoneToXY(landingCol, landingRow, isOur(key));
+      delete BALL_OVERRIDES[key]; // a stale drag-adjusted ball position from before shouldn't silently override the new explicit landing choice
     } else {
       delete target.landingOverride;
     }
