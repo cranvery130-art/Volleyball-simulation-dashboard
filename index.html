@@ -121,6 +121,10 @@
   .preset-folder-group{ display:flex; flex-direction:column; gap:6px; }
   .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
   .zone-check-row{ display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:6px; }
+  .nine-zone-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:4px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px; }
+  .nine-zone-grid button{ padding:12px 4px; font-size:11.5px; font-weight:600; border:1px solid var(--border); background:var(--panel); color:var(--text-dim); border-radius:6px; cursor:pointer; font-family:inherit; }
+  .nine-zone-grid button:hover{ background:rgba(255,255,255,0.06); color:var(--text); }
+  .nine-zone-grid button.active{ background:var(--accent); color:#241b02; border-color:var(--accent); }
   .zone-check-row label{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-dim); cursor:pointer; white-space:nowrap; }
   .zone-check-row input{ width:14px; height:14px; margin:0; }
   .folder-action{ cursor:pointer; font-size:12px; padding:2px 5px; border-radius:6px; flex:none; opacity:0.75; }
@@ -251,9 +255,10 @@
     #cardPresets .preset-input-row button{ width:100%; }
     #cardPresets #editModeSeg{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; border-radius:12px; }
     #cardPresets #editModeSeg button{ border-radius:8px; flex:none; }
-    #customXSeg, #customLandingSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; padding:4px; }
-    #customXSeg button, #customLandingSeg button{ white-space:nowrap; border-radius:8px; flex:none; padding:8px 4px; font-size:11px; }
-    #customXSeg button:last-child, #customLandingSeg button:last-child{ grid-column:1/-1; }
+    #customXSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; padding:4px; }
+    #customXSeg button{ white-space:nowrap; border-radius:8px; flex:none; padding:8px 4px; font-size:11px; }
+    #customXSeg button:last-child{ grid-column:1/-1; }
+    .nine-zone-grid button{ padding:9px 3px; font-size:10.5px; }
   }
 </style>
 <!-- ======================================================================
@@ -541,26 +546,20 @@
             <button data-x="310">오른쪽</button>
             <button data-x="200" class="active">중앙</button>
           </div>
-          <label class="field-label" style="margin-top:8px;">깊이 (네트에서 얼마나 떨어져 있는지)</label>
-          <div class="seg" id="attackDepthSeg">
-            <button data-depth="front" class="active">앞쪽</button>
-            <button data-depth="mid">중앙</button>
-            <button data-depth="back">뒤쪽</button>
+          <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+            <label class="field-label" style="margin-top:0; white-space:nowrap;">위치 미리보기</label>
+            <select id="attackZonePreviewSelect" style="flex:1;">
+              <option value="">보지 않음</option>
+              <option value="30">왼쪽 끝</option>
+              <option value="370">오른쪽 끝</option>
+              <option value="145">왼쪽 중간</option>
+              <option value="255">오른쪽 중간</option>
+              <option value="90">왼쪽</option>
+              <option value="310">오른쪽</option>
+              <option value="200">중앙</option>
+            </select>
           </div>
-          <div class="zone-check-row" id="attackZoneChecks" data-zone-group="attack">
-            <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
-            <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
-            <label><input type="checkbox" data-zone-x="145">왼쪽 중간</label>
-            <label><input type="checkbox" data-zone-x="255">오른쪽 중간</label>
-            <label><input type="checkbox" data-zone-x="90">왼쪽</label>
-            <label><input type="checkbox" data-zone-x="310">오른쪽</label>
-            <label><input type="checkbox" data-zone-x="200">중앙</label>
-          </div>
-          <div class="btn-row" style="margin-top:6px;">
-            <button class="btn" id="btnAttackZoneSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
-            <button class="btn" id="btnAttackZoneDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
-          </div>
-          <div class="field-note" style="margin-top:2px;">체크하면 그 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
+          <div class="field-note" style="margin-top:2px;">고르면 그 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
           <label class="field-label" style="margin-top:8px;">템포(속도)</label>
           <div class="seg" id="customTempoSeg">
             <button data-tempo="fast">빠름</button>
@@ -571,36 +570,20 @@
 
           <div class="check-row" style="margin-top:8px;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
           <div id="customLandingRow" style="display:none; margin-top:6px;">
-            <div class="seg" id="customLandingSeg">
-              <button data-x="30">왼쪽 끝</button>
-              <button data-x="370">오른쪽 끝</button>
-              <button data-x="145">왼쪽 중간</button>
-              <button data-x="255">오른쪽 중간</button>
-              <button data-x="90">왼쪽</button>
-              <button data-x="310">오른쪽</button>
-              <button data-x="200" class="active">중앙</button>
+            <div class="field-note" style="margin-top:0;">공이 떨어질 진영을 그 팀이 네트를 바라보는 기준으로 9칸으로 나눴어요. 원하는 칸을 누르면 그 자리로 정확히 날아가요.</div>
+            <div class="nine-zone-grid" id="landingNineZone">
+              <button data-col="0" data-row="0">왼쪽 앞</button>
+              <button data-col="1" data-row="0">중앙 앞</button>
+              <button data-col="2" data-row="0">오른쪽 앞</button>
+              <button data-col="0" data-row="1">왼쪽 중간</button>
+              <button data-col="1" data-row="1" class="active">중앙</button>
+              <button data-col="2" data-row="1">오른쪽 중간</button>
+              <button data-col="0" data-row="2">왼쪽 뒤</button>
+              <button data-col="1" data-row="2">중앙 뒤</button>
+              <button data-col="2" data-row="2">오른쪽 뒤</button>
             </div>
-            <label class="field-label" style="margin-top:8px;">깊이 (네트에서 얼마나 떨어져 있는지)</label>
-            <div class="seg" id="landingDepthSeg">
-              <button data-depth="front">앞쪽</button>
-              <button data-depth="mid" class="active">중앙</button>
-              <button data-depth="back">뒤쪽</button>
-            </div>
+            <div class="field-note" style="margin-top:6px;">▲ 네트에 가까운 줄이 "앞", 먼 줄이 "뒤"예요.</div>
           </div>
-          <div class="zone-check-row" id="landingZoneChecks" data-zone-group="landing" style="margin-top:6px;">
-            <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
-            <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
-            <label><input type="checkbox" data-zone-x="145">왼쪽 중간</label>
-            <label><input type="checkbox" data-zone-x="255">오른쪽 중간</label>
-            <label><input type="checkbox" data-zone-x="90">왼쪽</label>
-            <label><input type="checkbox" data-zone-x="310">오른쪽</label>
-            <label><input type="checkbox" data-zone-x="200">중앙</label>
-          </div>
-          <div class="btn-row" style="margin-top:6px;">
-            <button class="btn" id="btnLandingZoneSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
-            <button class="btn" id="btnLandingZoneDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
-          </div>
-          <div class="field-note" style="margin-top:2px;">체크하면 그 착지 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
 
           <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
           <select id="customTargetSelect">
@@ -826,35 +809,18 @@
     return found || fallback;
   }
 
-  // For the custom-scenario "공 착지 방향" picker: each button maps to a role on the RECEIVING
-  // team's side (mirrored left/right, since a ball landing "on the right" as the attacker sees it
-  // sits at the defending team's own-left column). null = center, no role lookup.
-  const LANDING_ROLE_MAP = {30:'RBACK', 90:'RIGHT', 145:'BACKSLIDE', 200:null, 255:'FRONTSLIDE', 310:'LEFT', 370:'LBACK'};
-  // Depth (앞쪽/중앙/뒤쪽) is a separate axis from left-right, independent of which of the 7 LR
-  // buttons is picked. It reuses the same front/mid/back row Y-values the fixed 9-zone grid already
-  // has, just applied as a free choice instead of being locked to whichever role a given LR value maps to.
+  // For the "공 착지 방향" 9-zone grid: col/row are always from the RECEIVING team's own
+  // perspective (col 0/1/2 = left/center/right as that team faces the net, row 0/1/2 = front/mid/back).
+  // Column order mirrors for the opponent, since their left is our physical right.
   const OWN_ROW_Y = {front:440, mid:560, back:680};
   const OPP_ROW_Y = {front:320, mid:200, back:80};
-  function depthRowY(depthKey, isOurAttack){
-    const rows = isOurAttack ? OPP_ROW_Y : OWN_ROW_Y; // a landing target sits on the OPPOSING team's court
-    return rows[depthKey] != null ? rows[depthKey] : rows.mid;
-  }
-  function attackContactRowY(depthKey, isOurAttack){
-    const rows = isOurAttack ? OWN_ROW_Y : OPP_ROW_Y; // the attacker stands on THEIR OWN court
-    return rows[depthKey] != null ? rows[depthKey] : rows.front;
-  }
-  function landingForButtonValue(val, isOurAttack, depthKey){
-    const role = LANDING_ROLE_MAP[val];
-    const fallback = [200, isOurAttack?150:500];
-    if(role==null){
-      return depthKey ? [fallback[0], depthRowY(depthKey, isOurAttack)] : fallback;
-    }
-    const posMap = isOurAttack ? DEFAULT_OPP_POSITIONS : DEFAULT_POSITIONS;
-    const zoneMap = isOurAttack ? ORIGINAL_OPP_BASE : ORIGINAL_BASE; // fixed court zone, not the player's live/dragged spot
-    const id = Object.keys(posMap).find(pid=>posMap[pid]===role);
-    if(id==null) return depthKey ? [fallback[0], depthRowY(depthKey, isOurAttack)] : fallback;
-    const naturalPos = zoneMap[id];
-    return [naturalPos[0], depthKey ? depthRowY(depthKey, isOurAttack) : naturalPos[1]];
+  const OWN_COL_X = [80, 200, 320];
+  const OPP_COL_X = [320, 200, 80]; // mirrored: opponent's own-left (col 0) is physical x=320
+  function nineZoneToXY(col, row, isOurAttack){
+    const cols = isOurAttack ? OPP_COL_X : OWN_COL_X; // landing target is on the side the attacker is NOT on
+    const rows = isOurAttack ? OPP_ROW_Y : OWN_ROW_Y;
+    const rowKeys = ['front','mid','back'];
+    return [cols[col], rows[rowKeys[row]]];
   }
 
   const ORIGINAL_BASE = {
@@ -1132,12 +1098,12 @@
   // "저장(덮어쓰기)" step needed. Users can still override any of them the same way as before.
   // (applyScenarioCustom is defined further below as a function declaration, so it's already
   // available here regardless of source order.)
-  applyScenarioCustom('L', 30, 'normal', false, true, 370, false, 'front', 'back');
-  applyScenarioCustom('C', 200, 'fast', false, true, 255, false, 'front', 'mid');
-  applyScenarioCustom('R', 370, 'normal', false, true, 30, false, 'front', 'back');
-  applyScenarioCustom('TIMEDIFF', 90, 'normal', true, true, 255, false, 'front', 'mid');
-  applyScenarioCustom('BACKSLIDE', 310, 'normal', false, true, 145, false, 'front', 'mid');
-  applyScenarioCustom('BACKA', 200, 'normal', false, true, 145, false, 'front', 'mid');
+  applyScenarioCustom('L', 30, 'normal', false, true, 0, 2, false);
+  applyScenarioCustom('C', 200, 'fast', false, true, 1, 1, false);
+  applyScenarioCustom('R', 370, 'normal', false, true, 2, 2, false);
+  applyScenarioCustom('TIMEDIFF', 90, 'normal', true, true, 1, 1, false);
+  applyScenarioCustom('BACKSLIDE', 310, 'normal', false, true, 2, 1, false);
+  applyScenarioCustom('BACKA', 200, 'normal', false, true, 2, 1, false);
 
   let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
   let editMode=false, overrideMode=false;
@@ -1991,51 +1957,29 @@
   }
 
   // ---------- UI wiring ----------
-  // ---------- zone preview (attack position / landing direction checkboxes) — purely visual, never touches CUSTOM_BASE/overrides ----------
-  const activeZoneXs = { attack: new Set(), landing: new Set() };
+  // ---------- zone preview (attack position dropdown) — purely visual, never touches CUSTOM_BASE/overrides ----------
+  let activeAttackZoneX = null;
   function drawZoneHighlights(){
     const layer = document.getElementById('zoneHighlightLayer');
     if(!layer) return;
     layer.innerHTML = '';
+    if(activeAttackZoneX==null) return;
     const bandHalf = 25;
-    const drawGroup = (group, fillColor, strokeColor) => {
-      const useOwnHalf = (group==='attack') ? isOur(scenario) : !isOur(scenario);
-      const y0 = useOwnHalf ? 385 : 22, y1 = useOwnHalf ? 738 : 375;
-      activeZoneXs[group].forEach(val=>{
-        const x0 = clip(val-bandHalf, 20, 380), x1 = clip(val+bandHalf, 20, 380);
-        const rect = document.createElementNS(svgNS,'rect');
-        rect.setAttribute('x', x0); rect.setAttribute('y', y0);
-        rect.setAttribute('width', x1-x0); rect.setAttribute('height', y1-y0);
-        rect.setAttribute('fill', fillColor);
-        rect.setAttribute('stroke', strokeColor);
-        rect.setAttribute('stroke-width','1.5');
-        rect.setAttribute('stroke-dasharray','4 3');
-        layer.appendChild(rect);
-      });
-    };
-    drawGroup('attack', 'rgba(66,165,245,0.18)', 'rgba(66,165,245,0.7)');
-    drawGroup('landing', 'rgba(242,183,5,0.18)', 'rgba(242,183,5,0.7)');
+    const y0 = isOur(scenario) ? 385 : 22, y1 = isOur(scenario) ? 738 : 375;
+    const x0 = clip(activeAttackZoneX-bandHalf, 20, 380), x1 = clip(activeAttackZoneX+bandHalf, 20, 380);
+    const rect = document.createElementNS(svgNS,'rect');
+    rect.setAttribute('x', x0); rect.setAttribute('y', y0);
+    rect.setAttribute('width', x1-x0); rect.setAttribute('height', y1-y0);
+    rect.setAttribute('fill', 'rgba(66,165,245,0.18)');
+    rect.setAttribute('stroke', 'rgba(66,165,245,0.7)');
+    rect.setAttribute('stroke-width','1.5');
+    rect.setAttribute('stroke-dasharray','4 3');
+    layer.appendChild(rect);
   }
-  document.querySelectorAll('#attackZoneChecks input, #landingZoneChecks input').forEach(cb=>{
-    cb.addEventListener('change', e=>{
-      const group = e.target.closest('.zone-check-row').dataset.zoneGroup;
-      const val = Number(e.target.dataset.zoneX);
-      if(e.target.checked) activeZoneXs[group].add(val); else activeZoneXs[group].delete(val);
-      drawZoneHighlights();
-    });
-  });
-  function setZoneGroupChecked(rowId, group, checked){
-    document.querySelectorAll('#'+rowId+' input').forEach(cb=>{
-      cb.checked = checked;
-      const val = Number(cb.dataset.zoneX);
-      if(checked) activeZoneXs[group].add(val); else activeZoneXs[group].delete(val);
-    });
+  document.getElementById('attackZonePreviewSelect').addEventListener('change', e=>{
+    activeAttackZoneX = e.target.value==='' ? null : Number(e.target.value);
     drawZoneHighlights();
-  }
-  document.getElementById('btnAttackZoneSelectAll').addEventListener('click', ()=> setZoneGroupChecked('attackZoneChecks','attack',true));
-  document.getElementById('btnAttackZoneDeselectAll').addEventListener('click', ()=> setZoneGroupChecked('attackZoneChecks','attack',false));
-  document.getElementById('btnLandingZoneSelectAll').addEventListener('click', ()=> setZoneGroupChecked('landingZoneChecks','landing',true));
-  document.getElementById('btnLandingZoneDeselectAll').addEventListener('click', ()=> setZoneGroupChecked('landingZoneChecks','landing',false));
+  });
 
   function switchScenario(key){
     scenario=key;
@@ -2239,21 +2183,9 @@
       btn.classList.add('active');
     });
   });
-  document.querySelectorAll('#customLandingSeg button').forEach(btn=>{
+  document.querySelectorAll('#landingNineZone button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#customLandingSeg button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-  document.querySelectorAll('#attackDepthSeg button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#attackDepthSeg button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-  document.querySelectorAll('#landingDepthSeg button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#landingDepthSeg button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('#landingNineZone button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
@@ -2264,9 +2196,7 @@
   // and clicking 저장(덮어쓰기) would — used both by that button and to seed each scenario's
   // built-in defaults at startup. Also stores the raw panel values on the scenario (_panel) so the
   // panel can be synced back to whatever is actually active whenever the scenario is opened.
-  function applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, markCustomized, attackDepth, landingDepth){
-    attackDepth = attackDepth || 'front';
-    landingDepth = landingDepth || 'mid';
+  function applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingCol, landingRow, markCustomized){
     const x = isOur(key) ? perspX : (400 - perspX);
     if(isOur(key)){
       const atk = OUR_ATTACKS[key];
@@ -2274,12 +2204,11 @@
       atk.duration = {fast:1600, normal:2600, slow:3800}[tempo];
       atk.phase = hasFake ? {pass:0.14,toss:0.6,hit:0.85} : {pass:0.18,toss:0.44,hit:0.76};
       if(hasFake) atk.fakeX = 200; else delete atk.fakeX;
-      atk.attackDepthY = attackContactRowY(attackDepth, true);
       if(markCustomized) atk.customized = true;
     } else {
       const atk = ATTACKS[key];
       atk.x = x;
-      atk.contact = [x, attackContactRowY(attackDepth, false)];
+      atk.contact = [x, 320];
       atk.approachFrom = [clip(x + (x<200? 25:-25), 40,360), 245];
       const tempoPreset = {
         fast:{duration:1900, timing:{approach:0.2,peak:0.34,land:0.46,ballStart:0.34,ballEnd:0.54}},
@@ -2287,17 +2216,17 @@
         slow:{duration:4200, timing:{approach:0.4,peak:0.56,land:0.7,ballStart:0.56,ballEnd:0.8}}
       }[tempo];
       atk.duration = tempoPreset.duration; atk.timing = tempoPreset.timing;
-      if(hasFake){ atk.fakeContact=[200, attackContactRowY(attackDepth, false)]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
+      if(hasFake){ atk.fakeContact=[200,320]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
       else{ delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp; }
       if(markCustomized) atk.customized = true;
     }
     const target = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
     if(useLanding){
-      target.landingOverride = landingForButtonValue(landingVal, isOur(key), landingDepth);
+      target.landingOverride = nineZoneToXY(landingCol, landingRow, isOur(key));
     } else {
       delete target.landingOverride;
     }
-    target._panel = {perspX, tempo, hasFake, useLanding, landingVal, attackDepth, landingDepth};
+    target._panel = {perspX, tempo, hasFake, useLanding, landingCol, landingRow};
   }
 
   function syncCustomPanelToScenario(key){
@@ -2310,10 +2239,8 @@
     document.getElementById('customLandingToggle').checked = p.useLanding;
     document.getElementById('customLandingRow').style.display = p.useLanding ? 'block' : 'none';
     if(p.useLanding){
-      document.querySelectorAll('#customLandingSeg button').forEach(b=>b.classList.toggle('active', Number(b.dataset.x)===p.landingVal));
+      document.querySelectorAll('#landingNineZone button').forEach(b=>b.classList.toggle('active', Number(b.dataset.col)===p.landingCol && Number(b.dataset.row)===p.landingRow));
     }
-    document.querySelectorAll('#attackDepthSeg button').forEach(b=>b.classList.toggle('active', b.dataset.depth===(p.attackDepth||'front')));
-    document.querySelectorAll('#landingDepthSeg button').forEach(b=>b.classList.toggle('active', b.dataset.depth===(p.landingDepth||'mid')));
   }
 
   // ---------- built-in defaults for each opponent scenario's "공격 상황 직접 설정" ----------
@@ -2328,10 +2255,10 @@
     const tempo = document.querySelector('#customTempoSeg button.active').dataset.tempo;
     const hasFake = document.getElementById('customFake').checked;
     const useLanding = document.getElementById('customLandingToggle').checked;
-    const landingVal = useLanding ? Number(document.querySelector('#customLandingSeg button.active').dataset.x) : null;
-    const attackDepth = document.querySelector('#attackDepthSeg button.active').dataset.depth;
-    const landingDepth = document.querySelector('#landingDepthSeg button.active').dataset.depth;
-    applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, true, attackDepth, landingDepth);
+    const activeZoneBtn = document.querySelector('#landingNineZone button.active');
+    const landingCol = useLanding ? Number(activeZoneBtn.dataset.col) : null;
+    const landingRow = useLanding ? Number(activeZoneBtn.dataset.row) : null;
+    applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingCol, landingRow, true);
 
     if(scenario===key) switchScenario(key);
     const statusEl = document.getElementById('customStatus');
