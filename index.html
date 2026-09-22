@@ -445,6 +445,7 @@
           <div class="field-label" style="margin-top:0;">시각 보조</div>
           <div class="check-list">
             <div class="check-row"><input type="checkbox" id="chkArrows"><label for="chkArrows">이동 동선(화살표) 표시</label></div>
+            <div class="check-row"><input type="checkbox" id="chkBallPath"><label for="chkBallPath">공 착지 방향 이동선 표시</label></div>
             <div class="check-row"><input type="checkbox" id="chkFans"><label for="chkFans">수비수별 커버리지 영역(부채꼴) · 네트 앞 블로킹 범위 표시</label></div>
           </div>
         </div>
@@ -1040,31 +1041,13 @@
       roles[id]='cover'; targets[id]=[x,y];
     });
 
-    const oppBlockerIds = pickOppBlockers(attackX, blockCount, CUSTOM_OPP_BASE)
-      .sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]); // spatial (left-to-right) order, not priority order — otherwise slot i doesn't line up with blocker i's actual side
-    const spread= blockCount>=4?42:50;
-    let oppSlots=[];
-    for(let k=0;k<blockCount;k++) oppSlots.push(attackX+(k-(blockCount-1)/2)*spread);
-    { const lo=45, hi=355; const mn=Math.min(...oppSlots), mx=Math.max(...oppSlots);
-      let sh=0; if(mn<lo) sh=lo-mn; else if(mx>hi) sh=hi-mx;
-      oppSlots = oppSlots.map(s=>s+sh); }
-    oppBlockerIds.forEach((id,i)=>{ targets[id]=[oppSlots[i], 345]; }); // stored in the same targets object as our own IDs so the override system (drag-in-zone) can reach them too
-
-    // If this attack has a decoy (fakeX set), the opponent blockers should react to the DECOY first,
-    // then correct to the real attack — mirroring how our own blockers react to the opponent's fake
-    // in the other direction. Compute that fake-reaction layout the same way as the real one.
-    let fakeOppTargets = null;
-    if(fakeX!=null){
-      const fakeOppBlockerIds = pickOppBlockers(fakeX, blockCount, CUSTOM_OPP_BASE)
-        .sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
-      let fakeSlots=[];
-      for(let k=0;k<blockCount;k++) fakeSlots.push(fakeX+(k-(blockCount-1)/2)*spread);
-      { const lo=45, hi=355; const mn=Math.min(...fakeSlots), mx=Math.max(...fakeSlots);
-        let sh=0; if(mn<lo) sh=lo-mn; else if(mx>hi) sh=hi-mx;
-        fakeSlots = fakeSlots.map(s=>s+sh); }
-      fakeOppTargets = {};
-      fakeOppBlockerIds.forEach((id,i)=>{ fakeOppTargets[id]=[fakeSlots[i], 345]; });
-    }
+    // Opponent blockers are no longer auto-generated here — they only exist where the user has
+    // actually placed one (via drag override), exactly like our own blockers. So no phantom
+    // "always 2 blockers" appears just because a scenario exists; oppBlockerIds/fakeOppTargets
+    // get derived purely from position later, in getFormation().
+    const oppBlockerIds = [];
+    const oppSlots = [];
+    const fakeOppTargets = null;
     // Default flight target when no explicit landing direction is set: a spike has to cross the net
     // into the opponent's court — NOT stay on our own side. (Previously this fell back to a point on
     // OUR side meant for "where a deflected ball comes back for cover", which meant the ball never
@@ -1113,6 +1096,7 @@
   let draggingId=null;
 
   const showArrows = ()=>document.getElementById('chkArrows').checked;
+  const showBallPath = ()=>document.getElementById('chkBallPath').checked;
   const showFans = ()=>document.getElementById('chkFans').checked;
 
   function comboKey(){ return scenario; } // block count is no longer a separate configurable axis — it's derived from where dots actually sit
@@ -1153,9 +1137,12 @@
     if(isOur(scenario)){
       atk = OUR_ATTACKS[scenario];
       f = generateCover(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE, atk.fakeX, atk.pos, atk.attackDepthY);
-      if(f.fakeOppTargets){
+      {
         const fov = FAKE_TARGET_OVERRIDES[comboKey()];
-        if(fov){ Object.keys(fov).forEach(id=>{ f.fakeOppTargets[id]=fov[id]; }); }
+        if(fov && Object.keys(fov).length){
+          f.fakeOppTargets = f.fakeOppTargets || {};
+          Object.keys(fov).forEach(id=>{ f.fakeOppTargets[id]=fov[id]; });
+        }
       }
     } else {
       atk = ATTACKS[scenario];
@@ -1196,7 +1183,7 @@
     } else {
       // same idea, mirrored: which opponent letters end up in THEIR near-net zone (after any drag
       // override) are the ones who actually block our attack — identical rule to our own team's side.
-      const derivedOppBlockerIds = Object.keys(ORIGINAL_OPP_BASE).filter(id => f.targets[id] && f.targets[id][1]>=25 && f.targets[id][1]<=378);
+      const derivedOppBlockerIds = Object.keys(ORIGINAL_OPP_BASE).filter(id => f.targets[id] && f.targets[id][1]>=345 && f.targets[id][1]<=382);
       f.oppBlockerIds = derivedOppBlockerIds.sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
       f.oppSlots = f.oppBlockerIds.map(id=>f.targets[id][0]);
       blockCount = f.oppBlockerIds.length;
@@ -1621,7 +1608,7 @@
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
         el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
-        const inOppZone = y>=25 && y<=378;
+        const inOppZone = y>=345 && y<=382;
         if(inOppZone){
           const hy = y+16;
           el.hand1.setAttribute('x',x-15); el.hand1.setAttribute('y',hy); el.hand1.setAttribute('width',12); el.hand1.setAttribute('height',10);
@@ -1796,6 +1783,29 @@
         line.setAttribute('marker-end','url(#arrowHead)'); line.style.opacity=Math.min(0.85,progress*1.7);
         arrowLayer.appendChild(line);
       });
+    }
+
+    if(showBallPath()){
+      const atk2 = isOur(scenario) ? OUR_ATTACKS[scenario] : ATTACKS[scenario];
+      const contactPt = isOur(scenario) ? f.targets[f.attackerId] : atk2.contact;
+      const landingPt = f.ballLanding;
+      if(contactPt && landingPt && dist(contactPt,landingPt)>=10){
+        const curved = isTipNearBlock(landingPt, f, isOur(scenario));
+        const pathEl = document.createElementNS(svgNS, curved ? 'path' : 'line');
+        if(curved){
+          const midX = (contactPt[0]+landingPt[0])/2 + (landingPt[0]>=contactPt[0]?14:-14);
+          const hookY = NET_Y + (isOur(scenario) ? -10 : 10);
+          pathEl.setAttribute('d', `M ${contactPt[0]},${contactPt[1]} Q ${midX},${hookY} ${landingPt[0]},${landingPt[1]}`);
+          pathEl.setAttribute('fill','none');
+        } else {
+          pathEl.setAttribute('x1',contactPt[0]); pathEl.setAttribute('y1',contactPt[1]);
+          pathEl.setAttribute('x2',landingPt[0]); pathEl.setAttribute('y2',landingPt[1]);
+        }
+        pathEl.setAttribute('stroke','#F2B705'); pathEl.setAttribute('stroke-width','2');
+        pathEl.setAttribute('stroke-dasharray','2 5'); pathEl.setAttribute('marker-end','url(#arrowHead)');
+        pathEl.style.opacity = 0.8;
+        arrowLayer.appendChild(pathEl);
+      }
     }
 
     const pct=Math.round(progress*100);
@@ -2050,7 +2060,7 @@
     if(editMode||overrideMode) return;
     playing=false; updatePlayBtn(); progress=Number(e.target.value)/100;
   });
-  ['chkArrows','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
+  ['chkArrows','chkBallPath','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
 
   function currentHasFake(){
     if(isOur(scenario)) return OUR_ATTACKS[scenario].fakeX!=null;
