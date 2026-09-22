@@ -121,6 +121,10 @@
   .preset-folder-group{ display:flex; flex-direction:column; gap:6px; }
   .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
   .zone-check-row{ display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:6px; }
+  .nine-zone-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:4px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px; }
+  .nine-zone-grid button{ padding:12px 4px; font-size:11.5px; font-weight:600; border:1px solid var(--border); background:var(--panel); color:var(--text-dim); border-radius:6px; cursor:pointer; font-family:inherit; }
+  .nine-zone-grid button:hover{ background:rgba(255,255,255,0.06); color:var(--text); }
+  .nine-zone-grid button.active{ background:var(--accent); color:#241b02; border-color:var(--accent); }
   .zone-check-row label{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-dim); cursor:pointer; white-space:nowrap; }
   .zone-check-row input{ width:14px; height:14px; margin:0; }
   .folder-action{ cursor:pointer; font-size:12px; padding:2px 5px; border-radius:6px; flex:none; opacity:0.75; }
@@ -134,6 +138,10 @@
   .preset-empty{ font-size:12px; color:var(--text-dim); }
 
   .stage-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px; flex-wrap:wrap; }
+  .stage-aids{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .stage-aids-label{ font-size:11.5px; color:var(--text-dim); font-weight:600; }
+  .stage-aids label{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-dim); white-space:nowrap; cursor:pointer; }
+  .stage-aids input[type="checkbox"]{ width:14px; height:14px; margin:0; }
   .stage-top .scenario-title{ font-size:18px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
   .stage-top .scenario-title:hover{ color:var(--accent); }
   .stage-top .scenario-title::after{ content:'▾'; font-size:12px; color:var(--text-dim); }
@@ -251,9 +259,10 @@
     #cardPresets .preset-input-row button{ width:100%; }
     #cardPresets #editModeSeg{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; border-radius:12px; }
     #cardPresets #editModeSeg button{ border-radius:8px; flex:none; }
-    #customXSeg, #customLandingSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; padding:4px; }
-    #customXSeg button, #customLandingSeg button{ white-space:nowrap; border-radius:8px; flex:none; padding:8px 4px; font-size:11px; }
-    #customXSeg button:last-child, #customLandingSeg button:last-child{ grid-column:1/-1; }
+    #customXSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; padding:4px; }
+    #customXSeg button{ white-space:nowrap; border-radius:8px; flex:none; padding:8px 4px; font-size:11px; }
+    #customXSeg button:last-child{ grid-column:1/-1; }
+    .nine-zone-grid button{ padding:9px 3px; font-size:10.5px; }
   }
 </style>
 <!-- ======================================================================
@@ -367,7 +376,11 @@
     <div>
       <div class="stage-top">
         <div class="scenario-title" id="scenarioTitle" role="button" tabindex="0" title="클릭해서 공격 상황 바꾸기">상대 좌측(L) 오픈 공격</div>
-        <div style="display:flex; align-items:center; gap:8px;">
+        <div class="stage-aids" id="stageAids">
+          <span class="stage-aids-label">시각 보조</span>
+          <label><input type="checkbox" id="chkArrows"> 이동 동선</label>
+          <label><input type="checkbox" id="chkBallPath"> 착지 이동선</label>
+          <label><input type="checkbox" id="chkFans"> 커버리지·블로킹 범위</label>
           <button class="btn" id="btnOrientation" style="white-space:nowrap;">세로 보기로 전환</button>
         </div>
       </div>
@@ -431,19 +444,8 @@
 
     <div class="card">
       <div class="desc-block" id="descBlockTag">상대 좌측(L) 오픈 공격 · 2인 블로킹</div>
-      <div class="desc-with-aids">
-        <div class="desc-main">
-          <p class="desc-text" id="descText"></p>
-          <ul class="points" id="descPoints"></ul>
-        </div>
-        <div class="desc-aids">
-          <div class="field-label" style="margin-top:0;">시각 보조</div>
-          <div class="check-list">
-            <div class="check-row"><input type="checkbox" id="chkArrows"><label for="chkArrows">이동 동선(화살표) 표시</label></div>
-            <div class="check-row"><input type="checkbox" id="chkFans"><label for="chkFans">수비수별 커버리지 영역(부채꼴) · 네트 앞 블로킹 범위 표시</label></div>
-          </div>
-        </div>
-      </div>
+      <p class="desc-text" id="descText"></p>
+      <ul class="points" id="descPoints"></ul>
     </div>
 
     
@@ -534,33 +536,23 @@
           <label class="field-label">공격 위치</label>
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
-            <button data-x="370">오른쪽 끝</button>
             <button data-x="145">왼쪽 중간</button>
-            <button data-x="255">오른쪽 중간</button>
-            <button data-x="90">왼쪽</button>
-            <button data-x="310">오른쪽</button>
             <button data-x="200" class="active">중앙</button>
+            <button data-x="255">오른쪽 중간</button>
+            <button data-x="370">오른쪽 끝</button>
           </div>
-          <label class="field-label" style="margin-top:8px;">깊이 (네트에서 얼마나 떨어져 있는지)</label>
-          <div class="seg" id="attackDepthSeg">
-            <button data-depth="front" class="active">앞쪽</button>
-            <button data-depth="mid">중앙</button>
-            <button data-depth="back">뒤쪽</button>
+          <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+            <label class="field-label" style="margin-top:0; white-space:nowrap;">위치 미리보기</label>
+            <select id="attackZonePreviewSelect" style="flex:1;">
+              <option value="">보지 않음</option>
+              <option value="30">왼쪽 끝</option>
+              <option value="145">왼쪽 중간</option>
+              <option value="200">중앙</option>
+              <option value="255">오른쪽 중간</option>
+              <option value="370">오른쪽 끝</option>
+            </select>
           </div>
-          <div class="zone-check-row" id="attackZoneChecks" data-zone-group="attack">
-            <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
-            <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
-            <label><input type="checkbox" data-zone-x="145">왼쪽 중간</label>
-            <label><input type="checkbox" data-zone-x="255">오른쪽 중간</label>
-            <label><input type="checkbox" data-zone-x="90">왼쪽</label>
-            <label><input type="checkbox" data-zone-x="310">오른쪽</label>
-            <label><input type="checkbox" data-zone-x="200">중앙</label>
-          </div>
-          <div class="btn-row" style="margin-top:6px;">
-            <button class="btn" id="btnAttackZoneSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
-            <button class="btn" id="btnAttackZoneDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
-          </div>
-          <div class="field-note" style="margin-top:2px;">체크하면 그 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
+          <div class="field-note" style="margin-top:2px;">고르면 그 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
           <label class="field-label" style="margin-top:8px;">템포(속도)</label>
           <div class="seg" id="customTempoSeg">
             <button data-tempo="fast">빠름</button>
@@ -571,36 +563,20 @@
 
           <div class="check-row" style="margin-top:8px;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
           <div id="customLandingRow" style="display:none; margin-top:6px;">
-            <div class="seg" id="customLandingSeg">
-              <button data-x="30">왼쪽 끝</button>
-              <button data-x="370">오른쪽 끝</button>
-              <button data-x="145">왼쪽 중간</button>
-              <button data-x="255">오른쪽 중간</button>
-              <button data-x="90">왼쪽</button>
-              <button data-x="310">오른쪽</button>
-              <button data-x="200" class="active">중앙</button>
+            <div class="field-note" style="margin-top:0;">공이 떨어질 진영을 그 팀이 네트를 바라보는 기준으로 9칸으로 나눴어요. 원하는 칸을 누르면 그 자리로 정확히 날아가요.</div>
+            <div class="nine-zone-grid" id="landingNineZone">
+              <button data-col="0" data-row="0">왼쪽 앞</button>
+              <button data-col="1" data-row="0">중앙 앞</button>
+              <button data-col="2" data-row="0">오른쪽 앞</button>
+              <button data-col="0" data-row="1">왼쪽 중간</button>
+              <button data-col="1" data-row="1" class="active">중앙</button>
+              <button data-col="2" data-row="1">오른쪽 중간</button>
+              <button data-col="0" data-row="2">왼쪽 뒤</button>
+              <button data-col="1" data-row="2">중앙 뒤</button>
+              <button data-col="2" data-row="2">오른쪽 뒤</button>
             </div>
-            <label class="field-label" style="margin-top:8px;">깊이 (네트에서 얼마나 떨어져 있는지)</label>
-            <div class="seg" id="landingDepthSeg">
-              <button data-depth="front">앞쪽</button>
-              <button data-depth="mid" class="active">중앙</button>
-              <button data-depth="back">뒤쪽</button>
-            </div>
+            <div class="field-note" style="margin-top:6px;">▲ 네트에 가까운 줄이 "앞", 먼 줄이 "뒤"예요.</div>
           </div>
-          <div class="zone-check-row" id="landingZoneChecks" data-zone-group="landing" style="margin-top:6px;">
-            <label><input type="checkbox" data-zone-x="30">왼쪽 끝</label>
-            <label><input type="checkbox" data-zone-x="370">오른쪽 끝</label>
-            <label><input type="checkbox" data-zone-x="145">왼쪽 중간</label>
-            <label><input type="checkbox" data-zone-x="255">오른쪽 중간</label>
-            <label><input type="checkbox" data-zone-x="90">왼쪽</label>
-            <label><input type="checkbox" data-zone-x="310">오른쪽</label>
-            <label><input type="checkbox" data-zone-x="200">중앙</label>
-          </div>
-          <div class="btn-row" style="margin-top:6px;">
-            <button class="btn" id="btnLandingZoneSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
-            <button class="btn" id="btnLandingZoneDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
-          </div>
-          <div class="field-note" style="margin-top:2px;">체크하면 그 착지 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
 
           <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
           <select id="customTargetSelect">
@@ -826,35 +802,18 @@
     return found || fallback;
   }
 
-  // For the custom-scenario "공 착지 방향" picker: each button maps to a role on the RECEIVING
-  // team's side (mirrored left/right, since a ball landing "on the right" as the attacker sees it
-  // sits at the defending team's own-left column). null = center, no role lookup.
-  const LANDING_ROLE_MAP = {30:'RBACK', 90:'RIGHT', 145:'BACKSLIDE', 200:null, 255:'FRONTSLIDE', 310:'LEFT', 370:'LBACK'};
-  // Depth (앞쪽/중앙/뒤쪽) is a separate axis from left-right, independent of which of the 7 LR
-  // buttons is picked. It reuses the same front/mid/back row Y-values the fixed 9-zone grid already
-  // has, just applied as a free choice instead of being locked to whichever role a given LR value maps to.
+  // For the "공 착지 방향" 9-zone grid: col/row are always from the RECEIVING team's own
+  // perspective (col 0/1/2 = left/center/right as that team faces the net, row 0/1/2 = front/mid/back).
+  // Column order mirrors for the opponent, since their left is our physical right.
   const OWN_ROW_Y = {front:440, mid:560, back:680};
   const OPP_ROW_Y = {front:320, mid:200, back:80};
-  function depthRowY(depthKey, isOurAttack){
-    const rows = isOurAttack ? OPP_ROW_Y : OWN_ROW_Y; // a landing target sits on the OPPOSING team's court
-    return rows[depthKey] != null ? rows[depthKey] : rows.mid;
-  }
-  function attackContactRowY(depthKey, isOurAttack){
-    const rows = isOurAttack ? OWN_ROW_Y : OPP_ROW_Y; // the attacker stands on THEIR OWN court
-    return rows[depthKey] != null ? rows[depthKey] : rows.front;
-  }
-  function landingForButtonValue(val, isOurAttack, depthKey){
-    const role = LANDING_ROLE_MAP[val];
-    const fallback = [200, isOurAttack?150:500];
-    if(role==null){
-      return depthKey ? [fallback[0], depthRowY(depthKey, isOurAttack)] : fallback;
-    }
-    const posMap = isOurAttack ? DEFAULT_OPP_POSITIONS : DEFAULT_POSITIONS;
-    const zoneMap = isOurAttack ? ORIGINAL_OPP_BASE : ORIGINAL_BASE; // fixed court zone, not the player's live/dragged spot
-    const id = Object.keys(posMap).find(pid=>posMap[pid]===role);
-    if(id==null) return depthKey ? [fallback[0], depthRowY(depthKey, isOurAttack)] : fallback;
-    const naturalPos = zoneMap[id];
-    return [naturalPos[0], depthKey ? depthRowY(depthKey, isOurAttack) : naturalPos[1]];
+  const OWN_COL_X = [80, 200, 320];
+  const OPP_COL_X = [320, 200, 80]; // mirrored: opponent's own-left (col 0) is physical x=320
+  function nineZoneToXY(col, row, isOurAttack){
+    const cols = isOurAttack ? OPP_COL_X : OWN_COL_X; // landing target is on the side the attacker is NOT on
+    const rows = isOurAttack ? OPP_ROW_Y : OWN_ROW_Y;
+    const rowKeys = ['front','mid','back'];
+    return [cols[col], rows[rowKeys[row]]];
   }
 
   const ORIGINAL_BASE = {
@@ -872,6 +831,7 @@
   let CUSTOM_OPP_BASE = {}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=> CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice());
   let TARGET_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {id:[x,y]}
   let FAKE_TARGET_OVERRIDES = {};   // key: scenario+'|'+blockCount -> {id:[x,y]} — where a blocker reacts to the fake, before correcting to the true target
+  let BALL_OVERRIDES = {}; // key: scenario+'|'+blockCount -> [x,y] landing point override (only settable via room state import now; no in-app UI) — declared here (not further down) because applyScenarioCustom, which references it, is already called at the top level below during startup
 
   // ---------- opponent attack scenarios ----------
   // Net-based left/right: the opponent faces the net (faces "down" the screen toward us),
@@ -1077,31 +1037,13 @@
       roles[id]='cover'; targets[id]=[x,y];
     });
 
-    const oppBlockerIds = pickOppBlockers(attackX, blockCount, CUSTOM_OPP_BASE)
-      .sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]); // spatial (left-to-right) order, not priority order — otherwise slot i doesn't line up with blocker i's actual side
-    const spread= blockCount>=4?42:50;
-    let oppSlots=[];
-    for(let k=0;k<blockCount;k++) oppSlots.push(attackX+(k-(blockCount-1)/2)*spread);
-    { const lo=45, hi=355; const mn=Math.min(...oppSlots), mx=Math.max(...oppSlots);
-      let sh=0; if(mn<lo) sh=lo-mn; else if(mx>hi) sh=hi-mx;
-      oppSlots = oppSlots.map(s=>s+sh); }
-    oppBlockerIds.forEach((id,i)=>{ targets[id]=[oppSlots[i], 345]; }); // stored in the same targets object as our own IDs so the override system (drag-in-zone) can reach them too
-
-    // If this attack has a decoy (fakeX set), the opponent blockers should react to the DECOY first,
-    // then correct to the real attack — mirroring how our own blockers react to the opponent's fake
-    // in the other direction. Compute that fake-reaction layout the same way as the real one.
-    let fakeOppTargets = null;
-    if(fakeX!=null){
-      const fakeOppBlockerIds = pickOppBlockers(fakeX, blockCount, CUSTOM_OPP_BASE)
-        .sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
-      let fakeSlots=[];
-      for(let k=0;k<blockCount;k++) fakeSlots.push(fakeX+(k-(blockCount-1)/2)*spread);
-      { const lo=45, hi=355; const mn=Math.min(...fakeSlots), mx=Math.max(...fakeSlots);
-        let sh=0; if(mn<lo) sh=lo-mn; else if(mx>hi) sh=hi-mx;
-        fakeSlots = fakeSlots.map(s=>s+sh); }
-      fakeOppTargets = {};
-      fakeOppBlockerIds.forEach((id,i)=>{ fakeOppTargets[id]=[fakeSlots[i], 345]; });
-    }
+    // Opponent blockers are no longer auto-generated here — they only exist where the user has
+    // actually placed one (via drag override), exactly like our own blockers. So no phantom
+    // "always 2 blockers" appears just because a scenario exists; oppBlockerIds/fakeOppTargets
+    // get derived purely from position later, in getFormation().
+    const oppBlockerIds = [];
+    const oppSlots = [];
+    const fakeOppTargets = null;
     // Default flight target when no explicit landing direction is set: a spike has to cross the net
     // into the opponent's court — NOT stay on our own side. (Previously this fell back to a point on
     // OUR side meant for "where a deflected ball comes back for cover", which meant the ball never
@@ -1132,12 +1074,12 @@
   // "저장(덮어쓰기)" step needed. Users can still override any of them the same way as before.
   // (applyScenarioCustom is defined further below as a function declaration, so it's already
   // available here regardless of source order.)
-  applyScenarioCustom('L', 30, 'normal', false, true, 370, false, 'front', 'back');
-  applyScenarioCustom('C', 200, 'fast', false, true, 255, false, 'front', 'mid');
-  applyScenarioCustom('R', 370, 'normal', false, true, 30, false, 'front', 'back');
-  applyScenarioCustom('TIMEDIFF', 90, 'normal', true, true, 255, false, 'front', 'mid');
-  applyScenarioCustom('BACKSLIDE', 310, 'normal', false, true, 145, false, 'front', 'mid');
-  applyScenarioCustom('BACKA', 200, 'normal', false, true, 145, false, 'front', 'mid');
+  applyScenarioCustom('L', 30, 'normal', false, true, 0, 2, false);
+  applyScenarioCustom('C', 200, 'fast', false, true, 1, 1, false);
+  applyScenarioCustom('R', 370, 'normal', false, true, 2, 2, false);
+  applyScenarioCustom('TIMEDIFF', 145, 'normal', true, true, 1, 1, false);
+  applyScenarioCustom('BACKSLIDE', 255, 'normal', false, true, 2, 1, false);
+  applyScenarioCustom('BACKA', 200, 'normal', false, true, 2, 1, false);
 
   let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
   let editMode=false, overrideMode=false;
@@ -1148,9 +1090,9 @@
   let ballCurrent=null;
   let presets=[];
   let draggingId=null;
-  let BALL_OVERRIDES = {}; // key: scenario+'|'+blockCount -> [x,y] landing point override (only settable via room state import now; no in-app UI)
 
   const showArrows = ()=>document.getElementById('chkArrows').checked;
+  const showBallPath = ()=>document.getElementById('chkBallPath').checked;
   const showFans = ()=>document.getElementById('chkFans').checked;
 
   function comboKey(){ return scenario; } // block count is no longer a separate configurable axis — it's derived from where dots actually sit
@@ -1191,9 +1133,12 @@
     if(isOur(scenario)){
       atk = OUR_ATTACKS[scenario];
       f = generateCover(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE, atk.fakeX, atk.pos, atk.attackDepthY);
-      if(f.fakeOppTargets){
+      {
         const fov = FAKE_TARGET_OVERRIDES[comboKey()];
-        if(fov){ Object.keys(fov).forEach(id=>{ f.fakeOppTargets[id]=fov[id]; }); }
+        if(fov && Object.keys(fov).length){
+          f.fakeOppTargets = f.fakeOppTargets || {};
+          Object.keys(fov).forEach(id=>{ f.fakeOppTargets[id]=fov[id]; });
+        }
       }
     } else {
       atk = ATTACKS[scenario];
@@ -1224,17 +1169,24 @@
       });
       f.blockerIds = derivedBlockerIds;
       blockCount = f.blockerIds.length;
-      f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
-      if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+      // A directly-set landing spot is a deliberate, precise placement for demonstration —
+      // it shouldn't get silently redirected just because a default/auto-positioned blocker
+      // happens to sit near the flight path.
+      if(!atk.landingOverride){
+        f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
+        if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+      }
     } else {
       // same idea, mirrored: which opponent letters end up in THEIR near-net zone (after any drag
       // override) are the ones who actually block our attack — identical rule to our own team's side.
-      const derivedOppBlockerIds = Object.keys(ORIGINAL_OPP_BASE).filter(id => f.targets[id] && f.targets[id][1]>=25 && f.targets[id][1]<=378);
+      const derivedOppBlockerIds = Object.keys(ORIGINAL_OPP_BASE).filter(id => f.targets[id] && f.targets[id][1]>=345 && f.targets[id][1]<=382);
       f.oppBlockerIds = derivedOppBlockerIds.sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
       f.oppSlots = f.oppBlockerIds.map(id=>f.targets[id][0]);
       blockCount = f.oppBlockerIds.length;
-      f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
-      if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+      if(!atk.landingOverride){
+        f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
+        if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
+      }
     }
     return f;
   }
@@ -1321,6 +1273,30 @@
     return from.slice();
   }
 
+  function isFrontRowLanding(landing, isOurAttack){
+    const frontY = isOurAttack ? OPP_ROW_Y.front : OWN_ROW_Y.front;
+    return Math.abs(landing[1]-frontY) < 30;
+  }
+  function nearestBlockerDist(landing, formation, isOurAttack){
+    const ids = isOurAttack ? formation.oppBlockerIds : formation.blockerIds;
+    if(!ids || !ids.length) return Infinity;
+    return Math.min(...ids.map(id => formation.targets[id] ? Math.abs(formation.targets[id][0]-landing[0]) : Infinity));
+  }
+  function isTipNearBlock(landing, formation, isOurAttack){
+    return isFrontRowLanding(landing, isOurAttack) && nearestBlockerDist(landing, formation, isOurAttack) <= 120;
+  }
+  function ballFlightPoint(contact, landing, t, formation, isOurAttack){
+    // a shot placed right behind (or within about one court zone of) the block, dropping just
+    // past the front row, gets a hooked/parabolic path instead of a flat line — as if it barely
+    // cleared the blockers' hands before dropping — rather than a normal straight attack.
+    if(isTipNearBlock(landing, formation, isOurAttack)){
+      const midX = (contact[0]+landing[0])/2 + (landing[0]>=contact[0] ? 14 : -14);
+      const hookY = NET_Y + (isOurAttack ? -10 : 10);
+      return bezier(contact, [midX, hookY], landing, t);
+    }
+    return lerpPt(contact, landing, t);
+  }
+
   function desiredBallAt(p, formation){
     if(isOur(scenario)){
       const atk = OUR_ATTACKS[scenario];
@@ -1335,7 +1311,7 @@
       }
       if(p<=atk.phase.hit){
         const t=easeInOut((p-atk.phase.toss)/(atk.phase.hit-atk.phase.toss));
-        return lerpPt(attackerPt, landing, t);
+        return ballFlightPoint(attackerPt, landing, t, formation, true);
       }
       return landing.slice();
     }
@@ -1360,7 +1336,7 @@
         if(t<=split) return lerpPt(atk.contact, netPt, t/split);
         return lerpPt(netPt, landing, (t-split)/(1-split));
       }
-      return lerpPt(atk.contact, landing, t);
+      return ballFlightPoint(atk.contact, landing, t, formation, false);
     }
     return landing.slice();
   }
@@ -1504,8 +1480,8 @@
   function makeHandPair(){
     // "raised hands" blocking indicator: two small rects with a gap between them, like a blocker's
     // hands reaching up with a seam a ball could slip through. Positioned/oriented per-frame in render().
-    const hand1=document.createElementNS(svgNS,'rect'); hand1.setAttribute('class','block-hand'); hand1.setAttribute('width','9'); hand1.setAttribute('height','7'); hand1.setAttribute('rx','1.5');
-    const hand2=document.createElementNS(svgNS,'rect'); hand2.setAttribute('class','block-hand'); hand2.setAttribute('width','9'); hand2.setAttribute('height','7'); hand2.setAttribute('rx','1.5');
+    const hand1=document.createElementNS(svgNS,'rect'); hand1.setAttribute('class','block-hand'); hand1.setAttribute('width','14'); hand1.setAttribute('height','10'); hand1.setAttribute('rx','2');
+    const hand2=document.createElementNS(svgNS,'rect'); hand2.setAttribute('class','block-hand'); hand2.setAttribute('width','14'); hand2.setAttribute('height','10'); hand2.setAttribute('rx','2');
     return {hand1, hand2};
   }
 
@@ -1628,11 +1604,16 @@
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
         el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
-        const hx = x-4.5;
-        el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',y+12); el.hand2.setAttribute('width',9); el.hand2.setAttribute('height',7);
-        el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',y+23); el.hand1.setAttribute('width',9); el.hand1.setAttribute('height',7);
-        el.hand1.style.opacity=1; el.hand2.style.opacity=1;
-        if(y>=25 && y<=378) nearNetPlayers.push({x, side:'opp'});
+        const inOppZone = pos[1]>=345 && pos[1]<=382;
+        if(inOppZone){
+          const hy = y+16;
+          el.hand1.setAttribute('x',x-15); el.hand1.setAttribute('y',hy); el.hand1.setAttribute('width',12); el.hand1.setAttribute('height',10);
+          el.hand2.setAttribute('x',x+3); el.hand2.setAttribute('y',hy); el.hand2.setAttribute('width',12); el.hand2.setAttribute('height',10);
+          el.hand1.style.opacity=1; el.hand2.style.opacity=1;
+          nearNetPlayers.push({x, side:'opp'});
+        } else {
+          el.hand1.style.opacity=0; el.hand2.style.opacity=0;
+        }
       });
     } else {
       const atk = ATTACKS[scenario];
@@ -1672,16 +1653,20 @@
       const ownDecoyActive = isOur(scenario) && f.fakeAttackerId===id && progress>0.05 && progress<0.55;
       const receiverActive = isOur(scenario) && f.receiverId===id && progress < OUR_ATTACKS[scenario].phase.pass + 0.04;
       el.dRing.style.opacity = (ownDecoyActive || receiverActive) ? 1:0;
-      el.g.classList.toggle('blocker', role==='block');
-      if(role==='block'){
-        const hx = p[0]-4.5;
-        el.hand2.setAttribute('x',hx); el.hand2.setAttribute('y',p[1]-21); el.hand2.setAttribute('width',9); el.hand2.setAttribute('height',7);
-        el.hand1.setAttribute('x',hx); el.hand1.setAttribute('y',p[1]-32); el.hand1.setAttribute('width',9); el.hand1.setAttribute('height',7);
+      const isAttackingRole = role==='attacker' || (isOur(scenario) && f.fakeAttackerId===id);
+      const inOwnZone = (p[1]>=378 && p[1]<=415) && !isAttackingRole;
+      el.g.classList.toggle('blocker', inOwnZone);
+      if(inOwnZone){
+        // both hands reach the SAME distance toward the net, side by side along the net line —
+        // NOT stacked toward/away from the net, which would line them up in a row with the dot instead.
+        const hy = p[1]-24;
+        el.hand1.setAttribute('x',p[0]-15); el.hand1.setAttribute('y',hy); el.hand1.setAttribute('width',12); el.hand1.setAttribute('height',10);
+        el.hand2.setAttribute('x',p[0]+3); el.hand2.setAttribute('y',hy); el.hand2.setAttribute('width',12); el.hand2.setAttribute('height',10);
         el.hand1.style.opacity=1; el.hand2.style.opacity=1;
       } else {
         el.hand1.style.opacity=0; el.hand2.style.opacity=0;
       }
-      if(p[1]>=378 && p[1]<=415) nearNetPlayers.push({x:p[0], side:'own'});
+      if(inOwnZone) nearNetPlayers.push({x:p[0], side:'own'});
     });
 
     blockZoneLayer.innerHTML='';
@@ -1794,6 +1779,29 @@
         line.setAttribute('marker-end','url(#arrowHead)'); line.style.opacity=Math.min(0.85,progress*1.7);
         arrowLayer.appendChild(line);
       });
+    }
+
+    if(showBallPath()){
+      const atk2 = isOur(scenario) ? OUR_ATTACKS[scenario] : ATTACKS[scenario];
+      const contactPt = isOur(scenario) ? f.targets[f.attackerId] : atk2.contact;
+      const landingPt = f.ballLanding;
+      if(contactPt && landingPt && dist(contactPt,landingPt)>=10){
+        const curved = isTipNearBlock(landingPt, f, isOur(scenario));
+        const pathEl = document.createElementNS(svgNS, curved ? 'path' : 'line');
+        if(curved){
+          const midX = (contactPt[0]+landingPt[0])/2 + (landingPt[0]>=contactPt[0]?14:-14);
+          const hookY = NET_Y + (isOur(scenario) ? -10 : 10);
+          pathEl.setAttribute('d', `M ${contactPt[0]},${contactPt[1]} Q ${midX},${hookY} ${landingPt[0]},${landingPt[1]}`);
+          pathEl.setAttribute('fill','none');
+        } else {
+          pathEl.setAttribute('x1',contactPt[0]); pathEl.setAttribute('y1',contactPt[1]);
+          pathEl.setAttribute('x2',landingPt[0]); pathEl.setAttribute('y2',landingPt[1]);
+        }
+        pathEl.setAttribute('stroke','#F2B705'); pathEl.setAttribute('stroke-width','2');
+        pathEl.setAttribute('stroke-dasharray','2 5'); pathEl.setAttribute('marker-end','url(#arrowHead)');
+        pathEl.style.opacity = 0.8;
+        arrowLayer.appendChild(pathEl);
+      }
     }
 
     const pct=Math.round(progress*100);
@@ -1983,51 +1991,29 @@
   }
 
   // ---------- UI wiring ----------
-  // ---------- zone preview (attack position / landing direction checkboxes) — purely visual, never touches CUSTOM_BASE/overrides ----------
-  const activeZoneXs = { attack: new Set(), landing: new Set() };
+  // ---------- zone preview (attack position dropdown) — purely visual, never touches CUSTOM_BASE/overrides ----------
+  let activeAttackZoneX = null;
   function drawZoneHighlights(){
     const layer = document.getElementById('zoneHighlightLayer');
     if(!layer) return;
     layer.innerHTML = '';
+    if(activeAttackZoneX==null) return;
     const bandHalf = 25;
-    const drawGroup = (group, fillColor, strokeColor) => {
-      const useOwnHalf = (group==='attack') ? isOur(scenario) : !isOur(scenario);
-      const y0 = useOwnHalf ? 385 : 22, y1 = useOwnHalf ? 738 : 375;
-      activeZoneXs[group].forEach(val=>{
-        const x0 = clip(val-bandHalf, 20, 380), x1 = clip(val+bandHalf, 20, 380);
-        const rect = document.createElementNS(svgNS,'rect');
-        rect.setAttribute('x', x0); rect.setAttribute('y', y0);
-        rect.setAttribute('width', x1-x0); rect.setAttribute('height', y1-y0);
-        rect.setAttribute('fill', fillColor);
-        rect.setAttribute('stroke', strokeColor);
-        rect.setAttribute('stroke-width','1.5');
-        rect.setAttribute('stroke-dasharray','4 3');
-        layer.appendChild(rect);
-      });
-    };
-    drawGroup('attack', 'rgba(66,165,245,0.18)', 'rgba(66,165,245,0.7)');
-    drawGroup('landing', 'rgba(242,183,5,0.18)', 'rgba(242,183,5,0.7)');
+    const y0 = isOur(scenario) ? 385 : 22, y1 = isOur(scenario) ? 738 : 375;
+    const x0 = clip(activeAttackZoneX-bandHalf, 20, 380), x1 = clip(activeAttackZoneX+bandHalf, 20, 380);
+    const rect = document.createElementNS(svgNS,'rect');
+    rect.setAttribute('x', x0); rect.setAttribute('y', y0);
+    rect.setAttribute('width', x1-x0); rect.setAttribute('height', y1-y0);
+    rect.setAttribute('fill', 'rgba(66,165,245,0.18)');
+    rect.setAttribute('stroke', 'rgba(66,165,245,0.7)');
+    rect.setAttribute('stroke-width','1.5');
+    rect.setAttribute('stroke-dasharray','4 3');
+    layer.appendChild(rect);
   }
-  document.querySelectorAll('#attackZoneChecks input, #landingZoneChecks input').forEach(cb=>{
-    cb.addEventListener('change', e=>{
-      const group = e.target.closest('.zone-check-row').dataset.zoneGroup;
-      const val = Number(e.target.dataset.zoneX);
-      if(e.target.checked) activeZoneXs[group].add(val); else activeZoneXs[group].delete(val);
-      drawZoneHighlights();
-    });
-  });
-  function setZoneGroupChecked(rowId, group, checked){
-    document.querySelectorAll('#'+rowId+' input').forEach(cb=>{
-      cb.checked = checked;
-      const val = Number(cb.dataset.zoneX);
-      if(checked) activeZoneXs[group].add(val); else activeZoneXs[group].delete(val);
-    });
+  document.getElementById('attackZonePreviewSelect').addEventListener('change', e=>{
+    activeAttackZoneX = e.target.value==='' ? null : Number(e.target.value);
     drawZoneHighlights();
-  }
-  document.getElementById('btnAttackZoneSelectAll').addEventListener('click', ()=> setZoneGroupChecked('attackZoneChecks','attack',true));
-  document.getElementById('btnAttackZoneDeselectAll').addEventListener('click', ()=> setZoneGroupChecked('attackZoneChecks','attack',false));
-  document.getElementById('btnLandingZoneSelectAll').addEventListener('click', ()=> setZoneGroupChecked('landingZoneChecks','landing',true));
-  document.getElementById('btnLandingZoneDeselectAll').addEventListener('click', ()=> setZoneGroupChecked('landingZoneChecks','landing',false));
+  });
 
   function switchScenario(key){
     scenario=key;
@@ -2070,7 +2056,7 @@
     if(editMode||overrideMode) return;
     playing=false; updatePlayBtn(); progress=Number(e.target.value)/100;
   });
-  ['chkArrows','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
+  ['chkArrows','chkBallPath','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
 
   function currentHasFake(){
     if(isOur(scenario)) return OUR_ATTACKS[scenario].fakeX!=null;
@@ -2231,21 +2217,9 @@
       btn.classList.add('active');
     });
   });
-  document.querySelectorAll('#customLandingSeg button').forEach(btn=>{
+  document.querySelectorAll('#landingNineZone button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#customLandingSeg button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-  document.querySelectorAll('#attackDepthSeg button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#attackDepthSeg button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-  document.querySelectorAll('#landingDepthSeg button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#landingDepthSeg button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('#landingNineZone button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
@@ -2256,9 +2230,7 @@
   // and clicking 저장(덮어쓰기) would — used both by that button and to seed each scenario's
   // built-in defaults at startup. Also stores the raw panel values on the scenario (_panel) so the
   // panel can be synced back to whatever is actually active whenever the scenario is opened.
-  function applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, markCustomized, attackDepth, landingDepth){
-    attackDepth = attackDepth || 'front';
-    landingDepth = landingDepth || 'mid';
+  function applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingCol, landingRow, markCustomized){
     const x = isOur(key) ? perspX : (400 - perspX);
     if(isOur(key)){
       const atk = OUR_ATTACKS[key];
@@ -2266,12 +2238,11 @@
       atk.duration = {fast:1600, normal:2600, slow:3800}[tempo];
       atk.phase = hasFake ? {pass:0.14,toss:0.6,hit:0.85} : {pass:0.18,toss:0.44,hit:0.76};
       if(hasFake) atk.fakeX = 200; else delete atk.fakeX;
-      atk.attackDepthY = attackContactRowY(attackDepth, true);
       if(markCustomized) atk.customized = true;
     } else {
       const atk = ATTACKS[key];
       atk.x = x;
-      atk.contact = [x, attackContactRowY(attackDepth, false)];
+      atk.contact = [x, 320];
       atk.approachFrom = [clip(x + (x<200? 25:-25), 40,360), 245];
       const tempoPreset = {
         fast:{duration:1900, timing:{approach:0.2,peak:0.34,land:0.46,ballStart:0.34,ballEnd:0.54}},
@@ -2279,17 +2250,18 @@
         slow:{duration:4200, timing:{approach:0.4,peak:0.56,land:0.7,ballStart:0.56,ballEnd:0.8}}
       }[tempo];
       atk.duration = tempoPreset.duration; atk.timing = tempoPreset.timing;
-      if(hasFake){ atk.fakeContact=[200, attackContactRowY(attackDepth, false)]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
+      if(hasFake){ atk.fakeContact=[200,320]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
       else{ delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp; }
       if(markCustomized) atk.customized = true;
     }
     const target = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
     if(useLanding){
-      target.landingOverride = landingForButtonValue(landingVal, isOur(key), landingDepth);
+      target.landingOverride = nineZoneToXY(landingCol, landingRow, isOur(key));
+      delete BALL_OVERRIDES[key]; // a stale drag-adjusted ball position from before shouldn't silently override the new explicit landing choice
     } else {
       delete target.landingOverride;
     }
-    target._panel = {perspX, tempo, hasFake, useLanding, landingVal, attackDepth, landingDepth};
+    target._panel = {perspX, tempo, hasFake, useLanding, landingCol, landingRow};
   }
 
   function syncCustomPanelToScenario(key){
@@ -2302,10 +2274,8 @@
     document.getElementById('customLandingToggle').checked = p.useLanding;
     document.getElementById('customLandingRow').style.display = p.useLanding ? 'block' : 'none';
     if(p.useLanding){
-      document.querySelectorAll('#customLandingSeg button').forEach(b=>b.classList.toggle('active', Number(b.dataset.x)===p.landingVal));
+      document.querySelectorAll('#landingNineZone button').forEach(b=>b.classList.toggle('active', Number(b.dataset.col)===p.landingCol && Number(b.dataset.row)===p.landingRow));
     }
-    document.querySelectorAll('#attackDepthSeg button').forEach(b=>b.classList.toggle('active', b.dataset.depth===(p.attackDepth||'front')));
-    document.querySelectorAll('#landingDepthSeg button').forEach(b=>b.classList.toggle('active', b.dataset.depth===(p.landingDepth||'mid')));
   }
 
   // ---------- built-in defaults for each opponent scenario's "공격 상황 직접 설정" ----------
@@ -2320,10 +2290,10 @@
     const tempo = document.querySelector('#customTempoSeg button.active').dataset.tempo;
     const hasFake = document.getElementById('customFake').checked;
     const useLanding = document.getElementById('customLandingToggle').checked;
-    const landingVal = useLanding ? Number(document.querySelector('#customLandingSeg button.active').dataset.x) : null;
-    const attackDepth = document.querySelector('#attackDepthSeg button.active').dataset.depth;
-    const landingDepth = document.querySelector('#landingDepthSeg button.active').dataset.depth;
-    applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingVal, true, attackDepth, landingDepth);
+    const activeZoneBtn = document.querySelector('#landingNineZone button.active');
+    const landingCol = useLanding ? Number(activeZoneBtn.dataset.col) : null;
+    const landingRow = useLanding ? Number(activeZoneBtn.dataset.row) : null;
+    applyScenarioCustom(key, perspX, tempo, hasFake, useLanding, landingCol, landingRow, true);
 
     if(scenario===key) switchScenario(key);
     const statusEl = document.getElementById('customStatus');
@@ -2942,9 +2912,16 @@
         if(!member){
           const name = (prompt('이름을 입력해주세요 (개설자가 구성원 목록에서 알아볼 수 있어요):') || '').trim().slice(0,20);
           if(!name){ statusEl.textContent='이름을 입력해야 그룹에 들어갈 수 있어요.'; return; }
-          member = {id:newMemberId(), name, role:'view', position:'', status:'무관', gender:''};
-          room.members.push(member);
-          await Backend.set(roomKey(code), JSON.stringify(room));
+          const existingSameName = room.members.find(m=>m.name===name);
+          if(existingSameName){
+            const isSamePerson = confirm(`이미 '${name}'(으)로 등록된 구성원이 있어요. 같은 사람인가요?\n\n확인: 그 등록을 그대로 이어서 써요 (중복 등록 안 됨).\n취소: 다른 사람으로 새로 등록해요.`);
+            if(isSamePerson) member = existingSameName;
+          }
+          if(!member){
+            member = {id:newMemberId(), name, role:'view', position:'', status:'무관', gender:''};
+            room.members.push(member);
+            await Backend.set(roomKey(code), JSON.stringify(room));
+          }
         }
         enterApp(code, member.role, room.state, member.id);
         return;
@@ -3218,7 +3195,7 @@
   });
 
   // ---------- quick-log banners ----------
-  const OPP_ATTACK_OPTIONS = ['레프트','앞차','백차','백A','A','라이트','블로킹'];
+  const OPP_ATTACK_OPTIONS = ['서브','레프트','앞차','백차','백A','A','라이트','블로킹'];
   const OUR_SCORE_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리','블로킹'];
   const OUR_MISS_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','토스','2단토스','블로킹(다이렉트)','3구처리','디그움직임','서브캐치','블로킹(빈틈)','블로킹(터치아웃)'];
 
