@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#101826; --panel:#1A2436; --panel-2:#20304A; --border:#2B3B54;
-    --text:#E8EDF5; --text-dim:#8FA0BC; --accent:#F2B705; --accent-soft:rgba(242,183,5,0.16);
-    --own:#3E82F7; --opp:#EF4A4A; --ball:#FBC02D; --decoy:#8AA0C8;
+    --bg:#F3F5F9; --panel:#FFFFFF; --panel-2:#EEF1F6; --border:#DCE2EC;
+    --text:#1C2534; --text-dim:#5B6B84; --accent:#F2B705; --accent-text:#9C6A00; --accent-soft:rgba(242,183,5,0.14);
+    --own:#2F6FE0; --opp:#D93A3A; --ball:#E0A500; --decoy:#5D76A3;
     --radius-lg:16px; --radius-md:10px;
   }
   *{box-sizing:border-box;}
@@ -53,7 +53,7 @@
 
   .card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; }
   .card h2{ font-size:15px; font-weight:600; color:var(--text); margin-bottom:10px; }
-  .card h2 .n{ color:var(--accent); font-family:'Barlow Condensed'; font-size:15px; margin-right:6px; }
+  .card h2 .n{ color:var(--accent-text); font-family:'Barlow Condensed'; font-size:15px; margin-right:6px; }
 
   label.field-label{ display:block; font-size:12.5px; color:var(--text-dim); margin-bottom:6px; }
   select{ width:100%; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-size:13.5px; font-family:inherit; cursor:pointer; }
@@ -115,22 +115,22 @@
   .btn-row .btn{ flex:1; min-width:140px; }
   .edit-hint{ font-size:11.5px; color:var(--text-dim); margin:9px 0; line-height:1.5; }
   .edit-divider{ height:1px; background:var(--border); margin:14px 0; }
-  .edit-group-label{ font-size:11.5px; color:var(--accent); font-weight:700; margin:4px 0 6px; }
+  .edit-group-label{ font-size:11.5px; color:var(--accent-text); font-weight:700; margin:4px 0 6px; }
 
   .preset-input-row{ display:flex; gap:6px; margin:10px 0 8px; }
   .preset-input-row input[type=text]{ flex:1; padding:8px 10px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-size:12.5px; font-family:inherit; }
   .preset-list{ display:flex; flex-direction:column; gap:10px; }
   .preset-folder-group{ display:flex; flex-direction:column; gap:6px; }
-  .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:5px; }
+  .preset-folder-label{ font-size:11.5px; font-weight:700; color:var(--accent-text); display:flex; align-items:center; gap:5px; }
   .zone-check-row{ display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:6px; }
   .nine-zone-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:4px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px; }
   .nine-zone-grid button{ padding:12px 4px; font-size:11.5px; font-weight:600; border:1px solid var(--border); background:var(--panel); color:var(--text-dim); border-radius:6px; cursor:pointer; font-family:inherit; }
-  .nine-zone-grid button:hover{ background:rgba(255,255,255,0.06); color:var(--text); }
+  .nine-zone-grid button:hover{ background:rgba(28,37,52,0.06); color:var(--text); }
   .nine-zone-grid button.active{ background:var(--accent); color:#241b02; border-color:var(--accent); }
   .zone-check-row label{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-dim); cursor:pointer; white-space:nowrap; }
   .zone-check-row input{ width:14px; height:14px; margin:0; }
   .folder-action{ cursor:pointer; font-size:12px; padding:2px 5px; border-radius:6px; flex:none; opacity:0.75; }
-  .folder-action:hover{ opacity:1; background:rgba(255,255,255,0.08); }
+  .folder-action:hover{ opacity:1; background:rgba(28,37,52,0.08); }
   .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .preset-chip{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; font-size:12px; cursor:pointer; }
   .preset-chip.active{ border-color:var(--accent); }
@@ -145,9 +145,9 @@
   .stage-aids label{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-dim); white-space:nowrap; cursor:pointer; }
   .stage-aids input[type="checkbox"]{ width:14px; height:14px; margin:0; }
   .stage-top .scenario-title{ font-size:18px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
-  .stage-top .scenario-title:hover{ color:var(--accent); }
+  .stage-top .scenario-title:hover{ color:var(--accent-text); }
   .stage-top .scenario-title::after{ content:'▾'; font-size:12px; color:var(--text-dim); }
-  .stage-top .scenario-title:hover::after{ color:var(--accent); }
+  .stage-top .scenario-title:hover::after{ color:var(--accent-text); }
   .stage-top .scenario-tag{ font-size:12px; color:#241b02; background:var(--accent); padding:3px 10px; border-radius:999px; font-weight:700; }
 
   .court-wrap{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; }
@@ -181,22 +181,22 @@
   .tl-btn:hover{ filter:brightness(1.12); }
   .tl-btn:disabled{ opacity:0.4; cursor:not-allowed; }
   .tl-mid{ flex:1; min-width:0; }
-  .tl-phase{ font-size:12px; color:var(--accent); font-weight:600; margin-bottom:4px; }
+  .tl-phase{ font-size:12px; color:var(--accent-text); font-weight:600; margin-bottom:4px; }
   input[type=range]{ width:100%; appearance:none; height:5px; border-radius:3px; background:linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct,0%), #33455F var(--pct,0%), #33455F 100%); cursor:pointer; }
   input[type=range]::-webkit-slider-thumb{ appearance:none; width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid #241b02; cursor:pointer; }
   input[type=range]::-moz-range-thumb{ width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid #241b02; cursor:pointer; }
   input[type=range]:disabled{ opacity:0.4; }
 
-  .desc-block{ font-size:12.5px; color:var(--accent); font-weight:700; margin-bottom:10px; }
+  .desc-block{ font-size:12.5px; color:var(--accent-text); font-weight:700; margin-bottom:10px; }
   p.desc-text{ font-size:13.5px; line-height:1.65; color:var(--text); margin:0 0 14px; max-width:74ch; }
   ul.points{ margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:var(--text-dim); max-width:70ch; }
-  ul.points li::marker{ color:var(--accent); }
-  .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(242,183,5,0.35); font-size:12px; color:#F4D77A; line-height:1.55; }
+  ul.points li::marker{ color:var(--accent-text); }
+  .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(242,183,5,0.4); font-size:12px; color:#8A6400; line-height:1.55; }
 
   #loginOverlay{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:20px; z-index:1000; overflow-y:auto; }
   .btn-link-intro{
     display:block; width:100%; margin-top:14px; padding:10px; background:none; border:none;
-    color:var(--accent); font-size:12.5px; font-weight:600; font-family:inherit; cursor:pointer;
+    color:var(--accent-text); font-size:12.5px; font-weight:600; font-family:inherit; cursor:pointer;
     text-align:center; border-radius:8px; transition:background 0.2s ease;
   }
   .btn-link-intro:hover{ background:rgba(242,183,5,0.08); }
@@ -211,7 +211,7 @@
   .modal-body li{ margin-bottom:8px; }
   .modal-body b{ color:var(--text); }
   .feature-guide-block{ margin-bottom:16px; }
-  .feature-guide-block h3{ font-size:13.5px; color:var(--accent); margin:0 0 6px; }
+  .feature-guide-block h3{ font-size:13.5px; color:var(--accent-text); margin:0 0 6px; }
 
   #desktopSplit{ display:flex; flex-direction:column; }
   #mainAppCol{ min-width:0; max-width:1400px; margin:0 auto; width:100%; }
@@ -234,21 +234,21 @@
     color:var(--text-dim); font-size:13.5px; font-weight:600; font-family:inherit; white-space:nowrap;
     border-radius:10px; cursor:pointer; transition:background 0.2s ease, color 0.2s ease;
   }
-  .tab-bar button:not(.active):hover{ background:rgba(255,255,255,0.06); color:var(--text); }
+  .tab-bar button:not(.active):hover{ background:rgba(28,37,52,0.06); color:var(--text); }
   .tab-bar button.active{ background:var(--accent); color:#241b02; }
   #btnLocalExit{
     padding:9px 16px; font-size:13.5px; font-weight:600; white-space:nowrap;
-    background:transparent; border:1px solid rgba(239,74,74,0.4); color:#F2A9A9; border-radius:10px;
+    background:transparent; border:1px solid rgba(217,58,58,0.45); color:#B23030; border-radius:10px;
     transition:background 0.2s ease, color 0.2s ease;
   }
-  #btnLocalExit:hover{ background:rgba(239,74,74,0.16); color:#fff; }
+  #btnLocalExit:hover{ background:rgba(217,58,58,0.1); color:#8A2222; }
   .record-row{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 8px; flex-wrap:wrap; }
   .record-row input[type=text]{ flex:1; min-width:0; padding:6px 8px; border-radius:7px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:12px; font-family:inherit; }
   .record-row .btn{ font-size:11.5px; padding:6px 8px; white-space:nowrap; }
   .record-row .x{ width:20px; height:20px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--text-dim); cursor:pointer; flex:none; }
   .record-row .x:hover{ background:#EF4A4A; color:#fff; }
   .banner-block{ margin-bottom:14px; }
-  .banner-title{ font-size:12.5px; font-weight:700; color:var(--accent); margin-bottom:6px; }
+  .banner-title{ font-size:12.5px; font-weight:700; color:var(--accent-text); margin-bottom:6px; }
   .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; max-height:92px; overflow-y:auto; overflow-x:hidden; padding-right:2px; }
   .banner-tabs button{ padding:7px 11px; font-size:12px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; }
   .banner-tabs button:hover{ border-color:var(--accent); }
@@ -259,7 +259,7 @@
   .login-card h1{ font-size:22px; font-weight:600; text-align:center; }
   .login-card .login-sub{ font-size:13px; color:var(--text-dim); text-align:center; margin:6px 0 16px; }
   .login-input{ width:100%; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-size:14px; font-family:inherit; margin-top:4px; }
-  .login-status{ font-size:12.5px; color:var(--accent); margin-top:10px; min-height:1.2em; text-align:center; }
+  .login-status{ font-size:12.5px; color:var(--accent-text); margin-top:10px; min-height:1.2em; text-align:center; }
   #settingsCodeLabel, #settingsRoleLabel{ color:var(--text); }
   @media (min-width:1600px){
     #mainAppCol{ max-width:2400px; }
@@ -831,7 +831,7 @@
         <div class="edit-divider"></div>
         <div class="btn-row">
           <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
-          <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C; display:none;">이 코드 삭제</button>
+          <button class="btn" id="btnDeleteRoom" style="background:#5A2020; border-color:#7A2C2C; color:#fff; display:none;">이 코드 삭제</button>
         </div>
         <div class="edit-hint" id="settingsStatus"></div>
       </div>
@@ -2818,7 +2818,7 @@
             b3.addEventListener('click', ()=>grantRole(m.id,'view'));
             row.appendChild(b3);
           }
-          const delBtn=document.createElement('button'); delBtn.className='btn'; delBtn.style.background='#5A2020'; delBtn.style.borderColor='#7A2C2C'; delBtn.textContent='삭제';
+          const delBtn=document.createElement('button'); delBtn.className='btn'; delBtn.style.background='#5A2020'; delBtn.style.borderColor='#7A2C2C'; delBtn.style.color='#fff'; delBtn.textContent='삭제';
           delBtn.addEventListener('click', ()=>{
             if(confirm(`'${m.name}'님을 구성원 목록에서 삭제할까요? 이 사람이 가진 권한도 함께 사라져요.`)) removeMember(m.id);
           });
