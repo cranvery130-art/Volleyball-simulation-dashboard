@@ -73,7 +73,9 @@
   .video-grid{ display:flex; gap:16px; align-items:stretch; height:calc(100vh - 200px); min-height:560px; }
   .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
   .video-grid-card{ flex:1 1 50%; min-height:0; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
-  .video-grid-card #matchVideo{ flex:none; }
+  .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 64%; } /* video player gets more of the left column's height */
+  .video-grid-col:first-child .video-grid-card:last-child{ flex:1 1 36%; }
+  .video-grid-card #matchVideo{ flex:1 1 auto; min-height:0; object-fit:contain; }
   .video-grid-card .court-wrap{ flex:1 1 auto; min-height:0; }
   .desc-main{ flex:1 1 300px; min-width:0; }
   .desc-aids{ flex:0 0 230px; border-left:1px solid var(--border); padding-left:18px; }
@@ -192,6 +194,24 @@
   .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(242,183,5,0.35); font-size:12px; color:#F4D77A; line-height:1.55; }
 
   #loginOverlay{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:20px; z-index:1000; overflow-y:auto; }
+  .btn-link-intro{
+    display:block; width:100%; margin-top:14px; padding:10px; background:none; border:none;
+    color:var(--accent); font-size:12.5px; font-weight:600; font-family:inherit; cursor:pointer;
+    text-align:center; border-radius:8px; transition:background 0.2s ease;
+  }
+  .btn-link-intro:hover{ background:rgba(242,183,5,0.08); }
+  .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1100; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .modal-card{ position:relative; max-width:560px; width:100%; max-height:85vh; overflow-y:auto; background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:28px 24px 22px; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+  .modal-card h2{ margin:0 0 14px; font-size:17px; }
+  .modal-close{ position:absolute; top:14px; right:14px; background:var(--panel-2); border:1px solid var(--border); color:var(--text-dim); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:13px; }
+  .modal-close:hover{ color:var(--text); }
+  .modal-body{ font-size:13px; line-height:1.65; color:var(--text-dim); }
+  .modal-body p{ margin:0 0 10px; }
+  .modal-body ul{ margin:0 0 14px; padding-left:18px; }
+  .modal-body li{ margin-bottom:8px; }
+  .modal-body b{ color:var(--text); }
+  .feature-guide-block{ margin-bottom:16px; }
+  .feature-guide-block h3{ font-size:13.5px; color:var(--accent); margin:0 0 6px; }
 
   #desktopSplit{ display:flex; flex-direction:column; }
   #mainAppCol{ min-width:0; max-width:1400px; margin:0 auto; width:100%; }
@@ -229,7 +249,7 @@
   .record-row .x:hover{ background:#EF4A4A; color:#fff; }
   .banner-block{ margin-bottom:14px; }
   .banner-title{ font-size:12.5px; font-weight:700; color:var(--accent); margin-bottom:6px; }
-  .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; }
+  .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; max-height:92px; overflow-y:auto; overflow-x:hidden; padding-right:2px; }
   .banner-tabs button{ padding:7px 11px; font-size:12px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; }
   .banner-tabs button:hover{ border-color:var(--accent); }
   .banner-tabs button.flash{ background:var(--accent); color:#241b02; border-color:var(--accent); }
@@ -330,11 +350,32 @@
     </div>
 
     <button class="btn" id="btnSkipLogin" style="width:100%; margin-top:16px;">코드 없이 계속하기 (이 기기에만 저장)</button>
+    <button class="btn-link-intro" id="btnShowIntro" type="button">✨ 이 프로그램은 무엇을 할 수 있나요?</button>
+  </div>
+</div>
+
+<div id="introModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <button class="modal-close" id="btnCloseIntro">✕</button>
+    <h2>9인제 배구 수비 전술 시뮬레이터 소개</h2>
+    <div class="modal-body">
+      <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
+      <ul>
+        <li><b>전술 시뮬레이션</b> — 상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 애니메이션으로 재생해요. 포지션 배정, 시작 위치·도착 위치 편집, 대형을 폴더별로 저장해서 필요할 때 바로 불러올 수 있어요.</li>
+        <li><b>정교한 블로킹 표현</b> — 블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
+        <li><b>착지 방향 9칸 설정</b> — 공이 떨어지는 자리를 그 팀이 네트를 보는 기준으로 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
+        <li><b>경기 영상 분석</b> — 실제 경기 영상을 올려 재생하면서 코트 위에 직접 그림을 그리고, 득점·미스 상황을 버튼 한 번으로 시간과 함께 기록해요. 기록은 엑셀·구글시트용 파일로 내보낼 수 있어요.</li>
+        <li><b>팀과 함께 사용</b> — 코드를 만들어 팀원들과 공유하면, 같은 대형·기록을 함께 보고 수정할 수 있어요. 구성원별로 포지션·대회 출전 여부를 관리하고, 누가 언제 무엇을 수정했는지 활동 로그로 확인할 수 있어요.</li>
+      </ul>
+      <p><b>코드는 이렇게 만들어요.</b></p>
+      <p>"새 코드 만들기" 탭에서 원하는 코드 이름과, 개설자 비밀번호·조회 비밀번호를 각각 정하면 바로 시작할 수 있어요. 개설자 비밀번호를 아는 사람은 모든 기능을 다 쓸 수 있는 개설자가 되고, 조회 비밀번호로 들어온 사람은 이름을 적고 들어와서 대형과 기록을 보는 것부터 시작하며(이후 개설자가 수정 권한을 줄 수 있어요), 나중에 설정에서 언제든 비밀번호를 바꿀 수 있어요. 코드 없이 "코드 없이 계속하기"로 바로 써볼 수도 있지만, 이 경우 이 기기에만 저장되고 다른 사람과 공유되지 않아요.</p>
+    </div>
   </div>
 </div>
 
 <div id="desktopSplit">
 <div class="mode-seg-wrap">
+  <button class="btn" id="btnFeatureGuide" title="기능 설명">❓ 기능 설명</button>
   <div class="code-pill" id="topCodePill">코드: <b id="topCodeLabel">-</b></div>
   <div class="tab-bar" id="appModeSeg">
     <button data-appmode="sim" class="active">🏐 전술 시뮬레이션</button>
@@ -343,6 +384,34 @@
   </div>
   <button class="btn" id="btnLocalExit" style="display:none;">🚪 나가기</button>
 </div>
+
+<div id="featureGuideModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <button class="modal-close" id="btnCloseFeatureGuide">✕</button>
+    <h2>기능 설명</h2>
+    <div class="modal-body">
+      <div class="feature-guide-block">
+        <h3>🏐 전술 시뮬레이션</h3>
+        <p><b>이렇게 써요</b> — 위쪽 제목을 클릭하거나 "대형 저장 & 편집"의 시나리오 드롭다운으로 공격 상황을 고르고, 재생 버튼으로 애니메이션을 봐요. "시작 위치"/"도착 위치" 편집 모드에서 도트를 직접 드래그해 원하는 대형으로 바꾸고 폴더에 저장해두면 다음에 바로 불러올 수 있어요.</p>
+        <p><b>특징</b> — 블로킹은 도트를 네트 앞 블로킹 존에 직접 놓아야만 인식돼요(자동으로 생기지 않아요). 착지 방향은 9칸 격자로 정밀하게 지정할 수 있고, 블로킹 바로 뒤로 착지시키면 곡선 궤적(페이크성 샷)으로 표현돼요.</p>
+        <p><b>안 되는 것</b> — 여러 사람이 동시에 편집한 내용이 실시간으로 서로에게 바로 보이진 않아요(저장 후 새로고침하면 반영돼요). 블로킹 인원을 숫자로 미리 정해두는 기능은 없고, 도트 위치로만 판단해요.</p>
+      </div>
+      <div class="feature-guide-block">
+        <h3>🎥 경기 영상 분석</h3>
+        <p><b>이렇게 써요</b> — 영상을 올리고 재생하면서 오른쪽(또는 아래) 대시보드에 도트·화살표를 그려요. "빠른 기록 배너"에서 상황에 맞는 버튼을 누르면 지금 시간과 그린 내용이 함께 기록돼요. 영상이 멈춘 채로 여러 버튼을 누르면 하나의 기록으로 합쳐져요.</p>
+        <p><b>특징</b> — 기록 목록에서 시간을 누르면 그 지점으로 이동하며 그때 그려둔 대시보드가 복원돼요. 기록은 엑셀 또는 구글시트용 파일로 내보낼 수 있어요.</p>
+        <p><b>안 되는 것</b> — 영상 파일 자체는 서버에 저장되지 않아요(그림·기록만 저장돼요). 그래서 다른 기기나 나중에 다시 들어오면 같은 영상 파일을 직접 다시 첨부해야 해요.</p>
+      </div>
+      <div class="feature-guide-block">
+        <h3>⚙️ 설정</h3>
+        <p><b>이렇게 써요</b> — 링크 공유, 비밀번호 변경, 구성원 목록 확인(포지션·대회 출전 여부 지정)까지 개설자가 관리해요. 수정 권한을 가진 사람은 "수정·저장 활동 로그"를 볼 수 있어요.</p>
+        <p><b>특징</b> — 조회 비밀번호로 처음 들어온 사람은 이름을 반드시 적어야 가입되고, 개설자가 나중에 그 사람에게 수정 권한이나 개설자 권한을 줄 수 있어요. 구성원을 삭제하면 그 사람의 권한도 함께 사라져요.</p>
+        <p><b>안 되는 것</b> — 구성원 스스로 자기 권한을 바꿀 수는 없어요(개설자만 가능해요). 삭제된 구성원은 되돌릴 수 없고, 다시 가입해야 해요.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="mainAppCol">
 <div class="app" style="display:none;">
 
@@ -740,6 +809,10 @@
               <div class="check-row"><input type="checkbox" class="filterGender" value="여" checked><label>여</label></div>
               <div class="check-row"><input type="checkbox" class="filterGender" value="" checked><label>미지정</label></div>
             </div>
+            <div class="btn-row" style="margin-top:6px;">
+              <button class="btn" id="btnFilterGenderSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
+              <button class="btn" id="btnFilterGenderDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
+            </div>
             <label class="field-label">대회 출전 상태 필터</label>
             <div class="check-list" id="filterStatusRow">
               <div class="check-row"><input type="checkbox" class="filterStatus" value="코치" checked><label>코치</label></div>
@@ -748,8 +821,8 @@
               <div class="check-row"><input type="checkbox" class="filterStatus" value="무관" checked><label>무관</label></div>
             </div>
             <div class="btn-row" style="margin-top:6px;">
-              <button class="btn" id="btnFilterSelectAll">전체 선택</button>
-              <button class="btn" id="btnFilterDeselectAll">전체 해제</button>
+              <button class="btn" id="btnFilterStatusSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
+              <button class="btn" id="btnFilterStatusDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
             </div>
           </div>
           <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
@@ -2846,12 +2919,20 @@
   document.querySelectorAll('.filterGender, .filterStatus').forEach(cb=>{
     cb.addEventListener('change', renderMemberList);
   });
-  document.getElementById('btnFilterSelectAll').addEventListener('click', ()=>{
-    document.querySelectorAll('.filterGender, .filterStatus').forEach(cb=>cb.checked=true);
+  document.getElementById('btnFilterGenderSelectAll').addEventListener('click', ()=>{
+    document.querySelectorAll('.filterGender').forEach(cb=>cb.checked=true);
     renderMemberList();
   });
-  document.getElementById('btnFilterDeselectAll').addEventListener('click', ()=>{
-    document.querySelectorAll('.filterGender, .filterStatus').forEach(cb=>cb.checked=false);
+  document.getElementById('btnFilterGenderDeselectAll').addEventListener('click', ()=>{
+    document.querySelectorAll('.filterGender').forEach(cb=>cb.checked=false);
+    renderMemberList();
+  });
+  document.getElementById('btnFilterStatusSelectAll').addEventListener('click', ()=>{
+    document.querySelectorAll('.filterStatus').forEach(cb=>cb.checked=true);
+    renderMemberList();
+  });
+  document.getElementById('btnFilterStatusDeselectAll').addEventListener('click', ()=>{
+    document.querySelectorAll('.filterStatus').forEach(cb=>cb.checked=false);
     renderMemberList();
   });
 
@@ -2859,8 +2940,28 @@
     enterApp(null, null, null);
   });
 
+  document.getElementById('btnShowIntro').addEventListener('click', ()=>{
+    document.getElementById('introModal').style.display='flex';
+  });
+  document.getElementById('btnCloseIntro').addEventListener('click', ()=>{
+    document.getElementById('introModal').style.display='none';
+  });
+  document.getElementById('introModal').addEventListener('click', e=>{
+    if(e.target.id==='introModal') e.target.style.display='none';
+  });
+
   document.getElementById('btnLocalExit').addEventListener('click', ()=>{
     location.href = location.pathname;
+  });
+
+  document.getElementById('btnFeatureGuide').addEventListener('click', ()=>{
+    document.getElementById('featureGuideModal').style.display='flex';
+  });
+  document.getElementById('btnCloseFeatureGuide').addEventListener('click', ()=>{
+    document.getElementById('featureGuideModal').style.display='none';
+  });
+  document.getElementById('featureGuideModal').addEventListener('click', e=>{
+    if(e.target.id==='featureGuideModal') e.target.style.display='none';
   });
 
   document.querySelectorAll('#loginModeSeg button').forEach(btn=>{
