@@ -75,6 +75,8 @@
   .video-grid-card{ flex:1 1 50%; min-height:0; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
   .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 64%; } /* video player gets more of the left column's height */
   .video-grid-col:first-child .video-grid-card:last-child{ flex:1 1 36%; }
+  .video-grid-col:last-child .video-grid-card:first-child{ flex:0 0 auto; } /* the now-compact quick-record banner only takes what it needs */
+  .video-grid-col:last-child .video-grid-card:last-child{ flex:1 1 auto; min-height:0; } /* records list gets the rest */
   .video-grid-card #matchVideo{ flex:1 1 auto; min-height:0; object-fit:contain; }
   .video-grid-card .court-wrap{ flex:1 1 auto; min-height:0; }
   .desc-main{ flex:1 1 300px; min-width:0; }
@@ -207,7 +209,7 @@
   .modal-close:hover{ color:var(--text); }
   .modal-body{ font-size:13px; line-height:1.65; color:var(--text-dim); }
   .modal-body p{ margin:0 0 10px; }
-  .modal-body ul{ margin:0 0 14px; padding-left:18px; }
+  .modal-body ul, .modal-body ol{ margin:0 0 14px; padding-left:18px; }
   .modal-body li{ margin-bottom:8px; }
   .modal-body b{ color:var(--text); }
   .feature-guide-block{ margin-bottom:16px; }
@@ -248,11 +250,20 @@
   .record-row .x{ width:20px; height:20px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--text-dim); cursor:pointer; flex:none; }
   .record-row .x:hover{ background:#EF4A4A; color:#fff; }
   .banner-block{ margin-bottom:14px; }
+  .quick-record-row{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .quick-record-row .qr-label{ font-size:12px; font-weight:700; color:var(--accent-text); flex:0 0 100px; white-space:nowrap; }
+  .quick-record-row select{ flex:1 1 auto; min-width:0; padding:8px 10px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-family:inherit; font-size:12.5px; }
+  .quick-record-row button{ flex:none; white-space:nowrap; }
+  @media (max-width:480px){
+    .quick-record-row{ flex-wrap:wrap; }
+    .quick-record-row .qr-label{ flex:1 1 100%; }
+  }
   .banner-title{ font-size:12.5px; font-weight:700; color:var(--accent-text); margin-bottom:6px; }
   .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; max-height:92px; overflow-y:auto; overflow-x:hidden; padding-right:2px; }
   .banner-tabs button{ padding:7px 11px; font-size:12px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; }
   .banner-tabs button:hover{ border-color:var(--accent); }
   .banner-tabs button.flash{ background:var(--accent); color:#241b02; border-color:var(--accent); }
+  .btn.flash{ background:var(--accent); color:#241b02; border-color:var(--accent); }
   .tally-row{ font-size:12px; color:var(--text-dim); line-height:1.8; }
   .tally-row b{ color:var(--text); }
   .login-card{ width:100%; max-width:420px; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px 24px; }
@@ -368,7 +379,13 @@
         <li><b>팀과 함께 사용</b> — 코드를 만들어 팀원들과 공유하면, 같은 대형·기록을 함께 보고 수정할 수 있어요. 구성원별로 포지션·대회 출전 여부를 관리하고, 누가 언제 무엇을 수정했는지 활동 로그로 확인할 수 있어요.</li>
       </ul>
       <p><b>코드는 이렇게 만들어요.</b></p>
-      <p>"새 코드 만들기" 탭에서 원하는 코드 이름과, 개설자 비밀번호·조회 비밀번호를 각각 정하면 바로 시작할 수 있어요. 개설자 비밀번호를 아는 사람은 모든 기능을 다 쓸 수 있는 개설자가 되고, 조회 비밀번호로 들어온 사람은 이름을 적고 들어와서 대형과 기록을 보는 것부터 시작하며(이후 개설자가 수정 권한을 줄 수 있어요), 나중에 설정에서 언제든 비밀번호를 바꿀 수 있어요. 코드 없이 "코드 없이 계속하기"로 바로 써볼 수도 있지만, 이 경우 이 기기에만 저장되고 다른 사람과 공유되지 않아요.</p>
+      <ol>
+        <li>"새 코드 만들기" 탭에서 원하는 코드 이름을 정해요.</li>
+        <li><b>개설자 비밀번호</b>와 <b>조회 비밀번호</b>를 서로 다르게 하나씩 정해요.</li>
+        <li>완성된 코드와 조회 비밀번호를 팀원들에게 공유하면, 팀원들이 이름을 적고 들어와서 함께 볼 수 있어요.</li>
+      </ol>
+      <p><b>개설자 비밀번호</b>로 들어온 사람은 모든 기능을 다 쓸 수 있는 개설자가 돼요. <b>조회 비밀번호</b>로 들어온 사람은 처음엔 보기만 할 수 있고, 이후 개설자가 수정 권한을 줄 수 있어요. 두 비밀번호 모두 설정 화면에서 언제든 바꿀 수 있고요.</p>
+      <p style="opacity:0.8;">참고 — "코드 없이 계속하기"를 누르면 코드 없이 바로 써볼 수 있지만, 이 경우엔 이 기기에만 저장되고 다른 사람과 공유되지 않아요.</p>
     </div>
   </div>
 </div>
@@ -606,9 +623,9 @@
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
             <button data-x="145">왼쪽 중간</button>
-            <button data-x="200" class="active">중앙</button>
-            <button data-x="255">오른쪽 중간</button>
             <button data-x="370">오른쪽 끝</button>
+            <button data-x="255">오른쪽 중간</button>
+            <button data-x="200" class="active">중앙</button>
           </div>
           <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
             <label class="field-label" style="margin-top:0; white-space:nowrap;">위치 미리보기</label>
@@ -731,19 +748,22 @@
     <div class="video-grid-col">
       <div class="card video-grid-card">
         <h2>빠른 기록 배너</h2>
-        <div class="field-note" style="margin-top:0;">영상을 보다가 멈추고 해당하는 탭을 누르면, 지금 시간 + 지금 대시보드 상태가 함께 기록돼요. 멈춘 채로 여러 탭을 누르면 하나의 기록으로 합쳐져요.</div>
+        <div class="field-note" style="margin-top:0;">항목을 고르고 "기록"을 누르면 지금 시간과 대시보드 상태가 함께 저장돼요. 멈춘 채로 여러 개 기록하면 하나로 합쳐져요.</div>
 
-        <div class="banner-block">
-          <div class="banner-title">🔴 상대팀 — 득점 옵션</div>
-          <div class="banner-tabs" id="oppTabs"></div>
+        <div class="quick-record-row">
+          <span class="qr-label">🔴 상대팀 득점</span>
+          <select id="oppSelect"></select>
+          <button class="btn primary" id="oppRecordBtn">기록</button>
         </div>
-        <div class="banner-block">
-          <div class="banner-title">🔵 우리팀 — 득점</div>
-          <div class="banner-tabs" id="ourScoreTabs"></div>
+        <div class="quick-record-row">
+          <span class="qr-label">🔵 우리팀 득점</span>
+          <select id="scoreSelect"></select>
+          <button class="btn primary" id="scoreRecordBtn">기록</button>
         </div>
-        <div class="banner-block">
-          <div class="banner-title">🔵 우리팀 — 미스</div>
-          <div class="banner-tabs" id="ourMissTabs"></div>
+        <div class="quick-record-row">
+          <span class="qr-label">🔵 우리팀 미스</span>
+          <select id="missSelect"></select>
+          <button class="btn primary" id="missRecordBtn">기록</button>
         </div>
       </div>
       <div class="card video-grid-card">
@@ -3330,18 +3350,21 @@
     if(btn) flashBtn(btn);
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   }
-  function buildTabGroup(containerId, options, category){
-    const container = document.getElementById(containerId);
+  function buildQuickRecordRow(selectId, btnId, options, category){
+    const sel = document.getElementById(selectId);
     options.forEach(label=>{
-      const btn = document.createElement('button');
-      btn.type='button'; btn.textContent=label;
-      btn.addEventListener('click', ()=> logEvent(category, label, btn));
-      container.appendChild(btn);
+      const opt = document.createElement('option'); opt.value=label; opt.textContent=label;
+      sel.appendChild(opt);
+    });
+    document.getElementById(btnId).addEventListener('click', ()=>{
+      const label = sel.value;
+      if(!label) return;
+      logEvent(category, label, document.getElementById(btnId));
     });
   }
-  buildTabGroup('oppTabs', OPP_ATTACK_OPTIONS, '상대공격');
-  buildTabGroup('ourScoreTabs', OUR_SCORE_OPTIONS, '득점');
-  buildTabGroup('ourMissTabs', OUR_MISS_OPTIONS, '미스');
+  buildQuickRecordRow('oppSelect', 'oppRecordBtn', OPP_ATTACK_OPTIONS, '상대공격');
+  buildQuickRecordRow('scoreSelect', 'scoreRecordBtn', OUR_SCORE_OPTIONS, '득점');
+  buildQuickRecordRow('missSelect', 'missRecordBtn', OUR_MISS_OPTIONS, '미스');
 
   function renderTally(){
     const el = document.getElementById('tallySummary');
