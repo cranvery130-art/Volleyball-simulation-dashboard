@@ -72,6 +72,8 @@
   .desc-with-aids{ display:flex; gap:22px; flex-wrap:wrap; margin-top:6px; }
   .video-grid{ display:flex; gap:16px; align-items:stretch; height:calc(100vh - 200px); min-height:560px; }
   .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+  .video-grid-col:first-child{ flex:1.5 1 0; } /* video + dashboard column gets noticeably more width */
+  .video-grid-col:last-child{ flex:1 1 0; }
   .video-grid-card{ flex:1 1 50%; min-height:0; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
   .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 64%; } /* video player gets more of the left column's height */
   .video-grid-col:first-child .video-grid-card:last-child{ flex:1 1 36%; }
@@ -271,6 +273,8 @@
   #settingsCodeLabel, #settingsRoleLabel{ color:var(--text); }
   @media (min-width:1600px){
     #mainAppCol{ max-width:2400px; }
+    #videoCol{ max-width:2400px; }
+    .mode-seg-wrap{ max-width:2400px; }
     .app{ max-width:none; }
     .column{
       display:flex;
