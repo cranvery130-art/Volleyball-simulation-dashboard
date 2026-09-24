@@ -569,12 +569,17 @@
       <div style="display:flex; align-items:flex-end; gap:8px; margin-top:0;">
         <div style="flex:1;">
           <label class="field-label">저장된 대형 불러오기</label>
-          <select id="presetLoadSelect">
-            <option value="">불러올 대형 선택...</option>
-          </select>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <select id="presetLoadSelect" style="flex:1;">
+              <option value="">불러올 대형 선택...</option>
+            </select>
+            <button class="btn" id="btnPresetRename" title="선택한 대형 이름 바꾸기" style="flex:none; padding:9px 10px;">✏️</button>
+            <button class="btn" id="btnPresetDeleteFromLoad" title="선택한 대형 삭제" style="flex:none; padding:9px 10px;">🗑️</button>
+          </div>
         </div>
         <button class="btn" id="btnPresetSearchToggle" title="폴더 검색" style="flex:none;">🔍 찾기</button>
       </div>
+      <div class="field-note" style="margin-top:4px;">목록에서 대형을 고르면 바로 불러와요. 방금 고른 대형은 ✏️로 이름을 바꾸거나 🗑️로 삭제할 수 있어요.</div>
       <div id="presetSearchBox" style="display:none; margin-top:8px;">
         <input type="text" id="presetSearchInput" class="login-input" placeholder="폴더 이름으로 검색 (예: 위드나인)" style="margin-top:0;">
         <div class="preset-list" id="presetList" style="margin-top:10px;"></div>
@@ -902,15 +907,16 @@
     return found || fallback;
   }
 
-  // For the "공 착지 방향" 9-zone grid: col/row are always from the RECEIVING team's own
-  // perspective (col 0/1/2 = left/center/right as that team faces the net, row 0/1/2 = front/mid/back).
+  // For the "공 착지 방향" 9-zone grid: col/row are always from the ATTACKING team's own
+  // perspective — the person hitting the ball — as they face the net (col 0/1/2 = left/center/right
+  // from their own body orientation, row 0/1/2 = front/mid/back of the court the ball lands on).
   // Column order mirrors for the opponent, since their left is our physical right.
   const OWN_ROW_Y = {front:440, mid:560, back:680};
   const OPP_ROW_Y = {front:320, mid:200, back:80};
   const OWN_COL_X = [80, 200, 320];
   const OPP_COL_X = [320, 200, 80]; // mirrored: opponent's own-left (col 0) is physical x=320
   function nineZoneToXY(col, row, isOurAttack){
-    const cols = isOurAttack ? OPP_COL_X : OWN_COL_X; // landing target is on the side the attacker is NOT on
+    const cols = isOurAttack ? OWN_COL_X : OPP_COL_X; // left/right follow the ATTACKER's own facing, not the receiving side
     const rows = isOurAttack ? OPP_ROW_Y : OWN_ROW_Y;
     const rowKeys = ['front','mid','back'];
     return [cols[col], rows[rowKeys[row]]];
@@ -1174,12 +1180,12 @@
   // "저장(덮어쓰기)" step needed. Users can still override any of them the same way as before.
   // (applyScenarioCustom is defined further below as a function declaration, so it's already
   // available here regardless of source order.)
-  applyScenarioCustom('L', 30, 'normal', false, true, 0, 2, false);
+  applyScenarioCustom('L', 30, 'normal', false, true, 2, 2, false);
   applyScenarioCustom('C', 200, 'fast', false, true, 1, 1, false);
-  applyScenarioCustom('R', 370, 'normal', false, true, 2, 2, false);
+  applyScenarioCustom('R', 370, 'normal', false, true, 0, 2, false);
   applyScenarioCustom('TIMEDIFF', 145, 'normal', true, true, 1, 1, false);
-  applyScenarioCustom('BACKSLIDE', 255, 'normal', false, true, 2, 1, false);
-  applyScenarioCustom('BACKA', 200, 'normal', false, true, 2, 1, false);
+  applyScenarioCustom('BACKSLIDE', 255, 'normal', false, true, 0, 1, false);
+  applyScenarioCustom('BACKA', 200, 'normal', false, true, 0, 1, false);
 
   let scenario='L', blockCount=2, progress=0, playing=false, lastT=null;
   let editMode=false, overrideMode=false;
@@ -1269,13 +1275,11 @@
       });
       f.blockerIds = derivedBlockerIds;
       blockCount = f.blockerIds.length;
-      // A directly-set landing spot is a deliberate, precise placement for demonstration —
-      // it shouldn't get silently redirected just because a default/auto-positioned blocker
-      // happens to sit near the flight path.
-      if(!atk.landingOverride){
-        f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
-        if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
-      }
+      // Blocking is now purely position-driven (no auto-generated "phantom" blockers exist anymore),
+      // so it's always safe to check — it only ever triggers when the user has actually placed
+      // someone in the block zone, which is exactly when the ball SHOULD be affected.
+      f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
+      if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
     } else {
       // same idea, mirrored: which opponent letters end up in THEIR near-net zone (after any drag
       // override) are the ones who actually block our attack — identical rule to our own team's side.
@@ -1283,10 +1287,8 @@
       f.oppBlockerIds = derivedOppBlockerIds.sort((a,b)=>CUSTOM_OPP_BASE[a][0]-CUSTOM_OPP_BASE[b][0]);
       f.oppSlots = f.oppBlockerIds.map(id=>f.targets[id][0]);
       blockCount = f.oppBlockerIds.length;
-      if(!atk.landingOverride){
-        f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
-        if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
-      }
+      f.blockOutcome = computeBlockOutcome(f, atk, f.ballLanding);
+      if(f.blockOutcome) f.ballLanding = f.blockOutcome.restPoint;
     }
     return f;
   }
@@ -1411,6 +1413,13 @@
       }
       if(p<=atk.phase.hit){
         const t=easeInOut((p-atk.phase.toss)/(atk.phase.hit-atk.phase.toss));
+        const bo = formation.blockOutcome;
+        if(bo){
+          const netPt=[bo.netX,bo.netY];
+          const split = bo.type==='blocked' ? 0.55 : 0.5;
+          if(t<=split) return lerpPt(attackerPt, netPt, t/split);
+          return lerpPt(netPt, landing, (t-split)/(1-split));
+        }
         return ballFlightPoint(attackerPt, landing, t, formation, true);
       }
       return landing.slice();
@@ -1958,6 +1967,7 @@
 
   // ---------- preset UI (start positions) ----------
   let activePreset = null; // the preset object currently loaded, so re-saving with the same name/folder updates it in place
+  let lastPickedPreset = null; // the preset object most recently chosen from the "불러오기" dropdown, so the ✏️/🗑️ buttons next to it know what to act on even after the dropdown resets to its placeholder (kept as an object reference, not an index, since the array can be reordered elsewhere via "찾기")
 
   function resolveScenarioForPreset(p){
     if(p.scenario && (ATTACKS[p.scenario]||OUR_ATTACKS[p.scenario])) return p.scenario;
@@ -2266,8 +2276,33 @@
     const idx = e.target.value;
     if(idx==='') return;
     const p = presets[Number(idx)];
-    if(p) loadPreset(p);
+    if(p){ loadPreset(p); lastPickedPreset = p; }
     e.target.value = ''; // reset to placeholder so re-selecting the same item still fires change
+  });
+  document.getElementById('btnPresetRename').addEventListener('click', ()=>{
+    if(!lastPickedPreset || !presets.includes(lastPickedPreset)){
+      alert('먼저 위 목록에서 이름을 바꿀 대형을 선택해주세요.');
+      return;
+    }
+    const newName = (prompt('새 이름을 입력해주세요.', lastPickedPreset.name) || '').trim();
+    if(!newName) return;
+    lastPickedPreset.name = newName.slice(0,40);
+    renderPresets();
+    scheduleAutoSave();
+  });
+  document.getElementById('btnPresetDeleteFromLoad').addEventListener('click', ()=>{
+    const i = presets.indexOf(lastPickedPreset);
+    if(!lastPickedPreset || i===-1){
+      alert('먼저 위 목록에서 삭제할 대형을 선택해주세요.');
+      return;
+    }
+    if(!confirm(`"${lastPickedPreset.name}"을(를) 삭제할까요?`)) return;
+    if(activePreset===lastPickedPreset) activePreset=null;
+    presets.splice(i,1);
+    lastPickedPreset = null;
+    renderPresets();
+    updateTexts();
+    scheduleAutoSave();
   });
 
   document.getElementById('btnSavePreset').addEventListener('click', ()=>{
