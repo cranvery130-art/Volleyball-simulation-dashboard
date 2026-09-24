@@ -726,17 +726,17 @@
         <div class="field-note" style="margin-top:0;">고르고 "기록"을 누르면 지금 시간이 저장돼요. 멈춘 채로 여러 개 누르면 하나로 합쳐져요.</div>
 
         <label class="field-label" style="margin-top:0;">득실 위치 (선택, 대략적인 지점)</label>
-        <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
-          <div id="zonePickerWrap" style="max-width:220px; flex:none;">
+        <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+          <div id="zonePickerWrap" style="flex:1 1 320px; min-width:220px;">
             <svg id="zonePickerSvg" viewBox="0 0 220 232" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
               <rect x="0" y="14" width="220" height="218" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
               <rect x="0" y="8" width="220" height="10" fill="var(--accent)"/>
               <g id="zoneCells"></g>
             </svg>
           </div>
-          <div style="flex:1; min-width:140px; display:flex; flex-direction:column; gap:6px;">
-            <div class="field-note" id="zonePickerStatus" style="margin-top:0;">위치를 선택하지 않았어요.</div>
+          <div style="flex:0 0 140px; display:flex; flex-direction:column; gap:6px;">
             <button class="btn" id="btnClearZone" style="align-self:flex-start;">위치 선택 해제</button>
+            <div class="field-note" id="zonePickerStatus" style="margin-top:0;">위치를 선택하지 않았어요.</div>
           </div>
         </div>
 
