@@ -198,6 +198,26 @@
   ul.points li::marker{ color:var(--accent-text); }
   .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(242,183,5,0.4); font-size:12px; color:#8A6400; line-height:1.55; }
 
+  #splashScreen{
+    position:fixed; inset:0; z-index:2000; overflow:hidden;
+    background:linear-gradient(180deg, #080D17 0%, #091E1E 100%);
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity 0.9s ease;
+  }
+  #splashScreen.splash-hide{ opacity:0; pointer-events:none; }
+  .splash-inner{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px; max-width:520px; }
+  .splash-diagram{ width:min(88vw, 420px); height:auto; margin-bottom:18px; }
+  .splash-kicker{ font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:1px; color:#F2B705; margin-bottom:14px; }
+  .splash-kicker span{ opacity:0.75; margin:0 6px; }
+  .splash-title{ font-family:'Barlow Condensed','Inter',sans-serif; font-weight:900; font-size:clamp(34px,8vw,52px); line-height:1.15; color:#EEF4FA; margin:0 0 14px; letter-spacing:0.5px; }
+  .splash-tagline{ font-size:clamp(13px,3vw,16px); font-weight:300; color:#8CA0BC; margin:0 0 18px; }
+  .splash-divider{ width:70px; height:2px; background:rgba(242,183,5,0.5); position:relative; margin-bottom:16px; }
+  .splash-divider::after{ content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:#F2B705; }
+  .splash-footer{ font-family:monospace; font-size:11px; letter-spacing:1.5px; color:#8CA0BC; opacity:0.85; }
+  .splash-corner{ position:absolute; font-family:monospace; font-size:11px; letter-spacing:1px; color:#8CA0BC; opacity:0.7; }
+  .splash-tl{ top:26px; left:26px; } .splash-tr{ top:26px; right:26px; }
+  .splash-bl{ bottom:26px; left:26px; } .splash-br{ bottom:26px; right:26px; }
+  @media (max-width:480px){ .splash-corner{ font-size:9px; } .splash-tl,.splash-tr,.splash-bl,.splash-br{ top:16px; left:16px; right:16px; bottom:16px; } }
   #loginOverlay{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:20px; z-index:1000; overflow-y:auto; }
   .btn-link-intro{
     display:block; width:100%; margin-top:14px; padding:10px; background:none; border:none;
@@ -329,6 +349,70 @@
 </script>
 </head>
 <body>
+
+<div id="splashScreen">
+  <div class="splash-corner splash-tl">FIG. 01 — DEFENSIVE FORMATION</div>
+  <div class="splash-corner splash-tr">N·380</div>
+  <div class="splash-inner">
+    <svg class="splash-diagram" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="splashGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3C3210" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#3C3210" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="200" cy="140" rx="220" ry="150" fill="url(#splashGlow)"/>
+      <line x1="200" y1="20" x2="200" y2="260" stroke="#F2B705" stroke-width="4" opacity="0.9"/>
+      <g stroke="#F2B705" stroke-width="1.5" opacity="0.5">
+        <line x1="192" y1="26" x2="208" y2="26"/><line x1="192" y1="42" x2="208" y2="42"/>
+        <line x1="192" y1="58" x2="208" y2="58"/><line x1="192" y1="74" x2="208" y2="74"/>
+        <line x1="192" y1="90" x2="208" y2="90"/><line x1="192" y1="106" x2="208" y2="106"/>
+        <line x1="192" y1="122" x2="208" y2="122"/><line x1="192" y1="138" x2="208" y2="138"/>
+        <line x1="192" y1="154" x2="208" y2="154"/><line x1="192" y1="170" x2="208" y2="170"/>
+        <line x1="192" y1="186" x2="208" y2="186"/><line x1="192" y1="202" x2="208" y2="202"/>
+        <line x1="192" y1="218" x2="208" y2="218"/><line x1="192" y1="234" x2="208" y2="234"/>
+        <line x1="192" y1="250" x2="208" y2="250"/>
+      </g>
+      <rect x="40" y="30" width="320" height="220" fill="none" stroke="#EEF4FA" stroke-width="1" opacity="0.18"/>
+      <line x1="120" y1="30" x2="120" y2="250" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="3 4" opacity="0.12"/>
+      <line x1="280" y1="30" x2="280" y2="250" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="3 4" opacity="0.12"/>
+      <path d="M 128,100 Q 165,75 172,90" fill="none" stroke="#F2B705" stroke-width="2" stroke-dasharray="2 5" opacity="0.85"/>
+      <path d="M 78,205 Q 150,175 228,190" fill="none" stroke="#EEF4FA" stroke-width="1.5" stroke-dasharray="2 5" opacity="0.4"/>
+      <g id="splashOwnDots" fill="#5C94FA" stroke="#EEF4FA" stroke-width="1.4">
+        <circle cx="78" cy="64" r="11"/><circle cx="107" cy="86" r="11"/>
+        <circle cx="128" cy="100" r="11"/><circle cx="78" cy="132" r="11"/>
+        <circle cx="97" cy="163" r="11"/><circle cx="72" cy="205" r="11"/>
+      </g>
+      <g id="splashOppDots" fill="#EC6060" stroke="#EEF4FA" stroke-width="1.4">
+        <circle cx="188" cy="68" r="11"/><circle cx="216" cy="86" r="11"/>
+        <circle cx="172" cy="90" r="11"/><circle cx="240" cy="126" r="11"/>
+        <circle cx="228" cy="190" r="11"/><circle cx="216" cy="209" r="11"/>
+      </g>
+      <text x="128" y="104" text-anchor="middle" font-family="monospace" font-weight="700" font-size="10" fill="#08101E">3</text>
+      <text x="97" y="167" text-anchor="middle" font-family="monospace" font-weight="700" font-size="10" fill="#08101E">6</text>
+      <text x="172" y="94" text-anchor="middle" font-family="monospace" font-weight="700" font-size="10" fill="#08101E">2</text>
+    </svg>
+    <div class="splash-kicker"><span>—</span> 9 v 9 VOLLEYBALL · TACTICAL SIMULATION <span>—</span></div>
+    <h1 class="splash-title">경기분석<br>전술 시뮬레이터</h1>
+    <p class="splash-tagline">생각한 순간이, 전술이 됩니다</p>
+    <div class="splash-divider"></div>
+    <div class="splash-footer">POSITION · ATTACK · BLOCK · ANALYSIS</div>
+  </div>
+  <div class="splash-corner splash-bl">SET · POSITION</div>
+  <div class="splash-corner splash-br">01 / 09</div>
+</div>
+<script>
+  (function(){
+    var splash = document.getElementById('splashScreen');
+    function hideSplash(){
+      if(!splash || splash.classList.contains('splash-hide')) return;
+      splash.classList.add('splash-hide');
+      setTimeout(function(){ splash.style.display = 'none'; }, 900);
+    }
+    setTimeout(hideSplash, 2400);
+    splash.addEventListener('click', hideSplash);
+  })();
+</script>
 
 <div id="loginOverlay">
   <div class="login-card">
@@ -719,6 +803,20 @@
         <div class="field-note" id="lastVideoHint" style="display:none; margin-top:4px;"></div>
         <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
       </div>
+      <div class="video-analysis-bottom">
+        <div class="card">
+          <h2>그래프</h2>
+          <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 우리 팀이 점수를 딴 요인과 잃은 요인을 비교해요.</div>
+          <div id="factorChart"></div>
+        </div>
+        <div class="card">
+          <h2>종합 분석</h2>
+          <div class="field-note" style="margin-top:0;">기록을 바탕으로 자동 요약을 만들어드려요. 실제 경기 흐름을 가장 잘 아는 건 코치님이니, 의견을 더해 완성해보세요.</div>
+          <div id="autoAnalysis" style="margin-bottom:12px;"></div>
+          <label class="field-label">코치 의견 (직접 작성)</label>
+          <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
+        </div>
+      </div>
     </div>
     <div class="video-grid-col">
       <div class="card video-grid-card">
@@ -728,8 +826,8 @@
         <label class="field-label" style="margin-top:0;">득실 위치 (선택, 대략적인 지점)</label>
         <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap;">
           <div id="zonePickerWrap" style="flex:1 1 320px; min-width:220px;">
-            <svg id="zonePickerSvg" viewBox="0 0 220 232" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
-              <rect x="0" y="14" width="220" height="218" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
+            <svg id="zonePickerSvg" viewBox="0 0 220 132" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
+              <rect x="0" y="14" width="220" height="118" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
               <rect x="0" y="8" width="220" height="10" fill="var(--accent)"/>
               <g id="zoneCells"></g>
             </svg>
@@ -775,21 +873,6 @@
         <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동해요.</div>
         <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
       </div>
-    </div>
-  </div>
-
-  <div class="video-analysis-bottom">
-    <div class="card">
-      <h2>그래프</h2>
-      <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 우리 팀이 점수를 딴 요인과 잃은 요인을 비교해요.</div>
-      <div id="factorChart"></div>
-    </div>
-    <div class="card">
-      <h2>종합 분석</h2>
-      <div class="field-note" style="margin-top:0;">기록을 바탕으로 자동 요약을 만들어드려요. 실제 경기 흐름을 가장 잘 아는 건 코치님이니, 의견을 더해 완성해보세요.</div>
-      <div id="autoAnalysis" style="margin-bottom:12px;"></div>
-      <label class="field-label">코치 의견 (직접 작성)</label>
-      <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
     </div>
   </div>
 
@@ -3209,7 +3292,7 @@
   function renderZonePicker(){
     const g = document.getElementById('zoneCells');
     g.innerHTML = '';
-    const rowH = 218/2;
+    const rowH = (132-24)/2;
     ZONE_LABELS.forEach((rowLabels, row)=>{
       const cw = 220/rowLabels.length, y = 24 + row*rowH;
       rowLabels.forEach((text, col)=>{
