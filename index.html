@@ -77,7 +77,7 @@
   #autoAnalysis p{ margin:0 0 13px; padding-left:14px; border-left:2px solid var(--accent-soft); }
   #autoAnalysis b{ color:var(--accent-text); font-weight:700; }
   #autoAnalysis p.analysis-disclaimer{ border-left:none; padding-left:0; margin-bottom:0; font-size:11.5px; font-style:italic; color:var(--text-dim); line-height:1.6; }
-  .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; }
+  .video-grid-col{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:16px; }
   .video-grid-col:first-child{ flex:1.5 1 0; } /* video column gets noticeably more width */
   .video-grid-card{ display:flex; flex-direction:column; }
   #matchVideo{ width:100%; max-height:65vh; object-fit:contain; background:#000; border-radius:10px; display:block; } /* a direct, generous size for the video itself, independent of surrounding flex/height tricks */
@@ -193,8 +193,8 @@
   input[type=range]:disabled{ opacity:0.4; }
 
   .desc-block{ font-size:12.5px; color:var(--accent-text); font-weight:700; margin-bottom:10px; }
-  p.desc-text{ font-size:13.5px; line-height:1.65; color:var(--text); margin:0 0 14px; max-width:74ch; }
-  ul.points{ margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:var(--text-dim); max-width:70ch; }
+  p.desc-text{ font-size:13.5px; line-height:1.65; color:var(--text); margin:0 0 14px; }
+  ul.points{ margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:var(--text-dim); }
   ul.points li::marker{ color:var(--accent-text); }
   .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(242,183,5,0.4); font-size:12px; color:#8A6400; line-height:1.55; }
 
@@ -719,20 +719,6 @@
         <div class="field-note" id="lastVideoHint" style="display:none; margin-top:4px;"></div>
         <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
       </div>
-      <div class="video-analysis-bottom">
-        <div class="card">
-          <h2>그래프</h2>
-          <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 우리 팀이 점수를 딴 요인과 잃은 요인을 비교해요.</div>
-          <div id="factorChart"></div>
-        </div>
-        <div class="card">
-          <h2>종합 분석</h2>
-          <div class="field-note" style="margin-top:0;">기록을 바탕으로 자동 요약을 만들어드려요. 실제 경기 흐름을 가장 잘 아는 건 코치님이니, 의견을 더해 완성해보세요.</div>
-          <div id="autoAnalysis" style="margin-bottom:12px;"></div>
-          <label class="field-label">코치 의견 (직접 작성)</label>
-          <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
-        </div>
-      </div>
     </div>
     <div class="video-grid-col">
       <div class="card video-grid-card">
@@ -789,6 +775,21 @@
         <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동해요.</div>
         <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
       </div>
+    </div>
+  </div>
+
+  <div class="video-analysis-bottom">
+    <div class="card">
+      <h2>그래프</h2>
+      <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 우리 팀이 점수를 딴 요인과 잃은 요인을 비교해요.</div>
+      <div id="factorChart"></div>
+    </div>
+    <div class="card">
+      <h2>종합 분석</h2>
+      <div class="field-note" style="margin-top:0;">기록을 바탕으로 자동 요약을 만들어드려요. 실제 경기 흐름을 가장 잘 아는 건 코치님이니, 의견을 더해 완성해보세요.</div>
+      <div id="autoAnalysis" style="margin-bottom:12px;"></div>
+      <label class="field-label">코치 의견 (직접 작성)</label>
+      <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
     </div>
   </div>
 
@@ -3202,41 +3203,42 @@
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
 
-  // ---------- 득실 위치 9-zone half-court picker ----------
-  let selectedZone = null; // {col,row} or null — col 0/1/2 = left/center/right, row 0/1/2 = near-net/mid/back
-  const ZONE_LABELS = [['앞왼쪽','앞중앙','앞오른쪽'],['중간왼쪽','중간중앙','중간오른쪽'],['뒤왼쪽','뒤중앙','뒤오른쪽']];
+  // ---------- 득실 위치 zone picker (5-column attack row + 3-column back row, net at top) ----------
+  let selectedZone = null; // {row,col} or null
+  const ZONE_LABELS = [['레프트','앞차','A','백차(백A)','라이트'],['레프트백','센터백','라이트백']];
   function renderZonePicker(){
     const g = document.getElementById('zoneCells');
     g.innerHTML = '';
-    const cw = 220/3, ch = 218/3;
-    for(let row=0; row<3; row++){
-      for(let col=0; col<3; col++){
-        const x = col*cw, y = 24 + row*ch;
+    const rowH = 218/2;
+    ZONE_LABELS.forEach((rowLabels, row)=>{
+      const cw = 220/rowLabels.length, y = 24 + row*rowH;
+      rowLabels.forEach((text, col)=>{
+        const x = col*cw;
         const rect = document.createElementNS(svgNS,'rect');
         rect.setAttribute('x', x+2); rect.setAttribute('y', y+2);
-        rect.setAttribute('width', cw-4); rect.setAttribute('height', ch-4);
+        rect.setAttribute('width', cw-4); rect.setAttribute('height', rowH-4);
         rect.setAttribute('rx', 5);
-        const isSel = selectedZone && selectedZone.col===col && selectedZone.row===row;
+        const isSel = selectedZone && selectedZone.row===row && selectedZone.col===col;
         rect.setAttribute('fill', isSel ? 'var(--accent)' : 'var(--panel)');
         rect.setAttribute('stroke', isSel ? 'var(--accent)' : 'var(--border)');
         rect.setAttribute('stroke-width','1.5');
         rect.style.cursor = 'pointer';
         rect.addEventListener('click', ()=>{
-          selectedZone = {col,row};
+          selectedZone = {row,col};
           renderZonePicker();
           updateZoneStatus();
         });
         g.appendChild(rect);
         const label = document.createElementNS(svgNS,'text');
-        label.setAttribute('x', x+cw/2); label.setAttribute('y', y+ch/2+4);
+        label.setAttribute('x', x+cw/2); label.setAttribute('y', y+rowH/2+4);
         label.setAttribute('text-anchor','middle');
-        label.setAttribute('font-size','11');
+        label.setAttribute('font-size', text.length>3 ? '9' : '11');
         label.setAttribute('fill', isSel ? '#241b02' : 'var(--text-dim)');
         label.style.pointerEvents = 'none';
-        label.textContent = ZONE_LABELS[row][col];
+        label.textContent = text;
         g.appendChild(label);
-      }
-    }
+      });
+    });
   }
   function updateZoneStatus(){
     const el = document.getElementById('zonePickerStatus');
