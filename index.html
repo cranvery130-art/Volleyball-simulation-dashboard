@@ -74,8 +74,8 @@
   .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
   .video-grid-col:first-child{ flex:1.5 1 0; } /* video + dashboard column gets noticeably more width */
   .video-grid-card{ flex:1 1 50%; min-height:0; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
-  .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 64%; } /* video player gets more of the left column's height */
-  .video-grid-col:first-child .video-grid-card:last-child{ flex:1 1 36%; }
+  .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 auto; min-height:0; } /* video absorbs all the height the dashboard doesn't need, so it gets noticeably taller */
+  .video-grid-col:first-child .video-grid-card:last-child{ flex:0 0 auto; overflow:visible; } /* dashboard (landscape court) sizes to its own natural content instead of being stretched or squeezed */
   .video-grid-col:last-child{ flex:1 1 0; align-self:flex-start; } /* sizes to its own content instead of being stretched to match the (much taller) video column */
   .video-grid-col:last-child .video-grid-card:first-child{ flex:0 0 auto; } /* the now-compact quick-record banner only takes what it needs */
   .video-grid-col:last-child .video-grid-card:last-child{ flex:0 0 auto; max-height:520px; } /* records card sizes to its content too, capped so a long list scrolls instead of growing forever */
@@ -735,7 +735,7 @@
         <div class="btn-row" style="margin-top:8px;">
           <button class="btn" id="btnClearBoard">보드 전체 지우기</button>
         </div>
-        <div class="court-wrap" style="margin-top:8px;">
+        <div class="court-wrap" style="margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto;">
           <svg id="videoCourt" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
             <defs>
           <marker id="drawArrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
