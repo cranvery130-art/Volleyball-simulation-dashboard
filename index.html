@@ -76,7 +76,7 @@
   .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 64%; } /* video player gets more of the left column's height */
   .video-grid-col:first-child .video-grid-card:last-child{ flex:1 1 36%; }
   .video-grid-col:last-child .video-grid-card:first-child{ flex:0 0 auto; } /* the now-compact quick-record banner only takes what it needs */
-  .video-grid-col:last-child .video-grid-card:last-child{ flex:1 1 auto; min-height:0; } /* records list gets the rest */
+  .video-grid-col:last-child .video-grid-card:last-child{ flex:1 1 auto; min-height:0; height:0; } /* records list gets the rest — height:0 alongside flex-grow forces it to fill exactly the remaining space, not just its content size */
   .video-grid-card #matchVideo{ flex:1 1 auto; min-height:0; object-fit:contain; }
   .video-grid-card .court-wrap{ flex:1 1 auto; min-height:0; }
   .desc-main{ flex:1 1 300px; min-width:0; }
@@ -250,14 +250,11 @@
   .record-row .x{ width:20px; height:20px; border-radius:50%; background:#33455F; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--text-dim); cursor:pointer; flex:none; }
   .record-row .x:hover{ background:#EF4A4A; color:#fff; }
   .banner-block{ margin-bottom:14px; }
-  .quick-record-row{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-  .quick-record-row .qr-label{ font-size:12px; font-weight:700; color:var(--accent-text); flex:0 0 100px; white-space:nowrap; }
-  .quick-record-row select{ flex:1 1 auto; min-width:0; padding:8px 10px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-family:inherit; font-size:12.5px; }
-  .quick-record-row button{ flex:none; white-space:nowrap; }
-  @media (max-width:480px){
-    .quick-record-row{ flex-wrap:wrap; }
-    .quick-record-row .qr-label{ flex:1 1 100%; }
-  }
+  .quick-record-row{ margin-bottom:11px; }
+  .quick-record-row .qr-label{ font-size:11.5px; font-weight:700; color:var(--accent-text); margin-bottom:4px; }
+  .qr-controls{ display:flex; align-items:center; gap:8px; }
+  .qr-controls select{ flex:1 1 auto; width:0; min-width:0; padding:8px 10px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-family:inherit; font-size:12.5px; }
+  .qr-controls button{ flex:0 0 auto; white-space:nowrap; }
   .banner-title{ font-size:12.5px; font-weight:700; color:var(--accent-text); margin-bottom:6px; }
   .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; max-height:92px; overflow-y:auto; overflow-x:hidden; padding-right:2px; }
   .banner-tabs button{ padding:7px 11px; font-size:12px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; }
@@ -748,22 +745,28 @@
     <div class="video-grid-col">
       <div class="card video-grid-card">
         <h2>빠른 기록 배너</h2>
-        <div class="field-note" style="margin-top:0;">항목을 고르고 "기록"을 누르면 지금 시간과 대시보드 상태가 함께 저장돼요. 멈춘 채로 여러 개 기록하면 하나로 합쳐져요.</div>
+        <div class="field-note" style="margin-top:0;">고르고 "기록"을 누르면 지금 시간과 대시보드가 저장돼요. 멈춘 채로 여러 개 누르면 하나로 합쳐져요.</div>
 
         <div class="quick-record-row">
-          <span class="qr-label">🔴 상대팀 득점</span>
-          <select id="oppSelect"></select>
-          <button class="btn primary" id="oppRecordBtn">기록</button>
+          <div class="qr-label">🔴 상대팀 득점</div>
+          <div class="qr-controls">
+            <select id="oppSelect"></select>
+            <button class="btn primary" id="oppRecordBtn">기록</button>
+          </div>
         </div>
         <div class="quick-record-row">
-          <span class="qr-label">🔵 우리팀 득점</span>
-          <select id="scoreSelect"></select>
-          <button class="btn primary" id="scoreRecordBtn">기록</button>
+          <div class="qr-label">🔵 우리팀 득점</div>
+          <div class="qr-controls">
+            <select id="scoreSelect"></select>
+            <button class="btn primary" id="scoreRecordBtn">기록</button>
+          </div>
         </div>
         <div class="quick-record-row">
-          <span class="qr-label">🔵 우리팀 미스</span>
-          <select id="missSelect"></select>
-          <button class="btn primary" id="missRecordBtn">기록</button>
+          <div class="qr-label">🔵 우리팀 미스</div>
+          <div class="qr-controls">
+            <select id="missSelect"></select>
+            <button class="btn primary" id="missRecordBtn">기록</button>
+          </div>
         </div>
       </div>
       <div class="card video-grid-card">
