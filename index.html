@@ -73,11 +73,15 @@
   .video-grid{ display:flex; gap:16px; align-items:stretch; height:calc(100vh - 200px); min-height:560px; }
   .video-analysis-bottom{ display:flex; gap:16px; align-items:stretch; margin-top:16px; }
   .video-analysis-bottom .card{ flex:1 1 50%; min-width:0; }
+  #autoAnalysis{ font-family:'Inter',system-ui,sans-serif; font-size:13.5px; line-height:1.85; letter-spacing:0.1px; color:var(--text); }
+  #autoAnalysis p{ margin:0 0 13px; padding-left:14px; border-left:2px solid var(--accent-soft); }
+  #autoAnalysis b{ color:var(--accent-text); font-weight:700; }
+  #autoAnalysis p.analysis-disclaimer{ border-left:none; padding-left:0; margin-bottom:0; font-size:11.5px; font-style:italic; color:var(--text-dim); line-height:1.6; }
   .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
-  .video-grid-col:first-child{ flex:1.5 1 0; } /* video + dashboard column gets noticeably more width */
+  .video-grid-col:first-child{ flex:1.5 1 0; overflow:visible; } /* video column gets noticeably more width; visible so the graph/analysis row below can extend past the fixed grid height instead of being clipped */
   .video-grid-card{ flex:1 1 50%; min-height:0; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
-  .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 auto; min-height:0; } /* video absorbs all the height the dashboard doesn't need, so it gets noticeably taller */
-  .video-grid-col:first-child .video-grid-card:last-child{ flex:0 0 auto; overflow:visible; } /* dashboard (landscape court) sizes to its own natural content instead of being stretched or squeezed */
+  .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 auto; min-height:0; } /* video absorbs all the height the graph/analysis row below doesn't need, so it gets noticeably taller */
+  .video-grid-col:first-child .video-analysis-bottom{ flex:0 0 auto; } /* graph + analysis size to their own natural content, staying within the video column's width — never spilling into the records column */
   .video-grid-col:last-child{ flex:1 1 0; align-self:flex-start; } /* sizes to its own content instead of being stretched to match the (much taller) video column */
   .video-grid-col:last-child .video-grid-card:first-child{ flex:0 0 auto; } /* the now-compact quick-record banner only takes what it needs */
   .video-grid-col:last-child .video-grid-card:last-child{ flex:0 0 auto; max-height:520px; } /* records card sizes to its content too, capped so a long list scrolls instead of growing forever */
@@ -721,6 +725,20 @@
         <div class="field-note" id="lastVideoHint" style="display:none; margin-top:4px;"></div>
         <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
       </div>
+      <div class="video-analysis-bottom">
+        <div class="card">
+          <h2>그래프</h2>
+          <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 우리 팀이 점수를 딴 요인과 잃은 요인을 비교해요.</div>
+          <div id="factorChart"></div>
+        </div>
+        <div class="card">
+          <h2>종합 분석</h2>
+          <div class="field-note" style="margin-top:0;">기록을 바탕으로 자동 요약을 만들어드려요. 실제 경기 흐름을 가장 잘 아는 건 코치님이니, 의견을 더해 완성해보세요.</div>
+          <div id="autoAnalysis" style="margin-bottom:12px;"></div>
+          <label class="field-label">코치 의견 (직접 작성)</label>
+          <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
+        </div>
+      </div>
     </div>
     <div class="video-grid-col">
       <div class="card video-grid-card">
@@ -777,21 +795,6 @@
         <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동해요.</div>
         <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
       </div>
-    </div>
-  </div>
-
-  <div class="video-analysis-bottom">
-    <div class="card">
-      <h2>그래프</h2>
-      <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 우리 팀이 점수를 딴 요인과 잃은 요인을 비교해요.</div>
-      <div id="factorChart"></div>
-    </div>
-    <div class="card">
-      <h2>종합 분석</h2>
-      <div class="field-note" style="margin-top:0;">기록을 바탕으로 자동 요약을 만들어드려요. 실제 경기 흐름을 가장 잘 아는 건 코치님이니, 의견을 더해 완성해보세요.</div>
-      <div id="autoAnalysis" style="margin-bottom:12px;"></div>
-      <label class="field-label">코치 의견 (직접 작성)</label>
-      <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
     </div>
   </div>
 
@@ -3425,25 +3428,25 @@
     const sortedScore = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]);
     const sortedLoss = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]);
     const lines = [];
-    lines.push(`<p style="margin:0 0 8px;">이번 경기에서 총 <b>${totalScore}번 득점</b>, <b>${totalLoss}번 실점</b>이 기록됐어요.</p>`);
+    lines.push(`<p>이번 경기에서 총 <b>${totalScore}번 득점</b>, <b>${totalLoss}번 실점</b>이 기록됐어요.</p>`);
     if(sortedScore.length){
       const [topLabel, topN] = sortedScore[0];
       const pct = Math.round(topN/totalScore*100);
-      lines.push(`<p style="margin:0 0 8px;">✅ <b>득점 요인</b> — "${topLabel}"이(가) 전체 득점의 ${pct}%(${topN}회)로 가장 큰 비중을 차지해요. 이 패턴이 잘 통하고 있으니 계속 활용해보세요.</p>`);
+      lines.push(`<p>✅ <b>득점 요인</b> — "${topLabel}"이(가) 전체 득점의 ${pct}%(${topN}회)로 가장 큰 비중을 차지해요. 이 패턴이 잘 통하고 있으니 계속 활용해보세요.</p>`);
     }
     if(sortedLoss.length){
       const [topLabel, topN] = sortedLoss[0];
       const pct = Math.round(topN/totalLoss*100);
-      lines.push(`<p style="margin:0 0 8px;">⚠️ <b>보완할 점</b> — "${topLabel}"으로 인한 실점이 전체의 ${pct}%(${topN}회)로 가장 많아요. 이 부분을 훈련에서 집중적으로 다뤄보면 좋겠어요.</p>`);
+      lines.push(`<p>⚠️ <b>보완할 점</b> — "${topLabel}"으로 인한 실점이 전체의 ${pct}%(${topN}회)로 가장 많아요. 이 부분을 훈련에서 집중적으로 다뤄보면 좋겠어요.</p>`);
     }
     const serveFaultN = scoreCounts['상대서브범실']||0;
-    if(serveFaultN>0) lines.push(`<p style="margin:0 0 8px;">🎯 상대의 서브 범실로 얻은 점수가 ${serveFaultN}회 있었어요. 우리 팀의 리시브 대형이 상대에게 부담을 주고 있을 수 있어요.</p>`);
+    if(serveFaultN>0) lines.push(`<p>🎯 상대의 서브 범실로 얻은 점수가 ${serveFaultN}회 있었어요. 우리 팀의 리시브 대형이 상대에게 부담을 주고 있을 수 있어요.</p>`);
     const blockLossN = (lossCounts['블로킹']||0)+(lossCounts['블로킹(다이렉트)']||0)+(lossCounts['블로킹(빈틈)']||0)+(lossCounts['블로킹(터치아웃)']||0);
     if(blockLossN>0 && totalLoss>0){
       const pct = Math.round(blockLossN/totalLoss*100);
-      if(pct>=25) lines.push(`<p style="margin:0 0 8px;">🧱 블로킹 관련 실점이 전체 실점의 ${pct}%를 차지해요. 블로킹 타이밍이나 손 모양 훈련을 강화해보는 게 도움이 될 수 있어요.</p>`);
+      if(pct>=25) lines.push(`<p>🧱 블로킹 관련 실점이 전체 실점의 ${pct}%를 차지해요. 블로킹 타이밍이나 손 모양 훈련을 강화해보는 게 도움이 될 수 있어요.</p>`);
     }
-    lines.push(`<p style="margin:0; opacity:0.75; font-size:12px;">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
+    lines.push(`<p class="analysis-disclaimer">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
     el.innerHTML = lines.join('');
   }
 
