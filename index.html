@@ -70,22 +70,18 @@
   .check-row label{ cursor:pointer; }
   .check-list{ display:flex; flex-wrap:wrap; gap:4px 24px; }
   .desc-with-aids{ display:flex; gap:22px; flex-wrap:wrap; margin-top:6px; }
-  .video-grid{ display:flex; gap:16px; align-items:stretch; height:calc(100vh - 200px); min-height:560px; }
+  .video-grid{ display:flex; gap:16px; align-items:flex-start; } /* natural height for both columns — nothing is forced into a fixed box, so nothing can silently overflow past it and overlap whatever comes next on the page */
   .video-analysis-bottom{ display:flex; gap:16px; align-items:stretch; margin-top:16px; }
   .video-analysis-bottom .card{ flex:1 1 50%; min-width:0; }
   #autoAnalysis{ font-family:'Inter',system-ui,sans-serif; font-size:13.5px; line-height:1.85; letter-spacing:0.1px; color:var(--text); }
   #autoAnalysis p{ margin:0 0 13px; padding-left:14px; border-left:2px solid var(--accent-soft); }
   #autoAnalysis b{ color:var(--accent-text); font-weight:700; }
   #autoAnalysis p.analysis-disclaimer{ border-left:none; padding-left:0; margin-bottom:0; font-size:11.5px; font-style:italic; color:var(--text-dim); line-height:1.6; }
-  .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
-  .video-grid-col:first-child{ flex:1.5 1 0; overflow:visible; } /* video column gets noticeably more width; visible so the graph/analysis row below can extend past the fixed grid height instead of being clipped */
-  .video-grid-card{ flex:1 1 50%; min-height:0; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
-  .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 auto; min-height:0; } /* video absorbs all the height the graph/analysis row below doesn't need, so it gets noticeably taller */
-  .video-grid-col:first-child .video-analysis-bottom{ flex:0 0 auto; } /* graph + analysis size to their own natural content, staying within the video column's width — never spilling into the records column */
-  .video-grid-col:last-child{ flex:1 1 0; align-self:flex-start; } /* sizes to its own content instead of being stretched to match the (much taller) video column */
-  .video-grid-col:last-child .video-grid-card:first-child{ flex:0 0 auto; } /* the now-compact quick-record banner only takes what it needs */
-  .video-grid-col:last-child .video-grid-card:last-child{ flex:0 0 auto; max-height:520px; } /* records card sizes to its content too, capped so a long list scrolls instead of growing forever */
-  .video-grid-card #matchVideo{ flex:1 1 auto; min-height:0; object-fit:contain; }
+  .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; }
+  .video-grid-col:first-child{ flex:1.5 1 0; } /* video column gets noticeably more width */
+  .video-grid-card{ display:flex; flex-direction:column; }
+  #matchVideo{ width:100%; max-height:65vh; object-fit:contain; background:#000; border-radius:10px; display:block; } /* a direct, generous size for the video itself, independent of surrounding flex/height tricks */
+  .video-grid-col:last-child .video-grid-card:last-child{ max-height:480px; overflow-y:auto; } /* only the records list caps its own height and scrolls internally — it's the one thing that can grow without bound as a match goes on. Everything else sizes naturally and the page itself scrolls if needed. */
   .video-grid-card .court-wrap{ flex:1 1 auto; min-height:0; }
   .desc-main{ flex:1 1 300px; min-width:0; }
   .desc-aids{ flex:0 0 230px; border-left:1px solid var(--border); padding-left:18px; }
@@ -94,9 +90,7 @@
   .desc-aids .check-row input{ margin-top:2px; flex:none; }
   @media (max-width:700px){
     .desc-aids{ flex-basis:100%; border-left:none; padding-left:0; border-top:1px solid var(--border); padding-top:10px; margin-top:4px; }
-    .video-grid{ flex-direction:column; height:auto; min-height:0; }
-    .video-grid-col{ overflow:visible; }
-    .video-grid-card{ overflow:visible; max-height:none; }
+    .video-grid{ flex-direction:column; }
     .video-analysis-bottom{ flex-direction:column; }
   }
 
