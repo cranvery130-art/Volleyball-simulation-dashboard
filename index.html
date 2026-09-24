@@ -713,50 +713,33 @@
     <div class="video-grid-col">
       <div class="card video-grid-card">
         <h2>경기 영상</h2>
-        <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서, 아래 대시보드에 직접 그리고 배너로 빠르게 기록하세요.</div>
+        <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서, 오른쪽 빠른 기록 배너로 득점·실점 상황을 기록하세요.</div>
         <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
         <div class="field-note" id="lastVideoHint" style="display:none; margin-top:4px;"></div>
         <video id="matchVideo" style="width:100%; margin-top:8px; border-radius:10px; background:#000; display:block;" controls></video>
-      </div>
-      <div class="card video-grid-card">
-        <h2>대시보드 (직접 작성)</h2>
-        <label class="field-label">도구 선택</label>
-        <div class="seg" id="drawToolSeg">
-          <button data-tool="dotRed">🔴 도트</button>
-          <button data-tool="dotBlue">🔵 도트</button>
-          <button data-tool="ball">🏐 공</button>
-          <button data-tool="straight">➡ 직선</button>
-          <button data-tool="curved">➰ 곡선</button>
-          <button data-tool="pigtail">🌀 돼지꼬리</button>
-          <button data-tool="wavy">〰 물결</button>
-          <button data-tool="erase">🗑 지우기</button>
-        </div>
-        <div class="field-note" id="drawStatus">도구를 고른 뒤 코트를 클릭(도트·공)하거나 드래그(화살표)하세요. "지우기"를 고르고 그림을 클릭하면 지워져요.</div>
-        <div class="btn-row" style="margin-top:8px;">
-          <button class="btn" id="btnClearBoard">보드 전체 지우기</button>
-        </div>
-        <div class="court-wrap" style="margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto;">
-          <svg id="videoCourt" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
-            <defs>
-          <marker id="drawArrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0,0 L10,5 L0,10 Z" fill="#F2F6FA"/>
-          </marker>
-        </defs>
-        <rect x="14" y="14" width="732" height="372" rx="8" fill="none" stroke="#9C4A2E" stroke-width="6"/>
-        <rect x="18" y="18" width="724" height="364" rx="6" fill="#1F7A64"/>
-        <rect x="20" y="20" width="720" height="360" fill="none" stroke="#F2F6FA" stroke-width="2"/>
-        <rect x="376" y="14" width="8" height="372" fill="#0C1524" opacity="0.85"/>
-        <g id="videoDotsLayer"></g>
-      </svg>
-    </div>
       </div>
     </div>
     <div class="video-grid-col">
       <div class="card video-grid-card">
         <h2>빠른 기록 배너</h2>
-        <div class="field-note" style="margin-top:0;">고르고 "기록"을 누르면 지금 시간과 대시보드가 저장돼요. 멈춘 채로 여러 개 누르면 하나로 합쳐져요.</div>
+        <div class="field-note" style="margin-top:0;">고르고 "기록"을 누르면 지금 시간이 저장돼요. 멈춘 채로 여러 개 누르면 하나로 합쳐져요.</div>
 
-        <div class="quick-record-row">
+        <label class="field-label" style="margin-top:0;">득실 위치 (선택, 대략적인 지점)</label>
+        <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+          <div id="zonePickerWrap" style="max-width:220px; flex:none;">
+            <svg id="zonePickerSvg" viewBox="0 0 220 232" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
+              <rect x="0" y="14" width="220" height="218" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
+              <rect x="0" y="8" width="220" height="10" fill="var(--accent)"/>
+              <g id="zoneCells"></g>
+            </svg>
+          </div>
+          <div style="flex:1; min-width:140px; display:flex; flex-direction:column; gap:6px;">
+            <div class="field-note" id="zonePickerStatus" style="margin-top:0;">위치를 선택하지 않았어요.</div>
+            <button class="btn" id="btnClearZone" style="align-self:flex-start;">위치 선택 해제</button>
+          </div>
+        </div>
+
+        <div class="quick-record-row" style="margin-top:14px;">
           <div class="qr-label">🔴 상대팀 득점</div>
           <div class="qr-controls">
             <select id="oppSelect"></select>
@@ -777,17 +760,51 @@
             <button class="btn primary" id="missRecordBtn">기록</button>
           </div>
         </div>
+        <div class="btn-row" style="margin-top:4px; justify-content:flex-end;">
+          <button class="btn" id="btnRecordMoment">🔴 이 순간 자유 기록</button>
+        </div>
       </div>
       <div class="card video-grid-card">
         <h2>기록</h2>
         <div id="tallySummary" style="margin-bottom:10px;"></div>
         <div class="btn-row">
-          <button class="btn" id="btnRecordMoment">🔴 이 순간 자유 기록</button>
           <button class="btn" id="btnExportExcel">📊 엑셀로 내보내기</button>
           <button class="btn" id="btnExportSheets">📄 구글시트용으로 내보내기</button>
         </div>
-        <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동하면서, 그때 그려둔 대시보드가 있으면 바로 복원돼요.</div>
+        <div class="field-note" style="margin-top:0;">기록은 영상을 바꿔도 사라지지 않아요. 시간을 누르면 그 영상 지점으로 이동해요.</div>
         <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+      <div class="card video-grid-card">
+        <h2>그래프</h2>
+        <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 우리 팀이 점수를 딴 요인과 잃은 요인을 비교해요.</div>
+        <div id="factorChart"></div>
+      </div>
+      <div class="card video-grid-card">
+        <h2>종합 분석</h2>
+        <div class="field-note" style="margin-top:0;">기록을 바탕으로 자동 요약을 만들어드려요. 실제 경기 흐름을 가장 잘 아는 건 코치님이니, 의견을 더해 완성해보세요.</div>
+        <div id="autoAnalysis" style="margin-bottom:12px;"></div>
+        <label class="field-label">코치 의견 (직접 작성)</label>
+        <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
+      </div>
+      <div class="card video-grid-card">
+        <h2>매치 분석 저장</h2>
+        <div class="field-note" style="margin-top:0;">기록·그래프·종합분석을 통째로 폴더에 저장해두면 나중에 그대로 다시 불러올 수 있어요. 영상 파일 자체는 저장되지 않지만, 그 영상의 파일명은 함께 남아서 어느 경기였는지 알 수 있어요.</div>
+        <div style="display:flex; align-items:flex-end; gap:8px;">
+          <div style="flex:1;">
+            <label class="field-label" style="margin-top:0;">저장할 이름</label>
+            <input type="text" id="matchSaveName" class="login-input" style="margin-top:0;" placeholder="예: 9/26 vs 위드나인전">
+          </div>
+          <button class="btn primary" id="btnSaveMatchFolder">폴더로 저장</button>
+        </div>
+        <div style="margin-top:10px;">
+          <label class="field-label" style="margin-top:0;">저장된 폴더 불러오기</label>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <select id="matchFolderSelect" style="flex:1;">
+              <option value="">불러올 폴더 선택...</option>
+            </select>
+            <button class="btn" id="btnDeleteMatchFolder" title="선택한 폴더 삭제" style="flex:none; padding:9px 10px;">🗑️</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -3169,8 +3186,6 @@
 
   const video = document.getElementById('matchVideo');
   const fileInput = document.getElementById('videoFileInput');
-  const dotsLayer = document.getElementById('videoDotsLayer');
-  const videoCourtSvg = document.getElementById('videoCourt');
 
   let currentVideoName = '';
   fileInput.addEventListener('change', ()=>{
@@ -3179,142 +3194,60 @@
     video.src = URL.createObjectURL(file);
     currentVideoName = file.name;
     document.getElementById('lastVideoHint').style.display = 'none';
-    // note: the drawing board and all records are intentionally kept — switching videos doesn't erase anything.
+    // note: all records are intentionally kept — switching videos doesn't erase anything.
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
 
-  function clip(v,lo,hi){ return Math.max(lo, Math.min(hi, v)); }
-
-  function toVideoSvgPoint(e){
-    const pt = videoCourtSvg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
-    const loc = pt.matrixTransform(videoCourtSvg.getScreenCTM().inverse());
-    return [clip(loc.x,20,740), clip(loc.y,20,380)];
-  }
-
-  // ---------- manual drawing board ----------
-  let drawTool = null;
-  let elements = []; // dots/ball: {id,type,x,y}  arrows: {id,type,x1,y1,x2,y2}
-  let elIdCounter = 0;
-  let dragStart = null, dragPreview = null;
-
-  function curvedPath(x1,y1,x2,y2){
-    const mx=(x1+x2)/2, my=(y1+y2)/2;
-    const dx=x2-x1, dy=y2-y1;
-    const len = Math.hypot(dx,dy) || 1;
-    const bulge = Math.min(60, len*0.35);
-    const cx = mx - (dy/len)*bulge, cy = my + (dx/len)*bulge;
-    return `M ${x1},${y1} Q ${cx},${cy} ${x2},${y2}`;
-  }
-  function wavyPath(x1,y1,x2,y2){
-    const segments = 6;
-    const dx=(x2-x1)/segments, dy=(y2-y1)/segments;
-    const len = Math.hypot(x2-x1,y2-y1) || 1;
-    const amp = Math.min(14, len/segments*0.7);
-    const perpX = -dy/len*amp, perpY = dx/len*amp;
-    let d = `M ${x1},${y1}`;
-    for(let i=0;i<segments;i++){
-      const midX = x1+dx*(i+0.5) + (i%2===0? perpX : -perpX);
-      const midY = y1+dy*(i+0.5) + (i%2===0? perpY : -perpY);
-      const endX = x1+dx*(i+1), endY = y1+dy*(i+1);
-      d += ` Q ${midX.toFixed(1)},${midY.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
-    }
-    return d;
-  }
-  function pigtailPath(x1,y1,x2,y2){
-    const r = 9;
-    const loop = `M ${x1},${y1} c ${r},${-r} ${r*2},${r} 0,${r*2} c ${-r*2},${r} ${-r},${-r*2} 0.1,${-r*2}`;
-    return `${loop} M ${x1},${y1} L ${x2},${y2}`;
-  }
-  function pathFor(type,x1,y1,x2,y2){
-    if(type==='straight') return `M ${x1},${y1} L ${x2},${y2}`;
-    if(type==='curved') return curvedPath(x1,y1,x2,y2);
-    if(type==='pigtail') return pigtailPath(x1,y1,x2,y2);
-    if(type==='wavy') return wavyPath(x1,y1,x2,y2);
-    return `M ${x1},${y1} L ${x2},${y2}`;
-  }
-
-  document.querySelectorAll('#drawToolSeg button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#drawToolSeg button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      drawTool = btn.dataset.tool;
-      videoCourtSvg.style.cursor = drawTool==='erase' ? 'not-allowed' : 'crosshair';
-      document.getElementById('drawStatus').textContent = drawTool==='erase'
-        ? '지우고 싶은 도트나 화살표를 코트에서 클릭하세요.'
-        : (['dotRed','dotBlue','ball'].includes(drawTool) ? '코트를 클릭해서 놓으세요.' : '코트를 드래그해서 그리세요.');
-    });
-  });
-
-  videoCourtSvg.addEventListener('pointerdown', e=>{
-    if(!drawTool || drawTool==='erase') return;
-    const pt = toVideoSvgPoint(e);
-    if(drawTool==='dotRed' || drawTool==='dotBlue' || drawTool==='ball'){
-      elements.push({id:++elIdCounter, type:drawTool, x:pt[0], y:pt[1]});
-      renderBoard();
-      return;
-    }
-    dragStart = pt;
-    try{ videoCourtSvg.setPointerCapture(e.pointerId); }catch(err){}
-  });
-  videoCourtSvg.addEventListener('pointermove', e=>{
-    if(!dragStart) return;
-    const pt = toVideoSvgPoint(e);
-    dragPreview = {type:drawTool, x1:dragStart[0], y1:dragStart[1], x2:pt[0], y2:pt[1]};
-    renderBoard();
-  });
-  ['pointerup','pointercancel'].forEach(evt=>{
-    videoCourtSvg.addEventListener(evt, e=>{
-      if(!dragStart) return;
-      const pt = toVideoSvgPoint(e);
-      if(Math.hypot(pt[0]-dragStart[0], pt[1]-dragStart[1]) > 8){
-        elements.push({id:++elIdCounter, type:drawTool, x1:dragStart[0], y1:dragStart[1], x2:pt[0], y2:pt[1]});
+  // ---------- 득실 위치 9-zone half-court picker ----------
+  let selectedZone = null; // {col,row} or null — col 0/1/2 = left/center/right, row 0/1/2 = near-net/mid/back
+  const ZONE_LABELS = [['앞왼쪽','앞중앙','앞오른쪽'],['중간왼쪽','중간중앙','중간오른쪽'],['뒤왼쪽','뒤중앙','뒤오른쪽']];
+  function renderZonePicker(){
+    const g = document.getElementById('zoneCells');
+    g.innerHTML = '';
+    const cw = 220/3, ch = 218/3;
+    for(let row=0; row<3; row++){
+      for(let col=0; col<3; col++){
+        const x = col*cw, y = 24 + row*ch;
+        const rect = document.createElementNS(svgNS,'rect');
+        rect.setAttribute('x', x+2); rect.setAttribute('y', y+2);
+        rect.setAttribute('width', cw-4); rect.setAttribute('height', ch-4);
+        rect.setAttribute('rx', 5);
+        const isSel = selectedZone && selectedZone.col===col && selectedZone.row===row;
+        rect.setAttribute('fill', isSel ? 'var(--accent)' : 'var(--panel)');
+        rect.setAttribute('stroke', isSel ? 'var(--accent)' : 'var(--border)');
+        rect.setAttribute('stroke-width','1.5');
+        rect.style.cursor = 'pointer';
+        rect.addEventListener('click', ()=>{
+          selectedZone = {col,row};
+          renderZonePicker();
+          updateZoneStatus();
+        });
+        g.appendChild(rect);
+        const label = document.createElementNS(svgNS,'text');
+        label.setAttribute('x', x+cw/2); label.setAttribute('y', y+ch/2+4);
+        label.setAttribute('text-anchor','middle');
+        label.setAttribute('font-size','11');
+        label.setAttribute('fill', isSel ? '#241b02' : 'var(--text-dim)');
+        label.style.pointerEvents = 'none';
+        label.textContent = ZONE_LABELS[row][col];
+        g.appendChild(label);
       }
-      dragStart=null; dragPreview=null;
-      renderBoard();
-    });
-  });
-
-  function renderBoard(){
-    if(window.scheduleAutoSave) window.scheduleAutoSave();
-    dotsLayer.innerHTML='';
-    elements.forEach(el=>{
-      if(el.type==='dotRed' || el.type==='dotBlue' || el.type==='ball'){
-        const c = document.createElementNS(svgNS,'circle');
-        c.setAttribute('cx',el.x); c.setAttribute('cy',el.y);
-        c.setAttribute('r', el.type==='ball' ? 9 : 13);
-        c.setAttribute('fill', el.type==='dotRed' ? '#EF4A4A' : el.type==='dotBlue' ? '#3E82F7' : '#FBC02D');
-        c.setAttribute('stroke', el.type==='ball' ? '#7A5A05' : '#fff'); c.setAttribute('stroke-width','1.3');
-        c.style.cursor='pointer';
-        c.addEventListener('click', ()=>{ if(drawTool==='erase'){ elements=elements.filter(x=>x.id!==el.id); renderBoard(); } });
-        dotsLayer.appendChild(c);
-      } else {
-        const path = document.createElementNS(svgNS,'path');
-        path.setAttribute('d', pathFor(el.type, el.x1, el.y1, el.x2, el.y2));
-        path.setAttribute('fill','none'); path.setAttribute('stroke','#F2F6FA'); path.setAttribute('stroke-width','2.5');
-        path.setAttribute('marker-end','url(#drawArrowHead)');
-        path.style.cursor='pointer'; path.style.pointerEvents='stroke';
-        path.addEventListener('click', ()=>{ if(drawTool==='erase'){ elements=elements.filter(x=>x.id!==el.id); renderBoard(); } });
-        dotsLayer.appendChild(path);
-      }
-    });
-    if(dragPreview){
-      const p = dragPreview;
-      const path = document.createElementNS(svgNS,'path');
-      path.setAttribute('d', pathFor(p.type, p.x1, p.y1, p.x2, p.y2));
-      path.setAttribute('fill','none'); path.setAttribute('stroke','#F2B705'); path.setAttribute('stroke-width','2'); path.setAttribute('stroke-dasharray','4 3');
-      dotsLayer.appendChild(path);
     }
   }
-
-  document.getElementById('btnClearBoard').addEventListener('click', ()=>{
-    elements=[]; renderBoard();
+  function updateZoneStatus(){
+    const el = document.getElementById('zonePickerStatus');
+    el.textContent = selectedZone ? `선택됨: ${ZONE_LABELS[selectedZone.row][selectedZone.col]} — 다음 기록에 이 위치가 붙어요.` : '위치를 선택하지 않았어요.';
+  }
+  document.getElementById('btnClearZone').addEventListener('click', ()=>{
+    selectedZone = null;
+    renderZonePicker();
+    updateZoneStatus();
   });
-
-  function captureBoard(){ return elements.length ? JSON.parse(JSON.stringify(elements)) : null; }
-  function restoreBoard(saved){ elements = saved ? JSON.parse(JSON.stringify(saved)) : []; renderBoard(); }
+  renderZonePicker();
+  updateZoneStatus();
 
   // ---------- timestamped records ----------
-  let records = []; // {time, label, category, optionLabel, videoName, positions}
+  let records = []; // {time, label, category, optionLabel, videoName, zone}
   function fmtTime(sec){
     sec = Math.max(0, Math.floor(sec||0));
     const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
@@ -3331,35 +3264,34 @@
       timeBtn.title = rec.videoName ? `영상: ${rec.videoName}` : '';
       timeBtn.addEventListener('click', ()=>{
         video.currentTime = rec.time;
-        restoreBoard(rec.positions);
       });
       const input = document.createElement('input'); input.type='text'; input.value=rec.label;
       input.placeholder='메모';
       input.addEventListener('input', ()=>{ rec.label = input.value; if(window.scheduleAutoSave) window.scheduleAutoSave(); });
-      const saveBtn = document.createElement('button'); saveBtn.className='btn';
-      saveBtn.textContent = rec.positions ? '보드 다시 저장' : '보드 저장';
-      saveBtn.addEventListener('click', ()=>{
-        rec.positions = captureBoard();
-        saveBtn.textContent='저장됨 ✓';
-        setTimeout(()=>{ saveBtn.textContent='보드 다시 저장'; }, 1200);
-        if(window.scheduleAutoSave) window.scheduleAutoSave();
-      });
+      row.appendChild(timeBtn); row.appendChild(input);
+      if(rec.zone){
+        const zoneTag = document.createElement('span'); zoneTag.className='btn'; zoneTag.style.cursor='default'; zoneTag.style.fontSize='11px';
+        zoneTag.textContent = '📍'+ZONE_LABELS[rec.zone.row][rec.zone.col];
+        row.appendChild(zoneTag);
+      }
       const del = document.createElement('span'); del.className='x'; del.textContent='✕';
-      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
-      row.appendChild(timeBtn); row.appendChild(input); row.appendChild(saveBtn); row.appendChild(del);
+      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); renderFactorChart(); renderAutoAnalysis(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      row.appendChild(del);
       list.appendChild(row);
     });
   }
 
   document.getElementById('btnRecordMoment').addEventListener('click', ()=>{
-    records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, positions: captureBoard()});
+    records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, zone: selectedZone});
     renderRecords();
+    renderFactorChart();
+    renderAutoAnalysis();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
 
   // ---------- quick-log banners ----------
-  const OPP_ATTACK_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리','블로킹'];
-  const OUR_SCORE_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리','블로킹'];
+  const OPP_ATTACK_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리','블로킹','페인트'];
+  const OUR_SCORE_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리','블로킹','페인트','상대서브범실'];
   const OUR_MISS_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','토스','2단토스','블로킹(다이렉트)','3구처리','디그움직임','서브캐치','블로킹(빈틈)','블로킹(터치아웃)'];
 
   function flashBtn(btn){
@@ -3375,6 +3307,7 @@
     if(video.paused && activeMergeRecord && Math.abs(activeMergeRecord.time - now) < 0.05){
       activeMergeRecord.entries.push({category, optionLabel:label});
       activeMergeRecord.label = activeMergeRecord.entries.map(e=>`[${e.category}] ${e.optionLabel}`).join(' + ');
+      if(selectedZone && !activeMergeRecord.zone) activeMergeRecord.zone = selectedZone;
     } else {
       const rec = {
         time: now,
@@ -3382,13 +3315,15 @@
         label: `[${category}] ${label}`,
         category, optionLabel: label,
         videoName: currentVideoName,
-        positions: captureBoard()
+        zone: selectedZone
       };
       records.push(rec);
       if(video.paused) activeMergeRecord = rec;
     }
     renderRecords();
     renderTally();
+    renderFactorChart();
+    renderAutoAnalysis();
     if(btn) flashBtn(btn);
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   }
@@ -3433,6 +3368,142 @@
     el.innerHTML = html || '<span class="field-note" style="margin:0;">아직 배너로 기록된 통계가 없어요.</span>';
   }
 
+  function computeFactorCounts(){
+    const scoreCounts = {}, lossCounts = {};
+    records.forEach(r=>{
+      const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
+      entries.forEach(e=>{
+        if(e.category==='득점') scoreCounts[e.optionLabel] = (scoreCounts[e.optionLabel]||0)+1;
+        else if(e.category==='상대공격' || e.category==='미스') lossCounts[e.optionLabel] = (lossCounts[e.optionLabel]||0)+1;
+      });
+    });
+    return {scoreCounts, lossCounts};
+  }
+
+  function renderFactorChart(){
+    const el = document.getElementById('factorChart');
+    const {scoreCounts, lossCounts} = computeFactorCounts();
+    const scoreEntries = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const lossEntries = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    if(!scoreEntries.length && !lossEntries.length){
+      el.innerHTML = '<span class="field-note" style="margin:0;">아직 기록이 없어요. 빠른 기록 배너로 기록을 쌓으면 그래프가 나타나요.</span>';
+      return;
+    }
+    function barsHTML(title, entries, color){
+      if(!entries.length) return '';
+      const max = Math.max(...entries.map(e=>e[1]));
+      const rows = entries.map(([label,n])=>`
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;">
+          <div style="flex:0 0 90px; font-size:11.5px; color:var(--text-dim); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${label}</div>
+          <div style="flex:1; background:var(--panel-2); border-radius:4px; overflow:hidden; height:16px;">
+            <div style="width:${Math.max(6,(n/max*100)).toFixed(0)}%; background:${color}; height:100%;"></div>
+          </div>
+          <div style="flex:0 0 30px; font-size:11.5px; color:var(--text);">${n}회</div>
+        </div>
+      `).join('');
+      return `<div style="margin-bottom:14px;"><div class="field-label" style="margin-top:0;">${title}</div>${rows}</div>`;
+    }
+    el.innerHTML = barsHTML('🟢 득점 요인 TOP', scoreEntries, 'var(--own)') + barsHTML('🔴 실점 요인 TOP', lossEntries, 'var(--opp)');
+  }
+
+  function renderAutoAnalysis(){
+    const el = document.getElementById('autoAnalysis');
+    const {scoreCounts, lossCounts} = computeFactorCounts();
+    const totalScore = Object.values(scoreCounts).reduce((a,b)=>a+b,0);
+    const totalLoss = Object.values(lossCounts).reduce((a,b)=>a+b,0);
+    if(totalScore+totalLoss===0){
+      el.innerHTML = '<span class="field-note" style="margin:0;">아직 기록이 없어서 자동 요약을 만들 수 없어요. 빠른 기록 배너로 득점·실점을 기록해보세요.</span>';
+      return;
+    }
+    const sortedScore = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]);
+    const sortedLoss = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]);
+    const lines = [];
+    lines.push(`<p style="margin:0 0 8px;">이번 경기에서 총 <b>${totalScore}번 득점</b>, <b>${totalLoss}번 실점</b>이 기록됐어요.</p>`);
+    if(sortedScore.length){
+      const [topLabel, topN] = sortedScore[0];
+      const pct = Math.round(topN/totalScore*100);
+      lines.push(`<p style="margin:0 0 8px;">✅ <b>득점 요인</b> — "${topLabel}"이(가) 전체 득점의 ${pct}%(${topN}회)로 가장 큰 비중을 차지해요. 이 패턴이 잘 통하고 있으니 계속 활용해보세요.</p>`);
+    }
+    if(sortedLoss.length){
+      const [topLabel, topN] = sortedLoss[0];
+      const pct = Math.round(topN/totalLoss*100);
+      lines.push(`<p style="margin:0 0 8px;">⚠️ <b>보완할 점</b> — "${topLabel}"으로 인한 실점이 전체의 ${pct}%(${topN}회)로 가장 많아요. 이 부분을 훈련에서 집중적으로 다뤄보면 좋겠어요.</p>`);
+    }
+    const serveFaultN = scoreCounts['상대서브범실']||0;
+    if(serveFaultN>0) lines.push(`<p style="margin:0 0 8px;">🎯 상대의 서브 범실로 얻은 점수가 ${serveFaultN}회 있었어요. 우리 팀의 리시브 대형이 상대에게 부담을 주고 있을 수 있어요.</p>`);
+    const blockLossN = (lossCounts['블로킹']||0)+(lossCounts['블로킹(다이렉트)']||0)+(lossCounts['블로킹(빈틈)']||0)+(lossCounts['블로킹(터치아웃)']||0);
+    if(blockLossN>0 && totalLoss>0){
+      const pct = Math.round(blockLossN/totalLoss*100);
+      if(pct>=25) lines.push(`<p style="margin:0 0 8px;">🧱 블로킹 관련 실점이 전체 실점의 ${pct}%를 차지해요. 블로킹 타이밍이나 손 모양 훈련을 강화해보는 게 도움이 될 수 있어요.</p>`);
+    }
+    lines.push(`<p style="margin:0; opacity:0.75; font-size:12px;">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
+    el.innerHTML = lines.join('');
+  }
+
+  document.getElementById('coachNotes').addEventListener('input', ()=>{ if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+
+  // ---------- match analysis folders (records + chart data + coach notes, saved together) ----------
+  let matchFolders = []; // {name, savedAt, videoName, records, coachNotes}
+  let lastPickedMatchFolder = null;
+  function renderMatchFolderSelect(){
+    const sel = document.getElementById('matchFolderSelect');
+    sel.innerHTML = '<option value="">불러올 폴더 선택...</option>';
+    matchFolders.forEach((f,idx)=>{
+      const opt = document.createElement('option'); opt.value = idx;
+      opt.textContent = `${f.name}${f.videoName ? ' — '+f.videoName : ''}`;
+      sel.appendChild(opt);
+    });
+  }
+  document.getElementById('btnSaveMatchFolder').addEventListener('click', ()=>{
+    const nameInput = document.getElementById('matchSaveName');
+    let name = nameInput.value.trim();
+    if(!name) name = '매치 '+(matchFolders.length+1);
+    matchFolders.push({
+      name,
+      savedAt: new Date().toISOString(),
+      videoName: currentVideoName,
+      records: JSON.parse(JSON.stringify(records)),
+      coachNotes: document.getElementById('coachNotes').value
+    });
+    nameInput.value = '';
+    renderMatchFolderSelect();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+    alert(`"${name}" 폴더로 저장했어요. 기록·그래프·종합분석이 함께 저장됐어요.`);
+  });
+  document.getElementById('matchFolderSelect').addEventListener('change', e=>{
+    const idx = e.target.value;
+    if(idx==='') return;
+    const f = matchFolders[Number(idx)];
+    if(f){
+      records = JSON.parse(JSON.stringify(f.records||[]));
+      document.getElementById('coachNotes').value = f.coachNotes||'';
+      currentVideoName = f.videoName||'';
+      const hint = document.getElementById('lastVideoHint');
+      if(currentVideoName){
+        hint.textContent = `"${f.name}" 폴더의 영상: ${currentVideoName} — 같은 파일을 다시 첨부하면 이어서 볼 수 있어요.`;
+        hint.style.display = 'block';
+      } else {
+        hint.style.display = 'none';
+      }
+      renderRecords(); renderTally(); renderFactorChart(); renderAutoAnalysis();
+      lastPickedMatchFolder = f;
+      if(window.scheduleAutoSave) window.scheduleAutoSave();
+    }
+    e.target.value = '';
+  });
+  document.getElementById('btnDeleteMatchFolder').addEventListener('click', ()=>{
+    const i = matchFolders.indexOf(lastPickedMatchFolder);
+    if(!lastPickedMatchFolder || i===-1){
+      alert('먼저 위 목록에서 삭제할 폴더를 선택(불러오기)해주세요.');
+      return;
+    }
+    if(!confirm(`"${lastPickedMatchFolder.name}" 폴더를 삭제할까요?`)) return;
+    matchFolders.splice(i,1);
+    lastPickedMatchFolder = null;
+    renderMatchFolderSelect();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+  });
+
   function csvEscape(v){
     const s = String(v==null?'':v);
     if(/[",\r\n]/.test(s)) return '"'+s.replace(/"/g,'""')+'"';
@@ -3476,13 +3547,16 @@
   window.getVideoAnalysisState = () => ({
     records,
     currentVideoName,
-    currentBoard: captureBoard()
+    coachNotes: document.getElementById('coachNotes').value,
+    matchFolders
   });
   window.applyVideoAnalysisState = (vs) => {
     if(!vs) return;
     records = vs.records || [];
     currentVideoName = vs.currentVideoName || '';
-    if(vs.currentBoard) restoreBoard(vs.currentBoard);
+    document.getElementById('coachNotes').value = vs.coachNotes || '';
+    matchFolders = vs.matchFolders || [];
+    renderMatchFolderSelect();
     if(currentVideoName && !video.src){
       const hint = document.getElementById('lastVideoHint');
       hint.textContent = `마지막에 사용한 영상: ${currentVideoName} — 같은 파일을 다시 첨부하면 이어서 볼 수 있어요.`;
@@ -3490,11 +3564,15 @@
     }
     renderRecords();
     renderTally();
+    renderFactorChart();
+    renderAutoAnalysis();
   };
 
-  renderBoard();
   renderRecords();
   renderTally();
+  renderFactorChart();
+  renderAutoAnalysis();
+  renderMatchFolderSelect();
 
 })();
 </script>
