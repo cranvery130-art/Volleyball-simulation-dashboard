@@ -73,12 +73,12 @@
   .video-grid{ display:flex; gap:16px; align-items:stretch; height:calc(100vh - 200px); min-height:560px; }
   .video-grid-col{ flex:1 1 50%; min-width:0; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
   .video-grid-col:first-child{ flex:1.5 1 0; } /* video + dashboard column gets noticeably more width */
-  .video-grid-col:last-child{ flex:1 1 0; }
   .video-grid-card{ flex:1 1 50%; min-height:0; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
   .video-grid-col:first-child .video-grid-card:first-child{ flex:1 1 64%; } /* video player gets more of the left column's height */
   .video-grid-col:first-child .video-grid-card:last-child{ flex:1 1 36%; }
+  .video-grid-col:last-child{ flex:1 1 0; align-self:flex-start; } /* sizes to its own content instead of being stretched to match the (much taller) video column */
   .video-grid-col:last-child .video-grid-card:first-child{ flex:0 0 auto; } /* the now-compact quick-record banner only takes what it needs */
-  .video-grid-col:last-child .video-grid-card:last-child{ flex:1 1 auto; min-height:0; height:0; } /* records list gets the rest — height:0 alongside flex-grow forces it to fill exactly the remaining space, not just its content size */
+  .video-grid-col:last-child .video-grid-card:last-child{ flex:0 0 auto; max-height:520px; } /* records card sizes to its content too, capped so a long list scrolls instead of growing forever */
   .video-grid-card #matchVideo{ flex:1 1 auto; min-height:0; object-fit:contain; }
   .video-grid-card .court-wrap{ flex:1 1 auto; min-height:0; }
   .desc-main{ flex:1 1 300px; min-width:0; }
@@ -255,7 +255,7 @@
   .quick-record-row{ margin-bottom:11px; }
   .quick-record-row .qr-label{ font-size:11.5px; font-weight:700; color:var(--accent-text); margin-bottom:4px; }
   .qr-controls{ display:flex; align-items:center; gap:8px; }
-  .qr-controls select{ flex:1 1 auto; width:0; min-width:0; padding:8px 10px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-family:inherit; font-size:12.5px; }
+  .qr-controls select{ flex:0 1 220px; min-width:0; padding:8px 10px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--panel-2); color:var(--text); font-family:inherit; font-size:12.5px; }
   .qr-controls button{ flex:0 0 auto; white-space:nowrap; }
   .banner-title{ font-size:12.5px; font-weight:700; color:var(--accent-text); margin-bottom:6px; }
   .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; max-height:92px; overflow-y:auto; overflow-x:hidden; padding-right:2px; }
