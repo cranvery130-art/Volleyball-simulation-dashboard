@@ -876,41 +876,44 @@
           </select>
         </div>
 
-        <label class="field-label">득실 위치 (선택, 대략적인 지점)</label>
-        <div class="field-note" style="margin-top:0; margin-bottom:8px;">공이 어느 자리 근처에서 오갔는지 클릭해두면, 다음 기록에 그 위치가 함께 붙어요.</div>
-        <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-          <div id="zonePickerWrap" style="flex:1 1 320px; min-width:220px;">
-            <svg id="zonePickerSvg" viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
-              <rect x="0" y="14" width="220" height="56" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
-              <rect x="0" y="8" width="220" height="10" fill="var(--accent)"/>
-              <g id="zoneCells"></g>
-            </svg>
+        <div style="display:flex; align-items:flex-start; gap:18px; flex-wrap:wrap; margin-top:10px;">
+          <div style="flex:1 1 220px; min-width:200px;">
+            <label class="field-label" style="margin-top:0;">득실 위치 (선택, 대략적인 지점)</label>
+            <div class="field-note" style="margin-top:0; margin-bottom:6px;">클릭해두면 다음 기록에 위치가 붙어요.</div>
+            <div id="zonePickerWrap">
+              <svg id="zonePickerSvg" viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
+                <rect x="0" y="14" width="220" height="56" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
+                <rect x="0" y="8" width="220" height="10" fill="var(--accent)"/>
+                <g id="zoneCells"></g>
+              </svg>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+              <button class="btn" id="btnClearZone">위치 선택 해제</button>
+              <div class="field-note" id="zonePickerStatus" style="margin-top:0;">위치를 선택하지 않았어요.</div>
+            </div>
           </div>
-          <div style="flex:0 0 140px; display:flex; flex-direction:column; gap:6px;">
-            <button class="btn" id="btnClearZone" style="align-self:flex-start;">위치 선택 해제</button>
-            <div class="field-note" id="zonePickerStatus" style="margin-top:0;">위치를 선택하지 않았어요.</div>
-          </div>
-        </div>
-
-        <div class="quick-record-row" style="margin-top:14px;">
-          <div class="qr-label">🔴 상대팀 득점</div>
-          <div class="qr-controls">
-            <select id="oppSelect"></select>
-            <button class="btn primary" id="oppRecordBtn">기록</button>
-          </div>
-        </div>
-        <div class="quick-record-row">
-          <div class="qr-label">🔵 우리팀 득점</div>
-          <div class="qr-controls">
-            <select id="scoreSelect"></select>
-            <button class="btn primary" id="scoreRecordBtn">기록</button>
-          </div>
-        </div>
-        <div class="quick-record-row">
-          <div class="qr-label">🔵 우리팀 미스</div>
-          <div class="qr-controls">
-            <select id="missSelect"></select>
-            <button class="btn primary" id="missRecordBtn">기록</button>
+          <div style="flex:1 1 260px; min-width:220px;">
+            <div class="quick-record-row">
+              <div class="qr-label">🔴 상대팀 득점</div>
+              <div class="qr-controls">
+                <select id="oppSelect"></select>
+                <button class="btn primary" id="oppRecordBtn">기록</button>
+              </div>
+            </div>
+            <div class="quick-record-row">
+              <div class="qr-label">🔵 우리팀 득점</div>
+              <div class="qr-controls">
+                <select id="scoreSelect"></select>
+                <button class="btn primary" id="scoreRecordBtn">기록</button>
+              </div>
+            </div>
+            <div class="quick-record-row">
+              <div class="qr-label">🔵 우리팀 미스</div>
+              <div class="qr-controls">
+                <select id="missSelect"></select>
+                <button class="btn primary" id="missRecordBtn">기록</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="btn-row" style="margin-top:4px; justify-content:flex-end;">
