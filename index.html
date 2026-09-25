@@ -354,67 +354,83 @@
   <div class="splash-corner splash-tl">FIG. 01 — DEFENSIVE FORMATION</div>
   <div class="splash-corner splash-tr">N·380</div>
   <div class="splash-inner">
-    <svg class="splash-diagram" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+    <svg class="splash-diagram" viewBox="0 0 620 310" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="splashGlow" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stop-color="#3C3210" stop-opacity="0.9"/>
           <stop offset="100%" stop-color="#3C3210" stop-opacity="0"/>
         </radialGradient>
       </defs>
-      <ellipse cx="200" cy="140" rx="220" ry="150" fill="url(#splashGlow)"/>
-      <line x1="200" y1="20" x2="200" y2="260" stroke="#F2B705" stroke-width="4" opacity="0.9"/>
-      <g stroke="#F2B705" stroke-width="1.5" opacity="0.5">
-        <line x1="192" y1="26" x2="208" y2="26"/><line x1="192" y1="42" x2="208" y2="42"/>
-        <line x1="192" y1="58" x2="208" y2="58"/><line x1="192" y1="74" x2="208" y2="74"/>
-        <line x1="192" y1="90" x2="208" y2="90"/><line x1="192" y1="106" x2="208" y2="106"/>
-        <line x1="192" y1="122" x2="208" y2="122"/><line x1="192" y1="138" x2="208" y2="138"/>
-        <line x1="192" y1="154" x2="208" y2="154"/><line x1="192" y1="170" x2="208" y2="170"/>
-        <line x1="192" y1="186" x2="208" y2="186"/><line x1="192" y1="202" x2="208" y2="202"/>
-        <line x1="192" y1="218" x2="208" y2="218"/><line x1="192" y1="234" x2="208" y2="234"/>
-        <line x1="192" y1="250" x2="208" y2="250"/>
-      </g>
-      <rect x="40" y="30" width="320" height="220" fill="none" stroke="#EEF4FA" stroke-width="1" opacity="0.18"/>
-      <line x1="115" y1="30" x2="115" y2="250" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="3 4" opacity="0.12"/>
-      <line x1="285" y1="30" x2="285" y2="250" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="3 4" opacity="0.12"/>
+      <ellipse cx="310" cy="150" rx="330" ry="170" fill="url(#splashGlow)"/>
 
-      <!-- defensive coverage fans, own back-row players reading the attack -->
-      <g fill="#5C94FA" opacity="0.14">
-        <path d="M 75,215 L 130,195 A 62 62 0 0 1 150,240 Z"/>
-        <path d="M 75,140 L 135,120 A 65 65 0 0 1 145,168 Z"/>
+      <!-- zone boundary lines -->
+      <line x1="210" y1="10" x2="210" y2="300" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="4 5" opacity="0.18"/>
+      <line x1="415" y1="10" x2="415" y2="300" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="4 5" opacity="0.18"/>
+
+      <!-- net -->
+      <line x1="310" y1="6" x2="310" y2="304" stroke="#EEF4FA" stroke-width="3" opacity="0.9"/>
+      <g fill="#5C94FA" opacity="0.9">
+        <rect x="299" y="12" width="9" height="16" rx="1.5"/>
+        <rect x="299" y="32" width="9" height="16" rx="1.5"/>
+        <rect x="299" y="52" width="9" height="16" rx="1.5"/>
+        <rect x="299" y="72" width="9" height="16" rx="1.5"/>
       </g>
 
-      <!-- ball trajectory: opponent attack crossing the net, met by the block -->
-      <path d="M 245,140 Q 210,95 172,90" fill="none" stroke="#F2B705" stroke-width="2" stroke-dasharray="2 5" opacity="0.9"/>
-      <circle cx="172" cy="90" r="9" fill="none" stroke="#F2B705" stroke-width="1.4" opacity="0.75"/>
-      <circle cx="172" cy="90" r="14" fill="none" stroke="#F2B705" stroke-width="1" opacity="0.4"/>
-
-      <!-- movement trails: players rotating into position -->
-      <path d="M 75,140 Q 115,150 130,138" fill="none" stroke="#EEF4FA" stroke-width="1.3" stroke-dasharray="2 4" opacity="0.35"/>
-      <path d="M 115,215 Q 140,205 152,192" fill="none" stroke="#EEF4FA" stroke-width="1.3" stroke-dasharray="2 4" opacity="0.35"/>
-      <path d="M 325,190 Q 290,175 270,150" fill="none" stroke="#EEF4FA" stroke-width="1.3" stroke-dasharray="2 4" opacity="0.3"/>
-
-      <!-- own team: 3x3, near-net col at x=155 (blockers), mid col 115, back col 75 -->
-      <g id="splashOwnDots" fill="#5C94FA" stroke="#EEF4FA" stroke-width="1.4">
-        <circle cx="155" cy="65" r="10"/><circle cx="155" cy="140" r="10"/><circle cx="155" cy="215" r="10"/>
-        <circle cx="115" cy="65" r="10"/><circle cx="115" cy="140" r="10"/><circle cx="115" cy="215" r="10"/>
-        <circle cx="75" cy="65" r="10"/><circle cx="75" cy="140" r="10"/><circle cx="75" cy="215" r="10"/>
-      </g>
-      <!-- blocking hands at the net, on the two front players nearest the play -->
-      <g fill="#EEF4FA" opacity="0.92">
-        <rect x="147" y="47" width="9" height="7" rx="1.5"/><rect x="159" y="47" width="9" height="7" rx="1.5"/>
-        <rect x="147" y="122" width="9" height="7" rx="1.5"/><rect x="159" y="122" width="9" height="7" rx="1.5"/>
+      <!-- coverage fans, blue (defending) side -->
+      <g fill="#5C94FA" opacity="0.16">
+        <path d="M 397,45 L 355,58 A 55 55 0 0 1 358,10 Z"/>
+        <path d="M 358,163 L 320,155 A 42 42 0 0 1 335,120 Z"/>
+        <path d="M 403,267 L 355,255 A 58 58 0 0 1 375,215 Z"/>
+        <path d="M 578,30 L 495,45 A 92 92 0 0 1 500,-15 Z"/>
+        <path d="M 586,154 L 495,150 A 92 92 0 0 1 500,105 Z"/>
+        <path d="M 570,277 L 490,260 A 92 92 0 0 1 512,222 Z"/>
       </g>
 
-      <!-- opponent team: mirrored 3x3, near-net col at x=245, mid 285, back 325 -->
+      <!-- movement / read lines -->
+      <path d="M 500,-6 L 578,30" fill="none" stroke="#EEF4FA" stroke-width="1.2" stroke-dasharray="2 4" opacity="0.3"/>
+      <path d="M 500,152 L 586,154" fill="none" stroke="#EEF4FA" stroke-width="1.2" stroke-dasharray="2 4" opacity="0.3"/>
+      <path d="M 505,230 L 570,277" fill="none" stroke="#EEF4FA" stroke-width="1.2" stroke-dasharray="2 4" opacity="0.3"/>
+      <path d="M 397,45 Q 420,90 403,150" fill="none" stroke="#EEF4FA" stroke-width="1.2" stroke-dasharray="2 4" opacity="0.28"/>
+      <path d="M 358,163 Q 385,210 403,240" fill="none" stroke="#EEF4FA" stroke-width="1.2" stroke-dasharray="2 4" opacity="0.28"/>
+
+      <!-- ball trajectory: dug up through the setter, then attacked back over -->
+      <path d="M 403,267 Q 470,235 513,45" fill="none" stroke="#F2B705" stroke-width="2" stroke-dasharray="2 5" opacity="0.9"/>
+      <circle cx="403" cy="267" r="6" fill="#F2B705" opacity="0.9"/>
+      <circle cx="257" cy="23" r="15" fill="none" stroke="#F2B705" stroke-width="1.6" opacity="0.85"/>
+
+      <!-- red team (attacking side), scattered tactical positions -->
       <g id="splashOppDots" fill="#EC6060" stroke="#EEF4FA" stroke-width="1.4">
-        <circle cx="245" cy="65" r="10"/><circle cx="245" cy="140" r="10"/><circle cx="245" cy="215" r="10"/>
-        <circle cx="285" cy="65" r="10"/><circle cx="285" cy="140" r="10"/><circle cx="285" cy="215" r="10"/>
-        <circle cx="325" cy="65" r="10"/><circle cx="325" cy="140" r="10"/><circle cx="325" cy="215" r="10"/>
+        <circle cx="257" cy="23" r="10"/>
+        <circle cx="270" cy="73" r="10"/>
+        <circle cx="217" cy="112" r="10"/>
+        <circle cx="145" cy="97" r="10"/>
+        <circle cx="238" cy="176" r="10"/>
+        <circle cx="160" cy="203" r="10"/>
+        <circle cx="219" cy="29" r="10"/>
+        <circle cx="289" cy="164" r="10"/>
+        <circle cx="245" cy="240" r="10"/>
       </g>
+      <text x="257" y="27" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#EEF4FA">3</text>
 
-      <text x="155" y="69" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#08101E">3</text>
-      <text x="115" y="144" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#08101E">6</text>
-      <text x="245" y="144" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#EEF4FA">2</text>
+      <!-- blue team (defending side), each with an active marker ring -->
+      <g id="splashOwnDots" fill="#5C94FA" stroke="#EEF4FA" stroke-width="1.4">
+        <circle cx="324" cy="20" r="10"/>
+        <circle cx="326" cy="49" r="10"/>
+        <circle cx="326" cy="80" r="10"/>
+        <circle cx="397" cy="45" r="10"/>
+        <circle cx="358" cy="163" r="10"/>
+        <circle cx="403" cy="267" r="10"/>
+        <circle cx="578" cy="30" r="10"/>
+        <circle cx="586" cy="154" r="10"/>
+        <circle cx="570" cy="277" r="10"/>
+      </g>
+      <g fill="none" stroke="#F2B705" stroke-width="1.6" opacity="0.85">
+        <circle cx="324" cy="20" r="14"/><circle cx="326" cy="49" r="14"/><circle cx="326" cy="80" r="14"/>
+        <circle cx="397" cy="45" r="14"/><circle cx="358" cy="163" r="14"/><circle cx="403" cy="267" r="14"/>
+        <circle cx="578" cy="30" r="14"/><circle cx="586" cy="154" r="14"/><circle cx="570" cy="277" r="14"/>
+      </g>
+      <text x="326" y="53" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#08101E">6</text>
+      <text x="358" y="167" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#08101E">5</text>
     </svg>
     <div class="splash-kicker"><span>—</span> 9 v 9 VOLLEYBALL · TACTICAL SIMULATION <span>—</span></div>
     <h1 class="splash-title">경기분석<br>전술 시뮬레이터</h1>
@@ -3334,7 +3350,7 @@
         const label = document.createElementNS(svgNS,'text');
         label.setAttribute('x', x+cw/2); label.setAttribute('y', y+rowH/2+4);
         label.setAttribute('text-anchor','middle');
-        label.setAttribute('font-size', '9');
+        label.setAttribute('font-size', '7');
         label.setAttribute('fill', isSel ? '#241b02' : 'var(--text-dim)');
         label.style.pointerEvents = 'none';
         label.textContent = text;
