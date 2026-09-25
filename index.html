@@ -849,8 +849,19 @@
       <div class="video-analysis-bottom">
         <div class="card">
           <h2>그래프</h2>
-          <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 우리 팀이 점수를 딴 요인과 잃은 요인을 비교해요.</div>
-          <div id="factorChart"></div>
+          <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 실전 피드백에 쓸 수 있는 지표들을 여러 각도로 보여드려요.</div>
+          <div class="seg" id="graphTabSeg" style="margin-top:8px;">
+            <button data-tab="summary" class="active">요약</button>
+            <button data-tab="factor">요인별</button>
+            <button data-tab="player">선수별</button>
+            <button data-tab="zone">위치별</button>
+            <button data-tab="trend">추세</button>
+          </div>
+          <div id="graphSummary"></div>
+          <div id="factorChart" style="display:none;"></div>
+          <div id="playerChart" style="display:none;"></div>
+          <div id="zoneChart" style="display:none;"></div>
+          <div id="trendChart" style="display:none;"></div>
         </div>
         <div class="card">
           <h2>종합 분석</h2>
@@ -3472,7 +3483,7 @@
         row.appendChild(playerTag);
       }
       const del = document.createElement('span'); del.className='x'; del.textContent='✕';
-      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); renderFactorChart(); renderAutoAnalysis(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
       row.appendChild(del);
       list.appendChild(row);
     });
@@ -3481,7 +3492,7 @@
   document.getElementById('btnRecordMoment').addEventListener('click', ()=>{
     records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, zone: selectedZone, player: selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null});
     renderRecords();
-    renderFactorChart();
+    renderAllGraphs();
     renderAutoAnalysis();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
@@ -3522,7 +3533,7 @@
     }
     renderRecords();
     renderTally();
-    renderFactorChart();
+    renderAllGraphs();
     renderAutoAnalysis();
     if(btn) flashBtn(btn);
     if(window.scheduleAutoSave) window.scheduleAutoSave();
@@ -3580,6 +3591,21 @@
     return {scoreCounts, lossCounts};
   }
 
+  function barsHTML(title, entries, color){
+    if(!entries.length) return '';
+    const max = Math.max(...entries.map(e=>e[1]));
+    const rows = entries.map(([label,n])=>`
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;">
+        <div style="flex:0 0 90px; font-size:11.5px; color:var(--text-dim); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${label}</div>
+        <div style="flex:1; background:var(--panel-2); border-radius:4px; overflow:hidden; height:16px;">
+          <div style="width:${Math.max(6,(n/max*100)).toFixed(0)}%; background:${color}; height:100%;"></div>
+        </div>
+        <div style="flex:0 0 30px; font-size:11.5px; color:var(--text);">${n}회</div>
+      </div>
+    `).join('');
+    return `<div style="margin-bottom:14px;"><div class="field-label" style="margin-top:0;">${title}</div>${rows}</div>`;
+  }
+
   function renderFactorChart(){
     const el = document.getElementById('factorChart');
     const {scoreCounts, lossCounts} = computeFactorCounts();
@@ -3589,22 +3615,138 @@
       el.innerHTML = '<span class="field-note" style="margin:0;">아직 기록이 없어요. 빠른 기록 배너로 기록을 쌓으면 그래프가 나타나요.</span>';
       return;
     }
-    function barsHTML(title, entries, color){
-      if(!entries.length) return '';
-      const max = Math.max(...entries.map(e=>e[1]));
-      const rows = entries.map(([label,n])=>`
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;">
-          <div style="flex:0 0 90px; font-size:11.5px; color:var(--text-dim); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${label}</div>
-          <div style="flex:1; background:var(--panel-2); border-radius:4px; overflow:hidden; height:16px;">
-            <div style="width:${Math.max(6,(n/max*100)).toFixed(0)}%; background:${color}; height:100%;"></div>
-          </div>
-          <div style="flex:0 0 30px; font-size:11.5px; color:var(--text);">${n}회</div>
-        </div>
-      `).join('');
-      return `<div style="margin-bottom:14px;"><div class="field-label" style="margin-top:0;">${title}</div>${rows}</div>`;
-    }
     el.innerHTML = barsHTML('🟢 득점 요인 TOP', scoreEntries, 'var(--own)') + barsHTML('🔴 실점 요인 TOP', lossEntries, 'var(--opp)');
   }
+
+  function allEntries(){
+    // flattens every logged entry across all records, each tagged with its parent record's zone/player/time
+    const out = [];
+    records.forEach(r=>{
+      const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
+      entries.forEach(e=>out.push({...e, zone:r.zone, player:r.player, time:r.time}));
+    });
+    return out;
+  }
+
+  function renderGraphSummary(){
+    const el = document.getElementById('graphSummary');
+    const entries = allEntries().filter(e=>e.category);
+    if(!entries.length){
+      el.innerHTML = '<span class="field-note" style="margin:0;">아직 기록이 없어요. 빠른 기록 배너로 기록을 쌓으면 요약이 나타나요.</span>';
+      return;
+    }
+    const scoreN = entries.filter(e=>e.category==='득점').length;
+    const oppN = entries.filter(e=>e.category==='상대공격').length;
+    const missN = entries.filter(e=>e.category==='미스').length;
+    const lossN = oppN + missN;
+    const total = scoreN + lossN;
+    const winRate = total ? Math.round(scoreN/total*100) : 0;
+    const ownErrorShare = lossN ? Math.round(missN/lossN*100) : 0;
+    const serveScoreN = entries.filter(e=>e.category==='득점' && e.optionLabel==='서브').length;
+    const serveMissN = entries.filter(e=>e.category==='미스' && e.optionLabel==='서브').length;
+    const serveTotal = serveScoreN + serveMissN;
+    const serveRate = serveTotal ? Math.round(serveScoreN/serveTotal*100) : null;
+    const cards = [
+      ['총 득점', scoreN+'회', 'var(--own)'],
+      ['총 실점', lossN+'회', 'var(--opp)'],
+      ['득점률', winRate+'%', 'var(--accent-text)'],
+      ['실점 중 우리 실수 비중', ownErrorShare+'%', 'var(--opp)'],
+      ['서브 득점률', serveRate===null ? '기록 없음' : serveRate+'%', 'var(--own)'],
+      ['상대 공격에 의한 실점', oppN+'회', 'var(--opp)'],
+    ];
+    el.innerHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;">` +
+      cards.map(([label,val,color])=>`
+        <div style="background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px;">
+          <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px;">${label}</div>
+          <div style="font-size:19px; font-weight:800; color:${color};">${val}</div>
+        </div>
+      `).join('') + `</div>`;
+  }
+
+  function renderPlayerChart(){
+    const el = document.getElementById('playerChart');
+    const entries = allEntries().filter(e=>e.player);
+    if(!entries.length){
+      el.innerHTML = '<span class="field-note" style="margin:0;">선수를 지정해서 기록하면 선수별 지표가 여기 나타나요.</span>';
+      return;
+    }
+    const scoreCounts = {}, lossCounts = {};
+    entries.forEach(e=>{
+      const label = e.player.label;
+      if(e.category==='득점') scoreCounts[label] = (scoreCounts[label]||0)+1;
+      else if(e.category==='상대공격' || e.category==='미스') lossCounts[label] = (lossCounts[label]||0)+1;
+    });
+    const scoreEntries = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]);
+    const lossEntries = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]);
+    el.innerHTML = barsHTML('🟢 선수별 득점 관여', scoreEntries, 'var(--own)') + barsHTML('🔴 선수별 실점 관여', lossEntries, 'var(--opp)');
+  }
+
+  function renderZoneChart(){
+    const el = document.getElementById('zoneChart');
+    const entries = allEntries().filter(e=>e.zone);
+    if(!entries.length){
+      el.innerHTML = '<span class="field-note" style="margin:0;">득실 위치를 찍어서 기록하면 위치별 지표가 여기 나타나요.</span>';
+      return;
+    }
+    const scoreCounts = {}, lossCounts = {};
+    entries.forEach(e=>{
+      const label = ZONE_LABELS[e.zone.row][e.zone.col];
+      if(e.category==='득점') scoreCounts[label] = (scoreCounts[label]||0)+1;
+      else if(e.category==='상대공격' || e.category==='미스') lossCounts[label] = (lossCounts[label]||0)+1;
+    });
+    const scoreEntries = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]);
+    const lossEntries = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]);
+    el.innerHTML = barsHTML('🟢 득점이 많았던 위치', scoreEntries, 'var(--own)') + barsHTML('🔴 실점이 많았던 위치', lossEntries, 'var(--opp)');
+  }
+
+  function renderTrendChart(){
+    const el = document.getElementById('trendChart');
+    const entries = allEntries().filter(e=>e.category && (e.category==='득점' || e.category==='상대공격' || e.category==='미스')).sort((a,b)=>a.time-b.time);
+    if(entries.length < 2){
+      el.innerHTML = '<span class="field-note" style="margin:0;">기록이 몇 개 더 쌓이면 시간 흐름에 따른 점수 차 추세가 나타나요.</span>';
+      return;
+    }
+    let running = 0;
+    const points = [{t:0, v:0}];
+    entries.forEach(e=>{
+      running += (e.category==='득점') ? 1 : -1;
+      points.push({t:e.time, v:running});
+    });
+    const W=520, H=140, pad=28;
+    const maxT = Math.max(...points.map(p=>p.t), 1);
+    const maxAbsV = Math.max(...points.map(p=>Math.abs(p.v)), 1);
+    const xOf = t => pad + (t/maxT)*(W-pad*2);
+    const yOf = v => H/2 - (v/maxAbsV)*(H/2-pad*0.4);
+    const pathD = points.map((p,i)=>`${i===0?'M':'L'} ${xOf(p.t).toFixed(1)},${yOf(p.v).toFixed(1)}`).join(' ');
+    const finalUp = points[points.length-1].v >= 0;
+    el.innerHTML = `
+      <div class="field-note" style="margin-top:0;">시간 흐름에 따른 누적 점수 차예요 (득점 +1, 실점 -1). 선이 올라갈수록 우리 팀이 앞서고 있었다는 뜻이에요.</div>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%; display:block; margin-top:6px;">
+        <line x1="${pad}" y1="${H/2}" x2="${W-pad}" y2="${H/2}" stroke="var(--border)" stroke-width="1"/>
+        <path d="${pathD}" fill="none" stroke="${finalUp?'var(--own)':'var(--opp)'}" stroke-width="2.2"/>
+      </svg>
+      <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-dim);">
+        <span>경기 시작</span><span>최종 점수 차: ${points[points.length-1].v>0?'+':''}${points[points.length-1].v}</span>
+      </div>`;
+  }
+
+  function renderAllGraphs(){
+    renderGraphSummary();
+    renderFactorChart();
+    renderPlayerChart();
+    renderZoneChart();
+    renderTrendChart();
+  }
+
+  document.querySelectorAll('#graphTabSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#graphTabSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      ['summary','factor','player','zone','trend'].forEach(tab=>{
+        document.getElementById({summary:'graphSummary',factor:'factorChart',player:'playerChart',zone:'zoneChart',trend:'trendChart'}[tab]).style.display = (tab===btn.dataset.tab) ? '' : 'none';
+      });
+    });
+  });
 
   function renderAutoAnalysis(){
     const el = document.getElementById('autoAnalysis');
@@ -3685,7 +3827,7 @@
       } else {
         hint.style.display = 'none';
       }
-      renderRecords(); renderTally(); renderFactorChart(); renderAutoAnalysis();
+      renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
       lastPickedMatchFolder = f;
       if(window.scheduleAutoSave) window.scheduleAutoSave();
     }
@@ -3770,7 +3912,7 @@
     }
     renderRecords();
     renderTally();
-    renderFactorChart();
+    renderAllGraphs();
     renderAutoAnalysis();
   };
 
@@ -3778,7 +3920,7 @@
   renderVideoPlayerSelect();
   renderRecords();
   renderTally();
-  renderFactorChart();
+  renderAllGraphs();
   renderAutoAnalysis();
   renderMatchFolderSelect();
 
