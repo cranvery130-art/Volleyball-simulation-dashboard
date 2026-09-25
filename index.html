@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>9인제 배구 수비 전술 시뮬레이터</title>
+<title>9인제 배구 경기분석 전술 시뮬레이터</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -374,23 +374,47 @@
         <line x1="192" y1="250" x2="208" y2="250"/>
       </g>
       <rect x="40" y="30" width="320" height="220" fill="none" stroke="#EEF4FA" stroke-width="1" opacity="0.18"/>
-      <line x1="120" y1="30" x2="120" y2="250" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="3 4" opacity="0.12"/>
-      <line x1="280" y1="30" x2="280" y2="250" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="3 4" opacity="0.12"/>
-      <path d="M 128,100 Q 165,75 172,90" fill="none" stroke="#F2B705" stroke-width="2" stroke-dasharray="2 5" opacity="0.85"/>
-      <path d="M 78,205 Q 150,175 228,190" fill="none" stroke="#EEF4FA" stroke-width="1.5" stroke-dasharray="2 5" opacity="0.4"/>
+      <line x1="115" y1="30" x2="115" y2="250" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="3 4" opacity="0.12"/>
+      <line x1="285" y1="30" x2="285" y2="250" stroke="#EEF4FA" stroke-width="1" stroke-dasharray="3 4" opacity="0.12"/>
+
+      <!-- defensive coverage fans, own back-row players reading the attack -->
+      <g fill="#5C94FA" opacity="0.14">
+        <path d="M 75,215 L 130,195 A 62 62 0 0 1 150,240 Z"/>
+        <path d="M 75,140 L 135,120 A 65 65 0 0 1 145,168 Z"/>
+      </g>
+
+      <!-- ball trajectory: opponent attack crossing the net, met by the block -->
+      <path d="M 245,140 Q 210,95 172,90" fill="none" stroke="#F2B705" stroke-width="2" stroke-dasharray="2 5" opacity="0.9"/>
+      <circle cx="172" cy="90" r="9" fill="none" stroke="#F2B705" stroke-width="1.4" opacity="0.75"/>
+      <circle cx="172" cy="90" r="14" fill="none" stroke="#F2B705" stroke-width="1" opacity="0.4"/>
+
+      <!-- movement trails: players rotating into position -->
+      <path d="M 75,140 Q 115,150 130,138" fill="none" stroke="#EEF4FA" stroke-width="1.3" stroke-dasharray="2 4" opacity="0.35"/>
+      <path d="M 115,215 Q 140,205 152,192" fill="none" stroke="#EEF4FA" stroke-width="1.3" stroke-dasharray="2 4" opacity="0.35"/>
+      <path d="M 325,190 Q 290,175 270,150" fill="none" stroke="#EEF4FA" stroke-width="1.3" stroke-dasharray="2 4" opacity="0.3"/>
+
+      <!-- own team: 3x3, near-net col at x=155 (blockers), mid col 115, back col 75 -->
       <g id="splashOwnDots" fill="#5C94FA" stroke="#EEF4FA" stroke-width="1.4">
-        <circle cx="78" cy="64" r="11"/><circle cx="107" cy="86" r="11"/>
-        <circle cx="128" cy="100" r="11"/><circle cx="78" cy="132" r="11"/>
-        <circle cx="97" cy="163" r="11"/><circle cx="72" cy="205" r="11"/>
+        <circle cx="155" cy="65" r="10"/><circle cx="155" cy="140" r="10"/><circle cx="155" cy="215" r="10"/>
+        <circle cx="115" cy="65" r="10"/><circle cx="115" cy="140" r="10"/><circle cx="115" cy="215" r="10"/>
+        <circle cx="75" cy="65" r="10"/><circle cx="75" cy="140" r="10"/><circle cx="75" cy="215" r="10"/>
       </g>
+      <!-- blocking hands at the net, on the two front players nearest the play -->
+      <g fill="#EEF4FA" opacity="0.92">
+        <rect x="147" y="47" width="9" height="7" rx="1.5"/><rect x="159" y="47" width="9" height="7" rx="1.5"/>
+        <rect x="147" y="122" width="9" height="7" rx="1.5"/><rect x="159" y="122" width="9" height="7" rx="1.5"/>
+      </g>
+
+      <!-- opponent team: mirrored 3x3, near-net col at x=245, mid 285, back 325 -->
       <g id="splashOppDots" fill="#EC6060" stroke="#EEF4FA" stroke-width="1.4">
-        <circle cx="188" cy="68" r="11"/><circle cx="216" cy="86" r="11"/>
-        <circle cx="172" cy="90" r="11"/><circle cx="240" cy="126" r="11"/>
-        <circle cx="228" cy="190" r="11"/><circle cx="216" cy="209" r="11"/>
+        <circle cx="245" cy="65" r="10"/><circle cx="245" cy="140" r="10"/><circle cx="245" cy="215" r="10"/>
+        <circle cx="285" cy="65" r="10"/><circle cx="285" cy="140" r="10"/><circle cx="285" cy="215" r="10"/>
+        <circle cx="325" cy="65" r="10"/><circle cx="325" cy="140" r="10"/><circle cx="325" cy="215" r="10"/>
       </g>
-      <text x="128" y="104" text-anchor="middle" font-family="monospace" font-weight="700" font-size="10" fill="#08101E">3</text>
-      <text x="97" y="167" text-anchor="middle" font-family="monospace" font-weight="700" font-size="10" fill="#08101E">6</text>
-      <text x="172" y="94" text-anchor="middle" font-family="monospace" font-weight="700" font-size="10" fill="#08101E">2</text>
+
+      <text x="155" y="69" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#08101E">3</text>
+      <text x="115" y="144" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#08101E">6</text>
+      <text x="245" y="144" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#EEF4FA">2</text>
     </svg>
     <div class="splash-kicker"><span>—</span> 9 v 9 VOLLEYBALL · TACTICAL SIMULATION <span>—</span></div>
     <h1 class="splash-title">경기분석<br>전술 시뮬레이터</h1>
@@ -416,7 +440,7 @@
 
 <div id="loginOverlay">
   <div class="login-card">
-    <h1>9인제 배구 수비 전술 시뮬레이터</h1>
+    <h1>9인제 배구 경기분석 전술 시뮬레이터</h1>
     <p class="login-sub">코드를 만들거나, 공유받은 코드로 입장하세요.</p>
     <div id="storageWarning" class="note-box" style="display:none;"></div>
     <div id="autoRejoinStatus" class="login-status" style="display:none;"></div>
@@ -454,7 +478,7 @@
 <div id="introModal" class="modal-overlay" style="display:none;">
   <div class="modal-card">
     <button class="modal-close" id="btnCloseIntro">✕</button>
-    <h2>9인제 배구 수비 전술 시뮬레이터 소개</h2>
+    <h2>9인제 배구 경기분석 전술 시뮬레이터 소개</h2>
     <div class="modal-body">
       <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
       <ul>
@@ -520,7 +544,7 @@
 
 
   <div class="topbar">
-    <h1>9인제 배구 수비 전술 시뮬레이터</h1>
+    <h1>9인제 배구 경기분석 전술 시뮬레이터</h1>
     <span class="sub">공격 유형·블로킹 인원에 따라 대형이 어떻게 바뀌는지 살펴보고, 직접 대형·동선·그림자를 만들어 시뮬레이션할 수 있어요</span>
   </div>
 
@@ -1789,34 +1813,29 @@
 
     if(isOur(scenario)){
       Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
-        const el=oppEls[id]; const base=CUSTOM_OPP_BASE[id];
-        el.body.setAttribute('cx',base[0]); el.body.setAttribute('cy',base[1]);
-        el.ring.setAttribute('cx',base[0]); el.ring.setAttribute('cy',base[1]); el.ring.style.opacity=0;
-        el.dring.style.opacity=0; el.sring.style.opacity=0;
-        el.hand1.style.opacity=0; el.hand2.style.opacity=0;
-        const dp=toDisplay(base); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
-      });
-      (f.oppBlockerIds||[]).forEach(id=>{
         const el=oppEls[id];
-        let pos;
-        if(editMode){
-          pos = CUSTOM_OPP_BASE[id];
-        } else if(f.fakeOppTargets && f.fakeOppTargets[id]){
-          // same react-to-decoy-then-correct sequence as our own blockers get, mirrored for the opponent
-          const fakeT = f.fakeOppTargets[id], trueT = f.targets[id];
-          const peak = OUR_ATTACKS[scenario].phase.hit;
-          const reactEnd = peak*0.6, correctEnd = peak*0.95;
-          if(progress<=reactEnd){ pos = lerpPt(CUSTOM_OPP_BASE[id], fakeT, easeInOut(progress/reactEnd)); }
-          else if(progress<=correctEnd){ pos = lerpPt(fakeT, trueT, easeInOut((progress-reactEnd)/(correctEnd-reactEnd))); }
-          else { pos = trueT; }
-        } else {
-          const moveT = easeInOut(clip((progress*currentDuration)/DEFENSE_MOVE_MS, 0, 1));
-          pos = lerpPt(CUSTOM_OPP_BASE[id], f.targets[id], moveT);
+        let pos = CUSTOM_OPP_BASE[id]; // default: stays at rest unless the user has dragged this one
+        if(f.targets[id]){
+          if(editMode){
+            pos = CUSTOM_OPP_BASE[id];
+          } else if(f.fakeOppTargets && f.fakeOppTargets[id]){
+            // same react-to-decoy-then-correct sequence as our own blockers get, mirrored for the opponent
+            const fakeT = f.fakeOppTargets[id], trueT = f.targets[id];
+            const peak = OUR_ATTACKS[scenario].phase.hit;
+            const reactEnd = peak*0.6, correctEnd = peak*0.95;
+            if(progress<=reactEnd){ pos = lerpPt(CUSTOM_OPP_BASE[id], fakeT, easeInOut(progress/reactEnd)); }
+            else if(progress<=correctEnd){ pos = lerpPt(fakeT, trueT, easeInOut((progress-reactEnd)/(correctEnd-reactEnd))); }
+            else { pos = trueT; }
+          } else {
+            const moveT = easeInOut(clip((progress*currentDuration)/DEFENSE_MOVE_MS, 0, 1));
+            pos = lerpPt(CUSTOM_OPP_BASE[id], f.targets[id], moveT);
+          }
         }
-        const jump = editMode ? 0 : -10*Math.sin(Math.PI*Math.min(progress/0.5,1));
+        const jump = (editMode || !f.targets[id]) ? 0 : -10*Math.sin(Math.PI*Math.min(progress/0.5,1));
         const x=pos[0], y=pos[1]+jump;
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
-        el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
+        el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y); el.ring.style.opacity=0;
+        el.dring.style.opacity=0; el.sring.style.opacity=0;
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
         const inOppZone = pos[1]>=345 && pos[1]<=382;
         if(inOppZone){
@@ -3315,7 +3334,7 @@
         const label = document.createElementNS(svgNS,'text');
         label.setAttribute('x', x+cw/2); label.setAttribute('y', y+rowH/2+4);
         label.setAttribute('text-anchor','middle');
-        label.setAttribute('font-size', text.length>3 ? '9' : '11');
+        label.setAttribute('font-size', '9');
         label.setAttribute('fill', isSel ? '#241b02' : 'var(--text-dim)');
         label.style.pointerEvents = 'none';
         label.textContent = text;
