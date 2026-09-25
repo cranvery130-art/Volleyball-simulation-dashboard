@@ -504,7 +504,7 @@
         <li><b>전술 시뮬레이션</b> — 상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 애니메이션으로 재생해요. 포지션 배정, 시작 위치·도착 위치 편집, 대형을 폴더별로 저장해서 필요할 때 바로 불러올 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b> — 블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b> — 공이 떨어지는 자리를 그 팀이 네트를 보는 기준으로 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
-        <li><b>경기 영상 분석</b> — 실제 경기 영상을 올려 재생하면서 코트 위에 직접 그림을 그리고, 득점·미스 상황을 버튼 한 번으로 시간과 함께 기록해요. 기록은 엑셀·구글시트용 파일로 내보낼 수 있어요.</li>
+        <li><b>경기 영상 분석</b> — 실제 경기 영상을 올려 재생하면서, 관련 선수와 코트 위 득실 위치를 함께 찍어 득점·미스 상황을 시간과 함께 기록해요. 기록을 바탕으로 요약·선수별·위치별·추세 등 여러 그래프와 자동 통계 요약이 만들어지고, 기록·그래프·분석·코치 의견을 폴더 하나로 저장해 나중에 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
         <li><b>팀과 함께 사용</b> — 코드를 만들어 팀원들과 공유하면, 같은 대형·기록을 함께 보고 수정할 수 있어요. 구성원별로 포지션·대회 출전 여부를 관리하고, 누가 언제 무엇을 수정했는지 활동 로그로 확인할 수 있어요.</li>
       </ul>
       <p><b>코드는 이렇게 만들어요.</b></p>
@@ -544,9 +544,9 @@
       </div>
       <div class="feature-guide-block">
         <h3>🎥 경기 영상 분석</h3>
-        <p><b>이렇게 써요</b> — 영상을 올리고 재생하면서 오른쪽(또는 아래) 대시보드에 도트·화살표를 그려요. "빠른 기록 배너"에서 상황에 맞는 버튼을 누르면 지금 시간과 그린 내용이 함께 기록돼요. 영상이 멈춘 채로 여러 버튼을 누르면 하나의 기록으로 합쳐져요.</p>
-        <p><b>특징</b> — 기록 목록에서 시간을 누르면 그 지점으로 이동하며 그때 그려둔 대시보드가 복원돼요. 기록은 엑셀 또는 구글시트용 파일로 내보낼 수 있어요.</p>
-        <p><b>안 되는 것</b> — 영상 파일 자체는 서버에 저장되지 않아요(그림·기록만 저장돼요). 그래서 다른 기기나 나중에 다시 들어오면 같은 영상 파일을 직접 다시 첨부해야 해요.</p>
+        <p><b>이렇게 써요</b> — 영상을 올려 재생하면서, 오른쪽 "빠른 기록 배너"에서 포지션·이름을 적어둔 명단 중 관련 선수를 고르고, 코트 9칸 중 득실 위치를 찍은 뒤, 상황에 맞는 항목을 골라 "기록"을 누르세요. 영상이 멈춘 채로 여러 개를 누르면 하나의 기록으로 합쳐져요.</p>
+        <p><b>특징</b> — "그래프"에서 요약·요인별·선수별·위치별·추세 5개 탭으로 데이터를 볼 수 있고, "종합 분석"은 그 기록을 바탕으로 자동 통계 요약을 만들어줘요(실제 총평은 코치님이 그 아래에 직접 적는 칸이에요). 기록·그래프·종합분석·코치 의견을 통째로 "매치 분석 저장"에서 폴더로 저장했다가 나중에 그대로 불러올 수 있고, 그 폴더만 조회 전용 링크로 공유할 수도 있어요.</p>
+        <p><b>안 되는 것</b> — 영상 파일 자체는 서버에 저장되지 않아요(기록·분석만 저장돼요). 그래서 다른 기기나 나중에 다시 들어오면 같은 영상 파일을 직접 다시 첨부해야 해요. "종합 분석"은 실제 AI가 아니라 기록을 집계한 통계이며, 조회 전용 링크로 들어온 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</p>
       </div>
       <div class="feature-guide-block">
         <h3>⚙️ 설정</h3>
@@ -947,6 +947,7 @@
   <div class="card" style="margin-top:16px;">
     <h2>매치 분석 저장</h2>
     <div class="field-note" style="margin-top:0;">기록·그래프·종합분석을 통째로 폴더에 저장해두면 나중에 그대로 다시 불러올 수 있어요. 영상 파일 자체는 저장되지 않지만, 그 영상의 파일명은 함께 남아서 어느 경기였는지 알 수 있어요.</div>
+    <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
     <div style="display:flex; align-items:flex-end; gap:8px;">
       <div style="flex:1;">
         <label class="field-label" style="margin-top:0;">저장할 이름</label>
@@ -961,6 +962,12 @@
           <option value="">불러올 폴더 선택...</option>
         </select>
         <button class="btn" id="btnDeleteMatchFolder" title="선택한 폴더 삭제" style="flex:none; padding:9px 10px;">🗑️</button>
+        <button class="btn" id="btnShareFolderLink" title="선택한 폴더를 조회 전용 링크로 공유">🔗 조회 링크 공유</button>
+      </div>
+      <div class="field-note" style="margin-top:4px;">먼저 위 목록에서 폴더를 하나 불러온 뒤 누르면, 그 폴더만 조회 전용으로 볼 수 있는 링크가 만들어져요.</div>
+      <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
+        <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
+        <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
       </div>
     </div>
   </div>
@@ -2681,6 +2688,7 @@
 
   // ---------- login / room code system ----------
   let roomCode = null, accessLevel = null;
+  window.getRoomCode = () => roomCode; // exposed so the separate video-analysis script can build shareable links
   const LAST_CODE_KEY = 'vt:last-code'; // moved up front: tryAutoRejoin (below) runs immediately and needs this synchronously
   const storageOk = !!firebaseDb;
   function errText(err){
@@ -3787,6 +3795,7 @@
   // ---------- match analysis folders (records + chart data + coach notes, saved together) ----------
   let matchFolders = []; // {name, savedAt, videoName, records, coachNotes}
   let lastPickedMatchFolder = null;
+  let readOnlyFolderView = false;
   function renderMatchFolderSelect(){
     const sel = document.getElementById('matchFolderSelect');
     sel.innerHTML = '<option value="">불러올 폴더 선택...</option>';
@@ -3795,6 +3804,30 @@
       opt.textContent = `${f.name}${f.videoName ? ' — '+f.videoName : ''}`;
       sel.appendChild(opt);
     });
+  }
+  function loadMatchFolder(f){
+    records = JSON.parse(JSON.stringify(f.records||[]));
+    document.getElementById('coachNotes').value = f.coachNotes||'';
+    currentVideoName = f.videoName||'';
+    const hint = document.getElementById('lastVideoHint');
+    if(currentVideoName){
+      hint.textContent = `"${f.name}" 폴더의 영상: ${currentVideoName} — 같은 파일을 다시 첨부하면 이어서 볼 수 있어요.`;
+      hint.style.display = 'block';
+    } else {
+      hint.style.display = 'none';
+    }
+    renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
+    lastPickedMatchFolder = f;
+  }
+  function setReadOnlyFolderView(on){
+    readOnlyFolderView = on;
+    document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
+    ['oppRecordBtn','scoreRecordBtn','missRecordBtn','btnRecordMoment','btnClearZone',
+     'videoPlayerSelect','oppSelect','scoreSelect','missSelect','coachNotes',
+     'btnSaveMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','videoFileInput'
+    ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
+    document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input').forEach(el=>el.disabled=on);
+    document.querySelectorAll('#zoneCells rect').forEach(el=>el.style.cursor = on ? 'default' : 'pointer');
   }
   document.getElementById('btnSaveMatchFolder').addEventListener('click', ()=>{
     const nameInput = document.getElementById('matchSaveName');
@@ -3817,18 +3850,7 @@
     if(idx==='') return;
     const f = matchFolders[Number(idx)];
     if(f){
-      records = JSON.parse(JSON.stringify(f.records||[]));
-      document.getElementById('coachNotes').value = f.coachNotes||'';
-      currentVideoName = f.videoName||'';
-      const hint = document.getElementById('lastVideoHint');
-      if(currentVideoName){
-        hint.textContent = `"${f.name}" 폴더의 영상: ${currentVideoName} — 같은 파일을 다시 첨부하면 이어서 볼 수 있어요.`;
-        hint.style.display = 'block';
-      } else {
-        hint.style.display = 'none';
-      }
-      renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
-      lastPickedMatchFolder = f;
+      loadMatchFolder(f);
       if(window.scheduleAutoSave) window.scheduleAutoSave();
     }
     e.target.value = '';
@@ -3845,6 +3867,39 @@
     renderMatchFolderSelect();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
+  document.getElementById('btnShareFolderLink').addEventListener('click', ()=>{
+    if(!lastPickedMatchFolder){
+      alert('먼저 위 목록에서 공유할 폴더를 선택(불러오기)해주세요.');
+      return;
+    }
+    const code = window.getRoomCode ? window.getRoomCode() : null;
+    if(!code){
+      alert('코드로 입장한 방에서만 조회 링크를 만들 수 있어요.');
+      return;
+    }
+    const url = location.origin + location.pathname + '?code=' + encodeURIComponent(code) + '&folder=' + encodeURIComponent(lastPickedMatchFolder.name);
+    document.getElementById('shareFolderLinkInput').value = url;
+    document.getElementById('shareFolderLinkBox').style.display = 'block';
+  });
+  document.getElementById('btnCopyFolderLink').addEventListener('click', ()=>{
+    const inp = document.getElementById('shareFolderLinkInput');
+    inp.select();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(inp.value).catch(()=>{});
+    }
+  });
+  // a shared folder link (?folder=...) opens directly into that folder, read-only, once room data has loaded
+  function tryOpenSharedFolder(){
+    const params = new URLSearchParams(location.search);
+    const folderName = params.get('folder');
+    if(!folderName) return;
+    const f = matchFolders.find(mf=>mf.name===folderName);
+    if(!f) return;
+    const videoTabBtn = document.querySelector('#appModeSeg button[data-appmode="video"]');
+    if(videoTabBtn) videoTabBtn.click();
+    loadMatchFolder(f);
+    setReadOnlyFolderView(true);
+  }
 
   function csvEscape(v){
     const s = String(v==null?'':v);
@@ -3914,6 +3969,7 @@
     renderTally();
     renderAllGraphs();
     renderAutoAnalysis();
+    tryOpenSharedFolder();
   };
 
   renderVideoRosterGrid();
