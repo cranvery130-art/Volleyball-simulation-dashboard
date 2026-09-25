@@ -3310,7 +3310,7 @@
         const label = document.createElementNS(svgNS,'text');
         label.setAttribute('x', x+cw/2); label.setAttribute('y', y+rowH/2+4);
         label.setAttribute('text-anchor','middle');
-        label.setAttribute('font-size', text.length>3 ? '9' : '11');
+        label.setAttribute('font-size', '9');
         label.setAttribute('fill', isSel ? '#241b02' : 'var(--text-dim)');
         label.style.pointerEvents = 'none';
         label.textContent = text;
