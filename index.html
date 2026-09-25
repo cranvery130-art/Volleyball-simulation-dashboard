@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>9인제 배구 수비 전술 시뮬레이터</title>
+<title>9인제 배구 경기분석 전술 시뮬레이터</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -416,7 +416,7 @@
 
 <div id="loginOverlay">
   <div class="login-card">
-    <h1>9인제 배구 수비 전술 시뮬레이터</h1>
+    <h1>9인제 배구 경기분석 전술 시뮬레이터</h1>
     <p class="login-sub">코드를 만들거나, 공유받은 코드로 입장하세요.</p>
     <div id="storageWarning" class="note-box" style="display:none;"></div>
     <div id="autoRejoinStatus" class="login-status" style="display:none;"></div>
@@ -454,7 +454,7 @@
 <div id="introModal" class="modal-overlay" style="display:none;">
   <div class="modal-card">
     <button class="modal-close" id="btnCloseIntro">✕</button>
-    <h2>9인제 배구 수비 전술 시뮬레이터 소개</h2>
+    <h2>9인제 배구 경기분석 전술 시뮬레이터 소개</h2>
     <div class="modal-body">
       <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
       <ul>
@@ -520,7 +520,7 @@
 
 
   <div class="topbar">
-    <h1>9인제 배구 수비 전술 시뮬레이터</h1>
+    <h1>9인제 배구 경기분석 전술 시뮬레이터</h1>
     <span class="sub">공격 유형·블로킹 인원에 따라 대형이 어떻게 바뀌는지 살펴보고, 직접 대형·동선·그림자를 만들어 시뮬레이션할 수 있어요</span>
   </div>
 
@@ -1789,34 +1789,29 @@
 
     if(isOur(scenario)){
       Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
-        const el=oppEls[id]; const base=CUSTOM_OPP_BASE[id];
-        el.body.setAttribute('cx',base[0]); el.body.setAttribute('cy',base[1]);
-        el.ring.setAttribute('cx',base[0]); el.ring.setAttribute('cy',base[1]); el.ring.style.opacity=0;
-        el.dring.style.opacity=0; el.sring.style.opacity=0;
-        el.hand1.style.opacity=0; el.hand2.style.opacity=0;
-        const dp=toDisplay(base); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
-      });
-      (f.oppBlockerIds||[]).forEach(id=>{
         const el=oppEls[id];
-        let pos;
-        if(editMode){
-          pos = CUSTOM_OPP_BASE[id];
-        } else if(f.fakeOppTargets && f.fakeOppTargets[id]){
-          // same react-to-decoy-then-correct sequence as our own blockers get, mirrored for the opponent
-          const fakeT = f.fakeOppTargets[id], trueT = f.targets[id];
-          const peak = OUR_ATTACKS[scenario].phase.hit;
-          const reactEnd = peak*0.6, correctEnd = peak*0.95;
-          if(progress<=reactEnd){ pos = lerpPt(CUSTOM_OPP_BASE[id], fakeT, easeInOut(progress/reactEnd)); }
-          else if(progress<=correctEnd){ pos = lerpPt(fakeT, trueT, easeInOut((progress-reactEnd)/(correctEnd-reactEnd))); }
-          else { pos = trueT; }
-        } else {
-          const moveT = easeInOut(clip((progress*currentDuration)/DEFENSE_MOVE_MS, 0, 1));
-          pos = lerpPt(CUSTOM_OPP_BASE[id], f.targets[id], moveT);
+        let pos = CUSTOM_OPP_BASE[id]; // default: stays at rest unless the user has dragged this one
+        if(f.targets[id]){
+          if(editMode){
+            pos = CUSTOM_OPP_BASE[id];
+          } else if(f.fakeOppTargets && f.fakeOppTargets[id]){
+            // same react-to-decoy-then-correct sequence as our own blockers get, mirrored for the opponent
+            const fakeT = f.fakeOppTargets[id], trueT = f.targets[id];
+            const peak = OUR_ATTACKS[scenario].phase.hit;
+            const reactEnd = peak*0.6, correctEnd = peak*0.95;
+            if(progress<=reactEnd){ pos = lerpPt(CUSTOM_OPP_BASE[id], fakeT, easeInOut(progress/reactEnd)); }
+            else if(progress<=correctEnd){ pos = lerpPt(fakeT, trueT, easeInOut((progress-reactEnd)/(correctEnd-reactEnd))); }
+            else { pos = trueT; }
+          } else {
+            const moveT = easeInOut(clip((progress*currentDuration)/DEFENSE_MOVE_MS, 0, 1));
+            pos = lerpPt(CUSTOM_OPP_BASE[id], f.targets[id], moveT);
+          }
         }
-        const jump = editMode ? 0 : -10*Math.sin(Math.PI*Math.min(progress/0.5,1));
+        const jump = (editMode || !f.targets[id]) ? 0 : -10*Math.sin(Math.PI*Math.min(progress/0.5,1));
         const x=pos[0], y=pos[1]+jump;
         el.body.setAttribute('cx',x); el.body.setAttribute('cy',y);
-        el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y);
+        el.ring.setAttribute('cx',x); el.ring.setAttribute('cy',y); el.ring.style.opacity=0;
+        el.dring.style.opacity=0; el.sring.style.opacity=0;
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
         const inOppZone = pos[1]>=345 && pos[1]<=382;
         if(inOppZone){
