@@ -109,6 +109,9 @@
   .pos-grid{ display:flex; flex-wrap:wrap; gap:6px; }
   .pos-item{ display:flex; align-items:center; gap:5px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:4px 6px; }
   .pos-item .num{ width:18px; height:18px; border-radius:50%; background:var(--own); color:#fff; font-family:'Barlow Condensed'; font-weight:700; font-size:11px; display:flex; align-items:center; justify-content:center; flex:none; }
+  #videoRosterGrid .pos-item{ flex-direction:column; align-items:stretch; gap:4px; width:88px; }
+  #videoRosterGrid .pos-item .row1{ display:flex; align-items:center; gap:5px; }
+  #videoRosterGrid .pos-item input{ font-size:11px; padding:3px 5px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-family:inherit; width:100%; }
   .pos-item.opp .num{ background:var(--opp); }
   .pos-item select{ width:auto; min-width:78px; padding:4px 5px; font-size:11px; border-radius:6px; }
 
@@ -863,12 +866,22 @@
         <h2>빠른 기록 배너</h2>
         <div class="field-note" style="margin-top:0;">고르고 "기록"을 누르면 지금 시간이 저장돼요. 멈춘 채로 여러 개 누르면 하나로 합쳐져요.</div>
 
-        <label class="field-label" style="margin-top:0;">득실 위치 (선택, 대략적인 지점)</label>
+        <label class="field-label" style="margin-top:0;">포지션 배정 명단 (득실에 관련된 선수 표시용)</label>
+        <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면, 득실 기록에 어떤 선수가 관련됐는지 함께 남길 수 있어요.</div>
+        <div class="pos-grid" id="videoRosterGrid"></div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <span class="field-label" style="margin-top:0; flex:none;">관련 선수</span>
+          <select id="videoPlayerSelect" style="flex:1;">
+            <option value="">선택 안 함</option>
+          </select>
+        </div>
+
+        <label class="field-label">득실 위치 (선택, 대략적인 지점)</label>
         <div class="field-note" style="margin-top:0; margin-bottom:8px;">공이 어느 자리 근처에서 오갔는지 클릭해두면, 다음 기록에 그 위치가 함께 붙어요.</div>
         <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap;">
           <div id="zonePickerWrap" style="flex:1 1 320px; min-width:220px;">
-            <svg id="zonePickerSvg" viewBox="0 0 220 132" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
-              <rect x="0" y="14" width="220" height="118" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
+            <svg id="zonePickerSvg" viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
+              <rect x="0" y="14" width="220" height="56" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
               <rect x="0" y="8" width="220" height="10" fill="var(--accent)"/>
               <g id="zoneCells"></g>
             </svg>
@@ -1038,6 +1051,7 @@
     QA:'속공수(A)', QBACKA:'속공수(빽A)', FRONTSLIDE:'앞차', BACKSLIDE:'빽차',
     LBACK:'레프트백', CBACK:'센터백', RBACK:'라이트백'
   };
+  window.POS_LABEL = POS_LABEL; // exposed so the separate video-analysis script's roster grid can reuse the same position labels
   const QUICK_TYPES = ['QA','QBACKA','FRONTSLIDE','BACKSLIDE'];
   const WING_TYPES = ['LEFT','RIGHT'];
   const BACK_TYPES = ['LBACK','CBACK','RBACK']; // libero-equivalent: never block
@@ -3322,13 +3336,63 @@
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
 
+  // ---------- position roster (reuses the tactics-tab position format, plus an optional name) ----------
+  let videoRoster = {}; // {1:{position:'',name:''}, ..., 9:{...}}
+  for(let i=1;i<=9;i++) videoRoster[i] = {position:'', name:''};
+  function renderVideoRosterGrid(){
+    const grid = document.getElementById('videoRosterGrid');
+    grid.innerHTML = '';
+    for(let i=1;i<=9;i++){
+      const entry = videoRoster[i];
+      const item = document.createElement('div'); item.className='pos-item';
+      const row1 = document.createElement('div'); row1.className='row1';
+      const num = document.createElement('span'); num.className='num'; num.textContent=i;
+      const sel = document.createElement('select');
+      const blankOpt = document.createElement('option'); blankOpt.value=''; blankOpt.textContent='포지션';
+      sel.appendChild(blankOpt);
+      Object.keys(window.POS_LABEL).forEach(code=>{
+        const opt=document.createElement('option'); opt.value=code; opt.textContent=window.POS_LABEL[code];
+        if(entry.position===code) opt.selected=true;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', ()=>{ entry.position=sel.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      row1.appendChild(num); row1.appendChild(sel);
+      const nameInput = document.createElement('input'); nameInput.type='text'; nameInput.placeholder='이름(선택)'; nameInput.value=entry.name;
+      nameInput.addEventListener('input', ()=>{ entry.name=nameInput.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      item.appendChild(row1); item.appendChild(nameInput);
+      grid.appendChild(item);
+    }
+  }
+  function rosterLabel(i){
+    const entry = videoRoster[i];
+    const posText = entry.position && window.POS_LABEL[entry.position] ? window.POS_LABEL[entry.position] : '';
+    const parts = [i+'번'];
+    if(posText) parts.push(posText);
+    if(entry.name) parts.push(entry.name);
+    return parts.join(' · ');
+  }
+  function renderVideoPlayerSelect(){
+    const sel = document.getElementById('videoPlayerSelect');
+    const prevValue = sel.value;
+    sel.innerHTML = '<option value="">선택 안 함</option>';
+    for(let i=1;i<=9;i++){
+      const opt = document.createElement('option'); opt.value=i; opt.textContent = rosterLabel(i);
+      sel.appendChild(opt);
+    }
+    sel.value = prevValue;
+  }
+  let selectedPlayer = null; // roster id (1-9) or null
+  document.getElementById('videoPlayerSelect').addEventListener('change', e=>{
+    selectedPlayer = e.target.value ? Number(e.target.value) : null;
+  });
+
   // ---------- 득실 위치 zone picker (5-column attack row + 3-column back row, net at top) ----------
   let selectedZone = null; // {row,col} or null
   const ZONE_LABELS = [['레프트','앞차','A','백차(백A)','라이트'],['레프트백','센터백','라이트백']];
   function renderZonePicker(){
     const g = document.getElementById('zoneCells');
     g.innerHTML = '';
-    const rowH = (132-24)/2;
+    const rowH = (70-24)/2;
     ZONE_LABELS.forEach((rowLabels, row)=>{
       const cw = 220/rowLabels.length, y = 24 + row*rowH;
       rowLabels.forEach((text, col)=>{
@@ -3396,8 +3460,13 @@
       row.appendChild(timeBtn); row.appendChild(input);
       if(rec.zone){
         const zoneTag = document.createElement('span'); zoneTag.className='btn'; zoneTag.style.cursor='default'; zoneTag.style.fontSize='11px';
-        zoneTag.textContent = '📍'+ZONE_LABELS[rec.zone.row][rec.zone.col];
+        zoneTag.textContent = '📍위치: '+ZONE_LABELS[rec.zone.row][rec.zone.col];
         row.appendChild(zoneTag);
+      }
+      if(rec.player){
+        const playerTag = document.createElement('span'); playerTag.className='btn'; playerTag.style.cursor='default'; playerTag.style.fontSize='11px';
+        playerTag.textContent = '👤'+rec.player.label;
+        row.appendChild(playerTag);
       }
       const del = document.createElement('span'); del.className='x'; del.textContent='✕';
       del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); renderFactorChart(); renderAutoAnalysis(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
@@ -3407,7 +3476,7 @@
   }
 
   document.getElementById('btnRecordMoment').addEventListener('click', ()=>{
-    records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, zone: selectedZone});
+    records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, zone: selectedZone, player: selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null});
     renderRecords();
     renderFactorChart();
     renderAutoAnalysis();
@@ -3429,10 +3498,12 @@
 
   function logEvent(category, label, btn){
     const now = video.currentTime||0;
+    const playerSnapshot = selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null;
     if(video.paused && activeMergeRecord && Math.abs(activeMergeRecord.time - now) < 0.05){
       activeMergeRecord.entries.push({category, optionLabel:label});
       activeMergeRecord.label = activeMergeRecord.entries.map(e=>`[${e.category}] ${e.optionLabel}`).join(' + ');
       if(selectedZone && !activeMergeRecord.zone) activeMergeRecord.zone = selectedZone;
+      if(playerSnapshot && !activeMergeRecord.player) activeMergeRecord.player = playerSnapshot;
     } else {
       const rec = {
         time: now,
@@ -3440,7 +3511,8 @@
         label: `[${category}] ${label}`,
         category, optionLabel: label,
         videoName: currentVideoName,
-        zone: selectedZone
+        zone: selectedZone,
+        player: playerSnapshot
       };
       records.push(rec);
       if(video.paused) activeMergeRecord = rec;
@@ -3673,7 +3745,8 @@
     records,
     currentVideoName,
     coachNotes: document.getElementById('coachNotes').value,
-    matchFolders
+    matchFolders,
+    videoRoster
   });
   window.applyVideoAnalysisState = (vs) => {
     if(!vs) return;
@@ -3682,6 +3755,11 @@
     document.getElementById('coachNotes').value = vs.coachNotes || '';
     matchFolders = vs.matchFolders || [];
     renderMatchFolderSelect();
+    if(vs.videoRoster){
+      for(let i=1;i<=9;i++){ if(vs.videoRoster[i]) videoRoster[i] = vs.videoRoster[i]; }
+    }
+    renderVideoRosterGrid();
+    renderVideoPlayerSelect();
     if(currentVideoName && !video.src){
       const hint = document.getElementById('lastVideoHint');
       hint.textContent = `마지막에 사용한 영상: ${currentVideoName} — 같은 파일을 다시 첨부하면 이어서 볼 수 있어요.`;
@@ -3693,6 +3771,8 @@
     renderAutoAnalysis();
   };
 
+  renderVideoRosterGrid();
+  renderVideoPlayerSelect();
   renderRecords();
   renderTally();
   renderFactorChart();
