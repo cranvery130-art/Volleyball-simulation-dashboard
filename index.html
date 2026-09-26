@@ -109,8 +109,9 @@
   .pos-grid{ display:flex; flex-wrap:wrap; gap:6px; }
   .pos-item{ display:flex; align-items:center; gap:5px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:4px 6px; }
   .pos-item .num{ width:18px; height:18px; border-radius:50%; background:var(--own); color:#fff; font-family:'Barlow Condensed'; font-weight:700; font-size:11px; display:flex; align-items:center; justify-content:center; flex:none; }
-  #videoRosterGrid .pos-item{ flex-direction:column; align-items:stretch; gap:4px; width:88px; }
+  #videoRosterGrid .pos-item{ flex-direction:column; align-items:stretch; gap:4px; width:120px; }
   #videoRosterGrid .pos-item .row1{ display:flex; align-items:center; gap:5px; }
+  #videoRosterGrid .pos-item select{ flex:1; min-width:0; width:auto; font-size:10.5px; padding:4px 3px; }
   #videoRosterGrid .pos-item input{ font-size:11px; padding:3px 5px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-family:inherit; width:100%; }
   .pos-item.opp .num{ background:var(--opp); }
   .pos-item select{ width:auto; min-width:78px; padding:4px 5px; font-size:11px; border-radius:6px; }
@@ -947,7 +948,10 @@
   <div class="card" style="margin-top:16px;">
     <h2>매치 분석 저장</h2>
     <div class="field-note" style="margin-top:0;">기록·그래프·종합분석을 통째로 폴더에 저장해두면 나중에 그대로 다시 불러올 수 있어요. 영상 파일 자체는 저장되지 않지만, 그 영상의 파일명은 함께 남아서 어느 경기였는지 알 수 있어요.</div>
-    <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
+    <div id="readOnlyFolderBanner" class="note-box" style="display:none;">
+      지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.
+      <button class="btn" id="btnExitReadOnly" style="margin-left:8px; padding:4px 10px; font-size:11.5px;">조회 전용 모드 나가기</button>
+    </div>
     <div style="display:flex; align-items:flex-end; gap:8px;">
       <div style="flex:1;">
         <label class="field-label" style="margin-top:0;">저장할 이름</label>
@@ -3479,19 +3483,32 @@
       const input = document.createElement('input'); input.type='text'; input.value=rec.label;
       input.placeholder='메모';
       input.addEventListener('input', ()=>{ rec.label = input.value; if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      input.disabled = readOnlyFolderView;
       row.appendChild(timeBtn); row.appendChild(input);
       if(rec.zone){
         const zoneTag = document.createElement('span'); zoneTag.className='btn'; zoneTag.style.cursor='default'; zoneTag.style.fontSize='11px';
         zoneTag.textContent = '📍위치: '+ZONE_LABELS[rec.zone.row][rec.zone.col];
         row.appendChild(zoneTag);
       }
-      if(rec.player){
-        const playerTag = document.createElement('span'); playerTag.className='btn'; playerTag.style.cursor='default'; playerTag.style.fontSize='11px';
-        playerTag.textContent = '👤'+rec.player.label;
-        row.appendChild(playerTag);
+      const playerSel = document.createElement('select'); playerSel.style.fontSize='11px'; playerSel.title='관련 선수 수정';
+      const blankPlayerOpt = document.createElement('option'); blankPlayerOpt.value=''; blankPlayerOpt.textContent='👤 선수 지정';
+      playerSel.appendChild(blankPlayerOpt);
+      for(let i=1;i<=9;i++){
+        const opt = document.createElement('option'); opt.value=i; opt.textContent='👤 '+rosterLabel(i);
+        if(rec.player && rec.player.id===i) opt.selected=true;
+        playerSel.appendChild(opt);
       }
+      playerSel.addEventListener('change', ()=>{
+        const v = playerSel.value;
+        rec.player = v ? {id:Number(v), label:rosterLabel(Number(v))} : null;
+        renderAllGraphs();
+        if(window.scheduleAutoSave) window.scheduleAutoSave();
+      });
+      playerSel.disabled = readOnlyFolderView;
+      row.appendChild(playerSel);
       const del = document.createElement('span'); del.className='x'; del.textContent='✕';
-      del.addEventListener('click', ()=>{ records.splice(idx,1); renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      del.addEventListener('click', ()=>{ if(readOnlyFolderView) return; records.splice(idx,1); renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      if(readOnlyFolderView) del.style.display='none';
       row.appendChild(del);
       list.appendChild(row);
     });
@@ -3827,8 +3844,15 @@
      'btnSaveMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
     document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input').forEach(el=>el.disabled=on);
+    document.querySelectorAll('#recordList select, #recordList input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#zoneCells rect').forEach(el=>el.style.cursor = on ? 'default' : 'pointer');
   }
+  document.getElementById('btnExitReadOnly').addEventListener('click', ()=>{
+    setReadOnlyFolderView(false);
+    // also strip the folder param so a future room sync (or reload) doesn't re-lock it
+    const url = location.origin + location.pathname + (window.getRoomCode && window.getRoomCode() ? '?code='+encodeURIComponent(window.getRoomCode()) : '');
+    if(typeof history!=='undefined' && history.replaceState) history.replaceState(null, '', url);
+  });
   document.getElementById('btnSaveMatchFolder').addEventListener('click', ()=>{
     const nameInput = document.getElementById('matchSaveName');
     let name = nameInput.value.trim();
@@ -3889,12 +3913,15 @@
     }
   });
   // a shared folder link (?folder=...) opens directly into that folder, read-only, once room data has loaded
+  let sharedFolderOpened = false; // guards against re-locking into read-only on every subsequent room sync
   function tryOpenSharedFolder(){
+    if(sharedFolderOpened) return;
     const params = new URLSearchParams(location.search);
     const folderName = params.get('folder');
     if(!folderName) return;
     const f = matchFolders.find(mf=>mf.name===folderName);
     if(!f) return;
+    sharedFolderOpened = true;
     const videoTabBtn = document.querySelector('#appModeSeg button[data-appmode="video"]');
     if(videoTabBtn) videoTabBtn.click();
     loadMatchFolder(f);
