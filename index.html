@@ -948,10 +948,7 @@
   <div class="card" style="margin-top:16px;">
     <h2>매치 분석 저장</h2>
     <div class="field-note" style="margin-top:0;">기록·그래프·종합분석을 통째로 폴더에 저장해두면 나중에 그대로 다시 불러올 수 있어요. 영상 파일 자체는 저장되지 않지만, 그 영상의 파일명은 함께 남아서 어느 경기였는지 알 수 있어요.</div>
-    <div id="readOnlyFolderBanner" class="note-box" style="display:none;">
-      지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.
-      <button class="btn" id="btnExitReadOnly" style="margin-left:8px; padding:4px 10px; font-size:11.5px;">조회 전용 모드 나가기</button>
-    </div>
+    <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
     <div style="display:flex; align-items:flex-end; gap:8px;">
       <div style="flex:1;">
         <label class="field-label" style="margin-top:0;">저장할 이름</label>
@@ -3382,9 +3379,11 @@
         sel.appendChild(opt);
       });
       sel.addEventListener('change', ()=>{ entry.position=sel.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      sel.disabled = readOnlyFolderView;
       row1.appendChild(num); row1.appendChild(sel);
       const nameInput = document.createElement('input'); nameInput.type='text'; nameInput.placeholder='이름(선택)'; nameInput.value=entry.name;
       nameInput.addEventListener('input', ()=>{ entry.name=nameInput.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      nameInput.disabled = readOnlyFolderView;
       item.appendChild(row1); item.appendChild(nameInput);
       grid.appendChild(item);
     }
@@ -3433,6 +3432,7 @@
         rect.setAttribute('stroke-width','1.5');
         rect.style.cursor = 'pointer';
         rect.addEventListener('click', ()=>{
+          if(readOnlyFolderView) return;
           selectedZone = {row,col};
           renderZonePicker();
           updateZoneStatus();
@@ -3847,12 +3847,6 @@
     document.querySelectorAll('#recordList select, #recordList input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#zoneCells rect').forEach(el=>el.style.cursor = on ? 'default' : 'pointer');
   }
-  document.getElementById('btnExitReadOnly').addEventListener('click', ()=>{
-    setReadOnlyFolderView(false);
-    // also strip the folder param so a future room sync (or reload) doesn't re-lock it
-    const url = location.origin + location.pathname + (window.getRoomCode && window.getRoomCode() ? '?code='+encodeURIComponent(window.getRoomCode()) : '');
-    if(typeof history!=='undefined' && history.replaceState) history.replaceState(null, '', url);
-  });
   document.getElementById('btnSaveMatchFolder').addEventListener('click', ()=>{
     const nameInput = document.getElementById('matchSaveName');
     let name = nameInput.value.trim();
