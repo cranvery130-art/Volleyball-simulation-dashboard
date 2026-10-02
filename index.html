@@ -11,7 +11,7 @@
   :root{
     --bg:#0A0B0D; --panel:#121418; --panel-2:#1A1D22; --border:#22252B; --border-2:#30343C;
     --text:#F4F5F7; --text-dim:#A3A8B1; --muted:#6B717B;
-    --accent:#FF9570; --accent-2:#9E86FF; --accent-text:#FFAC8D; --accent-soft:rgba(255,149,112,0.14);
+    --accent:#FF9570; --accent-2:#9E86FF; --accent-text:#FFAC8D; --accent-soft:rgba(255,149,112,0.14); --on-accent:#0A0B0D;
     --grad:linear-gradient(100deg,#FF9570 0%,#E48AC4 50%,#9E86FF 100%);
     --own:#9DB4FF; --opp:#FF6B81; --ball:#F3DFA2; --decoy:#8890A0;
     --good:#3DD68C; --good-soft:rgba(61,214,140,0.13); --warn:#FFD23F; --warn-soft:rgba(255,210,63,0.12);
@@ -21,11 +21,27 @@
     --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
     --radius-lg:18px; --radius-md:10px;
   }
+  /* 또렷한 모드 (readability mode) — same layout/components, higher-contrast light palette.
+     Toggled by adding/removing this class on <body>; every component below reads colors
+     through CSS variables, so this single override repaints the whole app. */
+  body.bright-mode{
+    --bg:#F3F5F8; --panel:#FFFFFF; --panel-2:#EDF0F5; --border:#D7DCE4; --border-2:#C2C9D4;
+    --text:#13161C; --text-dim:#454C58; --muted:#5B6372;
+    --accent:#E05A2B; --accent-2:#6E4FC9; --accent-text:#C8491E; --accent-soft:rgba(224,90,43,0.12);
+    --grad:linear-gradient(100deg,#E05A2B 0%,#C94E86 50%,#6E4FC9 100%);
+    --good:#148A52; --good-soft:rgba(20,138,82,0.12); --warn:#B5790A; --warn-soft:rgba(181,121,10,0.12);
+    --shadow:0 16px 40px rgba(20,22,28,0.14);
+  }
+  #btnThemeToggle{
+    padding:9px 16px; font-size:13.5px; font-weight:600; white-space:nowrap;
+    background:transparent; border:1px solid var(--border-2); color:var(--text-dim); border-radius:10px;
+  }
+  #btnThemeToggle:hover{ color:var(--text); border-color:var(--text-dim); }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{ background:var(--bg); color:var(--text); font-family:var(--body); min-height:100vh; -webkit-font-smoothing:antialiased; }
   h1,h2,h3{ font-family:var(--display); font-weight:700; margin:0; }
-  ::selection{ background:var(--accent); color:var(--bg); }
+  ::selection{ background:var(--accent); color:var(--on-accent); }
   .app{ max-width:1400px; margin:0 auto; padding:20px clamp(14px,2.2vw,40px) 40px; }
   .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media (max-width:820px){ .row-2{ grid-template-columns:1fr; } }
@@ -72,7 +88,7 @@
 
   .seg{ display:flex; flex-wrap:wrap; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:3px; gap:2px; }
   .seg button{ flex:1; min-width:44px; border:none; background:transparent; color:var(--text-dim); padding:8px 2px; border-radius:999px; font-size:11.5px; font-weight:600; font-family:inherit; cursor:pointer; }
-  .seg button.active{ background:var(--grad); color:var(--bg); }
+  .seg button.active{ background:var(--grad); color:var(--on-accent); }
 
   .check-row{ display:flex; align-items:center; gap:9px; padding:7px 2px; font-size:13.5px; color:var(--text); }
   .check-row input{ width:16px; height:16px; accent-color:var(--accent); cursor:pointer; }
@@ -117,7 +133,7 @@
   .pos-team-label .dot{ width:9px; height:9px; border-radius:50%; }
   .pos-grid{ display:flex; flex-wrap:wrap; gap:6px; }
   .pos-item{ display:flex; align-items:center; gap:5px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:4px 6px; }
-  .pos-item .num{ width:18px; height:18px; border-radius:50%; background:var(--own); color:var(--bg); font-family:var(--display); font-weight:800; font-size:11px; display:flex; align-items:center; justify-content:center; flex:none; }
+  .pos-item .num{ width:18px; height:18px; border-radius:50%; background:var(--own); color:var(--on-accent); font-family:var(--display); font-weight:800; font-size:11px; display:flex; align-items:center; justify-content:center; flex:none; }
   #videoRosterGrid .pos-item{ flex-direction:column; align-items:stretch; gap:4px; width:120px; }
   #videoRosterGrid .pos-item .row1{ display:flex; align-items:center; gap:5px; }
   #videoRosterGrid .pos-item select{ flex:1; min-width:0; width:auto; font-size:10.5px; padding:4px 3px; }
@@ -128,7 +144,7 @@
   .btn{ border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); padding:9px 10px; border-radius:var(--radius-md); font-size:12.5px; font-weight:600; font-family:inherit; cursor:pointer; transition:border-color 0.2s ease, transform 0.15s ease; }
   .btn:hover{ border-color:var(--text-dim); }
   .btn:disabled{ opacity:0.4; cursor:not-allowed; filter:none; }
-  .btn.primary{ background:var(--grad); color:var(--bg); border-color:transparent; font-weight:700; }
+  .btn.primary{ background:var(--grad); color:var(--on-accent); border-color:transparent; font-weight:700; }
   .btn.primary:hover{ filter:brightness(1.08); }
   .btn-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
   .btn-row .btn{ flex:1; min-width:140px; }
@@ -145,7 +161,7 @@
   .nine-zone-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:4px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px; }
   .nine-zone-grid button{ padding:12px 4px; font-size:11.5px; font-weight:600; border:1px solid var(--border); background:var(--panel); color:var(--text-dim); border-radius:6px; cursor:pointer; font-family:inherit; }
   .nine-zone-grid button:hover{ background:rgba(255,255,255,0.04); color:var(--text); }
-  .nine-zone-grid button.active{ background:var(--grad); color:var(--bg); border-color:transparent; }
+  .nine-zone-grid button.active{ background:var(--grad); color:var(--on-accent); border-color:transparent; }
   .zone-check-row label{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-dim); cursor:pointer; white-space:nowrap; }
   .zone-check-row input{ width:14px; height:14px; margin:0; }
   .folder-action{ cursor:pointer; font-size:12px; padding:2px 5px; border-radius:6px; flex:none; opacity:0.75; }
@@ -167,7 +183,7 @@
   .stage-top .scenario-title:hover{ color:var(--accent-text); }
   .stage-top .scenario-title::after{ content:'▾'; font-size:12px; color:var(--text-dim); }
   .stage-top .scenario-title:hover::after{ color:var(--accent-text); }
-  .stage-top .scenario-tag{ font-family:var(--mono); font-size:11px; letter-spacing:0.04em; color:var(--bg); background:var(--grad); padding:3px 10px; border-radius:999px; font-weight:700; }
+  .stage-top .scenario-tag{ font-family:var(--mono); font-size:11px; letter-spacing:0.04em; color:var(--on-accent); background:var(--grad); padding:3px 10px; border-radius:999px; font-weight:700; }
 
   .court-wrap{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; }
   svg#court{ width:100%; height:auto; display:block; touch-action:none; }
@@ -196,7 +212,7 @@
 
   .timeline-bar{ display:flex; align-items:center; gap:12px; margin-top:12px; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:12px 16px; }
   .tl-btn{ width:38px; height:38px; border-radius:50%; border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center; font-size:14px; }
-  .tl-btn.primary{ background:var(--grad); color:var(--bg); border-color:transparent; }
+  .tl-btn.primary{ background:var(--grad); color:var(--on-accent); border-color:transparent; }
   .tl-btn:hover{ filter:brightness(1.12); }
   .tl-btn:disabled{ opacity:0.4; cursor:not-allowed; }
   .tl-mid{ flex:1; min-width:0; }
@@ -274,7 +290,7 @@
     border-radius:10px; cursor:pointer; transition:background 0.2s ease, color 0.2s ease;
   }
   .tab-bar button:not(.active):hover{ background:rgba(255,255,255,0.05); color:var(--text); }
-  .tab-bar button.active{ background:var(--grad); color:var(--bg); }
+  .tab-bar button.active{ background:var(--grad); color:var(--on-accent); }
   #btnLocalExit{
     padding:9px 16px; font-size:13.5px; font-weight:600; white-space:nowrap;
     background:transparent; border:1px solid rgba(255,107,129,0.4); color:var(--opp); border-radius:10px;
@@ -296,8 +312,8 @@
   .banner-tabs{ display:flex; flex-wrap:wrap; gap:6px; max-height:92px; overflow-y:auto; overflow-x:hidden; padding-right:2px; }
   .banner-tabs button{ padding:7px 11px; font-size:12px; border-radius:8px; border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; }
   .banner-tabs button:hover{ border-color:var(--accent); }
-  .banner-tabs button.flash{ background:var(--grad); color:var(--bg); border-color:transparent; }
-  .btn.flash{ background:var(--grad); color:var(--bg); border-color:transparent; }
+  .banner-tabs button.flash{ background:var(--grad); color:var(--on-accent); border-color:transparent; }
+  .btn.flash{ background:var(--grad); color:var(--on-accent); border-color:transparent; }
   .tally-row{ font-size:12px; color:var(--text-dim); line-height:1.8; }
   .tally-row b{ color:var(--text); }
   .login-card{ width:100%; max-width:420px; background:var(--panel); border:1px solid var(--border-2); border-radius:var(--radius-lg); padding:26px 24px; box-shadow:var(--shadow); }
@@ -338,9 +354,54 @@
      바꿔주세요 (자세한 방법은 대화창 안내를 참고하세요).
      값을 바꾸지 않은 채로 두면, 코드 저장 기능은 계속 "준비 중" 상태로
      남아있고 나머지 시뮬레이터 기능은 평소처럼 그대로 작동해요.
+
+     ---------------------------------------------------------------
+     보안 참고사항 (코드를 직접 건드리지 않아도 되는 부분이에요)
+     ---------------------------------------------------------------
+     1) 아래 apiKey는 "비밀키"가 아니에요. Firebase 웹 앱의 apiKey는 원래
+        브라우저에 공개되도록 설계된 값이라, 코드에 그대로 있어도 괜찮아요
+        (Google 공식 문서에서도 이렇게 설명해요). 실제 접근 제어는 이 키를
+        숨기는 게 아니라, 아래 2)의 Firestore 보안 규칙으로 해요.
+
+     2) 이 앱은 Firebase 로그인(Auth) 없이 "코드 + 비밀번호"만으로 방을
+        여닫는 구조라서, 보안 규칙만으로 비밀번호를 완벽히 검증할 수는
+        없어요(그건 서버 쪽 로그인 기능이 있어야 가능해요). 대신 아래
+        규칙은 최소한 "이 앱이 쓰는 kv 컬렉션, vt:room:으로 시작하는
+        문서"로만 읽기·쓰기를 제한해서, 전혀 상관없는 컬렉션을 만들거나
+        무작위로 어지럽히는 걸 막아줘요. Firebase 콘솔 → Firestore
+        Database → 규칙 탭에 아래 내용을 붙여넣고 "게시"를 누르면 적용돼요
+        (현재 기본 테스트 규칙은 특정 날짜까지 전체 공개 상태일 수 있으니
+        꼭 교체해주세요):
+
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /kv/{docId} {
+              allow read: if docId.matches('vt:room:.*');
+              allow create: if docId.matches('vt:room:.*')
+                            && request.resource.data.keys().hasAll(['creatorPassword','viewPassword'])
+                            && request.resource.data.creatorPassword is string
+                            && request.resource.data.viewPassword is string;
+              allow update: if docId.matches('vt:room:.*')
+                            && request.resource.data.creatorPassword is string
+                            && request.resource.data.viewPassword is string;
+              allow delete: if docId.matches('vt:room:.*');
+            }
+            match /{document=**} { allow read, write: if false; }
+          }
+        }
+
+     3) 개인정보: 선수 이름·메모는 비밀번호로 잠긴 방 안에서만 보이지만,
+        Firestore 자체에 평문으로 저장돼요. 실명 대신 "별명/이니셜"을 쓰도록
+        안내 문구를 UI에 넣어뒀어요(아래 포지션 배정·명단 입력란 근처).
 ====================================================================== -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!-- 참고: 구글 Firebase SDK는 버전이 올라갈 때마다 파일 내용이 바뀌기 때문에
+     integrity(SRI) 해시를 고정해두면 다음 업데이트 때 오히려 로딩이 막혀버려요
+     (구글도 이 CDN에는 SRI 고정을 권장하지 않아요). 대신 버전 번호(10.12.2)를
+     코드에 명시해서 어떤 버전을 쓰는지 항상 알 수 있게 하고, crossorigin 속성을
+     붙여 오류 정보가 더 투명하게 보이도록 했어요. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" crossorigin="anonymous"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyAAbdsh333whhehTj6cQqxVuwf_2T5bcH8",
@@ -539,6 +600,7 @@
     <button data-appmode="video">🎥 경기 영상 분석</button>
     <button data-appmode="settings" id="btnModeSettings" style="display:none;">⚙️ 설정</button>
   </div>
+  <button class="btn" id="btnThemeToggle" title="어두운 화면이 잘 안 보이면 눌러보세요">☀️ 또렷한 모드</button>
   <button class="btn" id="btnLocalExit" style="display:none;">🚪 나가기</button>
 </div>
 
@@ -863,13 +925,11 @@
           <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 실전 피드백에 쓸 수 있는 지표들을 여러 각도로 보여드려요.</div>
           <div class="seg" id="graphTabSeg" style="margin-top:8px;">
             <button data-tab="summary" class="active">요약</button>
-            <button data-tab="factor">요인별</button>
             <button data-tab="player">선수별</button>
             <button data-tab="zone">위치별</button>
             <button data-tab="trend">추세</button>
           </div>
           <div id="graphSummary"></div>
-          <div id="factorChart" style="display:none;"></div>
           <div id="playerChart" style="display:none;"></div>
           <div id="zoneChart" style="display:none;"></div>
           <div id="trendChart" style="display:none;"></div>
@@ -889,7 +949,7 @@
         <div class="field-note" style="margin-top:0;">고르고 "기록"을 누르면 지금 시간이 저장돼요. 멈춘 채로 여러 개 누르면 하나로 합쳐져요.</div>
 
         <label class="field-label" style="margin-top:0;">포지션 배정 명단 (득실에 관련된 선수 표시용)</label>
-        <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면, 득실 기록에 어떤 선수가 관련됐는지 함께 남길 수 있어요.</div>
+        <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면, 득실 기록에 어떤 선수가 관련됐는지 함께 남길 수 있어요. 이 명단은 서버에 그대로 저장되니, 되도록 실명보다는 별명이나 이니셜을 적어주세요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
         <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
           <span class="field-label" style="margin-top:0; flex:none;">관련 선수</span>
@@ -898,42 +958,71 @@
           </select>
         </div>
 
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <span class="field-label" style="margin-top:0; flex:none;">세트</span>
+          <div class="seg" id="setSeg" style="flex:1;">
+            <button data-set="1" class="active">1세트</button>
+            <button data-set="2">2세트</button>
+            <button data-set="3">3세트</button>
+          </div>
+        </div>
+
         <div style="display:flex; align-items:flex-start; gap:18px; flex-wrap:wrap; margin-top:10px;">
-          <div style="flex:1 1 220px; min-width:200px;">
-            <label class="field-label" style="margin-top:0;">득실 위치 (선택, 대략적인 지점)</label>
-            <div class="field-note" style="margin-top:0; margin-bottom:6px;">클릭해두면 다음 기록에 위치가 붙어요.</div>
-            <div id="zonePickerWrap">
-              <svg id="zonePickerSvg" viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
-                <rect x="0" y="14" width="220" height="56" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
-                <rect x="0" y="8" width="220" height="10" fill="var(--accent)"/>
+          <div style="flex:1 1 220px; min-width:200px;" id="qrLocationArea">
+            <div id="zonePickerWrap" style="display:none;">
+              <label class="field-label" style="margin-top:0;">위치 (네트 인근, 선택)</label>
+              <div class="field-note" style="margin-top:0; margin-bottom:6px;">클릭해두면 다음 기록에 위치가 붙어요.</div>
+              <svg id="zonePickerSvg" viewBox="0 0 220 46" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
+                <rect x="0" y="12" width="220" height="34" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
+                <rect x="0" y="6" width="220" height="8" fill="var(--accent)"/>
                 <g id="zoneCells"></g>
               </svg>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                <button class="btn" id="btnClearZone">위치 선택 해제</button>
+                <div class="field-note" id="zonePickerStatus" style="margin-top:0;">위치를 선택하지 않았어요.</div>
+              </div>
             </div>
-            <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
-              <button class="btn" id="btnClearZone">위치 선택 해제</button>
-              <div class="field-note" id="zonePickerStatus" style="margin-top:0;">위치를 선택하지 않았어요.</div>
+            <div id="nineZoneWrap" style="display:none;">
+              <label class="field-label" style="margin-top:0;">득실 위치 (3×3 구역, 선택)</label>
+              <div class="field-note" style="margin-top:0; margin-bottom:6px;">공을 보낸/받은 쪽이 네트를 바라보는 기준으로 9칸이에요.</div>
+              <div class="nine-zone-grid" id="qrNineZone">
+                <button data-col="0" data-row="0">왼쪽 앞</button>
+                <button data-col="1" data-row="0">중앙 앞</button>
+                <button data-col="2" data-row="0">오른쪽 앞</button>
+                <button data-col="0" data-row="1">왼쪽 중간</button>
+                <button data-col="1" data-row="1">중앙</button>
+                <button data-col="2" data-row="1">오른쪽 중간</button>
+                <button data-col="0" data-row="2">왼쪽 뒤</button>
+                <button data-col="1" data-row="2">중앙 뒤</button>
+                <button data-col="2" data-row="2">오른쪽 뒤</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                <button class="btn" id="btnClearNineZone">위치 선택 해제</button>
+                <div class="field-note" id="nineZoneStatus" style="margin-top:0;">위치를 선택하지 않았어요.</div>
+              </div>
             </div>
+            <div id="noZoneNote" class="field-note" style="margin-top:0; display:none;">이 옵션은 위치 선택이 필요하지 않아요.</div>
           </div>
           <div style="flex:1 1 260px; min-width:220px;">
             <div class="quick-record-row">
-              <div class="qr-label">🔴 상대팀 득점</div>
-              <div class="qr-controls">
-                <select id="oppSelect"></select>
-                <button class="btn primary" id="oppRecordBtn">기록</button>
+              <div class="qr-label">팀</div>
+              <div class="seg" id="qrTeamSeg">
+                <button data-team="opp" class="active">🔴 상대팀</button>
+                <button data-team="our">🔵 우리팀</button>
               </div>
             </div>
             <div class="quick-record-row">
-              <div class="qr-label">🔵 우리팀 득점</div>
-              <div class="qr-controls">
-                <select id="scoreSelect"></select>
-                <button class="btn primary" id="scoreRecordBtn">기록</button>
+              <div class="qr-label">결과 유형</div>
+              <div class="seg" id="qrOutcomeSeg">
+                <button data-outcome="score" class="active">득점</button>
+                <button data-outcome="fault">범실</button>
               </div>
             </div>
             <div class="quick-record-row">
-              <div class="qr-label">🔵 우리팀 미스</div>
+              <div class="qr-label">세부 상황</div>
               <div class="qr-controls">
-                <select id="missSelect"></select>
-                <button class="btn primary" id="missRecordBtn">기록</button>
+                <select id="qrOptionSelect"></select>
+                <button class="btn primary" id="qrRecordBtn">기록</button>
               </div>
             </div>
           </div>
@@ -965,7 +1054,9 @@
         <input type="text" id="matchSaveName" class="login-input" style="margin-top:0;" placeholder="예: 9/26 vs 위드나인전">
       </div>
       <button class="btn primary" id="btnSaveMatchFolder">폴더로 저장</button>
+      <button class="btn" id="btnOverwriteMatchFolder" style="display:none;" title="지금 불러온 폴더에 현재 기록을 덮어써요">현재 폴더에 덮어쓰기</button>
     </div>
+    <div class="field-note" id="overwriteHint" style="display:none; margin-top:4px;"></div>
     <div style="margin-top:10px;">
       <label class="field-label" style="margin-top:0;">저장된 폴더 불러오기</label>
       <div style="display:flex; align-items:center; gap:6px;">
@@ -2297,7 +2388,13 @@
     if(activeAttackZoneX==null) return;
     const bandHalf = 25;
     const y0 = isOur(scenario) ? 385 : 22, y1 = isOur(scenario) ? 738 : 375;
-    const x0 = clip(activeAttackZoneX-bandHalf, 20, 380), x1 = clip(activeAttackZoneX+bandHalf, 20, 380);
+    // The "공격 위치" buttons/preview dropdown speak in the attacking team's own left/right
+    // (always from their own perspective facing the net), exactly like applyScenarioCustom()
+    // does when it actually places the attack. For an opponent scenario that means mirroring
+    // across the court's centerline before drawing, or the highlighted band ends up on the
+    // wrong physical side of the screen from the real attack.
+    const dispX = isOur(scenario) ? activeAttackZoneX : (400 - activeAttackZoneX);
+    const x0 = clip(dispX-bandHalf, 20, 380), x1 = clip(dispX+bandHalf, 20, 380);
     const rect = document.createElementNS(svgNS,'rect');
     rect.setAttribute('x', x0); rect.setAttribute('y', y0);
     rect.setAttribute('width', x1-x0); rect.setAttribute('height', y1-y0);
@@ -3204,6 +3301,26 @@
     location.href = location.pathname;
   });
 
+  // ---------- 또렷한 모드 (readability mode) ----------
+  // A straight light/dark palette swap via the body.bright-mode class (see CSS :root vs
+  // body.bright-mode custom properties). Remembered per-device so it survives reloads.
+  const BRIGHT_MODE_KEY = 'vt:bright-mode';
+  function applyBrightMode(on){
+    document.body.classList.toggle('bright-mode', !!on);
+    document.getElementById('btnThemeToggle').textContent = on ? '🌙 어두운 모드' : '☀️ 또렷한 모드';
+    document.getElementById('btnThemeToggle').title = on ? '원래의 어두운 화면으로 되돌려요' : '어두운 화면이 잘 안 보이면 눌러보세요';
+  }
+  (function initBrightMode(){
+    let saved = null;
+    try{ saved = localStorage.getItem(BRIGHT_MODE_KEY); }catch(err){}
+    applyBrightMode(saved === '1');
+  })();
+  document.getElementById('btnThemeToggle').addEventListener('click', ()=>{
+    const next = !document.body.classList.contains('bright-mode');
+    applyBrightMode(next);
+    try{ localStorage.setItem(BRIGHT_MODE_KEY, next ? '1' : '0'); }catch(err){}
+  });
+
   document.getElementById('btnFeatureGuide').addEventListener('click', ()=>{
     document.getElementById('featureGuideModal').style.display='flex';
   });
@@ -3359,14 +3476,31 @@
   const fileInput = document.getElementById('videoFileInput');
 
   let currentVideoName = '';
+  // when no video has been attached yet, records still need distinct, increasing timestamps
+  // (previously they all fell back to 0 and silently merged into a single record — see recTime()).
+  let noVideoClockStart = null;
+  function recTime(){
+    if(currentVideoName) return video.currentTime||0;
+    if(noVideoClockStart===null) noVideoClockStart = Date.now();
+    return (Date.now()-noVideoClockStart)/1000;
+  }
   fileInput.addEventListener('change', ()=>{
     const file = fileInput.files && fileInput.files[0];
     if(!file) return;
+    if(video.src && video.src.startsWith('blob:')){
+      try{ URL.revokeObjectURL(video.src); }catch(err){} // release the previous video's memory before swapping in the new one
+    }
     video.src = URL.createObjectURL(file);
     currentVideoName = file.name;
     document.getElementById('lastVideoHint').style.display = 'none';
     // note: all records are intentionally kept — switching videos doesn't erase anything.
     if(window.scheduleAutoSave) window.scheduleAutoSave();
+  });
+  // release the last video's blob memory when the page is closed/navigated away from
+  window.addEventListener('pagehide', ()=>{
+    if(video.src && video.src.startsWith('blob:')){
+      try{ URL.revokeObjectURL(video.src); }catch(err){}
+    }
   });
 
   // ---------- position roster (reuses the tactics-tab position format, plus an optional name) ----------
@@ -3421,42 +3555,51 @@
     selectedPlayer = e.target.value ? Number(e.target.value) : null;
   });
 
-  // ---------- 득실 위치 zone picker (5-column attack row + 3-column back row, net at top) ----------
+  let selectedSet = 1; // 1/2/3 — which set new records are tagged with
+  document.querySelectorAll('#setSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#setSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedSet = Number(btn.dataset.set);
+    });
+  });
+
+  // ---------- 득실 위치 zone picker: net-adjacent 5칸 (블로킹 전용) ----------
+  // ZONE_LABELS[0] is the only row now used for new selections (블로킹) — row 1 (back row)
+  // is kept only so older saved records that still carry a row:1 zone keep rendering correctly.
   let selectedZone = null; // {row,col} or null
   const ZONE_LABELS = [['레프트','앞차','A','백차(백A)','라이트'],['레프트백','센터백','라이트백']];
   function renderZonePicker(){
     const g = document.getElementById('zoneCells');
     g.innerHTML = '';
-    const rowH = (70-24)/2;
-    ZONE_LABELS.forEach((rowLabels, row)=>{
-      const cw = 220/rowLabels.length, y = 24 + row*rowH;
-      rowLabels.forEach((text, col)=>{
-        const x = col*cw;
-        const rect = document.createElementNS(svgNS,'rect');
-        rect.setAttribute('x', x+2); rect.setAttribute('y', y+2);
-        rect.setAttribute('width', cw-4); rect.setAttribute('height', rowH-4);
-        rect.setAttribute('rx', 5);
-        const isSel = selectedZone && selectedZone.row===row && selectedZone.col===col;
-        rect.setAttribute('fill', isSel ? 'var(--accent)' : 'var(--panel)');
-        rect.setAttribute('stroke', isSel ? 'var(--accent)' : 'var(--border)');
-        rect.setAttribute('stroke-width','1.5');
-        rect.style.cursor = 'pointer';
-        rect.addEventListener('click', ()=>{
-          if(readOnlyFolderView) return;
-          selectedZone = {row,col};
-          renderZonePicker();
-          updateZoneStatus();
-        });
-        g.appendChild(rect);
-        const label = document.createElementNS(svgNS,'text');
-        label.setAttribute('x', x+cw/2); label.setAttribute('y', y+rowH/2+4);
-        label.setAttribute('text-anchor','middle');
-        label.setAttribute('font-size', '7');
-        label.setAttribute('fill', isSel ? '#0A0B0D' : 'var(--text-dim)');
-        label.style.pointerEvents = 'none';
-        label.textContent = text;
-        g.appendChild(label);
+    const rowLabels = ZONE_LABELS[0];
+    const cw = 220/rowLabels.length, y = 16, rowH = 26;
+    rowLabels.forEach((text, col)=>{
+      const x = col*cw;
+      const rect = document.createElementNS(svgNS,'rect');
+      rect.setAttribute('x', x+2); rect.setAttribute('y', y+2);
+      rect.setAttribute('width', cw-4); rect.setAttribute('height', rowH-4);
+      rect.setAttribute('rx', 5);
+      const isSel = selectedZone && selectedZone.row===0 && selectedZone.col===col;
+      rect.setAttribute('fill', isSel ? 'var(--accent)' : 'var(--panel)');
+      rect.setAttribute('stroke', isSel ? 'var(--accent)' : 'var(--border)');
+      rect.setAttribute('stroke-width','1.5');
+      rect.style.cursor = 'pointer';
+      rect.addEventListener('click', ()=>{
+        if(readOnlyFolderView) return;
+        selectedZone = {row:0, col};
+        renderZonePicker();
+        updateZoneStatus();
       });
+      g.appendChild(rect);
+      const label = document.createElementNS(svgNS,'text');
+      label.setAttribute('x', x+cw/2); label.setAttribute('y', y+rowH/2+4);
+      label.setAttribute('text-anchor','middle');
+      label.setAttribute('font-size', '7');
+      label.setAttribute('fill', isSel ? '#0A0B0D' : 'var(--text-dim)');
+      label.style.pointerEvents = 'none';
+      label.textContent = text;
+      g.appendChild(label);
     });
   }
   function updateZoneStatus(){
@@ -3470,6 +3613,44 @@
   });
   renderZonePicker();
   updateZoneStatus();
+
+  // ---------- 득실 위치 zone picker: 3×3 구역 (레프트/라이트/A/백A/앞차/백차 전용) ----------
+  let selectedNineZone = null; // {col,row,label} or null
+  function updateNineZoneStatus(){
+    const el = document.getElementById('nineZoneStatus');
+    el.textContent = selectedNineZone ? `선택됨: ${selectedNineZone.label} — 다음 기록에 이 위치가 붙어요.` : '위치를 선택하지 않았어요.';
+  }
+  document.querySelectorAll('#qrNineZone button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(readOnlyFolderView) return;
+      document.querySelectorAll('#qrNineZone button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedNineZone = {col:Number(btn.dataset.col), row:Number(btn.dataset.row), label:btn.textContent};
+      updateNineZoneStatus();
+    });
+  });
+  document.getElementById('btnClearNineZone').addEventListener('click', ()=>{
+    selectedNineZone = null;
+    document.querySelectorAll('#qrNineZone button').forEach(b=>b.classList.remove('active'));
+    updateNineZoneStatus();
+  });
+  updateNineZoneStatus();
+
+  // ---------- which location-picker shows depends on the selected 세부 상황 option ----------
+  const BLOCK_LOCATION_OPTION = '블로킹'; // net-adjacent 5칸 grid
+  const NET_POSITION_OPTIONS = new Set(['레프트','라이트','A','백A','앞차','백차']); // 3×3 grid
+  function updateLocationPickerVisibility(){
+    const opt = document.getElementById('qrOptionSelect').value;
+    const zoneWrap = document.getElementById('zonePickerWrap');
+    const nineWrap = document.getElementById('nineZoneWrap');
+    const noteEl = document.getElementById('noZoneNote');
+    zoneWrap.style.display = 'none';
+    nineWrap.style.display = 'none';
+    noteEl.style.display = 'none';
+    if(opt===BLOCK_LOCATION_OPTION){ zoneWrap.style.display='block'; }
+    else if(NET_POSITION_OPTIONS.has(opt)){ nineWrap.style.display='block'; }
+    else { noteEl.style.display='block'; }
+  }
 
   // ---------- timestamped records ----------
   let records = []; // {time, label, category, optionLabel, videoName, zone}
@@ -3495,10 +3676,24 @@
       input.addEventListener('input', ()=>{ rec.label = input.value; if(window.scheduleAutoSave) window.scheduleAutoSave(); });
       input.disabled = readOnlyFolderView;
       row.appendChild(timeBtn); row.appendChild(input);
+      const setSel = document.createElement('select'); setSel.style.fontSize='11px'; setSel.style.flex='none'; setSel.title='세트 수정';
+      [1,2,3].forEach(n=>{
+        const opt = document.createElement('option'); opt.value=n; opt.textContent=n+'세트';
+        if((rec.set||1)===n) opt.selected = true;
+        setSel.appendChild(opt);
+      });
+      setSel.addEventListener('change', ()=>{ rec.set = Number(setSel.value); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      setSel.disabled = readOnlyFolderView;
+      row.appendChild(setSel);
       if(rec.zone){
         const zoneTag = document.createElement('span'); zoneTag.className='btn'; zoneTag.style.cursor='default'; zoneTag.style.fontSize='11px';
         zoneTag.textContent = '📍위치: '+ZONE_LABELS[rec.zone.row][rec.zone.col];
         row.appendChild(zoneTag);
+      }
+      if(rec.grid9){
+        const g9Tag = document.createElement('span'); g9Tag.className='btn'; g9Tag.style.cursor='default'; g9Tag.style.fontSize='11px';
+        g9Tag.textContent = '📍위치: '+rec.grid9.label;
+        row.appendChild(g9Tag);
       }
       const playerSel = document.createElement('select'); playerSel.style.fontSize='11px'; playerSel.title='관련 선수 수정';
       const blankPlayerOpt = document.createElement('option'); blankPlayerOpt.value=''; blankPlayerOpt.textContent='👤 선수 지정';
@@ -3525,17 +3720,55 @@
   }
 
   document.getElementById('btnRecordMoment').addEventListener('click', ()=>{
-    records.push({time: video.currentTime||0, label:'', category:null, optionLabel:null, videoName: currentVideoName, zone: selectedZone, player: selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null});
+    const zoneVisible = document.getElementById('zonePickerWrap').style.display!=='none';
+    const nineVisible = document.getElementById('nineZoneWrap').style.display!=='none';
+    records.push({
+      time: recTime(), label:'', category:null, optionLabel:null, videoName: currentVideoName,
+      zone: zoneVisible ? selectedZone : null,
+      grid9: nineVisible ? selectedNineZone : null,
+      player: selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null, set: selectedSet
+    });
     renderRecords();
     renderAllGraphs();
     renderAutoAnalysis();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
 
-  // ---------- quick-log banners ----------
-  const OPP_ATTACK_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리','블로킹','페인트'];
-  const OUR_SCORE_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','2단연결','3구처리','블로킹','페인트','상대서브범실'];
-  const OUR_MISS_OPTIONS = ['서브','레프트','라이트','앞차','백차','백A','A','토스','2단토스','블로킹(다이렉트)','3구처리','디그움직임','서브캐치','블로킹(빈틈)','블로킹(터치아웃)'];
+  // ---------- quick-log banner: 팀(상대팀/우리팀) × 결과 유형(득점/범실), 동일한 드롭다운 목록 ----------
+  const QR_UNIFIED_OPTIONS = ['레프트','라이트','A','백A','앞차','백차','2단연결','3구처리','서브','서브범실','토스','2단토스','블로킹','각종파울(네트터치, 아웃 등)'];
+  // (team, outcome) -> category used throughout the analytics pipeline ('상대공격'/'득점'/'미스')
+  //  - 상대팀+득점: 상대가 잘해서 득점 -> '상대공격'
+  //  - 상대팀+범실: 상대의 실수로 우리가 득점 -> '득점'
+  //  - 우리팀+득점: 우리가 잘해서 득점 -> '득점'
+  //  - 우리팀+범실: 우리의 실수로 실점 -> '미스'
+  function qrCategoryFor(team, outcome){
+    if(team==='opp') return outcome==='score' ? '상대공격' : '득점';
+    return outcome==='score' ? '득점' : '미스';
+  }
+  let qrTeam = 'opp', qrOutcome = 'score';
+  document.querySelectorAll('#qrTeamSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#qrTeamSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      qrTeam = btn.dataset.team;
+    });
+  });
+  document.querySelectorAll('#qrOutcomeSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#qrOutcomeSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      qrOutcome = btn.dataset.outcome;
+    });
+  });
+  (function buildQrOptionSelect(){
+    const sel = document.getElementById('qrOptionSelect');
+    QR_UNIFIED_OPTIONS.forEach(label=>{
+      const opt = document.createElement('option'); opt.value=label; opt.textContent=label;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', updateLocationPickerVisibility);
+    updateLocationPickerVisibility();
+  })();
 
   function flashBtn(btn){
     btn.classList.add('flash');
@@ -3546,12 +3779,15 @@
   video.addEventListener('seeking', ()=>{ activeMergeRecord = null; });
 
   function logEvent(category, label, btn){
-    const now = video.currentTime||0;
+    const now = recTime();
     const playerSnapshot = selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null;
+    const zoneToAttach = (label===BLOCK_LOCATION_OPTION) ? selectedZone : null;
+    const grid9ToAttach = NET_POSITION_OPTIONS.has(label) ? selectedNineZone : null;
     if(video.paused && activeMergeRecord && Math.abs(activeMergeRecord.time - now) < 0.05){
       activeMergeRecord.entries.push({category, optionLabel:label});
       activeMergeRecord.label = activeMergeRecord.entries.map(e=>`[${e.category}] ${e.optionLabel}`).join(' + ');
-      if(selectedZone && !activeMergeRecord.zone) activeMergeRecord.zone = selectedZone;
+      if(zoneToAttach && !activeMergeRecord.zone) activeMergeRecord.zone = zoneToAttach;
+      if(grid9ToAttach && !activeMergeRecord.grid9) activeMergeRecord.grid9 = grid9ToAttach;
       if(playerSnapshot && !activeMergeRecord.player) activeMergeRecord.player = playerSnapshot;
     } else {
       const rec = {
@@ -3560,8 +3796,10 @@
         label: `[${category}] ${label}`,
         category, optionLabel: label,
         videoName: currentVideoName,
-        zone: selectedZone,
-        player: playerSnapshot
+        zone: zoneToAttach,
+        grid9: grid9ToAttach,
+        player: playerSnapshot,
+        set: selectedSet
       };
       records.push(rec);
       if(video.paused) activeMergeRecord = rec;
@@ -3573,21 +3811,13 @@
     if(btn) flashBtn(btn);
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   }
-  function buildQuickRecordRow(selectId, btnId, options, category){
-    const sel = document.getElementById(selectId);
-    options.forEach(label=>{
-      const opt = document.createElement('option'); opt.value=label; opt.textContent=label;
-      sel.appendChild(opt);
-    });
-    document.getElementById(btnId).addEventListener('click', ()=>{
-      const label = sel.value;
-      if(!label) return;
-      logEvent(category, label, document.getElementById(btnId));
-    });
-  }
-  buildQuickRecordRow('oppSelect', 'oppRecordBtn', OPP_ATTACK_OPTIONS, '상대공격');
-  buildQuickRecordRow('scoreSelect', 'scoreRecordBtn', OUR_SCORE_OPTIONS, '득점');
-  buildQuickRecordRow('missSelect', 'missRecordBtn', OUR_MISS_OPTIONS, '미스');
+  document.getElementById('qrRecordBtn').addEventListener('click', ()=>{
+    const sel = document.getElementById('qrOptionSelect');
+    const label = sel.value;
+    if(!label) return;
+    const category = qrCategoryFor(qrTeam, qrOutcome);
+    logEvent(category, label, document.getElementById('qrRecordBtn'));
+  });
 
   function renderTally(){
     const el = document.getElementById('tallySummary');
@@ -3641,18 +3871,6 @@
     return `<div style="margin-bottom:14px;"><div class="field-label" style="margin-top:0;">${title}</div>${rows}</div>`;
   }
 
-  function renderFactorChart(){
-    const el = document.getElementById('factorChart');
-    const {scoreCounts, lossCounts} = computeFactorCounts();
-    const scoreEntries = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
-    const lossEntries = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
-    if(!scoreEntries.length && !lossEntries.length){
-      el.innerHTML = '<span class="field-note" style="margin:0;">아직 기록이 없어요. 빠른 기록 배너로 기록을 쌓으면 그래프가 나타나요.</span>';
-      return;
-    }
-    el.innerHTML = barsHTML('🟢 득점 요인 TOP', scoreEntries, 'var(--own)') + barsHTML('🔴 실점 요인 TOP', lossEntries, 'var(--opp)');
-  }
-
   function allEntries(){
     // flattens every logged entry across all records, each tagged with its parent record's zone/player/time
     const out = [];
@@ -3689,13 +3907,24 @@
       ['서브 득점률', serveRate===null ? '기록 없음' : serveRate+'%', 'var(--own)'],
       ['상대 공격에 의한 실점', oppN+'회', 'var(--opp)'],
     ];
-    el.innerHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;">` +
+    const cardsHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;">` +
       cards.map(([label,val,color])=>`
         <div style="background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px;">
           <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px;">${label}</div>
           <div style="font-size:19px; font-weight:800; color:${color};">${val}</div>
         </div>
       `).join('') + `</div>`;
+    // 요인별 분석을 별도 탭이 아니라 요약 바로 아래 한 화면에 이어 붙여 보여줘요.
+    const {scoreCounts, lossCounts} = computeFactorCounts();
+    const scoreEntries = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const lossEntries = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const factorHTML = (scoreEntries.length || lossEntries.length)
+      ? `<div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
+           <div class="field-label" style="margin-top:0; margin-bottom:8px;">요인별 분석</div>
+           ${barsHTML('🟢 득점 요인 TOP', scoreEntries, 'var(--own)')}${barsHTML('🔴 실점 요인 TOP', lossEntries, 'var(--opp)')}
+         </div>`
+      : '';
+    el.innerHTML = cardsHTML + factorHTML;
   }
 
   function renderPlayerChart(){
@@ -3723,15 +3952,50 @@
       el.innerHTML = '<span class="field-note" style="margin:0;">득실 위치를 찍어서 기록하면 위치별 지표가 여기 나타나요.</span>';
       return;
     }
-    const scoreCounts = {}, lossCounts = {};
+    // 막대그래프 대신 "득실 위치" 피커와 같은 코트 그림 위에, 각 구역에서 실제 어떤 기록이
+    // 있었는지(득점/실점 수, 구체적 옵션명) 한눈에 보이도록 그려요.
+    const cellStats = {}; // 'row,col' -> {score, loss, labels:{optionLabel:count}}
     entries.forEach(e=>{
-      const label = ZONE_LABELS[e.zone.row][e.zone.col];
-      if(e.category==='득점') scoreCounts[label] = (scoreCounts[label]||0)+1;
-      else if(e.category==='상대공격' || e.category==='미스') lossCounts[label] = (lossCounts[label]||0)+1;
+      const key = e.zone.row+','+e.zone.col;
+      if(!cellStats[key]) cellStats[key] = {score:0, loss:0, labels:{}};
+      const st = cellStats[key];
+      if(e.category==='득점') st.score++;
+      else if(e.category==='상대공격' || e.category==='미스') st.loss++;
+      else return;
+      st.labels[e.optionLabel] = (st.labels[e.optionLabel]||0)+1;
     });
-    const scoreEntries = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]);
-    const lossEntries = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]);
-    el.innerHTML = barsHTML('🟢 득점이 많았던 위치', scoreEntries, 'var(--own)') + barsHTML('🔴 실점이 많았던 위치', lossEntries, 'var(--opp)');
+    const maxTotal = Math.max(1, ...Object.values(cellStats).map(s=>s.score+s.loss));
+    const rowH = (70-24)/2;
+    let cellsSVG = '';
+    ZONE_LABELS.forEach((rowLabels, row)=>{
+      const cw = 220/rowLabels.length;
+      rowLabels.forEach((text, col)=>{
+        const x = col*cw, y = 24 + row*rowH;
+        const st = cellStats[row+','+col];
+        const total = st ? st.score+st.loss : 0;
+        const netSign = st ? st.score - st.loss : 0;
+        // green-ish when score-heavy, red-ish when loss-heavy, neutral panel color when empty
+        const fill = !total ? 'var(--panel-2)'
+          : netSign>0 ? `rgba(61,214,140,${(0.12+0.55*(total/maxTotal)).toFixed(2)})`
+          : netSign<0 ? `rgba(255,107,129,${(0.12+0.55*(total/maxTotal)).toFixed(2)})`
+          : `rgba(243,223,162,${(0.12+0.55*(total/maxTotal)).toFixed(2)})`;
+        const detail = st ? Object.entries(st.labels).sort((a,b)=>b[1]-a[1]).map(([l,n])=>`${l} ${n}`).join(', ') : '기록 없음';
+        cellsSVG += `<g>
+          <rect x="${x+2}" y="${y+2}" width="${cw-4}" height="${rowH-4}" rx="5" fill="${fill}" stroke="var(--border)" stroke-width="1.5">
+            <title>${text} — ${detail}</title>
+          </rect>
+          <text x="${x+cw/2}" y="${y+rowH/2-2}" text-anchor="middle" font-size="7" fill="var(--text-dim)" style="pointer-events:none;">${text}</text>
+          ${total ? `<text x="${x+cw/2}" y="${y+rowH/2+9}" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--text)" style="pointer-events:none;">${st.score}득 ${st.loss}실</text>` : ''}
+        </g>`;
+      });
+    });
+    el.innerHTML = `
+      <div class="field-note" style="margin-top:0; margin-bottom:6px;">구역에 마우스를 올리면 그 위치에서 있었던 구체적인 상황을 볼 수 있어요.</div>
+      <svg viewBox="0 0 220 70" style="width:100%; display:block;">
+        <rect x="0" y="14" width="220" height="56" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
+        <rect x="0" y="8" width="220" height="10" fill="var(--accent)"/>
+        ${cellsSVG}
+      </svg>`;
   }
 
   function renderTrendChart(){
@@ -3767,7 +4031,6 @@
 
   function renderAllGraphs(){
     renderGraphSummary();
-    renderFactorChart();
     renderPlayerChart();
     renderZoneChart();
     renderTrendChart();
@@ -3777,8 +4040,8 @@
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#graphTabSeg button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      ['summary','factor','player','zone','trend'].forEach(tab=>{
-        document.getElementById({summary:'graphSummary',factor:'factorChart',player:'playerChart',zone:'zoneChart',trend:'trendChart'}[tab]).style.display = (tab===btn.dataset.tab) ? '' : 'none';
+      ['summary','player','zone','trend'].forEach(tab=>{
+        document.getElementById({summary:'graphSummary',player:'playerChart',zone:'zoneChart',trend:'trendChart'}[tab]).style.display = (tab===btn.dataset.tab) ? '' : 'none';
       });
     });
   });
@@ -3806,9 +4069,9 @@
       const pct = Math.round(topN/totalLoss*100);
       lines.push(`<p>⚠️ <b>보완할 점</b> — "${topLabel}"으로 인한 실점이 전체의 ${pct}%(${topN}회)로 가장 많아요. 이 부분을 훈련에서 집중적으로 다뤄보면 좋겠어요.</p>`);
     }
-    const serveFaultN = scoreCounts['상대서브범실']||0;
-    if(serveFaultN>0) lines.push(`<p>🎯 상대의 서브 범실로 얻은 점수가 ${serveFaultN}회 있었어요. 우리 팀의 리시브 대형이 상대에게 부담을 주고 있을 수 있어요.</p>`);
-    const blockLossN = (lossCounts['블로킹']||0)+(lossCounts['블로킹(다이렉트)']||0)+(lossCounts['블로킹(빈틈)']||0)+(lossCounts['블로킹(터치아웃)']||0);
+    const serveFaultN = (scoreCounts['서브범실']||0)+(scoreCounts['각종파울(네트터치, 아웃 등)']||0);
+    if(serveFaultN>0) lines.push(`<p>🎯 상대의 범실(서브 범실, 네트터치, 아웃 등)로 얻은 점수가 ${serveFaultN}회 있었어요. 우리 팀의 리시브 대형이 상대에게 부담을 주고 있을 수 있어요.</p>`);
+    const blockLossN = lossCounts['블로킹']||0;
     if(blockLossN>0 && totalLoss>0){
       const pct = Math.round(blockLossN/totalLoss*100);
       if(pct>=25) lines.push(`<p>🧱 블로킹 관련 실점이 전체 실점의 ${pct}%를 차지해요. 블로킹 타이밍이나 손 모양 훈련을 강화해보는 게 도움이 될 수 있어요.</p>`);
@@ -3822,7 +4085,23 @@
   // ---------- match analysis folders (records + chart data + coach notes, saved together) ----------
   let matchFolders = []; // {name, savedAt, videoName, records, coachNotes}
   let lastPickedMatchFolder = null;
+  let lastPickedMatchFolderIdx = null;
   let readOnlyFolderView = false;
+  // 새 폴더를 만들거나 불러오면 그 폴더가 "활성 폴더"가 되고, 이후의 모든 기록은
+  // 수동으로 "현재 폴더에 덮어쓰기"를 누르지 않아도 그 폴더에 자동으로 함께 저장돼요.
+  function syncActiveFolderRecords(){
+    if(lastPickedMatchFolderIdx===null || !matchFolders[lastPickedMatchFolderIdx] || readOnlyFolderView) return;
+    const f = matchFolders[lastPickedMatchFolderIdx];
+    f.records = JSON.parse(JSON.stringify(records));
+    f.videoName = currentVideoName;
+    f.coachNotes = document.getElementById('coachNotes').value;
+    f.savedAt = new Date().toISOString();
+  }
+  const _coreScheduleAutoSave = window.scheduleAutoSave;
+  window.scheduleAutoSave = function(){
+    syncActiveFolderRecords();
+    if(_coreScheduleAutoSave) _coreScheduleAutoSave();
+  };
   function renderMatchFolderSelect(){
     const sel = document.getElementById('matchFolderSelect');
     sel.innerHTML = '<option value="">불러올 폴더 선택...</option>';
@@ -3831,8 +4110,21 @@
       opt.textContent = `${f.name}${f.videoName ? ' — '+f.videoName : ''}`;
       sel.appendChild(opt);
     });
+    // keep showing which folder is currently loaded instead of resetting back to the placeholder
+    if(lastPickedMatchFolderIdx!==null && matchFolders[lastPickedMatchFolderIdx]){
+      sel.value = String(lastPickedMatchFolderIdx);
+    }
+    updateOverwriteButton();
   }
-  function loadMatchFolder(f){
+  function updateOverwriteButton(){
+    const btn = document.getElementById('btnOverwriteMatchFolder');
+    const hint = document.getElementById('overwriteHint');
+    const has = lastPickedMatchFolderIdx!==null && matchFolders[lastPickedMatchFolderIdx] && !readOnlyFolderView;
+    btn.style.display = has ? 'inline-block' : 'none';
+    hint.style.display = has ? 'block' : 'none';
+    if(has) hint.textContent = `"${matchFolders[lastPickedMatchFolderIdx].name}" 폴더가 활성 상태예요 — 새로 기록하는 내용이 자동으로 이 폴더에 함께 저장돼요. 바로 지금 상태를 저장하고 싶으면 아래 버튼을 눌러도 되고, 왼쪽에 새 이름을 적고 "폴더로 저장"을 누르면 별도 폴더로 저장돼요.`;
+  }
+  function loadMatchFolder(f, idx){
     records = JSON.parse(JSON.stringify(f.records||[]));
     document.getElementById('coachNotes').value = f.coachNotes||'';
     currentVideoName = f.videoName||'';
@@ -3845,43 +4137,74 @@
     }
     renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
     lastPickedMatchFolder = f;
+    lastPickedMatchFolderIdx = (typeof idx==='number') ? idx : matchFolders.indexOf(f);
+    updateOverwriteButton();
   }
   function setReadOnlyFolderView(on){
     readOnlyFolderView = on;
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
-    ['oppRecordBtn','scoreRecordBtn','missRecordBtn','btnRecordMoment','btnClearZone',
-     'videoPlayerSelect','oppSelect','scoreSelect','missSelect','coachNotes',
+    ['qrRecordBtn','btnRecordMoment','btnClearZone','btnClearNineZone',
+     'videoPlayerSelect','qrOptionSelect','coachNotes',
      'btnSaveMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
     document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#recordList select, #recordList input').forEach(el=>el.disabled=on);
+    document.querySelectorAll('#setSeg button').forEach(el=>el.disabled=on);
+    document.querySelectorAll('#qrTeamSeg button').forEach(el=>el.disabled=on);
+    document.querySelectorAll('#qrOutcomeSeg button').forEach(el=>el.disabled=on);
+    document.querySelectorAll('#qrNineZone button').forEach(el=>el.disabled=on);
     document.querySelectorAll('#zoneCells rect').forEach(el=>el.style.cursor = on ? 'default' : 'pointer');
   }
   document.getElementById('btnSaveMatchFolder').addEventListener('click', ()=>{
     const nameInput = document.getElementById('matchSaveName');
     let name = nameInput.value.trim();
     if(!name) name = '매치 '+(matchFolders.length+1);
-    matchFolders.push({
-      name,
-      savedAt: new Date().toISOString(),
-      videoName: currentVideoName,
-      records: JSON.parse(JSON.stringify(records)),
-      coachNotes: document.getElementById('coachNotes').value
-    });
+    const existingIdx = matchFolders.findIndex(f=>f.name===name);
+    if(existingIdx!==-1){
+      if(!confirm(`"${name}" 폴더가 이미 있어요. 덮어쓸까요?`)) return;
+      matchFolders[existingIdx] = {
+        name, savedAt: new Date().toISOString(), videoName: currentVideoName,
+        records: JSON.parse(JSON.stringify(records)), coachNotes: document.getElementById('coachNotes').value
+      };
+      lastPickedMatchFolder = matchFolders[existingIdx];
+      lastPickedMatchFolderIdx = existingIdx;
+    } else {
+      matchFolders.push({
+        name,
+        savedAt: new Date().toISOString(),
+        videoName: currentVideoName,
+        records: JSON.parse(JSON.stringify(records)),
+        coachNotes: document.getElementById('coachNotes').value
+      });
+      lastPickedMatchFolder = matchFolders[matchFolders.length-1];
+      lastPickedMatchFolderIdx = matchFolders.length-1;
+    }
     nameInput.value = '';
     renderMatchFolderSelect();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
     alert(`"${name}" 폴더로 저장했어요. 기록·그래프·종합분석이 함께 저장됐어요.`);
   });
+  document.getElementById('btnOverwriteMatchFolder').addEventListener('click', ()=>{
+    if(lastPickedMatchFolderIdx===null || !matchFolders[lastPickedMatchFolderIdx]) return;
+    const f = matchFolders[lastPickedMatchFolderIdx];
+    if(!confirm(`"${f.name}" 폴더에 지금 기록을 덮어쓸까요? 이전 내용은 사라져요.`)) return;
+    matchFolders[lastPickedMatchFolderIdx] = {
+      name: f.name, savedAt: new Date().toISOString(), videoName: currentVideoName,
+      records: JSON.parse(JSON.stringify(records)), coachNotes: document.getElementById('coachNotes').value
+    };
+    lastPickedMatchFolder = matchFolders[lastPickedMatchFolderIdx];
+    renderMatchFolderSelect();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+    alert(`"${f.name}" 폴더에 덮어썼어요.`);
+  });
   document.getElementById('matchFolderSelect').addEventListener('change', e=>{
     const idx = e.target.value;
-    if(idx==='') return;
+    if(idx===''){ lastPickedMatchFolderIdx=null; lastPickedMatchFolder=null; updateOverwriteButton(); return; }
     const f = matchFolders[Number(idx)];
     if(f){
-      loadMatchFolder(f);
+      loadMatchFolder(f, Number(idx));
       if(window.scheduleAutoSave) window.scheduleAutoSave();
     }
-    e.target.value = '';
   });
   document.getElementById('btnDeleteMatchFolder').addEventListener('click', ()=>{
     const i = matchFolders.indexOf(lastPickedMatchFolder);
@@ -3892,6 +4215,7 @@
     if(!confirm(`"${lastPickedMatchFolder.name}" 폴더를 삭제할까요?`)) return;
     matchFolders.splice(i,1);
     lastPickedMatchFolder = null;
+    lastPickedMatchFolderIdx = null;
     renderMatchFolderSelect();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
