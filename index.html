@@ -345,6 +345,23 @@
   .banner-tabs button.flash{ background:var(--grad); color:var(--on-accent); border-color:transparent; }
   .btn.flash{ background:var(--grad); color:var(--on-accent); border-color:transparent; }
   .tally-row{ font-size:12px; color:var(--text-dim); line-height:1.8; }
+  .graph-set-row{ display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .graph-set-label{ font-size:11.5px; font-weight:700; color:var(--text-dim); flex:none; }
+  .graph-set-row .seg{ flex:1; }
+  .graph-help{ margin-top:12px; font-size:12.5px; line-height:1.65; color:var(--text-dim); }
+  .graph-help .gh-section{ padding:12px 0; border-bottom:1px solid var(--border); }
+  .graph-help .gh-section:last-child{ border-bottom:none; }
+  .graph-help h4{ margin:0 0 6px; font-size:13.5px; color:var(--text); }
+  .graph-help p{ margin:0; }
+  .graph-help b{ color:var(--text); }
+  .graph-help table{ width:100%; border-collapse:collapse; margin-top:8px; font-size:12px; }
+  .graph-help th, .graph-help td{ text-align:left; padding:6px 8px; border-bottom:1px solid var(--border); }
+  .graph-help th{ color:var(--text-dim); font-weight:600; }
+  .graph-help td{ color:var(--text); }
+  .graph-help dl{ margin:0; display:grid; grid-template-columns:max-content 1fr; column-gap:14px; row-gap:7px; }
+  .graph-help dt{ font-weight:700; color:var(--text); }
+  .graph-help dd{ margin:0; }
+  @media (max-width:560px){ .graph-help dl{ grid-template-columns:1fr; row-gap:2px; } .graph-help dd{ margin-bottom:6px; } }
   .tally-row b{ color:var(--text); }
   .login-card{ width:100%; max-width:420px; background:var(--panel); border:1px solid var(--border-2); border-radius:var(--radius-lg); padding:26px 24px; box-shadow:var(--shadow); }
   .login-card h1{ font-family:var(--display); font-style:italic; font-weight:900; font-size:24px; text-align:center; letter-spacing:-0.01em; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; padding-bottom:2px; }
@@ -662,7 +679,7 @@
           <li><b>영상을 올려요</b> — 분석할 경기 영상 파일을 첨부하고 재생해요.</li>
           <li><b>팀 이름과 명단을 적어요</b> — 상대팀·우리팀 이름과 포지션별 명단(선택)을 적어두면 기록에 그대로 반영돼요.</li>
           <li><b>팀 → 결과 유형을 골라요</b> — "빠른 기록 배너"에서 상대팀/우리팀 중 하나, 그다음 득점/범실 중 하나를 선택해요.</li>
-          <li><b>세부 상황과 위치를 골라요</b> — 드롭다운에서 상황(레프트, 서브, 블로킹 등)을 고르면, 그에 맞는 위치 선택 칸(네트 5칸 또는 3×3 9칸)이 필요할 때만 나타나요. 관련 선수도 함께 지정할 수 있어요.</li>
+          <li><b>세부 상황과 위치를 골라요</b> — 드롭다운에서 상황(레프트, 서브, 블로킹, 파울 등)을 고르면, 공격이면 "공격 방식"(강타·페인트·터치아웃), 파울이면 "파울 종류"를 한 번 더 고를 수 있고, 위치 선택 칸(네트 5칸 또는 3×3 9칸)은 필요할 때만 나타나요. 관련 선수도 함께 지정할 수 있어요.</li>
           <li><b>"기록"을 눌러요</b> — 지금 시간이 저장돼요. 영상이 멈춘 채로 여러 개를 누르면 하나의 기록으로 합쳐져요.</li>
           <li><b>그래프와 종합 분석을 확인해요</b> — "그래프"에서 요약·선수별·위치별·추세로 데이터를 보고, "종합 분석"이 자동 통계 요약을 만들어줘요(실제 총평은 그 아래에 직접 적어요).</li>
           <li><b>폴더로 저장해요</b> — "매치 분석 저장"에서 "+ 새 폴더 추가"를 누르면 그 폴더가 활성화돼서 이후 기록이 자동으로 함께 저장돼요. 다른 경기를 새로 시작할 때도 같은 방식으로 폴더를 추가하면 돼요.</li>
@@ -980,16 +997,74 @@
         <div class="card">
           <h2>그래프</h2>
           <div class="field-note" style="margin-top:0;">빠른 기록을 바탕으로, 실전 피드백에 쓸 수 있는 지표들을 여러 각도로 보여드려요.</div>
+          <div class="graph-set-row">
+            <span class="graph-set-label">세트</span>
+            <div class="seg" id="graphSetSeg">
+              <button data-gset="all" class="active">전체</button>
+              <button data-gset="1">1세트</button>
+              <button data-gset="2">2세트</button>
+              <button data-gset="3">3세트</button>
+            </div>
+          </div>
           <div class="seg" id="graphTabSeg" style="margin-top:8px;">
             <button data-tab="summary" class="active">요약</button>
             <button data-tab="player">선수별</button>
             <button data-tab="zone">위치별</button>
             <button data-tab="trend">추세</button>
+            <button data-tab="help">📘 설명</button>
           </div>
           <div id="graphSummary"></div>
           <div id="playerChart" style="display:none;"></div>
           <div id="zoneChart" style="display:none;"></div>
           <div id="trendChart" style="display:none;"></div>
+          <div id="graphHelp" class="graph-help" style="display:none;">
+            <div class="gh-section">
+              <h4>1. 기록은 이렇게 4가지로 나눠서 계산해요</h4>
+              <p>빠른 기록에서 고른 <b>팀</b>과 <b>결과 유형</b>으로 모든 기록을 아래 넷 중 하나로 분류해요. 우리가 잘해서 낸 점수와 상대가 실수해서 얻은 점수를 섞지 않기 위해서예요.</p>
+              <table>
+                <thead><tr><th>기록할 때 고른 것</th><th>분류</th><th>점수</th></tr></thead>
+                <tbody>
+                  <tr><td>우리팀 + 득점</td><td>🔵 자력 득점</td><td>우리 +1</td></tr>
+                  <tr><td>상대팀 + 범실</td><td>🎁 상대 범실</td><td>우리 +1</td></tr>
+                  <tr><td>상대팀 + 득점</td><td>🔴 상대 득점</td><td>상대 +1</td></tr>
+                  <tr><td>우리팀 + 범실</td><td>⚠️ 우리 범실</td><td>상대 +1</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="gh-section">
+              <h4>2. 요약 카드 계산식</h4>
+              <dl>
+                <dt>총 득점</dt><dd>자력 득점 + 상대 범실</dd>
+                <dt>총 실점</dt><dd>상대 득점 + 우리 범실</dd>
+                <dt>득점률</dt><dd>총 득점 ÷ (총 득점 + 총 실점) × 100</dd>
+                <dt>자력 득점 비중</dt><dd>자력 득점 ÷ 총 득점 × 100 — 높을수록 상대 실수가 아니라 우리 플레이로 점수를 냈다는 뜻이에요.</dd>
+                <dt>범실 실점 비중</dt><dd>우리 범실 ÷ 총 실점 × 100 — 높을수록 훈련으로 줄일 수 있는 실점이 많다는 뜻이에요.</dd>
+                <dt>공격 결정률</dt><dd>공격 성공 ÷ (공격 성공 + 공격 범실 + 블로킹 당함) × 100<br>· 공격 성공: 우리팀 득점 중 공격 상황(레프트·라이트·A·백A·앞차·백차·다이렉트·3구처리)<br>· 공격 범실: 우리팀 범실 중 공격 상황<br>· 블로킹 당함: 상대팀 득점 중 "블로킹"</dd>
+                <dt>우리 서브</dt><dd>우리팀 득점 중 "서브"(서브 득점) / 우리팀 범실 중 "서브"(서브 범실)</dd>
+                <dt>리시브 실점</dt><dd>상대팀 득점 중 "서브" + 우리팀 범실 중 "리시브"·"서브캐치"</dd>
+              </dl>
+            </div>
+            <div class="gh-section">
+              <h4>3. 요인별 분석 · 득점/실점 구성</h4>
+              <p>4가지 분류마다 어떤 상황이 몇 번 나왔는지 많은 순서대로 보여줘요. 공격 방식이나 파울 종류를 함께 골랐다면 "레프트·페인트", "파울·네트터치"처럼 합쳐서 세요. 득점 구성 막대는 총 득점을 자력과 상대 범실로, 실점 구성 막대는 총 실점을 상대 득점과 우리 범실로 나눠 보여줘요.</p>
+            </div>
+            <div class="gh-section">
+              <h4>4. 세트별 보기</h4>
+              <p>그래프 위의 <b>세트</b> 버튼으로 전체 경기 또는 한 세트만 골라 볼 수 있어요. 고른 범위에 맞춰 요약·선수별·위치별·추세·종합 분석이 모두 다시 계산돼요. "전체"일 때 기록이 두 세트 이상이면 요약 아래에 세트별 득점·실점·득점률·점수 차 비교표가 나와요. 세트는 기록할 때 고른 세트 기준이고, 기록 목록에서 나중에 고칠 수 있어요.</p>
+            </div>
+            <div class="gh-section">
+              <h4>5. 선수별 · 위치별 · 추세</h4>
+              <dl>
+                <dt>선수별</dt><dd>선수를 지정한 기록만 세요. 자력 득점과 우리 범실을 선수마다 따로 세고, 상대 득점 장면에 지정된 선수는 "관여"로 따로 보여줘요. 상대 범실로 얻은 점수는 선수 개인 득점으로 세지 않아요.</dd>
+                <dt>위치별</dt><dd>3×3 구역(공격)과 네트 앞 5칸(블로킹)에 찍은 위치별로 우리가 딴 점수(자력+상대 범실)와 내준 점수(상대 득점+우리 범실)를 세요. 초록은 딴 점수가, 빨강은 내준 점수가 더 많은 칸이고, 기록이 많을수록 색이 진해요.</dd>
+                <dt>추세</dt><dd>기록 순서대로 우리가 딴 점수는 +1, 내준 점수는 -1을 누적한 선이에요. 세트가 바뀌는 곳에 점선을 그어요.</dd>
+              </dl>
+            </div>
+            <div class="gh-section">
+              <h4>6. 예전 기록은 어떻게 계산되나요?</h4>
+              <p>이번 개편 전에 남긴 기록은 팀·결과 정보가 따로 없어서 다음 규칙으로 읽어요. "상대팀 득점"은 상대 득점, "우리팀 범실"은 우리 범실로 봐요. 예전의 "득점" 기록 중 서브범실·파울 항목은 상대 범실로, 나머지는 자력 득점으로 봐요. 정확하게 나누려면 새 방식으로 다시 기록하는 게 가장 좋아요.</p>
+            </div>
+          </div>
         </div>
         <div class="card">
           <h2>종합 분석</h2>
@@ -1091,10 +1166,17 @@
             <div class="quick-record-row">
               <div class="qr-label">세부 상황</div>
               <div class="qr-controls">
-                <select id="qrOptionSelect"></select>
-                <button class="btn primary" id="qrRecordBtn">기록</button>
+                <select id="qrOptionSelect" style="flex:1;"></select>
               </div>
             </div>
+            <div class="quick-record-row" id="qrDetailRow" style="display:none;">
+              <div class="qr-label" id="qrDetailLabel">공격 방식</div>
+              <div class="qr-controls">
+                <select id="qrDetailSelect" style="flex:1;"></select>
+              </div>
+              <div class="field-note" id="qrDetailNote" style="margin-top:4px;"></div>
+            </div>
+            <button class="btn primary" id="qrRecordBtn" style="width:100%; padding:11px; font-size:14px; font-weight:800;">기록하기</button>
           </div>
         </div>
         <div class="btn-row" style="margin-top:4px; justify-content:flex-end;">
@@ -3733,7 +3815,7 @@
 
   // ---------- which location-picker shows depends on the selected 세부 상황 option ----------
   const BLOCK_LOCATION_OPTION = '블로킹'; // net-adjacent 5칸 grid
-  const NET_POSITION_OPTIONS = new Set(['레프트','라이트','A','백A','앞차','백차','다이렉트','페인트']); // 3×3 grid
+  const NET_POSITION_OPTIONS = new Set(['레프트','라이트','A','백A','앞차','백차','다이렉트']); // 3×3 grid
   function updateLocationPickerVisibility(){
     const opt = document.getElementById('qrOptionSelect').value;
     const zoneWrap = document.getElementById('zonePickerWrap');
@@ -3768,7 +3850,7 @@
       });
       const input = document.createElement('input'); input.type='text'; input.value=rec.label;
       input.placeholder='메모';
-      input.addEventListener('input', ()=>{ rec.label = input.value; if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      input.addEventListener('input', ()=>{ rec.label = input.value; rec.customLabel = true; if(window.scheduleAutoSave) window.scheduleAutoSave(); });
       input.disabled = readOnlyFolderView;
       row.appendChild(timeBtn); row.appendChild(input);
       const setSel = document.createElement('select'); setSel.style.fontSize='11px'; setSel.style.flex='none'; setSel.title='세트 수정';
@@ -3829,36 +3911,45 @@
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
 
-  // ---------- quick-log banner: 팀(상대팀/우리팀) × 결과 유형(득점/범실), 동일한 드롭다운 목록 ----------
-  // 세부 상황 목록: 드롭다운에서 묶음(optgroup)으로 보여줘요. 득점/범실은 위 탭에서 고르니 목록은 상황만 담아요.
+  // ---------- quick-log banner: 팀(상대팀/우리팀) × 결과 유형(득점/범실) → 세부 상황 → (필요할 때만) 방식 ----------
+  // 세부 상황은 "누가·어디서" 했는지(공격 위치, 서브, 블로킹 …), 방식은 "어떻게"(페인트, 터치아웃, 파울 종류 …)를 담아요.
+  // 이렇게 나눠 두면 "레프트·페인트"처럼 누가 페인트를 했는지까지 함께 남아요.
+  const ATTACK_OPTIONS = ['레프트','라이트','A','백A','앞차','백차','다이렉트','3구처리'];
+  const ATTACK_SET = new Set(ATTACK_OPTIONS);
+  const FOUL_MAIN = '파울(반칙)';
+  const FOUL_TYPES = [
+    '네트터치',
+    '오버네트(상대 코트 공 터치)',
+    '센터라인 침범',
+    '안테나 반칙(터치·바깥 통과)',
+    '아웃(라인 밖)',
+    '포히트(터치 횟수 초과)',
+    '더블컨택(드리블)',
+    '홀딩(캐치볼)',
+    '서브 풋폴트(엔드라인 침범)',
+    '서브 순서 위반',
+    '서브 시간 초과',
+    '경기 지연',
+    '경고·벌칙(옐로·레드카드)'
+  ];
   const QR_OPTION_GROUPS = [
-    {group:'공격', items:['레프트','라이트','A','백A','앞차','백차','다이렉트','페인트','3구처리','터치아웃(블로킹 맞고 아웃)']},
+    {group:'공격', items:ATTACK_OPTIONS},
     {group:'서브·리시브·연결', items:['서브','서브캐치','리시브','토스','2단토스','2단연결']},
     {group:'네트 플레이', items:['블로킹']},
-    {group:'파울(반칙)', items:[
-      '네트터치',
-      '오버네트(상대 코트 공 터치)',
-      '센터라인 침범',
-      '안테나 반칙(터치·바깥 통과)',
-      '아웃(라인 밖)',
-      '포히트(터치 횟수 초과)',
-      '더블컨택(드리블)',
-      '홀딩(캐치볼)',
-      '서브 풋폴트(엔드라인 침범)',
-      '서브 순서 위반',
-      '서브 시간 초과',
-      '경기 지연',
-      '경고·벌칙(옐로·레드카드)'
-    ]}
+    {group:'파울(반칙)', items:[FOUL_MAIN]}
   ];
   const QR_UNIFIED_OPTIONS = QR_OPTION_GROUPS.flatMap(g=>g.items);
-  // 예전 기록에 남아 있는 범실/파울 항목도 분석에서 파울로 함께 셀 수 있게 포함해요.
-  const FOUL_OPTIONS = new Set([...QR_OPTION_GROUPS.find(g=>g.group==='파울(반칙)').items, '서브범실', '각종파울(네트터치, 아웃 등)']);
-  // (team, outcome) -> category used throughout the analytics pipeline ('상대공격'/'득점'/'미스')
-  //  - 상대팀+득점: 상대가 잘해서 득점 -> '상대공격'
-  //  - 상대팀+범실: 상대의 실수로 우리가 득점 -> '득점'
-  //  - 우리팀+득점: 우리가 잘해서 득점 -> '득점'
-  //  - 우리팀+범실: 우리의 실수로 실점 -> '미스'
+  // 공격 방식: 득점일 때와 범실일 때 고를 수 있는 방식이 달라요. ''는 "구분 안 함".
+  const ATTACK_DETAILS = {
+    score: ['', '강타(스파이크)', '페인트', '터치아웃(블로킹 맞고 아웃)'],
+    fault: ['', '아웃', '네트 걸림']
+  };
+  function detailOptionsFor(main, outcome){
+    if(ATTACK_SET.has(main)) return ATTACK_DETAILS[outcome] || ATTACK_DETAILS.score;
+    if(main===FOUL_MAIN) return FOUL_TYPES;
+    return null;
+  }
+  // (team, outcome) -> 예전부터 쓰던 category 값도 함께 남겨서 이전 기록·내보내기와 호환돼요.
   function qrCategoryFor(team, outcome){
     if(team==='opp') return outcome==='score' ? '상대공격' : '득점';
     return outcome==='score' ? '득점' : '미스';
@@ -3878,17 +3969,73 @@
     if(category==='미스') return ourTeamName+' 범실';
     return category;
   }
+
+  // ---------- 기록 한 건을 4가지로 분류해요 ----------
+  //  ourScore : 우리팀이 잘해서 낸 득점 (자력 득점)
+  //  oppError : 상대팀 범실로 얻은 득점
+  //  oppScore : 상대팀이 잘해서 낸 득점 (우리 실점)
+  //  ourError : 우리팀 범실로 내준 실점
+  const BUCKETS = ['ourScore','oppError','oppScore','ourError'];
+  function bucketName(b){
+    return {
+      ourScore: `${ourTeamName} 득점`,
+      oppError: `${oppTeamName} 범실`,
+      oppScore: `${oppTeamName} 득점`,
+      ourError: `${ourTeamName} 범실`
+    }[b] || '';
+  }
+  const LEGACY_FOUL_LABELS = new Set([...FOUL_TYPES, '각종파울(네트터치, 아웃 등)']);
+  const LEGACY_ATTACK_DETAILS = new Set(['페인트','터치아웃(블로킹 맞고 아웃)']);
+  function normEntry(e){
+    let main = e.optionLabel || '', detail = e.detail || '';
+    // 예전 방식(한 목록에 모두 섞여 있던 항목)으로 남은 기록도 새 구조로 읽어요.
+    if(!e.detail){
+      if(LEGACY_FOUL_LABELS.has(main)){ detail = (main==='각종파울(네트터치, 아웃 등)') ? '' : main; main = FOUL_MAIN; }
+      else if(main==='서브범실'){ main = '서브'; }
+      else if(LEGACY_ATTACK_DETAILS.has(main)){ detail = main; main = '공격(위치 미지정)'; }
+    }
+    let team = e.team, outcome = e.outcome;
+    if(!team || !outcome){
+      if(e.category==='상대공격'){ team='opp'; outcome='score'; }
+      else if(e.category==='미스'){ team='our'; outcome='fault'; }
+      else if(e.category==='득점'){
+        // 예전 기록에서 '득점'은 우리 득점과 상대 범실이 섞여 있었어요. 범실·파울 항목이면 상대 범실로 봐요.
+        const isOppError = main===FOUL_MAIN || e.optionLabel==='서브범실';
+        team = isOppError ? 'opp' : 'our'; outcome = isOppError ? 'fault' : 'score';
+      }
+    }
+    const bucket = !team ? null
+      : team==='our' ? (outcome==='score' ? 'ourScore' : 'ourError')
+      : (outcome==='score' ? 'oppScore' : 'oppError');
+    const label = main===FOUL_MAIN ? (detail ? `파울·${detail}` : '파울(종류 미지정)')
+      : (detail ? `${main}·${detail}` : main);
+    return {main, detail, team, outcome, bucket, label, forUs: bucket==='ourScore' || bucket==='oppError'};
+  }
+  function entryRecordLabel(e){
+    const n = normEntry(e);
+    return n.bucket ? `[${bucketName(n.bucket)}] ${n.label}` : n.label;
+  }
+  function relabelAllRecords(){
+    // 팀 이름이 바뀌면 자동으로 만든 기록 이름도 새 이름으로 바꿔요(직접 고친 메모는 그대로 둬요).
+    records.forEach(r=>{
+      if(!r.entries || !r.entries.length || r.customLabel) return;
+      r.label = r.entries.map(entryRecordLabel).join(' + ');
+    });
+  }
+
+  function onTeamNamesChanged(){
+    updateTeamSegLabels();
+    relabelAllRecords();
+    renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+  }
   document.getElementById('oppTeamNameInput').addEventListener('input', e=>{
     oppTeamName = e.target.value.trim() || '상대팀';
-    updateTeamSegLabels();
-    renderTally();
-    if(window.scheduleAutoSave) window.scheduleAutoSave();
+    onTeamNamesChanged();
   });
   document.getElementById('ourTeamNameInput').addEventListener('input', e=>{
     ourTeamName = e.target.value.trim() || '우리팀';
-    updateTeamSegLabels();
-    renderTally();
-    if(window.scheduleAutoSave) window.scheduleAutoSave();
+    onTeamNamesChanged();
   });
   document.querySelectorAll('#qrTeamSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -3902,8 +4049,29 @@
       document.querySelectorAll('#qrOutcomeSeg button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       qrOutcome = btn.dataset.outcome;
+      updateDetailRow();
     });
   });
+  function updateDetailRow(){
+    const main = document.getElementById('qrOptionSelect').value;
+    const row = document.getElementById('qrDetailRow');
+    const sel = document.getElementById('qrDetailSelect');
+    const note = document.getElementById('qrDetailNote');
+    const opts = detailOptionsFor(main, qrOutcome);
+    if(!opts){ row.style.display = 'none'; sel.innerHTML = ''; return; }
+    // 이전 기록의 방식이 다음 기록에 딸려 가지 않도록 목록이 바뀔 때마다 처음 항목으로 돌려놔요.
+    sel.innerHTML = '';
+    opts.forEach(v=>{
+      const o = document.createElement('option'); o.value = v; o.textContent = v || '구분 안 함';
+      sel.appendChild(o);
+    });
+    sel.selectedIndex = 0;
+    row.style.display = '';
+    document.getElementById('qrDetailLabel').textContent = main===FOUL_MAIN ? '파울 종류' : '공격 방식';
+    note.textContent = main===FOUL_MAIN
+      ? '파울을 한 팀을 고르고 결과 유형은 "범실"로 기록해요.'
+      : (qrOutcome==='score' ? '어떻게 점수를 냈는지 고르면 "레프트·페인트"처럼 함께 남아요.' : '어떻게 범실이 났는지 고를 수 있어요.');
+  }
   (function buildQrOptionSelect(){
     const sel = document.getElementById('qrOptionSelect');
     QR_OPTION_GROUPS.forEach(g=>{
@@ -3914,8 +4082,9 @@
       });
       sel.appendChild(og);
     });
-    sel.addEventListener('change', updateLocationPickerVisibility);
+    sel.addEventListener('change', ()=>{ updateLocationPickerVisibility(); updateDetailRow(); });
     updateLocationPickerVisibility();
+    updateDetailRow();
   })();
 
   function flashBtn(btn){
@@ -3926,23 +4095,24 @@
   video.addEventListener('play', ()=>{ activeMergeRecord = null; });
   video.addEventListener('seeking', ()=>{ activeMergeRecord = null; });
 
-  function logEvent(category, label, btn){
+  function logEvent(entry, btn){
     const now = recTime();
+    const label = entry.optionLabel;
     const playerSnapshot = selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null;
     const zoneToAttach = (label===BLOCK_LOCATION_OPTION) ? selectedZone : null;
     const grid9ToAttach = NET_POSITION_OPTIONS.has(label) ? selectedNineZone : null;
     if(video.paused && activeMergeRecord && Math.abs(activeMergeRecord.time - now) < 0.05){
-      activeMergeRecord.entries.push({category, optionLabel:label});
-      activeMergeRecord.label = activeMergeRecord.entries.map(e=>`[${categoryDisplayName(e.category)}] ${e.optionLabel}`).join(' + ');
+      activeMergeRecord.entries.push(entry);
+      if(!activeMergeRecord.customLabel) activeMergeRecord.label = activeMergeRecord.entries.map(entryRecordLabel).join(' + ');
       if(zoneToAttach && !activeMergeRecord.zone) activeMergeRecord.zone = zoneToAttach;
       if(grid9ToAttach && !activeMergeRecord.grid9) activeMergeRecord.grid9 = grid9ToAttach;
       if(playerSnapshot && !activeMergeRecord.player) activeMergeRecord.player = playerSnapshot;
     } else {
       const rec = {
         time: now,
-        entries: [{category, optionLabel:label}],
-        label: `[${categoryDisplayName(category)}] ${label}`,
-        category, optionLabel: label,
+        entries: [entry],
+        label: entryRecordLabel(entry),
+        category: entry.category, optionLabel: label,
         videoName: currentVideoName,
         zone: zoneToAttach,
         grid9: grid9ToAttach,
@@ -3960,119 +4130,168 @@
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   }
   document.getElementById('qrRecordBtn').addEventListener('click', ()=>{
-    const sel = document.getElementById('qrOptionSelect');
-    const label = sel.value;
-    if(!label) return;
-    const category = qrCategoryFor(qrTeam, qrOutcome);
-    logEvent(category, label, document.getElementById('qrRecordBtn'));
+    const main = document.getElementById('qrOptionSelect').value;
+    if(!main) return;
+    const hasDetail = !!detailOptionsFor(main, qrOutcome);
+    const detail = hasDetail ? document.getElementById('qrDetailSelect').value : '';
+    const entry = {category: qrCategoryFor(qrTeam, qrOutcome), optionLabel: main, team: qrTeam, outcome: qrOutcome};
+    if(detail) entry.detail = detail;
+    logEvent(entry, document.getElementById('qrRecordBtn'));
+    if(hasDetail) document.getElementById('qrDetailSelect').selectedIndex = 0;
   });
+
+  // ---------- 그래프에 쓰는 데이터: 세트 필터 → 기록 펼치기 → 4분류 집계 ----------
+  let graphSet = 'all';
+  function recordsInScope(){
+    return graphSet==='all' ? records : records.filter(r=>(r.set||1)===Number(graphSet));
+  }
+  function scopeLabel(){ return graphSet==='all' ? '전체 경기' : `${graphSet}세트`; }
+  function allEntries(src){
+    // flattens every logged entry, each tagged with its parent record's zone/player/time/set and its 4-way bucket
+    const out = [];
+    (src || recordsInScope()).forEach(r=>{
+      const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
+      entries.forEach(e=>{
+        const n = normEntry(e);
+        if(!n.bucket) return;
+        out.push({...e, ...n, zone:r.zone, grid9:r.grid9, player:r.player, time:r.time, set:r.set||1});
+      });
+    });
+    return out;
+  }
+  function tallyBuckets(entries){
+    const t = {ourScore:{}, oppError:{}, oppScore:{}, ourError:{}};
+    const n = {ourScore:0, oppError:0, oppScore:0, ourError:0};
+    entries.forEach(e=>{ t[e.bucket][e.label] = (t[e.bucket][e.label]||0)+1; n[e.bucket]++; });
+    return {byLabel:t, n, forUs: n.ourScore+n.oppError, against: n.oppScore+n.ourError};
+  }
+  const pct = (a,b)=> b ? Math.round(a/b*100) : null;
+  const sortDesc = obj => Object.entries(obj).sort((a,b)=>b[1]-a[1]);
 
   function renderTally(){
     const el = document.getElementById('tallySummary');
-    const counts = {};
-    records.forEach(r=>{
-      const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
-      entries.forEach(e=>{ const k=e.category+'|'+e.optionLabel; counts[k]=(counts[k]||0)+1; });
-    });
-    const groupNames = {'상대공격':`🔴 ${oppTeamName} 득점 옵션`, '득점':`🔵 ${ourTeamName} 득점`, '미스':`🔵 ${ourTeamName} 미스`};
-    const groups = {'상대공격':[], '득점':[], '미스':[]};
-    Object.keys(counts).forEach(k=>{
-      const idx = k.indexOf('|');
-      const cat = k.slice(0,idx), label = k.slice(idx+1);
-      if(groups[cat]) groups[cat].push([label, counts[k]]);
-    });
+    const {byLabel} = tallyBuckets(allEntries(records));
+    const icons = {ourScore:'🔵', oppError:'🎁', oppScore:'🔴', ourError:'⚠️'};
     let html='';
-    Object.keys(groups).forEach(cat=>{
-      if(groups[cat].length){
-        groups[cat].sort((a,b)=>b[1]-a[1]);
-        const parts = groups[cat].map(([label,n])=>`${label} ${n}회`).join(', ');
-        html += `<div class="tally-row"><b>${groupNames[cat]}</b>: ${parts}</div>`;
-      }
+    BUCKETS.forEach(b=>{
+      const list = sortDesc(byLabel[b]);
+      if(list.length) html += `<div class="tally-row"><b>${icons[b]} ${bucketName(b)}</b>: ${list.map(([l,n])=>`${l} ${n}회`).join(', ')}</div>`;
     });
     el.innerHTML = html || '<span class="field-note" style="margin:0;">아직 배너로 기록된 통계가 없어요.</span>';
   }
 
-  function computeFactorCounts(){
-    const scoreCounts = {}, lossCounts = {};
-    records.forEach(r=>{
-      const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
-      entries.forEach(e=>{
-        if(e.category==='득점') scoreCounts[e.optionLabel] = (scoreCounts[e.optionLabel]||0)+1;
-        else if(e.category==='상대공격' || e.category==='미스') lossCounts[e.optionLabel] = (lossCounts[e.optionLabel]||0)+1;
-      });
-    });
-    return {scoreCounts, lossCounts};
-  }
-
-  function barsHTML(title, entries, color){
+  function barsHTML(title, entries, color, hint){
     if(!entries.length) return '';
     const max = Math.max(...entries.map(e=>e[1]));
     const rows = entries.map(([label,n])=>`
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;">
-        <div style="flex:0 0 90px; font-size:11.5px; color:var(--text-dim); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${label}</div>
+        <div title="${label}" style="flex:0 0 110px; font-size:11.5px; color:var(--text-dim); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${label}</div>
         <div style="flex:1; background:var(--panel-2); border-radius:4px; overflow:hidden; height:16px;">
           <div style="width:${Math.max(6,(n/max*100)).toFixed(0)}%; background:${color}; height:100%;"></div>
         </div>
         <div style="flex:0 0 30px; font-size:11.5px; color:var(--text);">${n}회</div>
       </div>
     `).join('');
-    return `<div style="margin-bottom:14px;"><div class="field-label" style="margin-top:0;">${title}</div>${rows}</div>`;
+    return `<div style="margin-bottom:14px;"><div class="field-label" style="margin-top:0;">${title}</div>${hint?`<div class="field-note" style="margin:0 0 6px;">${hint}</div>`:''}${rows}</div>`;
   }
-
-  function allEntries(){
-    // flattens every logged entry across all records, each tagged with its parent record's zone/player/time
-    const out = [];
-    records.forEach(r=>{
-      const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
-      entries.forEach(e=>out.push({...e, zone:r.zone, player:r.player, time:r.time}));
-    });
-    return out;
+  function statCard(label, val, color, sub){
+    return `<div style="background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px;">
+      <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px;">${label}</div>
+      <div style="font-size:19px; font-weight:800; color:${color};">${val}</div>
+      ${sub ? `<div style="font-size:10.5px; color:var(--muted); margin-top:3px; line-height:1.4;">${sub}</div>` : ''}
+    </div>`;
+  }
+  // 주요 지표 계산(요약 카드·종합 분석·세트 비교가 모두 같은 함수를 써요)
+  function computeMetrics(entries){
+    const T = tallyBuckets(entries);
+    const {n} = T;
+    const total = T.forUs + T.against;
+    const isAtk = e => ATTACK_SET.has(e.main) || e.main==='공격(위치 미지정)';
+    const atkWin = entries.filter(e=>e.bucket==='ourScore' && isAtk(e)).length;
+    const atkErr = entries.filter(e=>e.bucket==='ourError' && isAtk(e)).length;
+    const atkBlocked = entries.filter(e=>e.bucket==='oppScore' && e.main==='블로킹').length;
+    const atkTotal = atkWin+atkErr+atkBlocked;
+    const serveWin = entries.filter(e=>e.bucket==='ourScore' && e.main==='서브').length;
+    const serveErr = entries.filter(e=>e.bucket==='ourError' && e.main==='서브').length;
+    const recvLoss = entries.filter(e=>(e.bucket==='oppScore' && e.main==='서브') || (e.bucket==='ourError' && (e.main==='서브캐치' || e.main==='리시브'))).length;
+    const ourFoul = entries.filter(e=>e.bucket==='ourError' && e.main===FOUL_MAIN).length;
+    const oppFoul = entries.filter(e=>e.bucket==='oppError' && e.main===FOUL_MAIN).length;
+    return {T, n, total, atkWin, atkErr, atkBlocked, atkTotal, serveWin, serveErr, recvLoss, ourFoul, oppFoul,
+      pointShare: pct(T.forUs, total), selfShare: pct(n.ourScore, T.forUs), errShare: pct(n.ourError, T.against),
+      atkRate: pct(atkWin, atkTotal)};
+  }
+  function setsWithData(){
+    return [...new Set(records.map(r=>r.set||1))].sort((a,b)=>a-b);
   }
 
   function renderGraphSummary(){
     const el = document.getElementById('graphSummary');
-    const entries = allEntries().filter(e=>e.category);
+    const entries = allEntries();
     if(!entries.length){
-      el.innerHTML = '<span class="field-note" style="margin:0;">아직 기록이 없어요. 빠른 기록 배너로 기록을 쌓으면 요약이 나타나요.</span>';
+      el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어요. 빠른 기록 배너로 기록을 쌓으면 요약이 나타나요.' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
       return;
     }
-    const scoreN = entries.filter(e=>e.category==='득점').length;
-    const oppN = entries.filter(e=>e.category==='상대공격').length;
-    const missN = entries.filter(e=>e.category==='미스').length;
-    const lossN = oppN + missN;
-    const total = scoreN + lossN;
-    const winRate = total ? Math.round(scoreN/total*100) : 0;
-    const ownErrorShare = lossN ? Math.round(missN/lossN*100) : 0;
-    const serveScoreN = entries.filter(e=>e.category==='득점' && e.optionLabel==='서브').length;
-    const serveMissN = entries.filter(e=>e.category==='미스' && e.optionLabel==='서브').length;
-    const serveTotal = serveScoreN + serveMissN;
-    const serveRate = serveTotal ? Math.round(serveScoreN/serveTotal*100) : null;
+    const M = computeMetrics(entries);
+    const {n, T} = M;
+    const fmt = v => v===null ? '—' : v+'%';
     const cards = [
-      ['총 득점', scoreN+'회', 'var(--own)'],
-      ['총 실점', lossN+'회', 'var(--opp)'],
-      ['득점률', winRate+'%', 'var(--accent-text)'],
-      ['실점 중 우리 실수 비중', ownErrorShare+'%', 'var(--opp)'],
-      ['서브 득점률', serveRate===null ? '기록 없음' : serveRate+'%', 'var(--own)'],
-      [`${oppTeamName} 공격에 의한 실점`, oppN+'회', 'var(--opp)'],
+      statCard('총 득점', T.forUs+'점', 'var(--own)', `자력 ${n.ourScore} + ${oppTeamName} 범실 ${n.oppError}`),
+      statCard('총 실점', T.against+'점', 'var(--opp)', `${oppTeamName} 득점 ${n.oppScore} + 우리 범실 ${n.ourError}`),
+      statCard('득점률', fmt(M.pointShare), 'var(--accent-text)', '전체 랠리 중 우리가 딴 비율'),
+      statCard('자력 득점 비중', fmt(M.selfShare), 'var(--own)', '득점 중 우리가 잘해서 낸 점수'),
+      statCard('범실 실점 비중', fmt(M.errShare), 'var(--opp)', '실점 중 우리 실수로 내준 점수'),
+      statCard('공격 결정률', fmt(M.atkRate), 'var(--own)', `성공 ${M.atkWin} · 범실 ${M.atkErr} · 블로킹 당함 ${M.atkBlocked}`),
+      statCard('우리 서브', `${M.serveWin}득 / ${M.serveErr}범실`, 'var(--accent-text)', '서브로 낸 점수와 서브 범실'),
+      statCard('리시브 실점', M.recvLoss+'점', 'var(--opp)', `${oppTeamName} 서브 득점 + 우리 리시브·서브캐치 범실`)
     ];
-    const cardsHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;">` +
-      cards.map(([label,val,color])=>`
-        <div style="background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px;">
-          <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px;">${label}</div>
-          <div style="font-size:19px; font-weight:800; color:${color};">${val}</div>
-        </div>
-      `).join('') + `</div>`;
-    // 요인별 분석을 별도 탭이 아니라 요약 바로 아래 한 화면에 이어 붙여 보여줘요.
-    const {scoreCounts, lossCounts} = computeFactorCounts();
-    const scoreEntries = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
-    const lossEntries = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
-    const factorHTML = (scoreEntries.length || lossEntries.length)
-      ? `<div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
-           <div class="field-label" style="margin-top:0; margin-bottom:8px;">요인별 분석</div>
-           ${barsHTML('🟢 득점 요인 TOP', scoreEntries, 'var(--own)')}${barsHTML('🔴 실점 요인 TOP', lossEntries, 'var(--opp)')}
-         </div>`
-      : '';
-    el.innerHTML = cardsHTML + factorHTML;
+    const cardsHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px;">${cards.join('')}</div>`;
+
+    // 득점 구성 막대: 자력 득점과 상대 범실을 한눈에 구분해요.
+    const stack = (a, b, ca, cb, la, lb)=>{
+      const tot = a+b; if(!tot) return '';
+      return `<div style="display:flex; height:22px; border-radius:6px; overflow:hidden; margin:4px 0 2px;">
+        ${a?`<div style="flex:${a}; background:${ca}; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff;">${la} ${a}</div>`:''}
+        ${b?`<div style="flex:${b}; background:${cb}; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff;">${lb} ${b}</div>`:''}
+      </div>`;
+    };
+    const compHTML = `<div style="margin-top:14px;">
+      <div class="field-label" style="margin-top:0;">득점 구성</div>${stack(n.ourScore, n.oppError, 'var(--own)', 'rgba(110,140,255,0.45)', '자력', '상대 범실')}
+      <div class="field-label">실점 구성</div>${stack(n.oppScore, n.ourError, 'var(--opp)', 'rgba(255,107,129,0.45)', '상대 득점', '우리 범실')}
+    </div>`;
+
+    const top = b => sortDesc(T.byLabel[b]).slice(0,6);
+    const factorHTML = `<div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
+      <div class="field-label" style="margin-top:0; margin-bottom:8px;">요인별 분석 <span style="font-weight:400; color:var(--muted);">— 잘해서 난 점수와 실수로 난 점수를 따로 봐요</span></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); column-gap:18px;">
+        <div>${barsHTML(`🔵 ${bucketName('ourScore')} (자력) TOP`, top('ourScore'), 'var(--own)')}${barsHTML(`🎁 ${bucketName('oppError')}로 얻은 점수`, top('oppError'), 'rgba(110,140,255,0.55)')}</div>
+        <div>${barsHTML(`⚠️ ${bucketName('ourError')} TOP`, top('ourError'), 'var(--opp)')}${barsHTML(`🔴 ${bucketName('oppScore')} TOP`, top('oppScore'), 'rgba(255,107,129,0.55)')}</div>
+      </div>
+    </div>`;
+
+    el.innerHTML = cardsHTML + compHTML + factorHTML + (graphSet==='all' ? setCompareHTML() : '');
+  }
+  function setCompareHTML(){
+    const sets = setsWithData();
+    if(sets.length < 2) return '';
+    const rows = sets.map(s=>{
+      const M = computeMetrics(allEntries(records.filter(r=>(r.set||1)===s)));
+      const diff = M.T.forUs - M.T.against;
+      return `<tr>
+        <td style="padding:6px 8px; font-weight:700;">${s}세트</td>
+        <td style="padding:6px 8px;">${M.T.forUs} <span style="color:var(--muted); font-size:11px;">(자력 ${M.n.ourScore}·상대범실 ${M.n.oppError})</span></td>
+        <td style="padding:6px 8px;">${M.T.against} <span style="color:var(--muted); font-size:11px;">(상대 ${M.n.oppScore}·우리범실 ${M.n.ourError})</span></td>
+        <td style="padding:6px 8px;">${M.pointShare===null?'—':M.pointShare+'%'}</td>
+        <td style="padding:6px 8px; font-weight:700; color:${diff>0?'var(--own)':diff<0?'var(--opp)':'var(--text-dim)'};">${diff>0?'+':''}${diff}</td>
+      </tr>`;
+    }).join('');
+    return `<div style="margin-top:6px; padding-top:14px; border-top:1px solid var(--border);">
+      <div class="field-label" style="margin-top:0;">세트별 비교</div>
+      <div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead><tr style="color:var(--text-dim); text-align:left; border-bottom:1px solid var(--border);">
+          <th style="padding:6px 8px;">세트</th><th style="padding:6px 8px;">득점</th><th style="padding:6px 8px;">실점</th><th style="padding:6px 8px;">득점률</th><th style="padding:6px 8px;">점수 차</th>
+        </tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="field-note" style="margin-top:4px;">위의 세트 버튼을 누르면 그 세트만 따로 자세히 볼 수 있어요.</div>
+    </div>`;
   }
 
   function renderPlayerChart(){
@@ -4082,100 +4301,134 @@
       el.innerHTML = '<span class="field-note" style="margin:0;">선수를 지정해서 기록하면 선수별 지표가 여기 나타나요.</span>';
       return;
     }
-    const scoreCounts = {}, lossCounts = {};
+    const win = {}, err = {}, involved = {};
     entries.forEach(e=>{
       const label = e.player.label;
-      if(e.category==='득점') scoreCounts[label] = (scoreCounts[label]||0)+1;
-      else if(e.category==='상대공격' || e.category==='미스') lossCounts[label] = (lossCounts[label]||0)+1;
+      if(e.bucket==='ourScore') win[label] = (win[label]||0)+1;
+      else if(e.bucket==='ourError') err[label] = (err[label]||0)+1;
+      else if(e.bucket==='oppScore') involved[label] = (involved[label]||0)+1;
     });
-    const scoreEntries = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]);
-    const lossEntries = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]);
-    el.innerHTML = barsHTML('🟢 선수별 득점 관여', scoreEntries, 'var(--own)') + barsHTML('🔴 선수별 실점 관여', lossEntries, 'var(--opp)');
+    el.innerHTML =
+      `<div class="field-note" style="margin-top:0; margin-bottom:8px;">${oppTeamName} 범실로 얻은 점수는 선수 개인의 득점으로 세지 않아요.</div>` +
+      barsHTML('🔵 선수별 자력 득점', sortDesc(win), 'var(--own)') +
+      barsHTML('⚠️ 선수별 범실', sortDesc(err), 'var(--opp)') +
+      barsHTML(`🔴 ${oppTeamName} 득점 때 관여`, sortDesc(involved), 'rgba(255,107,129,0.55)', '블로킹 당함·리시브 실패 등 상대 득점 장면에 지정된 선수예요.');
   }
 
+  function heatFill(st, maxTotal){
+    const total = st ? st.score+st.loss : 0;
+    if(!total) return 'var(--panel-2)';
+    const a = (0.12+0.55*(total/maxTotal)).toFixed(2);
+    const d = st.score - st.loss;
+    return d>0 ? `rgba(61,214,140,${a})` : d<0 ? `rgba(255,107,129,${a})` : `rgba(243,223,162,${a})`;
+  }
+  function collectCells(entries, keyOf){
+    const cells = {};
+    entries.forEach(e=>{
+      const k = keyOf(e); if(k===null) return;
+      if(!cells[k]) cells[k] = {score:0, loss:0, labels:{}};
+      if(e.forUs) cells[k].score++; else cells[k].loss++;
+      const tag = `${bucketName(e.bucket)} ${e.label}`;
+      cells[k].labels[tag] = (cells[k].labels[tag]||0)+1;
+    });
+    return cells;
+  }
   function renderZoneChart(){
     const el = document.getElementById('zoneChart');
-    const entries = allEntries().filter(e=>e.zone);
-    if(!entries.length){
+    const all = allEntries();
+    const blockEntries = all.filter(e=>e.zone);
+    const nineEntries = all.filter(e=>e.grid9);
+    if(!blockEntries.length && !nineEntries.length){
       el.innerHTML = '<span class="field-note" style="margin:0;">득실 위치를 찍어서 기록하면 위치별 지표가 여기 나타나요.</span>';
       return;
     }
-    // 막대그래프 대신 "득실 위치" 피커와 같은 코트 그림 위에, 각 구역에서 실제 어떤 기록이
-    // 있었는지(득점/실점 수, 구체적 옵션명) 한눈에 보이도록 그려요.
-    const cellStats = {}; // 'row,col' -> {score, loss, labels:{optionLabel:count}}
-    entries.forEach(e=>{
-      const key = e.zone.row+','+e.zone.col;
-      if(!cellStats[key]) cellStats[key] = {score:0, loss:0, labels:{}};
-      const st = cellStats[key];
-      if(e.category==='득점') st.score++;
-      else if(e.category==='상대공격' || e.category==='미스') st.loss++;
-      else return;
-      st.labels[e.optionLabel] = (st.labels[e.optionLabel]||0)+1;
-    });
-    const maxTotal = Math.max(1, ...Object.values(cellStats).map(s=>s.score+s.loss));
-    const rowH = (70-24)/2;
-    let cellsSVG = '';
-    ZONE_LABELS.forEach((rowLabels, row)=>{
-      const cw = 220/rowLabels.length;
-      rowLabels.forEach((text, col)=>{
-        const x = col*cw, y = 24 + row*rowH;
-        const st = cellStats[row+','+col];
-        const total = st ? st.score+st.loss : 0;
-        const netSign = st ? st.score - st.loss : 0;
-        // green-ish when score-heavy, red-ish when loss-heavy, neutral panel color when empty
-        const fill = !total ? 'var(--panel-2)'
-          : netSign>0 ? `rgba(61,214,140,${(0.12+0.55*(total/maxTotal)).toFixed(2)})`
-          : netSign<0 ? `rgba(255,107,129,${(0.12+0.55*(total/maxTotal)).toFixed(2)})`
-          : `rgba(243,223,162,${(0.12+0.55*(total/maxTotal)).toFixed(2)})`;
-        const detail = st ? Object.entries(st.labels).sort((a,b)=>b[1]-a[1]).map(([l,n])=>`${l} ${n}`).join(', ') : '기록 없음';
-        cellsSVG += `<g>
-          <rect x="${x+2}" y="${y+2}" width="${cw-4}" height="${rowH-4}" rx="5" fill="${fill}" stroke="var(--border)" stroke-width="1.5">
-            <title>${text} — ${detail}</title>
-          </rect>
-          <text x="${x+cw/2}" y="${y+rowH/2-2}" text-anchor="middle" font-size="7" fill="var(--text-dim)" style="pointer-events:none;">${text}</text>
-          ${total ? `<text x="${x+cw/2}" y="${y+rowH/2+9}" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--text)" style="pointer-events:none;">${st.score}득 ${st.loss}실</text>` : ''}
-        </g>`;
+    let html = `<div class="field-note" style="margin-top:0; margin-bottom:8px;">초록은 우리가 점수를 더 많이 딴 칸, 빨강은 더 많이 내준 칸이에요. 색이 진할수록 기록이 많아요. 칸에 마우스를 올리면 구체적인 상황을 볼 수 있어요.</div>`;
+    if(nineEntries.length){
+      const cells = collectCells(nineEntries, e=>e.grid9.row+','+e.grid9.col);
+      const maxT = Math.max(1, ...Object.values(cells).map(s=>s.score+s.loss));
+      const names = [['왼쪽 앞','중앙 앞','오른쪽 앞'],['왼쪽 중간','중앙','오른쪽 중간'],['왼쪽 뒤','중앙 뒤','오른쪽 뒤']];
+      let grid = '';
+      for(let r=0;r<3;r++) for(let c=0;c<3;c++){
+        const st = cells[r+','+c];
+        const detail = st ? sortDesc(st.labels).map(([l,k])=>`${l} ${k}`).join('\n') : '기록 없음';
+        grid += `<div title="${names[r][c]}\n${detail}" style="background:${heatFill(st,maxT)}; border:1px solid var(--border); border-radius:6px; padding:8px 4px; text-align:center; min-height:46px;">
+          <div style="font-size:11px; color:var(--text-dim);">${names[r][c]}</div>
+          ${st ? `<div style="font-size:12.5px; font-weight:800; color:var(--text);">${st.score}득 ${st.loss}실</div>` : ''}
+        </div>`;
+      }
+      html += `<div class="field-label" style="margin-top:0;">공격 위치 (3×3 구역)</div>
+        <div class="nine-court" style="margin-bottom:14px;">
+          <div class="net-bar"><span>네트</span><em>↑ 상대 코트</em></div>
+          <div class="row-tags"><div class="front">전위</div><div>중위</div><div>후위</div></div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:4px; padding:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md);">${grid}</div>
+        </div>`;
+    }
+    if(blockEntries.length){
+      const cellStats = collectCells(blockEntries, e=>e.zone.row+','+e.zone.col);
+      const maxTotal = Math.max(1, ...Object.values(cellStats).map(s=>s.score+s.loss));
+      const rowH = (70-24)/2;
+      let cellsSVG = '';
+      ZONE_LABELS.forEach((rowLabels, row)=>{
+        const cw = 220/rowLabels.length;
+        rowLabels.forEach((text, col)=>{
+          const x = col*cw, y = 24 + row*rowH;
+          const st = cellStats[row+','+col];
+          const total = st ? st.score+st.loss : 0;
+          const detail = st ? sortDesc(st.labels).map(([l,n])=>`${l} ${n}`).join(', ') : '기록 없음';
+          cellsSVG += `<g>
+            <rect x="${x+2}" y="${y+2}" width="${cw-4}" height="${rowH-4}" rx="5" fill="${heatFill(st,maxTotal)}" stroke="var(--border)" stroke-width="1.5">
+              <title>${text} — ${detail}</title>
+            </rect>
+            <text x="${x+cw/2}" y="${y+rowH/2-2}" text-anchor="middle" font-size="7" fill="var(--text-dim)" style="pointer-events:none;">${text}</text>
+            ${total ? `<text x="${x+cw/2}" y="${y+rowH/2+9}" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--text)" style="pointer-events:none;">${st.score}득 ${st.loss}실</text>` : ''}
+          </g>`;
+        });
       });
-    });
-    el.innerHTML = `
-      <div class="field-note" style="margin-top:0; margin-bottom:6px;">구역에 마우스를 올리면 그 위치에서 있었던 구체적인 상황을 볼 수 있어요.</div>
-      <svg viewBox="0 0 220 70" style="width:100%; display:block;">
-        <rect x="0" y="14" width="220" height="56" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
-        <rect x="0" y="6" width="220" height="12" fill="var(--accent)"/>
-        <text x="110" y="14.4" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" letter-spacing="0.5">네트</text>
-        <text x="216" y="14.2" text-anchor="end" font-size="5.2" fill="rgba(255,255,255,0.85)">↑ 상대 코트</text>
-        ${cellsSVG}
-      </svg>`;
+      html += `<div class="field-label" style="margin-top:0;">블로킹 위치 (네트 앞)</div>
+        <svg viewBox="0 0 220 70" style="width:100%; display:block;">
+          <rect x="0" y="14" width="220" height="56" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
+          <rect x="0" y="6" width="220" height="12" fill="var(--accent)"/>
+          <text x="110" y="14.4" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" letter-spacing="0.5">네트</text>
+          <text x="216" y="14.2" text-anchor="end" font-size="5.2" fill="rgba(255,255,255,0.85)">↑ 상대 코트</text>
+          ${cellsSVG}
+        </svg>`;
+    }
+    el.innerHTML = html;
   }
 
   function renderTrendChart(){
     const el = document.getElementById('trendChart');
-    const entries = allEntries().filter(e=>e.category && (e.category==='득점' || e.category==='상대공격' || e.category==='미스')).sort((a,b)=>a.time-b.time);
+    const entries = allEntries().slice().sort((a,b)=> (a.set-b.set) || (a.time-b.time));
     if(entries.length < 2){
-      el.innerHTML = '<span class="field-note" style="margin:0;">기록이 몇 개 더 쌓이면 시간 흐름에 따른 점수 차 추세가 나타나요.</span>';
+      el.innerHTML = '<span class="field-note" style="margin:0;">기록이 몇 개 더 쌓이면 흐름에 따른 점수 차 추세가 나타나요.</span>';
       return;
     }
+    // 가로축은 기록 순서예요(세트가 바뀌면 세로 점선). 세트마다 영상 시간이 0부터 다시 시작해도 흐름이 섞이지 않아요.
     let running = 0;
-    const points = [{t:0, v:0}];
-    entries.forEach(e=>{
-      running += (e.category==='득점') ? 1 : -1;
-      points.push({t:e.time, v:running});
+    const points = [{i:0, v:0}];
+    const setBreaks = [];
+    entries.forEach((e,i)=>{
+      if(i>0 && e.set!==entries[i-1].set) setBreaks.push({i, set:e.set});
+      running += e.forUs ? 1 : -1;
+      points.push({i:i+1, v:running});
     });
     const W=520, H=140, pad=28;
-    const maxT = Math.max(...points.map(p=>p.t), 1);
+    const maxI = points.length-1;
     const maxAbsV = Math.max(...points.map(p=>Math.abs(p.v)), 1);
-    const xOf = t => pad + (t/maxT)*(W-pad*2);
+    const xOf = i => pad + (i/maxI)*(W-pad*2);
     const yOf = v => H/2 - (v/maxAbsV)*(H/2-pad*0.4);
-    const pathD = points.map((p,i)=>`${i===0?'M':'L'} ${xOf(p.t).toFixed(1)},${yOf(p.v).toFixed(1)}`).join(' ');
-    const finalUp = points[points.length-1].v >= 0;
+    const pathD = points.map((p,k)=>`${k===0?'M':'L'} ${xOf(p.i).toFixed(1)},${yOf(p.v).toFixed(1)}`).join(' ');
+    const finalV = points[points.length-1].v;
+    const breaks = setBreaks.map(b=>`<line x1="${xOf(b.i)}" y1="8" x2="${xOf(b.i)}" y2="${H-8}" stroke="var(--muted)" stroke-dasharray="3 3"/><text x="${xOf(b.i)+3}" y="16" font-size="9" fill="var(--text-dim)">${b.set}세트</text>`).join('');
     el.innerHTML = `
-      <div class="field-note" style="margin-top:0;">시간 흐름에 따른 누적 점수 차예요 (득점 +1, 실점 -1). 선이 올라갈수록 우리 팀이 앞서고 있었다는 뜻이에요.</div>
+      <div class="field-note" style="margin-top:0;">기록 순서에 따른 누적 점수 차예요 (우리가 딴 점수 +1, 내준 점수 -1). 선이 올라갈수록 ${ourTeamName}이(가) 앞서고 있었다는 뜻이에요.</div>
       <svg viewBox="0 0 ${W} ${H}" style="width:100%; display:block; margin-top:6px;">
         <line x1="${pad}" y1="${H/2}" x2="${W-pad}" y2="${H/2}" stroke="var(--border)" stroke-width="1"/>
-        <path d="${pathD}" fill="none" stroke="${finalUp?'var(--own)':'var(--opp)'}" stroke-width="2.2"/>
+        ${breaks}
+        <path d="${pathD}" fill="none" stroke="${finalV>=0?'var(--own)':'var(--opp)'}" stroke-width="2.2"/>
       </svg>
       <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-dim);">
-        <span>경기 시작</span><span>최종 점수 차: ${points[points.length-1].v>0?'+':''}${points[points.length-1].v}</span>
+        <span>${scopeLabel()} 시작</span><span>최종 점수 차: ${finalV>0?'+':''}${finalV}</span>
       </div>`;
   }
 
@@ -4186,54 +4439,82 @@
     renderTrendChart();
   }
 
+  const GRAPH_TAB_PANELS = {summary:'graphSummary', player:'playerChart', zone:'zoneChart', trend:'trendChart', help:'graphHelp'};
   document.querySelectorAll('#graphTabSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#graphTabSeg button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      ['summary','player','zone','trend'].forEach(tab=>{
-        document.getElementById({summary:'graphSummary',player:'playerChart',zone:'zoneChart',trend:'trendChart'}[tab]).style.display = (tab===btn.dataset.tab) ? '' : 'none';
+      Object.entries(GRAPH_TAB_PANELS).forEach(([tab,id])=>{
+        document.getElementById(id).style.display = (tab===btn.dataset.tab) ? '' : 'none';
       });
+    });
+  });
+  document.querySelectorAll('#graphSetSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#graphSetSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      graphSet = btn.dataset.gset;
+      renderAllGraphs();
+      renderAutoAnalysis();
     });
   });
 
   function renderAutoAnalysis(){
     const el = document.getElementById('autoAnalysis');
-    const {scoreCounts, lossCounts} = computeFactorCounts();
-    const totalScore = Object.values(scoreCounts).reduce((a,b)=>a+b,0);
-    const totalLoss = Object.values(lossCounts).reduce((a,b)=>a+b,0);
-    if(totalScore+totalLoss===0){
-      el.innerHTML = '<span class="field-note" style="margin:0;">아직 기록이 없어서 자동 요약을 만들 수 없어요. 빠른 기록 배너로 득점·실점을 기록해보세요.</span>';
+    const entries = allEntries();
+    if(!entries.length){
+      el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어서 자동 요약을 만들 수 없어요. 빠른 기록 배너로 득점·실점을 기록해보세요.' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
       return;
     }
-    const sortedScore = Object.entries(scoreCounts).sort((a,b)=>b[1]-a[1]);
-    const sortedLoss = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]);
+    const M = computeMetrics(entries);
+    const {n, T} = M;
+    // 같은 상황(예: 레프트)의 여러 방식(페인트·강타 …)을 한데 모아 보고, 괄호 안에 방식별 횟수를 보여줘요.
+    const topByMain = bucket=>{
+      const g = {};
+      entries.filter(e=>e.bucket===bucket).forEach(e=>{
+        const key = e.main===FOUL_MAIN ? '파울' : e.main;
+        if(!g[key]) g[key] = {n:0, d:{}};
+        g[key].n++;
+        if(e.detail) g[key].d[e.detail] = (g[key].d[e.detail]||0)+1;
+      });
+      const best = Object.entries(g).sort((a,b)=>b[1].n-a[1].n)[0];
+      if(!best) return null;
+      const det = sortDesc(best[1].d).map(([d,k])=>`${d} ${k}`).join(', ');
+      return {name:best[0], n:best[1].n, det: det ? ` (${det})` : ''};
+    };
     const lines = [];
-    lines.push(`<p>이번 경기에서 총 <b>${totalScore}번 득점</b>, <b>${totalLoss}번 실점</b>이 기록됐어요.</p>`);
-    // 상대 파울로 얻은 점수는 "잘 통하는 패턴"이 아니니 득점 요인에서는 빼고, 아래 파울 문장에서 따로 알려줘요.
-    const ownScore = sortedScore.filter(([k])=>!FOUL_OPTIONS.has(k));
-    if(ownScore.length){
-      const [topLabel, topN] = ownScore[0];
-      const pct = Math.round(topN/totalScore*100);
-      lines.push(`<p>✅ <b>득점 요인</b> — "${topLabel}"이(가) 전체 득점의 ${pct}%(${topN}회)로 가장 큰 비중을 차지해요. 이 패턴이 잘 통하고 있으니 계속 활용해보세요.</p>`);
+    lines.push(`<p><b>${scopeLabel()}</b>에서 ${ourTeamName}은(는) <b>${T.forUs}점</b>을 얻고 <b>${T.against}점</b>을 내줬어요.${T.forUs ? ` 얻은 점수 중 <b>자력 득점이 ${n.ourScore}점</b>${n.oppError ? `, ${oppTeamName} 범실로 얻은 점수가 ${n.oppError}점` : ''}이에요.` : ''}</p>`);
+    const ourTop = topByMain('ourScore');
+    if(ourTop){
+      lines.push(`<p>✅ <b>강점</b> — 자력 득점 ${n.ourScore}점 중 "${ourTop.name}"이(가) ${ourTop.n}회(${pct(ourTop.n,n.ourScore)}%)${ourTop.det}로 가장 많아요. 잘 통하는 패턴이니 계속 활용해보세요.</p>`);
     }
-    if(sortedLoss.length){
-      const [topLabel, topN] = sortedLoss[0];
-      const pct = Math.round(topN/totalLoss*100);
-      lines.push(`<p>⚠️ <b>보완할 점</b> — "${topLabel}"으로 인한 실점이 전체의 ${pct}%(${topN}회)로 가장 많아요. 이 부분을 훈련에서 집중적으로 다뤄보면 좋겠어요.</p>`);
+    const errTop = topByMain('ourError');
+    if(errTop){
+      lines.push(`<p>⚠️ <b>줄일 수 있는 실점</b> — ${ourTeamName} 범실 ${n.ourError}회 중 "${errTop.name}"이(가) ${errTop.n}회${errTop.det}로 가장 많아요. 실점의 ${M.errShare}%가 우리 실수였으니, 이 부분을 훈련하면 바로 점수로 이어져요.</p>`);
     }
-    const sumFouls = counts => Object.entries(counts).filter(([k])=>FOUL_OPTIONS.has(k));
-    const oppFouls = sumFouls(scoreCounts).sort((a,b)=>b[1]-a[1]);
-    const oppFoulN = oppFouls.reduce((a,[,n])=>a+n,0);
-    if(oppFoulN>0) lines.push(`<p>🎯 ${oppTeamName}의 파울(반칙)로 얻은 점수가 ${oppFoulN}회 있었어요(가장 많은 파울: "${oppFouls[0][0]}" ${oppFouls[0][1]}회). ${ourTeamName}의 플레이가 ${oppTeamName}에게 부담을 주고 있을 수 있어요.</p>`);
-    const ourFouls = sumFouls(lossCounts).sort((a,b)=>b[1]-a[1]);
-    const ourFoulN = ourFouls.reduce((a,[,n])=>a+n,0);
-    if(ourFoulN>0) lines.push(`<p>🚩 ${ourTeamName}의 파울(반칙)로 내준 점수가 ${ourFoulN}회 있었어요(가장 많은 파울: "${ourFouls[0][0]}" ${ourFouls[0][1]}회). 규칙을 다시 짚어보고 해당 동작을 훈련해보면 쉽게 줄일 수 있는 실점이에요.</p>`);
-    const blockLossN = lossCounts['블로킹']||0;
-    if(blockLossN>0 && totalLoss>0){
-      const pct = Math.round(blockLossN/totalLoss*100);
-      if(pct>=25) lines.push(`<p>🧱 블로킹 관련 실점이 전체 실점의 ${pct}%를 차지해요. 블로킹 타이밍이나 손 모양 훈련을 강화해보는 게 도움이 될 수 있어요.</p>`);
+    const oppTop = topByMain('oppScore');
+    if(oppTop){
+      lines.push(`<p>🔴 <b>${oppTeamName}의 주 득점 루트</b> — "${oppTop.name}" ${oppTop.n}회${oppTop.det}. 이 상황에 대한 수비 대형·블로킹 위치를 점검해보세요.</p>`);
     }
-    lines.push(`<p class="analysis-disclaimer">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
+    if(n.oppError>0){
+      const t = topByMain('oppError');
+      lines.push(`<p>🎁 ${oppTeamName} 범실로 얻은 점수가 ${n.oppError}회 있었어요(가장 많은 것: "${t.name}" ${t.n}회${t.det}). 상대 실수에 기댄 점수라서 자력 득점과는 따로 봐야 해요.</p>`);
+    }
+    if(M.atkTotal>=3){
+      lines.push(`<p>🏐 공격 결정률은 ${M.atkRate}%예요(성공 ${M.atkWin} · 범실 ${M.atkErr} · 블로킹 당함 ${M.atkBlocked}).${M.atkBlocked>=Math.max(2,M.atkWin/2)?' 블로킹에 막힌 공격이 많아요. 공격 코스나 페인트 활용을 늘려보세요.':''}</p>`);
+    }
+    if(M.recvLoss>0){
+      lines.push(`<p>🛡️ 리시브 관련 실점이 ${M.recvLoss}점이에요(${oppTeamName} 서브 득점 + 리시브·서브캐치 범실). 리시브 대형을 다시 확인해보면 좋겠어요.</p>`);
+    }
+    if(graphSet==='all'){
+      const sets = setsWithData();
+      if(sets.length>=2){
+        const per = sets.map(s=>{ const m = computeMetrics(allEntries(records.filter(r=>(r.set||1)===s))); return {s, diff:m.T.forUs-m.T.against, err:m.n.ourError}; });
+        const best = per.reduce((a,b)=>b.diff>a.diff?b:a), worst = per.reduce((a,b)=>b.diff<a.diff?b:a);
+        if(best.s!==worst.s) lines.push(`<p>📊 <b>세트 흐름</b> — ${best.s}세트가 가장 좋았고(점수 차 ${best.diff>0?'+':''}${best.diff}), ${worst.s}세트가 가장 어려웠어요(점수 차 ${worst.diff>0?'+':''}${worst.diff}, 우리 범실 ${worst.err}회).</p>`);
+      }
+    }
+    lines.push(`<p class="analysis-disclaimer">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 계산 방법은 그래프의 "설명" 탭에서 볼 수 있어요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
     el.innerHTML = lines.join('');
   }
 
@@ -4301,7 +4582,7 @@
     readOnlyFolderView = on;
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
     ['qrRecordBtn','btnRecordMoment','btnClearZone','btnClearNineZone',
-     'videoPlayerSelect','qrOptionSelect','coachNotes',
+     'videoPlayerSelect','qrOptionSelect','qrDetailSelect','coachNotes',
      'btnNewMatchFolder','btnSaveMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
     document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input').forEach(el=>el.disabled=on);
@@ -4480,7 +4761,7 @@
     return s;
   }
   function buildRecordsCSV(){
-    const header = ['영상','시간','카테고리','옵션','메모'];
+    const header = ['세트','영상','시간','팀','결과','분류','세부 상황','방식','위치','선수','메모'];
     const rows = [header];
     records.slice().sort((a,b)=>{
       const av=a.videoName||'', bv=b.videoName||'';
@@ -4489,9 +4770,15 @@
     }).forEach(r=>{
       const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
       if(entries.length){
-        entries.forEach(e=>{ rows.push([r.videoName||'', fmtTime(r.time), e.category, e.optionLabel, r.label||'']); });
+        entries.forEach(e=>{
+          const n = normEntry(e);
+          const teamName = n.team==='our' ? ourTeamName : n.team==='opp' ? oppTeamName : '';
+          const loc = r.grid9 ? r.grid9.label : (r.zone ? ZONE_LABELS[r.zone.row][r.zone.col] : '');
+          rows.push([(r.set||1)+'세트', r.videoName||'', fmtTime(r.time), teamName, n.outcome==='score'?'득점':n.outcome==='fault'?'범실':'',
+            n.bucket ? bucketName(n.bucket) : '', n.main, n.detail, loc, r.player ? r.player.label : '', r.label||'']);
+        });
       } else {
-        rows.push([r.videoName||'', fmtTime(r.time), '', '', r.label||'']);
+        rows.push([(r.set||1)+'세트', r.videoName||'', fmtTime(r.time), '', '', '', '', '', '', r.player ? r.player.label : '', r.label||'']);
       }
     });
     return rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
