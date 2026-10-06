@@ -267,6 +267,24 @@
   .modal-body b{ color:var(--text); }
   .feature-guide-block{ margin-bottom:16px; }
   .feature-guide-block h3{ font-family:var(--display); font-weight:700; font-size:13.5px; color:var(--accent-text); margin:0 0 6px; }
+  .guide-intro{ font-size:12.5px; color:var(--text-dim); line-height:1.6; margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+  .guide-steps{ list-style:none; margin:0 0 14px; padding:0; counter-reset:guideStep; }
+  .guide-steps li{ position:relative; padding-left:36px; margin-bottom:13px; font-size:12.5px; line-height:1.55; color:var(--text-dim); }
+  .guide-steps li:last-child{ margin-bottom:0; }
+  .guide-steps li::before{
+    counter-increment:guideStep; content:counter(guideStep);
+    position:absolute; left:0; top:-1px; width:24px; height:24px; border-radius:50%;
+    background:var(--grad); color:var(--on-accent); font-weight:800; font-size:12px;
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono);
+  }
+  .guide-steps li b{ display:block; color:var(--text); margin-bottom:2px; font-size:13px; }
+  .guide-note-box{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px; font-size:11.5px; color:var(--text-dim); line-height:1.6; margin-top:2px; }
+  .guide-note-box b{ color:var(--text); }
+  #guideTabSeg{ margin-bottom:16px; }
+  .guide-section{ display:none; }
+  .guide-section.active{ display:block; }
+  .guide-footer{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid var(--border); flex-wrap:wrap; }
+  .guide-footer label{ font-size:11.5px; color:var(--text-dim); display:flex; align-items:center; gap:6px; cursor:pointer; }
 
   #desktopSplit{ display:flex; flex-direction:column; }
   #mainAppCol{ min-width:0; max-width:1400px; margin:0 auto; width:100%; }
@@ -605,27 +623,54 @@
 </div>
 
 <div id="featureGuideModal" class="modal-overlay" style="display:none;">
-  <div class="modal-card">
+  <div class="modal-card" style="max-width:620px;">
     <button class="modal-close" id="btnCloseFeatureGuide">✕</button>
-    <h2>기능 설명</h2>
+    <h2>🏐 기능 설명 &amp; 사용 설명</h2>
     <div class="modal-body">
-      <div class="feature-guide-block">
-        <h3>🏐 전술 시뮬레이션</h3>
-        <p><b>이렇게 써요</b> — 위쪽 제목을 클릭하거나 "대형 저장 & 편집"의 시나리오 드롭다운으로 공격 상황을 고르고, 재생 버튼으로 애니메이션을 봐요. "시작 위치"/"도착 위치" 편집 모드에서 도트를 직접 드래그해 원하는 대형으로 바꾸고 폴더에 저장해두면 다음에 바로 불러올 수 있어요.</p>
-        <p><b>특징</b> — 블로킹은 도트를 네트 앞 블로킹 존에 직접 놓아야만 인식돼요(자동으로 생기지 않아요). 착지 방향은 9칸 격자로 정밀하게 지정할 수 있고, 블로킹 바로 뒤로 착지시키면 곡선 궤적(페이크성 샷)으로 표현돼요.</p>
-        <p><b>안 되는 것</b> — 여러 사람이 동시에 편집한 내용이 실시간으로 서로에게 바로 보이진 않아요(저장 후 새로고침하면 반영돼요). 블로킹 인원을 숫자로 미리 정해두는 기능은 없고, 도트 위치로만 판단해요.</p>
+      <p class="guide-intro">이 프로그램은 ① 공격 상황별 대형을 시뮬레이션하는 <b>전술 시뮬레이션</b>, ② 실제 경기 영상을 보며 득점·실점을 기록하고 자동으로 분석해주는 <b>경기 영상 분석</b>, ③ 구성원·권한을 관리하는 <b>설정</b>, 이렇게 세 기능으로 이루어져 있어요. 아래에서 순서대로 사용법을 확인해보세요.</p>
+      <div class="seg" id="guideTabSeg">
+        <button data-guide="sim" class="active">🏐 전술 시뮬레이션</button>
+        <button data-guide="video">🎥 경기 영상 분석</button>
+        <button data-guide="settings">⚙️ 설정</button>
       </div>
-      <div class="feature-guide-block">
-        <h3>🎥 경기 영상 분석</h3>
-        <p><b>이렇게 써요</b> — 영상을 올려 재생하면서, 오른쪽 "빠른 기록 배너"에서 포지션·이름을 적어둔 명단 중 관련 선수를 고르고, 코트 9칸 중 득실 위치를 찍은 뒤, 상황에 맞는 항목을 골라 "기록"을 누르세요. 영상이 멈춘 채로 여러 개를 누르면 하나의 기록으로 합쳐져요.</p>
-        <p><b>특징</b> — "그래프"에서 요약·요인별·선수별·위치별·추세 5개 탭으로 데이터를 볼 수 있고, "종합 분석"은 그 기록을 바탕으로 자동 통계 요약을 만들어줘요(실제 총평은 코치님이 그 아래에 직접 적는 칸이에요). 기록·그래프·종합분석·코치 의견을 통째로 "매치 분석 저장"에서 폴더로 저장했다가 나중에 그대로 불러올 수 있고, 그 폴더만 조회 전용 링크로 공유할 수도 있어요.</p>
-        <p><b>안 되는 것</b> — 영상 파일 자체는 서버에 저장되지 않아요(기록·분석만 저장돼요). 그래서 다른 기기나 나중에 다시 들어오면 같은 영상 파일을 직접 다시 첨부해야 해요. "종합 분석"은 실제 AI가 아니라 기록을 집계한 통계이며, 조회 전용 링크로 들어온 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</p>
+
+      <div class="guide-section active" id="guideSection-sim">
+        <ol class="guide-steps">
+          <li><b>포지션을 배정해요</b> — "포지션 배정"에서 아군·상대팀의 공격수·세터·리시브 역할을 정해요. 레프트백·센터백·라이트백은 리베로 역할이라 블로킹에 가담하지 않아요.</li>
+          <li><b>공격 상황을 골라요</b> — 가운데 제목을 클릭하거나 "대형 저장 &amp; 편집"의 시나리오 드롭다운에서 보고 싶은 공격 유형을 선택해요.</li>
+          <li><b>재생해서 확인해요</b> — ▶ 재생 버튼을 누르면 선택한 상황의 대형과 움직임이 애니메이션으로 재생돼요.</li>
+          <li><b>원하면 직접 수정해요</b> — "시작 위치"/"도착 위치" 편집 모드에서 도트를 드래그해 대형을 바꿔요. 블로킹은 도트를 네트 앞 블로킹 존에 직접 놓아야 인식되고, 착지 방향은 9칸 격자로 정밀하게 지정할 수 있어요.</li>
+          <li><b>필요하면 저장해요</b> — 바꾼 대형을 폴더에 저장해두면 다음에 바로 불러와서 다시 쓸 수 있어요.</li>
+        </ol>
+        <div class="guide-note-box">⚠️ <b>참고</b> — 여러 사람이 동시에 편집해도 실시간으로 서로에게 바로 보이진 않아요(저장 후 새로고침하면 반영돼요). 블로킹 인원은 숫자로 미리 정하는 게 아니라 도트 위치로만 판단해요.</div>
       </div>
-      <div class="feature-guide-block">
-        <h3>⚙️ 설정</h3>
-        <p><b>이렇게 써요</b> — 가입 링크 공유, 비밀번호 변경, 구성원 목록 확인(포지션·대회 출전 여부 지정)까지 개설자가 관리해요. 수정 권한을 가진 사람은 "수정·저장 활동 로그"를 볼 수 있어요.</p>
-        <p><b>특징</b> — 조회 비밀번호로 처음 들어온 사람은 이름을 반드시 적어야 가입되고, 개설자가 나중에 그 사람에게 수정 권한이나 개설자 권한을 줄 수 있어요. 구성원을 삭제하면 그 사람의 권한도 함께 사라져요.</p>
-        <p><b>안 되는 것</b> — 구성원 스스로 자기 권한을 바꿀 수는 없어요(개설자만 가능해요). 삭제된 구성원은 되돌릴 수 없고, 다시 가입해야 해요.</p>
+
+      <div class="guide-section" id="guideSection-video">
+        <ol class="guide-steps">
+          <li><b>영상을 올려요</b> — 분석할 경기 영상 파일을 첨부하고 재생해요.</li>
+          <li><b>팀 이름과 명단을 적어요</b> — 상대팀·우리팀 이름과 포지션별 명단(선택)을 적어두면 기록에 그대로 반영돼요.</li>
+          <li><b>팀 → 결과 유형을 골라요</b> — "빠른 기록 배너"에서 상대팀/우리팀 중 하나, 그다음 득점/범실 중 하나를 선택해요.</li>
+          <li><b>세부 상황과 위치를 골라요</b> — 드롭다운에서 상황(레프트, 서브, 블로킹 등)을 고르면, 그에 맞는 위치 선택 칸(네트 5칸 또는 3×3 9칸)이 필요할 때만 나타나요. 관련 선수도 함께 지정할 수 있어요.</li>
+          <li><b>"기록"을 눌러요</b> — 지금 시간이 저장돼요. 영상이 멈춘 채로 여러 개를 누르면 하나의 기록으로 합쳐져요.</li>
+          <li><b>그래프와 종합 분석을 확인해요</b> — "그래프"에서 요약·선수별·위치별·추세로 데이터를 보고, "종합 분석"이 자동 통계 요약을 만들어줘요(실제 총평은 그 아래에 직접 적어요).</li>
+          <li><b>폴더로 저장해요</b> — "매치 분석 저장"에서 "+ 새 폴더 추가"를 누르면 그 폴더가 활성화돼서 이후 기록이 자동으로 함께 저장돼요. 다른 경기를 새로 시작할 때도 같은 방식으로 폴더를 추가하면 돼요.</li>
+        </ol>
+        <div class="guide-note-box">⚠️ <b>참고</b> — 영상 파일 자체는 서버에 저장되지 않아요(기록·분석만 저장돼요). 다른 기기에서 열면 같은 영상 파일을 다시 첨부해야 해요. "종합 분석"은 실제 AI가 아니라 기록을 집계한 통계이고, 조회 전용 링크로 들어온 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
+      </div>
+
+      <div class="guide-section" id="guideSection-settings">
+        <ol class="guide-steps">
+          <li><b>가입 링크를 공유해요</b> — "설정"에서 조회/수정 비밀번호가 담긴 링크를 만들어 구성원에게 공유해요.</li>
+          <li><b>처음 들어온 사람은 이름을 적어요</b> — 비밀번호로 처음 입장하면 이름을 반드시 입력해야 구성원으로 등록돼요.</li>
+          <li><b>권한을 관리해요</b> — 개설자가 구성원 목록에서 포지션·대회 출전 여부를 지정하고, 필요하면 수정 권한이나 개설자 권한을 줄 수 있어요.</li>
+          <li><b>활동 로그를 확인해요</b> — 수정 권한을 가진 사람은 누가 언제 무엇을 수정·저장했는지 로그로 볼 수 있어요.</li>
+        </ol>
+        <div class="guide-note-box">⚠️ <b>참고</b> — 구성원 스스로 자기 권한을 바꿀 수는 없어요(개설자만 가능해요). 구성원을 삭제하면 권한도 함께 사라지고, 되돌릴 수 없어서 다시 가입해야 해요.</div>
+      </div>
+
+      <div class="guide-footer">
+        <label><input type="checkbox" id="chkHideGuideNextTime"> 다음에 코드로 들어올 때 자동으로 보지 않기</label>
+        <button class="btn primary" id="btnStartFromGuide">시작하기 →</button>
       </div>
     </div>
   </div>
@@ -1005,6 +1050,13 @@
           </div>
           <div style="flex:1 1 260px; min-width:220px;">
             <div class="quick-record-row">
+              <div class="qr-label">팀 이름 (선택)</div>
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="oppTeamNameInput" class="login-input" style="margin-top:0; flex:1;" placeholder="상대팀">
+                <input type="text" id="ourTeamNameInput" class="login-input" style="margin-top:0; flex:1;" placeholder="우리팀">
+              </div>
+            </div>
+            <div class="quick-record-row">
               <div class="qr-label">팀</div>
               <div class="seg" id="qrTeamSeg">
                 <button data-team="opp" class="active">🔴 상대팀</button>
@@ -1048,14 +1100,16 @@
     <h2>매치 분석 저장</h2>
     <div class="field-note" style="margin-top:0;">기록·그래프·종합분석을 통째로 폴더에 저장해두면 나중에 그대로 다시 불러올 수 있어요. 영상 파일 자체는 저장되지 않지만, 그 영상의 파일명은 함께 남아서 어느 경기였는지 알 수 있어요.</div>
     <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
-    <div style="display:flex; align-items:flex-end; gap:8px;">
-      <div style="flex:1;">
+    <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
+      <div style="flex:1; min-width:180px;">
         <label class="field-label" style="margin-top:0;">저장할 이름</label>
         <input type="text" id="matchSaveName" class="login-input" style="margin-top:0;" placeholder="예: 9/26 vs 위드나인전">
       </div>
+      <button class="btn" id="btnNewMatchFolder" title="지금 화면을 비우고, 이 이름의 새 폴더에 처음부터 기록을 시작해요">+ 새 폴더 추가</button>
       <button class="btn primary" id="btnSaveMatchFolder">폴더로 저장</button>
       <button class="btn" id="btnOverwriteMatchFolder" style="display:none;" title="지금 불러온 폴더에 현재 기록을 덮어써요">현재 폴더에 덮어쓰기</button>
     </div>
+    <div class="field-note" style="margin-top:4px;">"+ 새 폴더 추가"를 누르면 지금 화면이 비워지고, 그 폴더가 바로 활성화돼서 새로 남기는 기록이 자동으로 함께 저장돼요. 지금 작성 중인 내용을 계속 쓰면서 이름만 붙이고 싶다면 "폴더로 저장"을 눌러주세요.</div>
     <div class="field-note" id="overwriteHint" style="display:none; margin-top:4px;"></div>
     <div style="margin-top:10px;">
       <label class="field-label" style="margin-top:0;">저장된 폴더 불러오기</label>
@@ -3045,6 +3099,7 @@
     }
     renderPosGrid(); renderOppPosGrid(); renderPresets();
     updateTexts(); render();
+    if(window.maybeAutoShowFeatureGuide) window.maybeAutoShowFeatureGuide();
   }
 
   function roleLabel(role){ return {creator:'개설자', editor:'수정 권한', view:'조회'}[role] || role; }
@@ -3321,15 +3376,37 @@
     try{ localStorage.setItem(BRIGHT_MODE_KEY, next ? '1' : '0'); }catch(err){}
   });
 
-  document.getElementById('btnFeatureGuide').addEventListener('click', ()=>{
+  const HIDE_GUIDE_KEY = 'vt:hide-feature-guide';
+  function openFeatureGuide(){
+    document.getElementById('chkHideGuideNextTime').checked = localStorage.getItem(HIDE_GUIDE_KEY)==='1';
     document.getElementById('featureGuideModal').style.display='flex';
-  });
-  document.getElementById('btnCloseFeatureGuide').addEventListener('click', ()=>{
+  }
+  function closeFeatureGuide(){
+    const hide = document.getElementById('chkHideGuideNextTime').checked;
+    try{ localStorage.setItem(HIDE_GUIDE_KEY, hide ? '1' : '0'); }catch(err){}
     document.getElementById('featureGuideModal').style.display='none';
-  });
+  }
+  document.getElementById('btnFeatureGuide').addEventListener('click', openFeatureGuide);
+  document.getElementById('btnCloseFeatureGuide').addEventListener('click', closeFeatureGuide);
+  document.getElementById('btnStartFromGuide').addEventListener('click', closeFeatureGuide);
   document.getElementById('featureGuideModal').addEventListener('click', e=>{
-    if(e.target.id==='featureGuideModal') e.target.style.display='none';
+    if(e.target.id==='featureGuideModal') closeFeatureGuide();
   });
+  document.querySelectorAll('#guideTabSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#guideTabSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.guide-section').forEach(sec=>sec.classList.remove('active'));
+      document.getElementById('guideSection-'+btn.dataset.guide).classList.add('active');
+      document.querySelector('.modal-body').scrollTop = 0;
+    });
+  });
+  // 코드로 들어오면(처음 입장이든 재입장이든) 절차식 기능/사용 설명을 바로 보여줘요 —
+  // "다음에 자동으로 보지 않기"를 체크해둔 경우에는 건너뛰어요.
+  window.maybeAutoShowFeatureGuide = function(){
+    if(localStorage.getItem(HIDE_GUIDE_KEY)==='1') return;
+    openFeatureGuide();
+  };
 
   document.querySelectorAll('#loginModeSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -3638,7 +3715,7 @@
 
   // ---------- which location-picker shows depends on the selected 세부 상황 option ----------
   const BLOCK_LOCATION_OPTION = '블로킹'; // net-adjacent 5칸 grid
-  const NET_POSITION_OPTIONS = new Set(['레프트','라이트','A','백A','앞차','백차']); // 3×3 grid
+  const NET_POSITION_OPTIONS = new Set(['레프트','라이트','A','백A','앞차','백차','다이렉트']); // 3×3 grid
   function updateLocationPickerVisibility(){
     const opt = document.getElementById('qrOptionSelect').value;
     const zoneWrap = document.getElementById('zonePickerWrap');
@@ -3735,7 +3812,30 @@
   });
 
   // ---------- quick-log banner: 팀(상대팀/우리팀) × 결과 유형(득점/범실), 동일한 드롭다운 목록 ----------
-  const QR_UNIFIED_OPTIONS = ['레프트','라이트','A','백A','앞차','백차','2단연결','3구처리','서브','서브범실','토스','2단토스','블로킹','각종파울(네트터치, 아웃 등)'];
+  // 세부 상황 목록: 드롭다운에서 묶음(optgroup)으로 보여줘요. 득점/범실은 위 탭에서 고르니 목록은 상황만 담아요.
+  const QR_OPTION_GROUPS = [
+    {group:'공격', items:['레프트','라이트','A','백A','앞차','백차','다이렉트','3구처리','터치아웃(블로킹 맞고 아웃)']},
+    {group:'서브·리시브·연결', items:['서브','서브캐치','토스','2단토스','2단연결']},
+    {group:'네트 플레이', items:['블로킹']},
+    {group:'파울(반칙)', items:[
+      '네트터치',
+      '오버네트(상대 코트 공 터치)',
+      '센터라인 침범',
+      '안테나 반칙(터치·바깥 통과)',
+      '아웃(라인 밖)',
+      '포히트(터치 횟수 초과)',
+      '더블컨택(드리블)',
+      '홀딩(캐치볼)',
+      '서브 풋폴트(엔드라인 침범)',
+      '서브 순서 위반',
+      '서브 시간 초과',
+      '경기 지연',
+      '경고·벌칙(옐로·레드카드)'
+    ]}
+  ];
+  const QR_UNIFIED_OPTIONS = QR_OPTION_GROUPS.flatMap(g=>g.items);
+  // 예전 기록에 남아 있는 범실/파울 항목도 분석에서 파울로 함께 셀 수 있게 포함해요.
+  const FOUL_OPTIONS = new Set([...QR_OPTION_GROUPS.find(g=>g.group==='파울(반칙)').items, '서브범실', '각종파울(네트터치, 아웃 등)']);
   // (team, outcome) -> category used throughout the analytics pipeline ('상대공격'/'득점'/'미스')
   //  - 상대팀+득점: 상대가 잘해서 득점 -> '상대공격'
   //  - 상대팀+범실: 상대의 실수로 우리가 득점 -> '득점'
@@ -3746,6 +3846,32 @@
     return outcome==='score' ? '득점' : '미스';
   }
   let qrTeam = 'opp', qrOutcome = 'score';
+  // 팀 이름(선택): 입력하지 않으면 "상대팀"/"우리팀"을 그대로 써요.
+  let oppTeamName = '상대팀', ourTeamName = '우리팀';
+  function updateTeamSegLabels(){
+    const oppBtn = document.querySelector('#qrTeamSeg button[data-team="opp"]');
+    const ourBtn = document.querySelector('#qrTeamSeg button[data-team="our"]');
+    if(oppBtn) oppBtn.textContent = '🔴 '+oppTeamName;
+    if(ourBtn) ourBtn.textContent = '🔵 '+ourTeamName;
+  }
+  function categoryDisplayName(category){
+    if(category==='상대공격') return oppTeamName+' 득점';
+    if(category==='득점') return ourTeamName+' 득점';
+    if(category==='미스') return ourTeamName+' 범실';
+    return category;
+  }
+  document.getElementById('oppTeamNameInput').addEventListener('input', e=>{
+    oppTeamName = e.target.value.trim() || '상대팀';
+    updateTeamSegLabels();
+    renderTally();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+  });
+  document.getElementById('ourTeamNameInput').addEventListener('input', e=>{
+    ourTeamName = e.target.value.trim() || '우리팀';
+    updateTeamSegLabels();
+    renderTally();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+  });
   document.querySelectorAll('#qrTeamSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#qrTeamSeg button').forEach(b=>b.classList.remove('active'));
@@ -3762,9 +3888,13 @@
   });
   (function buildQrOptionSelect(){
     const sel = document.getElementById('qrOptionSelect');
-    QR_UNIFIED_OPTIONS.forEach(label=>{
-      const opt = document.createElement('option'); opt.value=label; opt.textContent=label;
-      sel.appendChild(opt);
+    QR_OPTION_GROUPS.forEach(g=>{
+      const og = document.createElement('optgroup'); og.label = g.group;
+      g.items.forEach(label=>{
+        const opt = document.createElement('option'); opt.value=label; opt.textContent=label;
+        og.appendChild(opt);
+      });
+      sel.appendChild(og);
     });
     sel.addEventListener('change', updateLocationPickerVisibility);
     updateLocationPickerVisibility();
@@ -3785,7 +3915,7 @@
     const grid9ToAttach = NET_POSITION_OPTIONS.has(label) ? selectedNineZone : null;
     if(video.paused && activeMergeRecord && Math.abs(activeMergeRecord.time - now) < 0.05){
       activeMergeRecord.entries.push({category, optionLabel:label});
-      activeMergeRecord.label = activeMergeRecord.entries.map(e=>`[${e.category}] ${e.optionLabel}`).join(' + ');
+      activeMergeRecord.label = activeMergeRecord.entries.map(e=>`[${categoryDisplayName(e.category)}] ${e.optionLabel}`).join(' + ');
       if(zoneToAttach && !activeMergeRecord.zone) activeMergeRecord.zone = zoneToAttach;
       if(grid9ToAttach && !activeMergeRecord.grid9) activeMergeRecord.grid9 = grid9ToAttach;
       if(playerSnapshot && !activeMergeRecord.player) activeMergeRecord.player = playerSnapshot;
@@ -3793,7 +3923,7 @@
       const rec = {
         time: now,
         entries: [{category, optionLabel:label}],
-        label: `[${category}] ${label}`,
+        label: `[${categoryDisplayName(category)}] ${label}`,
         category, optionLabel: label,
         videoName: currentVideoName,
         zone: zoneToAttach,
@@ -3826,7 +3956,7 @@
       const entries = r.entries || (r.category ? [{category:r.category, optionLabel:r.optionLabel}] : []);
       entries.forEach(e=>{ const k=e.category+'|'+e.optionLabel; counts[k]=(counts[k]||0)+1; });
     });
-    const groupNames = {'상대공격':'🔴 상대팀 득점 옵션', '득점':'🔵 우리팀 득점', '미스':'🔵 우리팀 미스'};
+    const groupNames = {'상대공격':`🔴 ${oppTeamName} 득점 옵션`, '득점':`🔵 ${ourTeamName} 득점`, '미스':`🔵 ${ourTeamName} 미스`};
     const groups = {'상대공격':[], '득점':[], '미스':[]};
     Object.keys(counts).forEach(k=>{
       const idx = k.indexOf('|');
@@ -3905,7 +4035,7 @@
       ['득점률', winRate+'%', 'var(--accent-text)'],
       ['실점 중 우리 실수 비중', ownErrorShare+'%', 'var(--opp)'],
       ['서브 득점률', serveRate===null ? '기록 없음' : serveRate+'%', 'var(--own)'],
-      ['상대 공격에 의한 실점', oppN+'회', 'var(--opp)'],
+      [`${oppTeamName} 공격에 의한 실점`, oppN+'회', 'var(--opp)'],
     ];
     const cardsHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;">` +
       cards.map(([label,val,color])=>`
@@ -4059,8 +4189,10 @@
     const sortedLoss = Object.entries(lossCounts).sort((a,b)=>b[1]-a[1]);
     const lines = [];
     lines.push(`<p>이번 경기에서 총 <b>${totalScore}번 득점</b>, <b>${totalLoss}번 실점</b>이 기록됐어요.</p>`);
-    if(sortedScore.length){
-      const [topLabel, topN] = sortedScore[0];
+    // 상대 파울로 얻은 점수는 "잘 통하는 패턴"이 아니니 득점 요인에서는 빼고, 아래 파울 문장에서 따로 알려줘요.
+    const ownScore = sortedScore.filter(([k])=>!FOUL_OPTIONS.has(k));
+    if(ownScore.length){
+      const [topLabel, topN] = ownScore[0];
       const pct = Math.round(topN/totalScore*100);
       lines.push(`<p>✅ <b>득점 요인</b> — "${topLabel}"이(가) 전체 득점의 ${pct}%(${topN}회)로 가장 큰 비중을 차지해요. 이 패턴이 잘 통하고 있으니 계속 활용해보세요.</p>`);
     }
@@ -4069,8 +4201,13 @@
       const pct = Math.round(topN/totalLoss*100);
       lines.push(`<p>⚠️ <b>보완할 점</b> — "${topLabel}"으로 인한 실점이 전체의 ${pct}%(${topN}회)로 가장 많아요. 이 부분을 훈련에서 집중적으로 다뤄보면 좋겠어요.</p>`);
     }
-    const serveFaultN = (scoreCounts['서브범실']||0)+(scoreCounts['각종파울(네트터치, 아웃 등)']||0);
-    if(serveFaultN>0) lines.push(`<p>🎯 상대의 범실(서브 범실, 네트터치, 아웃 등)로 얻은 점수가 ${serveFaultN}회 있었어요. 우리 팀의 리시브 대형이 상대에게 부담을 주고 있을 수 있어요.</p>`);
+    const sumFouls = counts => Object.entries(counts).filter(([k])=>FOUL_OPTIONS.has(k));
+    const oppFouls = sumFouls(scoreCounts).sort((a,b)=>b[1]-a[1]);
+    const oppFoulN = oppFouls.reduce((a,[,n])=>a+n,0);
+    if(oppFoulN>0) lines.push(`<p>🎯 ${oppTeamName}의 파울(반칙)로 얻은 점수가 ${oppFoulN}회 있었어요(가장 많은 파울: "${oppFouls[0][0]}" ${oppFouls[0][1]}회). ${ourTeamName}의 플레이가 ${oppTeamName}에게 부담을 주고 있을 수 있어요.</p>`);
+    const ourFouls = sumFouls(lossCounts).sort((a,b)=>b[1]-a[1]);
+    const ourFoulN = ourFouls.reduce((a,[,n])=>a+n,0);
+    if(ourFoulN>0) lines.push(`<p>🚩 ${ourTeamName}의 파울(반칙)로 내준 점수가 ${ourFoulN}회 있었어요(가장 많은 파울: "${ourFouls[0][0]}" ${ourFouls[0][1]}회). 규칙을 다시 짚어보고 해당 동작을 훈련해보면 쉽게 줄일 수 있는 실점이에요.</p>`);
     const blockLossN = lossCounts['블로킹']||0;
     if(blockLossN>0 && totalLoss>0){
       const pct = Math.round(blockLossN/totalLoss*100);
@@ -4145,7 +4282,7 @@
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
     ['qrRecordBtn','btnRecordMoment','btnClearZone','btnClearNineZone',
      'videoPlayerSelect','qrOptionSelect','coachNotes',
-     'btnSaveMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','videoFileInput'
+     'btnNewMatchFolder','btnSaveMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
     document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#recordList select, #recordList input').forEach(el=>el.disabled=on);
@@ -4155,6 +4292,60 @@
     document.querySelectorAll('#qrNineZone button').forEach(el=>el.disabled=on);
     document.querySelectorAll('#zoneCells rect').forEach(el=>el.style.cursor = on ? 'default' : 'pointer');
   }
+  // wipes the working screen (records, notes, video, pickers) back to a blank first-recording state
+  function resetVideoAnalysisScreen(){
+    records = [];
+    document.getElementById('coachNotes').value = '';
+    if(video.src && video.src.startsWith('blob:')){
+      try{ URL.revokeObjectURL(video.src); }catch(err){}
+    }
+    video.removeAttribute('src'); video.load();
+    fileInput.value = '';
+    currentVideoName = '';
+    noVideoClockStart = null;
+    document.getElementById('lastVideoHint').style.display = 'none';
+    activeMergeRecord = null;
+    selectedZone = null; renderZonePicker(); updateZoneStatus();
+    selectedNineZone = null;
+    document.querySelectorAll('#qrNineZone button').forEach(b=>b.classList.remove('active'));
+    updateNineZoneStatus();
+    selectedPlayer = null;
+    document.getElementById('videoPlayerSelect').value = '';
+    selectedSet = 1;
+    document.querySelectorAll('#setSeg button').forEach(b=>b.classList.remove('active'));
+    const defaultSetBtn = document.querySelector('#setSeg button[data-set="1"]');
+    if(defaultSetBtn) defaultSetBtn.classList.add('active');
+    renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
+  }
+  document.getElementById('btnNewMatchFolder').addEventListener('click', ()=>{
+    const nameInput = document.getElementById('matchSaveName');
+    let name = nameInput.value.trim();
+    if(!name){
+      name = prompt('새 폴더 이름을 입력해주세요 (예: 9/26 vs 위드나인전)', '매치 '+(matchFolders.length+1));
+      if(name===null) return;
+      name = name.trim();
+    }
+    if(!name) name = '매치 '+(matchFolders.length+1);
+    if(matchFolders.some(f=>f.name===name)){
+      alert(`"${name}" 폴더가 이미 있어요. 다른 이름을 써주세요.`);
+      return;
+    }
+    if(records.length>0 && !confirm('지금 화면의 기록은 새 폴더에 들어가지 않고 비워져요. 계속해서 새 폴더를 만들까요?')) return;
+
+    // reset to a first-recording screen
+    resetVideoAnalysisScreen();
+
+    const newFolder = {name, savedAt: new Date().toISOString(), videoName:'', records:[], coachNotes:''};
+    matchFolders.push(newFolder);
+    lastPickedMatchFolder = newFolder;
+    lastPickedMatchFolderIdx = matchFolders.length-1;
+
+    nameInput.value = '';
+    renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
+    renderMatchFolderSelect();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+    alert(`"${name}" 폴더를 새로 만들었어요. 이제부터 기록하는 내용이 이 폴더에 자동으로 저장돼요.`);
+  });
   document.getElementById('btnSaveMatchFolder').addEventListener('click', ()=>{
     const nameInput = document.getElementById('matchSaveName');
     let name = nameInput.value.trim();
@@ -4212,12 +4403,19 @@
       alert('먼저 위 목록에서 삭제할 폴더를 선택(불러오기)해주세요.');
       return;
     }
-    if(!confirm(`"${lastPickedMatchFolder.name}" 폴더를 삭제할까요?`)) return;
+    if(!confirm(`"${lastPickedMatchFolder.name}" 폴더를 삭제할까요?\n이 폴더의 기록·그래프·종합분석·코치 의견이 모두 함께 지워져요.`)) return;
+    const deletedName = lastPickedMatchFolder.name;
     matchFolders.splice(i,1);
     lastPickedMatchFolder = null;
     lastPickedMatchFolderIdx = null;
+    // the screen was showing this folder's records — clear them too so nothing of it lingers
+    resetVideoAnalysisScreen();
+    document.getElementById('shareFolderLinkBox').style.display = 'none';
+    document.getElementById('shareFolderLinkInput').value = '';
     renderMatchFolderSelect();
+    if(typeof updateOverwriteButton==='function') updateOverwriteButton();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
+    alert(`"${deletedName}" 폴더와 그 안의 기록을 모두 삭제했어요.`);
   });
   document.getElementById('btnShareFolderLink').addEventListener('click', ()=>{
     if(!lastPickedMatchFolder){
@@ -4301,7 +4499,9 @@
     currentVideoName,
     coachNotes: document.getElementById('coachNotes').value,
     matchFolders,
-    videoRoster
+    videoRoster,
+    oppTeamName,
+    ourTeamName
   });
   window.applyVideoAnalysisState = (vs) => {
     if(!vs) return;
@@ -4313,6 +4513,11 @@
     if(vs.videoRoster){
       for(let i=1;i<=9;i++){ if(vs.videoRoster[i]) videoRoster[i] = vs.videoRoster[i]; }
     }
+    oppTeamName = vs.oppTeamName || '상대팀';
+    ourTeamName = vs.ourTeamName || '우리팀';
+    document.getElementById('oppTeamNameInput').value = (vs.oppTeamName && vs.oppTeamName!=='상대팀') ? vs.oppTeamName : '';
+    document.getElementById('ourTeamNameInput').value = (vs.ourTeamName && vs.ourTeamName!=='우리팀') ? vs.ourTeamName : '';
+    updateTeamSegLabels();
     renderVideoRosterGrid();
     renderVideoPlayerSelect();
     if(currentVideoName && !video.src){
