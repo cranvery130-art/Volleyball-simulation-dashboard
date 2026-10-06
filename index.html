@@ -173,6 +173,10 @@
   #videoRosterGrid .pos-item select{ flex:1; min-width:0; width:auto; font-size:10.5px; padding:4px 3px; }
   #videoRosterGrid .pos-item input{ font-size:11px; padding:3px 5px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-family:inherit; width:100%; }
   .pos-item.opp .num{ background:var(--opp); }
+  #posGrid .pos-item, #oppPosGrid .pos-item{ flex-direction:column; align-items:stretch; gap:4px; width:118px; }
+  #posGrid .pos-item .row1, #oppPosGrid .pos-item .row1{ display:flex; align-items:center; gap:5px; }
+  #posGrid .pos-item select, #oppPosGrid .pos-item select{ flex:1; min-width:0; }
+  #posGrid .pos-item input, #oppPosGrid .pos-item input{ font-size:11px; padding:3px 5px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-family:inherit; width:100%; min-width:0; box-sizing:border-box; }
   .pos-item select{ width:auto; min-width:78px; padding:4px 5px; font-size:11px; border-radius:6px; }
 
   .btn{ border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); padding:9px 10px; border-radius:var(--radius-md); font-size:12.5px; font-weight:600; font-family:inherit; cursor:pointer; transition:border-color 0.2s ease, transform 0.15s ease; }
@@ -1425,6 +1429,9 @@
   // Non-directional roles (SETTER/QA/FRONTSLIDE/BACKSLIDE/CBACK) use the SAME number as our team.
   let OPP_POSITIONS = {a:'RIGHT',b:'SETTER',c:'LEFT',d:'QA',e:'FRONTSLIDE',f:'BACKSLIDE',g:'RBACK',h:'CBACK',i:'LBACK'};
   const DEFAULT_OPP_POSITIONS = Object.assign({}, OPP_POSITIONS); // frozen snapshot: used for fixed landing zones
+  // optional hand-typed names from the position-assignment card; when set, the court dot shows the name instead of the number
+  let PLAYER_NAMES = {};
+  let OPP_PLAYER_NAMES = {};
   function resolveOppByPos(pos, fallback){
     const found = Object.keys(OPP_POSITIONS).find(id=>OPP_POSITIONS[id]===pos);
     return found || fallback;
@@ -2973,6 +2980,21 @@
   });
 
   // ---------- position assignment UI ----------
+  // court dot label: the hand-typed name if one is set, otherwise the player number.
+  // Longer names get a smaller font (and are squeezed to fit) so they stay on the dot.
+  function setDotLabel(text, label, isName, maxWidth){
+    text.textContent = label;
+    text.removeAttribute('textLength'); text.removeAttribute('lengthAdjust');
+    text.style.fontSize = '';
+    if(!isName) return;
+    const len = [...label].length;
+    if(len>=2) text.style.fontSize = len===2 ? '11px' : len===3 ? '9px' : '8px';
+    if(len>=3){ text.setAttribute('textLength', maxWidth); text.setAttribute('lengthAdjust','spacingAndGlyphs'); }
+  }
+  function updateDotLabels(){
+    IDS.forEach(id=>{ const n=PLAYER_NAMES[id]; setDotLabel(ownEls[id].text, n||String(id), !!n, 22); });
+    Object.keys(oppEls).forEach(id=>{ const n=OPP_PLAYER_NAMES[id]; setDotLabel(oppEls[id].text, n||String(OPP_NUM[id]), !!n, 18); });
+  }
   function renderPosGrid(){
     const grid = document.getElementById('posGrid');
     grid.innerHTML='';
@@ -2986,7 +3008,12 @@
         sel.appendChild(opt);
       });
       sel.addEventListener('change', ()=>{ POSITIONS[id]=sel.value; updateTexts(); render(); scheduleAutoSave(); });
-      item.appendChild(num); item.appendChild(sel);
+      const row1=document.createElement('div'); row1.className='row1';
+      row1.appendChild(num); row1.appendChild(sel);
+      const nameInput=document.createElement('input'); nameInput.type='text'; nameInput.placeholder='이름(선택)'; nameInput.maxLength=12;
+      nameInput.value=PLAYER_NAMES[id]||'';
+      nameInput.addEventListener('input', ()=>{ PLAYER_NAMES[id]=nameInput.value.trim(); updateDotLabels(); scheduleAutoSave(); });
+      item.appendChild(row1); item.appendChild(nameInput);
       grid.appendChild(item);
     });
   }
@@ -3004,7 +3031,12 @@
         sel.appendChild(opt);
       });
       sel.addEventListener('change', ()=>{ OPP_POSITIONS[id]=sel.value; updateTexts(); render(); scheduleAutoSave(); });
-      item.appendChild(num); item.appendChild(sel);
+      const row1=document.createElement('div'); row1.className='row1';
+      row1.appendChild(num); row1.appendChild(sel);
+      const nameInput=document.createElement('input'); nameInput.type='text'; nameInput.placeholder='이름(선택)'; nameInput.maxLength=12;
+      nameInput.value=OPP_PLAYER_NAMES[id]||'';
+      nameInput.addEventListener('input', ()=>{ OPP_PLAYER_NAMES[id]=nameInput.value.trim(); updateDotLabels(); scheduleAutoSave(); });
+      item.appendChild(row1); item.appendChild(nameInput);
       grid.appendChild(item);
     });
   }
@@ -3031,6 +3063,7 @@
   renderPresets();
   renderPosGrid();
   renderOppPosGrid();
+  updateDotLabels();
   applyOrientation();
   requestAnimationFrame(tick);
 
@@ -3161,6 +3194,7 @@
   function serializeRoomState(){
     return {
       positions: POSITIONS, oppPositions: OPP_POSITIONS,
+      playerNames: PLAYER_NAMES, oppPlayerNames: OPP_PLAYER_NAMES,
       customBase: CUSTOM_BASE, customOppBase: CUSTOM_OPP_BASE,
       presets: presets,
       targetOverrides: TARGET_OVERRIDES, fakeTargetOverrides: FAKE_TARGET_OVERRIDES, ballOverrides: BALL_OVERRIDES,
@@ -3173,6 +3207,8 @@
     try{
       if(state.positions) POSITIONS = state.positions;
       if(state.oppPositions) OPP_POSITIONS = state.oppPositions;
+      if(state.playerNames) PLAYER_NAMES = state.playerNames;
+      if(state.oppPlayerNames) OPP_PLAYER_NAMES = state.oppPlayerNames;
       if(state.customBase) CUSTOM_BASE = state.customBase;
       if(state.customOppBase) CUSTOM_OPP_BASE = state.customOppBase;
       if(state.presets) presets = state.presets;
@@ -3216,7 +3252,7 @@
     // browsing stay visible.
     const hideIds = ['presetEditControls','editModeSection','attackCustomControls','autoSaveStatus'];
     hideIds.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
-    document.querySelectorAll('#posGrid select, #oppPosGrid select').forEach(s=>s.disabled=true);
+    document.querySelectorAll('#posGrid select, #oppPosGrid select, #posGrid input, #oppPosGrid input').forEach(s=>s.disabled=true);
     document.getElementById('btnSaveRoom').style.display='none';
     document.getElementById('btnDeleteRoom').style.display='none';
   }
@@ -3283,7 +3319,7 @@
         renderActivityLog((room && room.activityLog) || []);
       });
     }
-    renderPosGrid(); renderOppPosGrid(); renderPresets();
+    renderPosGrid(); renderOppPosGrid(); updateDotLabels(); renderPresets();
     updateTexts(); render();
     if(window.maybeAutoShowFeatureGuide) window.maybeAutoShowFeatureGuide();
   }
