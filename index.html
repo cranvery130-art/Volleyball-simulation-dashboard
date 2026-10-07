@@ -96,16 +96,12 @@
     .code-pill{ font-size:11.5px; padding:6px 10px; }
   }
   @media (max-width:700px){
-    .own-dot circle.body{ r:16px; }
-    .own-dot circle.attacker-ring{ r:21px; }
-    .own-dot circle.setter-ring{ r:21px; }
-    .own-dot circle.decoy-ring{ r:20px; }
-    .opp-dot circle.body{ r:14px; }
-    .opp-dot circle.attacker-ring{ r:20px; }
-    .opp-dot circle.decoy-ring{ r:19px; }
-    .opp-dot circle.setter-ring{ r:19px; }
-    #ownLabelLayer text{ font-size:15px; }
-    #oppLabelLayer text{ font-size:13.5px; }
+    /* small screens: slightly larger than true scale so dots stay readable/tappable */
+    .own-dot circle.body, .opp-dot circle.body{ r:16px; }
+    .own-dot circle.attacker-ring, .opp-dot circle.attacker-ring{ r:21px; }
+    .own-dot circle.setter-ring, .opp-dot circle.setter-ring{ r:20px; }
+    .own-dot circle.decoy-ring, .opp-dot circle.decoy-ring{ r:20px; }
+    #ownLabelLayer text, #oppLabelLayer text{ font-size:17px; }
   }
   .topbar{ padding:2px 4px 18px; border-bottom:1px solid var(--border); margin-bottom:18px; }
   .topbar h1{ font-family:var(--display); font-style:italic; font-weight:900; font-size:clamp(24px,3.2vw,32px); letter-spacing:-0.01em; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; display:inline-block; padding-right:0.05em; }
@@ -254,8 +250,8 @@
   .own-dot .block-hand{ fill:#6E85E0; stroke:#2E3A66; stroke-width:1; }
   .opp-dot .block-hand{ fill:#E0596F; stroke:#7A2C38; stroke-width:1; }
   .own-dot.blocker circle.body{ fill:#6E85E0; }
-  #ownLabelLayer text{ fill:#0A0B0D; font-family:var(--display); font-weight:800; font-size:13px; pointer-events:none; }
-  #oppLabelLayer text{ fill:#0A0B0D; font-family:var(--display); font-weight:800; font-size:11.5px; pointer-events:none; }
+  #ownLabelLayer text{ fill:#0A0B0D; font-family:var(--display); font-weight:800; font-size:15px; pointer-events:none; }
+  #oppLabelLayer text{ fill:#0A0B0D; font-family:var(--display); font-weight:800; font-size:15px; pointer-events:none; }
   .opp-dot circle.body{ fill:var(--opp); stroke:#7A2C38; stroke-width:1.5; }
   .attacker-ring{ fill:none; stroke:var(--accent); stroke-width:2.5; opacity:0; }
   .setter-ring{ fill:none; stroke:#57D18C; stroke-width:2.5; stroke-dasharray:4 3; opacity:0; }
@@ -2182,10 +2178,10 @@
   const oppEls={};
   Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
     const g=document.createElementNS(svgNS,'g'); g.setAttribute('class','opp-dot'); g.dataset.id=id;
-    const ring=document.createElementNS(svgNS,'circle'); ring.setAttribute('class','attacker-ring'); ring.setAttribute('r','16');
-    const dring=document.createElementNS(svgNS,'circle'); dring.setAttribute('class','decoy-ring'); dring.setAttribute('r','15');
-    const sring=document.createElementNS(svgNS,'circle'); sring.setAttribute('class','setter-ring'); sring.setAttribute('r','15');
-    const body=document.createElementNS(svgNS,'circle'); body.setAttribute('class','body'); body.setAttribute('r','10');
+    const ring=document.createElementNS(svgNS,'circle'); ring.setAttribute('class','attacker-ring'); ring.setAttribute('r','19');
+    const dring=document.createElementNS(svgNS,'circle'); dring.setAttribute('class','decoy-ring'); dring.setAttribute('r','18');
+    const sring=document.createElementNS(svgNS,'circle'); sring.setAttribute('class','setter-ring'); sring.setAttribute('r','18');
+    const body=document.createElementNS(svgNS,'circle'); body.setAttribute('class','body'); body.setAttribute('r','14'); // court is 10.5m wide = 360 units (≈34 units/m); a player in ready stance ≈0.8m → r≈14
     const {hand1, hand2} = makeHandPair();
     const text=document.createElementNS(svgNS,'text'); text.setAttribute('text-anchor','middle'); text.setAttribute('dy','.35em'); text.textContent=OPP_NUM[id];
     g.appendChild(ring); g.appendChild(dring); g.appendChild(sring); g.appendChild(body); g.appendChild(hand1); g.appendChild(hand2);
@@ -2205,10 +2201,10 @@
   const ownEls={};
   IDS.forEach(id=>{
     const g=document.createElementNS(svgNS,'g'); g.setAttribute('class','own-dot'); g.dataset.id=id;
-    const aRing=document.createElementNS(svgNS,'circle'); aRing.setAttribute('class','attacker-ring'); aRing.setAttribute('r','17');
-    const sRing=document.createElementNS(svgNS,'circle'); sRing.setAttribute('class','setter-ring'); sRing.setAttribute('r','17');
-    const dRing=document.createElementNS(svgNS,'circle'); dRing.setAttribute('class','decoy-ring'); dRing.setAttribute('r','16');
-    const body=document.createElementNS(svgNS,'circle'); body.setAttribute('class','body'); body.setAttribute('r','12');
+    const aRing=document.createElementNS(svgNS,'circle'); aRing.setAttribute('class','attacker-ring'); aRing.setAttribute('r','19');
+    const sRing=document.createElementNS(svgNS,'circle'); sRing.setAttribute('class','setter-ring'); sRing.setAttribute('r','19');
+    const dRing=document.createElementNS(svgNS,'circle'); dRing.setAttribute('class','decoy-ring'); dRing.setAttribute('r','18');
+    const body=document.createElementNS(svgNS,'circle'); body.setAttribute('class','body'); body.setAttribute('r','14');
     const {hand1, hand2} = makeHandPair();
     const text=document.createElementNS(svgNS,'text'); text.setAttribute('text-anchor','middle'); text.setAttribute('dy','.35em'); text.textContent=id;
     g.appendChild(aRing); g.appendChild(sRing); g.appendChild(dRing); g.appendChild(body); g.appendChild(hand1); g.appendChild(hand2);
@@ -2295,7 +2291,7 @@
         const dp=toDisplay([x,y]); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
         const inOppZone = pos[1]>=345 && pos[1]<=382;
         if(inOppZone){
-          const hy = y+16;
+          const hy = y+17;
           el.hand1.setAttribute('x',x-15); el.hand1.setAttribute('y',hy); el.hand1.setAttribute('width',12); el.hand1.setAttribute('height',10);
           el.hand2.setAttribute('x',x+3); el.hand2.setAttribute('y',hy); el.hand2.setAttribute('width',12); el.hand2.setAttribute('height',10);
           el.hand1.style.opacity=1; el.hand2.style.opacity=1;
@@ -2348,7 +2344,7 @@
       if(inOwnZone){
         // both hands reach the SAME distance toward the net, side by side along the net line —
         // NOT stacked toward/away from the net, which would line them up in a row with the dot instead.
-        const hy = p[1]-24;
+        const hy = p[1]-27;
         el.hand1.setAttribute('x',p[0]-15); el.hand1.setAttribute('y',hy); el.hand1.setAttribute('width',12); el.hand1.setAttribute('height',10);
         el.hand2.setAttribute('x',p[0]+3); el.hand2.setAttribute('y',hy); el.hand2.setAttribute('width',12); el.hand2.setAttribute('height',10);
         el.hand1.style.opacity=1; el.hand2.style.opacity=1;
@@ -3411,12 +3407,12 @@
     text.style.fontSize = '';
     if(!isName) return;
     const len = [...label].length;
-    if(len>=2) text.style.fontSize = len===2 ? '11px' : len===3 ? '9px' : '8px';
+    if(len>=2) text.style.fontSize = len===2 ? '12.5px' : len===3 ? '10.5px' : '9.5px';
     if(len>=3){ text.setAttribute('textLength', maxWidth); text.setAttribute('lengthAdjust','spacingAndGlyphs'); }
   }
   function updateDotLabels(){
-    IDS.forEach(id=>{ const n=PLAYER_NAMES[id]; setDotLabel(ownEls[id].text, n||String(id), !!n, 22); });
-    Object.keys(oppEls).forEach(id=>{ const n=OPP_PLAYER_NAMES[id]; setDotLabel(oppEls[id].text, n||String(OPP_NUM[id]), !!n, 18); });
+    IDS.forEach(id=>{ const n=PLAYER_NAMES[id]; setDotLabel(ownEls[id].text, n||String(id), !!n, 25); });
+    Object.keys(oppEls).forEach(id=>{ const n=OPP_PLAYER_NAMES[id]; setDotLabel(oppEls[id].text, n||String(OPP_NUM[id]), !!n, 25); });
   }
   function renderPosGrid(){
     const grid = document.getElementById('posGrid');
