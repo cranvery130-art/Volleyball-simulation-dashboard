@@ -283,8 +283,8 @@
   input[type=range]::-moz-range-thumb{ width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); cursor:pointer; }
   input[type=range]:disabled{ opacity:0.4; }
 
-  .kakao-btn{ background:#FEE500; color:#191919; border-color:#FEE500; font-weight:700; }
-  .kakao-btn:hover{ background:#F5DC00; }
+  .login-input.pw-current{ color:var(--text-dim); }
+  .login-input.pw-current.editing{ color:var(--text); border-color:var(--accent); }
   .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(255,149,112,0.35); font-size:12px; color:var(--accent-text); line-height:1.55; }
 
   #splashScreen{
@@ -1089,7 +1089,6 @@
                 <input type="text" id="shareFormationLinkInput" class="login-input" readonly style="margin-top:0;">
                 <button class="btn" id="btnCopyFormationLink" style="white-space:nowrap;">링크 복사</button>
               </div>
-              <button class="btn kakao-btn" id="btnKakaoLink" style="display:none; width:100%; margin-top:6px;">💬 카카오톡으로 보내기</button>
               <div class="field-note" id="shareLinkMeta" style="margin-top:4px;"></div>
             </div>
             <div class="field-note">받는 사람은 코드·비밀번호 없이 링크만 열면 대형 애니메이션을 볼 수 있어요(보기 전용, 받는 쪽에는 아무것도 저장되지 않아요). 링크 안에 그 순간의 대형이 담기므로, 나중에 대형을 고치면 링크를 다시 만들어 보내주세요.</div>
@@ -1104,7 +1103,6 @@
                 <button class="btn" id="btnShareGif" style="display:none;">📤 바로 공유</button>
                 <button class="btn" id="btnCopyGifStill" style="display:none;">📋 그림 복사</button>
               </div>
-              <button class="btn kakao-btn" id="btnKakaoGif" style="display:none; width:100%; margin-top:6px;">💬 카카오톡으로 보내기</button>
               <div class="note-box" id="gifPcKakaoGuide" style="display:none; margin-top:8px;">
                 <b>PC 카카오톡으로 보내는 방법</b><br>
                 PC 카톡은 브라우저에서 복사한 <b>움직이는 GIF</b>를 붙여넣지 못해요(브라우저가 움직이는 그림을 클립보드에 넣을 수 없어서예요).<br>
@@ -1487,14 +1485,15 @@
           <h2 style="font-size:14px;">비밀번호 변경</h2>
           <label class="field-label" style="margin-top:0;">개설자 비밀번호</label>
           <div class="preset-input-row">
-            <input type="text" id="newCreatorPwInput" class="login-input" placeholder="새 개설자 비밀번호" style="margin-top:0;">
+            <input type="text" id="newCreatorPwInput" class="login-input pw-current" placeholder="새 개설자 비밀번호" style="margin-top:0;" autocomplete="off">
             <button class="btn" id="btnChangeCreatorPw" style="white-space:nowrap;">변경</button>
           </div>
           <label class="field-label">조회 비밀번호</label>
           <div class="preset-input-row">
-            <input type="text" id="newViewPwInput" class="login-input" placeholder="새 조회 비밀번호" style="margin-top:0;">
+            <input type="text" id="newViewPwInput" class="login-input pw-current" placeholder="새 조회 비밀번호" style="margin-top:0;" autocomplete="off">
             <button class="btn" id="btnChangeViewPw" style="white-space:nowrap;">변경</button>
           </div>
+          <div class="field-note" style="margin-top:4px;">칸에 지금 비밀번호가 보여요. 칸을 누르면 새 비밀번호를 적을 수 있고, <b>변경</b>을 눌러야 바뀌어요. 변경을 누르지 않고 나가면 기존 비밀번호가 그대로 유지돼요.</div>
         </div>
 
         <div id="memberManageSection">
@@ -2821,58 +2820,11 @@
     });
     return {palette, frames};
   }
-  let gifBlob = null, gifFileName = 'formation.gif', gifStillBlob = null, gifShareTitle = '';
+  let gifBlob = null, gifFileName = 'formation.gif', gifStillBlob = null;
   // PC(Windows/Mac) 브라우저의 공유 창에는 카카오톡이 나오지 않고, 움직이는 GIF는 클립보드로 붙여넣을 수 없어서
   // PC에서는 "저장 후 끌어다 놓기" 안내와 정지 그림 복사를 보여줘요. 모바일은 기존처럼 공유 창(카톡 포함)을 써요.
   const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Macintosh/.test(navigator.userAgent));
 
-  // ---------- 카카오톡 공유(선택 설정) ----------
-  // Kakao Developers(developers.kakao.com)에서 앱을 만들고 [앱 설정 > 플랫폼 > Web]에 이 사이트 주소
-  // (예: https://xxx.vercel.app)를 등록한 뒤, [앱 키 > JavaScript 키]를 아래 따옴표 안에 넣으면
-  // PC·모바일 모두에서 "💬 카카오톡으로 보내기" 버튼이 나타나요(친구·단톡방을 골라 바로 보낼 수 있어요).
-  // 비워두면 버튼은 숨겨지고 나머지 공유 기능은 그대로 작동해요.
-  const KAKAO_JS_KEY = '';
-  let kakaoReady = null;
-  function loadKakao(){
-    if(!KAKAO_JS_KEY) return Promise.reject(new Error('카카오 JavaScript 키가 설정되지 않았어요.'));
-    if(kakaoReady) return kakaoReady;
-    kakaoReady = new Promise((resolve, reject)=>{
-      const done = ()=>{ try{ if(!window.Kakao.isInitialized()) window.Kakao.init(KAKAO_JS_KEY); resolve(window.Kakao); }catch(err){ reject(err); } };
-      if(window.Kakao) return done();
-      const sc = document.createElement('script');
-      sc.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js'; sc.crossOrigin = 'anonymous';
-      sc.onload = done; sc.onerror = ()=>{ kakaoReady = null; reject(new Error('카카오 공유 기능을 불러오지 못했어요.')); };
-      document.head.appendChild(sc);
-    });
-    return kakaoReady;
-  }
-  if(KAKAO_JS_KEY) document.getElementById('btnKakaoLink').style.display = '';
-  document.getElementById('btnKakaoLink').addEventListener('click', async ()=>{
-    const url = document.getElementById('shareFormationLinkInput').value;
-    if(!url) return;
-    try{
-      const Kakao = await loadKakao();
-      Kakao.Share.sendDefault({ objectType:'text',
-        text:`🏐 공유받은 대형: ${shareItemsForTarget().title}\n링크를 열면 대형 애니메이션을 바로 볼 수 있어요(보기 전용).`,
-        link:{ webUrl:url, mobileWebUrl:url }, buttonTitle:'대형 보기' });
-    }catch(err){ alert('카카오톡으로 보내지 못했어요: ' + (err && err.message ? err.message : err) + '\n대신 "링크 복사" 후 카톡 대화창에 붙여넣어 주세요.'); }
-  });
-  document.getElementById('btnKakaoGif').addEventListener('click', async ()=>{
-    if(!gifBlob) return;
-    const btn = document.getElementById('btnKakaoGif'); const label = btn.textContent;
-    btn.disabled = true; btn.textContent = '카카오톡 준비 중…';
-    try{
-      const Kakao = await loadKakao();
-      const {title, items} = shareItemsForTarget();
-      const link = shareBaseUrl() + '#vshare=' + await encodeShare(buildSharePayload(title, items));
-      const up = await Kakao.Share.uploadImage({ file:[new File([gifBlob], gifFileName, {type:'image/gif'})] });
-      Kakao.Share.sendDefault({ objectType:'feed',
-        content:{ title:`🏐 ${gifShareTitle || title}`, description:'눌러서 대형 애니메이션 보기(보기 전용)', imageUrl: up.infos.original.url,
-          link:{ webUrl:link, mobileWebUrl:link } },
-        buttons:[{ title:'대형 보기', link:{ webUrl:link, mobileWebUrl:link } }] });
-    }catch(err){ alert('카카오톡으로 보내지 못했어요: ' + (err && err.message ? err.message : err) + '\n대신 "GIF 저장" 후 파일을 카톡 대화창에 끌어다 놓아 주세요.'); }
-    finally{ btn.disabled = false; btn.textContent = label; }
-  });
   document.getElementById('btnCopyGifStill').addEventListener('click', async ()=>{
     const btn = document.getElementById('btnCopyGifStill');
     try{
@@ -2941,11 +2893,9 @@
       if(prev.dataset.url) URL.revokeObjectURL(prev.dataset.url);
       prev.src = url; prev.dataset.url = url;
       document.getElementById('gifResult').style.display = 'block';
-      gifShareTitle = title;
       document.getElementById('btnShareGif').style.display = (IS_MOBILE && navigator.canShare && navigator.canShare({files:[new File([gifBlob], gifFileName, {type:'image/gif'})]})) ? '' : 'none';
       document.getElementById('btnCopyGifStill').style.display = (!IS_MOBILE && gifStillBlob && window.ClipboardItem) ? '' : 'none';
       document.getElementById('gifPcKakaoGuide').style.display = IS_MOBILE ? 'none' : '';
-      document.getElementById('btnKakaoGif').style.display = KAKAO_JS_KEY ? '' : 'none';
       status.textContent = `완성! 대형 ${list.length}개 · ${(gifBlob.size/1024/1024).toFixed(1)}MB` + (items.length>MAX_ITEMS ? ` (폴더가 커서 앞의 ${MAX_ITEMS}개만 담았어요)` : '');
     }catch(err){
       console.error(err);
@@ -3548,6 +3498,7 @@
       document.getElementById('mainAppCol').classList.toggle('mode-hidden', mode!=='sim');
       document.getElementById('videoCol').classList.toggle('mode-hidden', mode!=='video');
       document.getElementById('settingsCol').classList.toggle('mode-hidden', mode!=='settings');
+      if(mode==='settings') loadCurrentPasswords();
     });
   });
 
@@ -3799,6 +3750,7 @@
     document.getElementById('btnDeleteRoom').style.display = (level==='creator') ? 'inline-block' : 'none';
     document.getElementById('btnModeSettings').style.display = (level==='creator'||level==='editor') ? 'inline-block' : 'none';
     document.getElementById('settingsLeftCol').style.display = (level==='creator') ? 'block' : 'none';
+    if(level==='creator' && code) loadCurrentPasswords();
     document.getElementById('activityLogSection').style.display = (level==='creator'||level==='editor') ? 'block' : 'none';
     document.getElementById('btnLocalExit').style.display = (!code) ? 'inline-block' : 'none';
     if(!code){
@@ -3990,37 +3942,73 @@
     }catch(err){ statusEl.textContent = '삭제에 실패했어요: ' + errText(err); }
   }
 
+  // 설정의 비밀번호 칸: 평소엔 현재 비밀번호를 보여주고, 누르면 비워서 새로 적게 해요.
+  // "변경"을 누르지 않고 칸을 벗어나면 현재 비밀번호로 되돌려요(저장된 값은 그대로).
+  const PW_FIELDS = [['newCreatorPwInput','btnChangeCreatorPw'],['newViewPwInput','btnChangeViewPw']];
+  async function loadCurrentPasswords(){
+    if(accessLevel!=='creator' || !roomCode) return;
+    try{
+      const room = await fetchRoom(roomCode);
+      if(!room) return;
+      setCurrentPw('newCreatorPwInput', room.creatorPassword||'');
+      setCurrentPw('newViewPwInput', room.viewPassword||'');
+    }catch(err){}
+  }
+  function setCurrentPw(inputId, pw){
+    const input = document.getElementById(inputId);
+    input.dataset.current = pw;
+    if(document.activeElement!==input){ input.value = pw; input.classList.remove('editing'); }
+  }
+  PW_FIELDS.forEach(([inputId, btnId])=>{
+    const input = document.getElementById(inputId), btn = document.getElementById(btnId);
+    let pressingChange = false;
+    btn.addEventListener('pointerdown', ()=>{ pressingChange = true; });
+    input.addEventListener('focus', ()=>{
+      if(input.value===(input.dataset.current||'')) input.value = '';
+      input.classList.add('editing');
+    });
+    input.addEventListener('blur', ()=>{
+      setTimeout(()=>{
+        if(pressingChange){ pressingChange = false; return; } // the 변경 click will save (or restore) it
+        input.value = input.dataset.current||''; input.classList.remove('editing');
+      }, 200);
+    });
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ pressingChange = true; btn.click(); } });
+  });
+
   document.getElementById('btnChangeCreatorPw').addEventListener('click', async ()=>{
     if(accessLevel!=='creator' || !roomCode) return;
     const statusEl = document.getElementById('settingsStatus');
     const input = document.getElementById('newCreatorPwInput');
     const newPw = input.value.trim();
-    if(!newPw){ statusEl.textContent='새 개설자 비밀번호를 입력해주세요.'; return; }
+    const restore = ()=>{ input.value = input.dataset.current||''; input.classList.remove('editing'); };
+    if(!newPw || newPw===(input.dataset.current||'')){ restore(); statusEl.textContent='새 개설자 비밀번호를 입력한 뒤 변경을 눌러주세요. 지금 비밀번호는 그대로예요.'; return; }
     try{
       const room = await fetchRoom(roomCode);
       if(!room) return;
-      if(newPw === room.viewPassword){ statusEl.textContent='조회 비밀번호와 다르게 설정해주세요.'; return; }
+      if(newPw === room.viewPassword){ restore(); statusEl.textContent='조회 비밀번호와 다르게 설정해주세요.'; return; }
       room.creatorPassword = newPw;
       await Backend.set(roomKey(roomCode), JSON.stringify(room));
-      input.value = '';
+      input.dataset.current = newPw; restore();
       statusEl.textContent = '개설자 비밀번호를 변경했어요.';
-    }catch(err){ statusEl.textContent = '변경에 실패했어요: ' + errText(err); }
+    }catch(err){ restore(); statusEl.textContent = '변경에 실패했어요: ' + errText(err); }
   });
   document.getElementById('btnChangeViewPw').addEventListener('click', async ()=>{
     if(accessLevel!=='creator' || !roomCode) return;
     const statusEl = document.getElementById('settingsStatus');
     const input = document.getElementById('newViewPwInput');
     const newPw = input.value.trim();
-    if(!newPw){ statusEl.textContent='새 조회 비밀번호를 입력해주세요.'; return; }
+    const restore = ()=>{ input.value = input.dataset.current||''; input.classList.remove('editing'); };
+    if(!newPw || newPw===(input.dataset.current||'')){ restore(); statusEl.textContent='새 조회 비밀번호를 입력한 뒤 변경을 눌러주세요. 지금 비밀번호는 그대로예요.'; return; }
     try{
       const room = await fetchRoom(roomCode);
       if(!room) return;
-      if(newPw === room.creatorPassword){ statusEl.textContent='개설자 비밀번호와 다르게 설정해주세요.'; return; }
+      if(newPw === room.creatorPassword){ restore(); statusEl.textContent='개설자 비밀번호와 다르게 설정해주세요.'; return; }
       room.viewPassword = newPw;
       await Backend.set(roomKey(roomCode), JSON.stringify(room));
-      input.value = '';
+      input.dataset.current = newPw; restore();
       statusEl.textContent = '조회 비밀번호를 변경했어요.';
-    }catch(err){ statusEl.textContent = '변경에 실패했어요: ' + errText(err); }
+    }catch(err){ restore(); statusEl.textContent = '변경에 실패했어요: ' + errText(err); }
   });
 
   async function updateMember(memberId, patch){
