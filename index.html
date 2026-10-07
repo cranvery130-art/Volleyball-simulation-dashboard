@@ -280,10 +280,6 @@
   input[type=range]::-moz-range-thumb{ width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); cursor:pointer; }
   input[type=range]:disabled{ opacity:0.4; }
 
-  .desc-block{ font-family:var(--mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:10px; }
-  p.desc-text{ font-size:13.5px; line-height:1.65; color:var(--text); margin:0 0 14px; }
-  ul.points{ margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:var(--text-dim); }
-  ul.points li::marker{ color:var(--accent-text); }
   .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(255,149,112,0.35); font-size:12px; color:var(--accent-text); line-height:1.55; }
 
   #splashScreen{
@@ -909,7 +905,7 @@
 
     <div class="card">
       <h2><span class="n">01</span>포지션 배정</h2>
-      <div class="field-note" style="margin-top:0; margin-bottom:10px;">공격수·세터·리시브 배정과 움직임이 지정한 포지션에 맞게 반영돼요. 레프트백·센터백·라이트백은 리베로 역할이라 블로킹에 가담하지 않아요.</div>
+      <div class="field-note" style="margin-top:0; margin-bottom:10px;">공격수·세터·리시브 배정과 움직임이 지정한 포지션에 맞게 반영돼요. 레프트백·센터백·라이트백은 리베로 역할이라 블로킹에 가담하지 않아요.<br>포지션 아래 칸에 <b>이름</b>을 적으면 코트 도트에 번호 대신 그 이름이 표시돼요(비워두면 번호로 보여요).</div>
       <div class="pos-cols">
         <div>
           <div class="pos-team-label"><span class="dot" style="background:var(--own);"></span>아군</div>
@@ -986,11 +982,6 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="desc-block" id="descBlockTag">상대 좌측(L) 오픈 공격 · 2인 블로킹</div>
-      <p class="desc-text" id="descText"></p>
-      <ul class="points" id="descPoints"></ul>
-    </div>
 
     
 
@@ -2152,84 +2143,8 @@
     pickScenario(e.target.value);
   });
 
-  function describeCustomChanges(){
-    const refBase = activePreset ? activePreset.base : ORIGINAL_BASE;
-    const movedOwn = IDS.filter(id => refBase[id] && dist(CUSTOM_BASE[id], refBase[id]) > 15);
-    const ov = TARGET_OVERRIDES[comboKey()];
-    const movedTargets = ov ? Object.keys(ov) : [];
-    const notes = [];
-    if(movedOwn.length){
-      const refName = activePreset ? `저장된 "${activePreset.name}" 대형` : '기본 대형';
-      notes.push(`${movedOwn.join('·')}번은 ${refName}에서 시작 위치를 옮겨둬서, 그 자리부터 움직여요.`);
-    }
-    if(movedTargets.length) notes.push(`${movedTargets.join('·')}번은 도착 위치(동선)를 직접 조정해뒀어요.`);
-    const fov = FAKE_TARGET_OVERRIDES[comboKey()];
-    const movedFake = fov ? Object.keys(fov) : [];
-    if(movedFake.length) notes.push(`${movedFake.join('·')}번은 페이크에 반응하는 위치를 직접 조정해뒀어요.`);
-    return notes;
-  }
-
-  function buildDescription(){
-    const f = getFormation();
-    if(isOur(scenario)){
-      const atk = OUR_ATTACKS[scenario];
-      const coverIds = IDS.filter(id=>f.roles[id]==='cover' && id!==f.receiverId);
-      const rl = `${POS_LABEL[POSITIONS[f.receiverId]]}(${f.receiverId}번)`, sl=`${POS_LABEL[POSITIONS[f.setterId]]}(${f.setterId}번)`, al=`${POS_LABEL[POSITIONS[f.attackerId]]}(${f.attackerId}번)`;
-      let text = atk.flavor + ` ${rl}이 뒤에서 리시브를 받아 ${sl}에게 연결하고, ${sl}가 ${al}에게 토스를 올려 공격합니다. 나머지 선수들은 공격수 주변에 커버 대형을 만듭니다. `;
-      if(blockCount>0){ text += `상대가 ${blockCount}명 블로킹을 하면 공이 손에 맞고 우리 코트로 튕겨 나올 확률이 높아지므로, 공격수와 가까운 선수일수록 더 바짝 붙어 대비합니다.`; }
-      else { text += "상대가 블로킹을 하지 않으면 공격이 그대로 상대 코트에 꽂힐 가능성이 높아, 커버 대형은 가볍게 유지하고 다음 랠리 전환에 대비합니다."; }
-      if(f.fakeAttackerId) text += ` ${f.fakeAttackerId}번이 속공을 하는 척 먼저 붙었다가 물러나 상대 블로커를 흔듭니다.`;
-      const points = [`${rl} 리시브 → ${sl} 토스 → ${al} 공격`, blockCount>0? `상대 ${blockCount}인 블로킹 대비 촘촘한 커버`:'무블로킹 — 가벼운 커버 대형', `${coverIds.slice(0,2).join('·')}번 등 근접 커버`];
-      if(f.fakeAttackerId) points.push(`${f.fakeAttackerId}번 페이크 동작`);
-      if(scenario==='OUR_BACKA') points.push('세터가 등 뒤로 빽토스');
-      if(atk.customized) points.push('공격 위치·템포 직접 설정됨');
-      describeCustomChanges().forEach(n=>points.push(n));
-      return {text, points};
-    }
-    const atk = ATTACKS[scenario];
-    let text = atk.flavor + ' ';
-    if(blockCount===0){
-      text += "우리 팀은 블로킹 없이 9명 전원이 네트에서 한 걸음 물러나 넓고 고르게 수비 대형을 만듭니다.";
-    } else {
-      const blockerIds = f.blockerIds.slice().sort((a,b)=>a-b);
-      const nearCoverIds = IDS.filter(id=>f.roles[id]==='nearcover');
-      const lineId = IDS.find(id=>f.roles[id]==='line');
-      const crossId = IDS.find(id=>f.roles[id]==='cross');
-      const freeIds = IDS.filter(id=>f.roles[id]==='free');
-      text += `${blockerIds.join('·')}번이 네트 앞에서 ${blockCount===1?'단독':blockCount+'인'} 블로킹을 합니다. `;
-      if(nearCoverIds.length) text += `${nearCoverIds.join('·')}번이 블로킹 바로 뒤에서 짧게 떨어지는 공을 대비합니다. `;
-      if(freeIds.length) text += `${freeIds.join('·')}번은 네트 앞 빈 공간을 지켜 짧은 공에 대비합니다. `;
-      if(lineId && crossId) text += `${lineId}번은 라인, ${crossId}번은 크로스 코너를 맡아 깊은 공격에 대비합니다.`;
-      if(atk.fakeContact) text += ' 처음엔 블로커가 속공(가짜 동작) 쪽으로 반응했다가, 진짜 공격이 나오면 자리를 재빠르게 고쳐야 해요.';
-      if(f.blockOutcome && f.blockOutcome.type==='blocked'){
-        text += ` 공이 ${f.blockOutcome.blockers.join('·')}번의 블로킹 범위가 겹치는 지점을 지나면서 완전히 막혀, 네트를 넘지 못하고 상대 코트로 떨어집니다.`;
-      } else if(f.blockOutcome && f.blockOutcome.type==='deflected'){
-        text += ` 공이 ${f.blockOutcome.blockers.join('·')}번의 블로킹에 맞고 방향이 꺾여, 네트 가까이 짧게 떨어집니다.`;
-      }
-    }
-    const points = [];
-    if(blockCount>0){ points.push(`${f.blockerIds.slice().sort((a,b)=>a-b).join('·')}번 블로킹 (${blockCount}인)`); }
-    else { points.push('블로킹 없이 전원 수비'); }
-    const nearCoverIds2 = IDS.filter(id=>f.roles[id]==='nearcover');
-    if(nearCoverIds2.length) points.push(`${nearCoverIds2.join('·')}번 근접 커버`);
-    const lineId2 = IDS.find(id=>f.roles[id]==='line'), crossId2 = IDS.find(id=>f.roles[id]==='cross');
-    if(lineId2 && crossId2) points.push(`${lineId2}번 라인 · ${crossId2}번 크로스`);
-    if(atk.fakeContact) points.push('블로커가 페이크에 반응 후 재교정');
-    if(f.blockOutcome && f.blockOutcome.type==='blocked') points.push(`🚫 ${f.blockOutcome.blockers.join('·')}번 블로킹 완전 차단`);
-    else if(f.blockOutcome && f.blockOutcome.type==='deflected') points.push(`🔸 ${f.blockOutcome.blockers.join('·')}번 블로킹에 맞고 짧게 떨어짐`);
-    if(scenario==='BACKA') points.push('세터가 등 뒤로 빽토스 → 뒤에서 공격');
-    if(atk.customized) points.push('공격 위치·템포 직접 설정됨');
-    describeCustomChanges().forEach(n=>points.push(n));
-    return {text, points};
-  }
-
   function updateTexts(){
     document.getElementById('scenarioTitle').textContent = SCEN_LABEL[scenario];
-    document.getElementById('descBlockTag').textContent = SCEN_LABEL[scenario] + ' · ' + (blockCount===0?'블로킹 없음':blockCount+'인 블로킹');
-    const d = buildDescription();
-    document.getElementById('descText').textContent = d.text;
-    const ul = document.getElementById('descPoints'); ul.innerHTML='';
-    d.points.forEach(pt=>{ const li=document.createElement('li'); li.textContent=pt; ul.appendChild(li); });
   }
 
   // ---------- DOM element creation ----------
