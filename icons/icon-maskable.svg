@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9570"/><stop offset=".5" stop-color="#E48AC4"/><stop offset="1" stop-color="#9E86FF"/></linearGradient>
+  <clipPath id="b"><circle cx="236" cy="196" r="100"/></clipPath>
+  <clipPath id="sb"><circle cx="420" cy="132" r="34"/></clipPath></defs>
+  <rect width="512" height="512" fill="url(#g)"/>
+  <g transform="translate(51.2 51.2) scale(0.8)">
+  <rect x="40" y="300" width="432" height="10" rx="5" fill="#fff" opacity=".5"/>
+  <g fill="none" stroke="#fff" stroke-linecap="round">
+    <g clip-path="url(#b)" stroke-width="14">
+      <path d="M236 196 C 232 150 266 110 330 96"/><path d="M236 196 C 194 220 150 214 120 178"/><path d="M236 196 C 268 228 270 280 242 320"/>
+    </g>
+    <circle cx="236" cy="196" r="100" stroke-width="40"/>
+    <path d="M336 196 C 336 330 280 410 176 432" stroke-width="40"/>
+  </g>
+  <!-- 동선: 파란 도트가 공을 향해 이동 -->
+  <path d="M424 404 C 452 330 452 240 428 186" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-dasharray="2 20"/>
+  <path d="M408 196 L428 172 L446 198" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="424" cy="424" r="28" fill="#9DB4FF" stroke="#fff" stroke-width="7"/>
+  <circle cx="92" cy="424" r="28" fill="#FF6B81" stroke="#fff" stroke-width="7"/>
+  <!-- 작은 배구공 -->
+  <circle cx="420" cy="132" r="34" fill="#F3DFA2"/>
+  <g clip-path="url(#sb)" fill="none" stroke="#8A6A38" stroke-width="6" stroke-linecap="round">
+    <path d="M420 132 C 418 116 430 104 450 100"/><path d="M420 132 C 406 140 392 138 384 126"/><path d="M420 132 C 432 142 432 158 422 170"/>
+  </g>
+  <circle cx="420" cy="132" r="34" fill="none" stroke="#8A6A38" stroke-width="6"/>
+</g>
+</svg>
