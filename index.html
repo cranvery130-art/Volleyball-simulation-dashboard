@@ -4,6 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>9인제 배구 경기분석 전술 시뮬레이터</title>
+<meta name="description" content="공격 상황별 수비 대형을 애니메이션으로 보고, 경기 영상을 기록·분석하는 9인제 배구 전술 시뮬레이터예요.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="🏐 9인제 배구 전술 시뮬레이터 · 대형 공유">
+<meta property="og:description" content="링크를 열면 공유받은 대형 애니메이션을 바로 볼 수 있어요(보기 전용).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -279,6 +283,8 @@
   input[type=range]::-moz-range-thumb{ width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); cursor:pointer; }
   input[type=range]:disabled{ opacity:0.4; }
 
+  .kakao-btn{ background:#FEE500; color:#191919; border-color:#FEE500; font-weight:700; }
+  .kakao-btn:hover{ background:#F5DC00; }
   .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(255,149,112,0.35); font-size:12px; color:var(--accent-text); line-height:1.55; }
 
   #splashScreen{
@@ -1083,6 +1089,7 @@
                 <input type="text" id="shareFormationLinkInput" class="login-input" readonly style="margin-top:0;">
                 <button class="btn" id="btnCopyFormationLink" style="white-space:nowrap;">링크 복사</button>
               </div>
+              <button class="btn kakao-btn" id="btnKakaoLink" style="display:none; width:100%; margin-top:6px;">💬 카카오톡으로 보내기</button>
               <div class="field-note" id="shareLinkMeta" style="margin-top:4px;"></div>
             </div>
             <div class="field-note">받는 사람은 코드·비밀번호 없이 링크만 열면 대형 애니메이션을 볼 수 있어요(보기 전용, 받는 쪽에는 아무것도 저장되지 않아요). 링크 안에 그 순간의 대형이 담기므로, 나중에 대형을 고치면 링크를 다시 만들어 보내주세요.</div>
@@ -1095,6 +1102,14 @@
               <div class="btn-row" style="margin-top:8px;">
                 <button class="btn" id="btnDownloadGif">⬇️ GIF 저장</button>
                 <button class="btn" id="btnShareGif" style="display:none;">📤 바로 공유</button>
+                <button class="btn" id="btnCopyGifStill" style="display:none;">📋 그림 복사</button>
+              </div>
+              <button class="btn kakao-btn" id="btnKakaoGif" style="display:none; width:100%; margin-top:6px;">💬 카카오톡으로 보내기</button>
+              <div class="note-box" id="gifPcKakaoGuide" style="display:none; margin-top:8px;">
+                <b>PC 카카오톡으로 보내는 방법</b><br>
+                PC 카톡은 브라우저에서 복사한 <b>움직이는 GIF</b>를 붙여넣지 못해요(브라우저가 움직이는 그림을 클립보드에 넣을 수 없어서예요).<br>
+                ① <b>⬇️ GIF 저장</b>을 눌러요 → ② 다운로드 폴더에 저장된 GIF 파일을 <b>카톡 대화창에 끌어다 놓거나</b>, 대화창의 <b>＋ → 파일 전송</b>으로 보내요.<br>
+                정지된 그림이면 충분할 때는 <b>📋 그림 복사</b>를 누른 뒤 대화창에서 <b>Ctrl+V</b>로 붙여넣어요(마지막 장면이 들어가요).
               </div>
             </div>
             <div class="field-note">고른 대형의 애니메이션을 GIF 그림으로 만들어요. 카톡·문자·발표 자료에 그대로 넣을 수 있어요. 폴더 전체를 고르면 대형이 차례로 이어서 나와요(최대 6개). 지금 화면 모드의 색으로 만들어지고, 만드는 동안 코트가 잠깐 움직여도 끝나면 원래대로 돌아와요.</div>
@@ -2806,7 +2821,66 @@
     });
     return {palette, frames};
   }
-  let gifBlob = null, gifFileName = 'formation.gif';
+  let gifBlob = null, gifFileName = 'formation.gif', gifStillBlob = null, gifShareTitle = '';
+  // PC(Windows/Mac) 브라우저의 공유 창에는 카카오톡이 나오지 않고, 움직이는 GIF는 클립보드로 붙여넣을 수 없어서
+  // PC에서는 "저장 후 끌어다 놓기" 안내와 정지 그림 복사를 보여줘요. 모바일은 기존처럼 공유 창(카톡 포함)을 써요.
+  const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Macintosh/.test(navigator.userAgent));
+
+  // ---------- 카카오톡 공유(선택 설정) ----------
+  // Kakao Developers(developers.kakao.com)에서 앱을 만들고 [앱 설정 > 플랫폼 > Web]에 이 사이트 주소
+  // (예: https://xxx.vercel.app)를 등록한 뒤, [앱 키 > JavaScript 키]를 아래 따옴표 안에 넣으면
+  // PC·모바일 모두에서 "💬 카카오톡으로 보내기" 버튼이 나타나요(친구·단톡방을 골라 바로 보낼 수 있어요).
+  // 비워두면 버튼은 숨겨지고 나머지 공유 기능은 그대로 작동해요.
+  const KAKAO_JS_KEY = '';
+  let kakaoReady = null;
+  function loadKakao(){
+    if(!KAKAO_JS_KEY) return Promise.reject(new Error('카카오 JavaScript 키가 설정되지 않았어요.'));
+    if(kakaoReady) return kakaoReady;
+    kakaoReady = new Promise((resolve, reject)=>{
+      const done = ()=>{ try{ if(!window.Kakao.isInitialized()) window.Kakao.init(KAKAO_JS_KEY); resolve(window.Kakao); }catch(err){ reject(err); } };
+      if(window.Kakao) return done();
+      const sc = document.createElement('script');
+      sc.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js'; sc.crossOrigin = 'anonymous';
+      sc.onload = done; sc.onerror = ()=>{ kakaoReady = null; reject(new Error('카카오 공유 기능을 불러오지 못했어요.')); };
+      document.head.appendChild(sc);
+    });
+    return kakaoReady;
+  }
+  if(KAKAO_JS_KEY) document.getElementById('btnKakaoLink').style.display = '';
+  document.getElementById('btnKakaoLink').addEventListener('click', async ()=>{
+    const url = document.getElementById('shareFormationLinkInput').value;
+    if(!url) return;
+    try{
+      const Kakao = await loadKakao();
+      Kakao.Share.sendDefault({ objectType:'text',
+        text:`🏐 공유받은 대형: ${shareItemsForTarget().title}\n링크를 열면 대형 애니메이션을 바로 볼 수 있어요(보기 전용).`,
+        link:{ webUrl:url, mobileWebUrl:url }, buttonTitle:'대형 보기' });
+    }catch(err){ alert('카카오톡으로 보내지 못했어요: ' + (err && err.message ? err.message : err) + '\n대신 "링크 복사" 후 카톡 대화창에 붙여넣어 주세요.'); }
+  });
+  document.getElementById('btnKakaoGif').addEventListener('click', async ()=>{
+    if(!gifBlob) return;
+    const btn = document.getElementById('btnKakaoGif'); const label = btn.textContent;
+    btn.disabled = true; btn.textContent = '카카오톡 준비 중…';
+    try{
+      const Kakao = await loadKakao();
+      const {title, items} = shareItemsForTarget();
+      const link = shareBaseUrl() + '#vshare=' + await encodeShare(buildSharePayload(title, items));
+      const up = await Kakao.Share.uploadImage({ file:[new File([gifBlob], gifFileName, {type:'image/gif'})] });
+      Kakao.Share.sendDefault({ objectType:'feed',
+        content:{ title:`🏐 ${gifShareTitle || title}`, description:'눌러서 대형 애니메이션 보기(보기 전용)', imageUrl: up.infos.original.url,
+          link:{ webUrl:link, mobileWebUrl:link } },
+        buttons:[{ title:'대형 보기', link:{ webUrl:link, mobileWebUrl:link } }] });
+    }catch(err){ alert('카카오톡으로 보내지 못했어요: ' + (err && err.message ? err.message : err) + '\n대신 "GIF 저장" 후 파일을 카톡 대화창에 끌어다 놓아 주세요.'); }
+    finally{ btn.disabled = false; btn.textContent = label; }
+  });
+  document.getElementById('btnCopyGifStill').addEventListener('click', async ()=>{
+    const btn = document.getElementById('btnCopyGifStill');
+    try{
+      if(!gifStillBlob || !window.ClipboardItem || !navigator.clipboard || !navigator.clipboard.write) throw new Error('unsupported');
+      await navigator.clipboard.write([new ClipboardItem({'image/png': gifStillBlob})]);
+      btn.textContent = '✓ 복사됐어요 · 카톡에서 Ctrl+V'; setTimeout(()=>btn.textContent='📋 그림 복사', 2200);
+    }catch(err){ alert('이 브라우저에서는 그림 복사가 안 돼요. "GIF 저장" 후 파일을 카톡 대화창에 끌어다 놓아 주세요.'); }
+  });
   async function makeFormationGif(){
     if(editMode || overrideMode){ alert('편집 모드를 끈 상태("끔")에서 만들어주세요.'); return; }
     const {title, items} = shareItemsForTarget();
@@ -2816,6 +2890,7 @@
     const status = document.getElementById('gifStatus');
     const btn = document.getElementById('btnMakeGif');
     btn.disabled = true;
+    gifStillBlob = null;
     // 지금 화면 상태를 기억했다가 다 만든 뒤 그대로 되돌려요(저장은 하지 않아요).
     const saved = {scenario, base:JSON.parse(JSON.stringify(CUSTOM_BASE)), oppBase:JSON.parse(JSON.stringify(CUSTOM_OPP_BASE)), progress, playing};
     playing = false; updatePlayBtn();
@@ -2850,6 +2925,7 @@
           ctx.fillStyle = dim; ctx.font = '500 12.5px "IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
           ctx.fillText(`${SCEN_LABEL[it.scenario]||''} · ${progress<=0.02 ? '시작 대형' : phaseText()}`, 14, 36);
           imageDatas.push(ctx.getImageData(0,0,OUT_W,H));
+          if(n===0 && k===STEPS) gifStillBlob = await new Promise(r=>canvas.toBlob(r, 'image/png')); // final scene of the first formation, for "그림 복사"(PNG — the only image type browsers can put on the clipboard)
           const frameMs = currentDuration/STEPS;
           delays.push(k===STEPS ? 150 : Math.max(4, Math.round(frameMs/10)));
         }
@@ -2865,7 +2941,11 @@
       if(prev.dataset.url) URL.revokeObjectURL(prev.dataset.url);
       prev.src = url; prev.dataset.url = url;
       document.getElementById('gifResult').style.display = 'block';
-      document.getElementById('btnShareGif').style.display = (navigator.canShare && navigator.canShare({files:[new File([gifBlob], gifFileName, {type:'image/gif'})]})) ? '' : 'none';
+      gifShareTitle = title;
+      document.getElementById('btnShareGif').style.display = (IS_MOBILE && navigator.canShare && navigator.canShare({files:[new File([gifBlob], gifFileName, {type:'image/gif'})]})) ? '' : 'none';
+      document.getElementById('btnCopyGifStill').style.display = (!IS_MOBILE && gifStillBlob && window.ClipboardItem) ? '' : 'none';
+      document.getElementById('gifPcKakaoGuide').style.display = IS_MOBILE ? 'none' : '';
+      document.getElementById('btnKakaoGif').style.display = KAKAO_JS_KEY ? '' : 'none';
       status.textContent = `완성! 대형 ${list.length}개 · ${(gifBlob.size/1024/1024).toFixed(1)}MB` + (items.length>MAX_ITEMS ? ` (폴더가 커서 앞의 ${MAX_ITEMS}개만 담았어요)` : '');
     }catch(err){
       console.error(err);
@@ -4104,7 +4184,7 @@
         script:[ {click:'.k-r2', then:(el,sc)=>{ sc.querySelector('.k-r1').classList.remove('on'); el.classList.add('on'); }},
                  {click:'.k-link', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1100},
                  {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300},
-                 {click:'.k-gif', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='GIF를 만들었어요 · 카톡에 바로 붙여넣기'; t.classList.add('show'); }}, {wait:1500} ] }
+                 {click:'.k-gif', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='GIF를 만들었어요 · 저장해서 카톡 대화창에 끌어다 놓기'; t.classList.add('show'); }}, {wait:1500} ] }
     ],
     video: [
       { title:'경기 폴더를 만들고 영상을 열어요',
