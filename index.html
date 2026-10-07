@@ -568,6 +568,33 @@
     #customXSeg button:last-child{ grid-column:1/-1; }
     .nine-zone-grid button{ padding:9px 3px; font-size:10.5px; }
   }
+
+  /* ---------- 기능 구분: 탭별 카드 색 띠 + 카드 안 기능 묶음(fgroup) ---------- */
+  #mainAppCol{ --fam:var(--accent); }
+  #videoCol{ --fam:var(--accent-2); }
+  #settingsCol{ --fam:var(--good); }
+  #mainAppCol .card, #videoCol .card, #settingsCol .card{ border-top:3px solid var(--fam); }
+  .card > h2{ padding-bottom:10px; border-bottom:1px solid var(--border); margin-bottom:12px; }
+  .fgroup{ margin-top:12px; padding:12px; background:var(--panel-2); border:1px solid var(--border); border-radius:12px; }
+  .fgroup-head{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:-2px 0 10px; padding-bottom:9px; border-bottom:1px dashed var(--border-2); }
+  .fg-ic{ width:26px; height:26px; border-radius:8px; flex:none; display:flex; align-items:center; justify-content:center; font-size:14px;
+    background:var(--accent-soft); background:color-mix(in srgb, var(--fam, var(--accent)) 18%, transparent); }
+  .fg-title{ font-family:var(--display); font-weight:800; font-size:14.5px; letter-spacing:-0.01em; color:var(--text); }
+  .fg-sub{ font-size:11.5px; color:var(--muted); font-weight:500; }
+  .fgroup .field-label{ font-size:13px; }
+  .fgroup .field-label::before{ height:11px; }
+  /* 묶음 배경 위에서도 입력칸·버튼이 또렷하게 */
+  .fgroup select, .fgroup .login-input, .fgroup .preset-input-row input[type=text], .fgroup .seg, .fgroup .comment-input,
+  .fgroup .btn:not(.primary), .fgroup .nine-zone-grid, .fgroup .pos-item{ background:var(--panel); }
+  .fgroup .pos-item select, .fgroup .pos-item input{ background:var(--panel-2); }
+  /* 저장·기록처럼 결과가 남는 묶음은 테두리로 강조 */
+  .fgroup-save{ border-color:color-mix(in srgb, var(--fam, var(--accent)) 45%, var(--border)); }
+  .fgroup.final-box{ background:var(--warn-soft); border-color:rgba(255,210,63,0.45); }
+  .fgroup.final-box .final-head{ font-size:14.5px; }
+  .fgroup-danger{ background:transparent; border-style:dashed; }
+  .fgroup-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:stretch; }
+  .fgroup-row > .fgroup{ flex:1 1 320px; min-width:0; }
+  @media (max-width:520px){ .fgroup{ padding:10px; } .fg-sub{ flex-basis:100%; } }
 </style>
 <!-- ======================================================================
      FIREBASE 연결 설정
@@ -837,7 +864,7 @@
     <button class="modal-close" id="btnCloseFeatureGuide">✕</button>
     <h2>🏐 기능 설명 &amp; 사용 설명</h2>
     <div class="modal-body">
-      <p class="guide-intro">탭에서 기능을 고르고, <b>다음 ▶</b>을 눌러 단계별로 넘겨보세요. 위쪽 화면에서 실제 사용하는 모습을 보여줘요.</p>
+      <p class="guide-intro">탭에서 기능을 고르고, <b>다음 ▶</b>을 눌러 단계별로 넘겨보세요. 위쪽 화면에서 실제 사용하는 모습을 보여줘요. 화면의 카드 위 색 띠는 탭을 나타내고(주황 = 전술 시뮬레이션, 보라 = 경기 영상 분석, 초록 = 설정), 카드 안에서는 아이콘이 붙은 칸 하나가 기능 하나예요.</p>
       <div class="seg" id="guideTabSeg">
         <button data-guide="sim" class="active">🏐 전술 시뮬레이션</button>
         <button data-guide="video">🎥 경기 영상 분석</button>
@@ -1026,10 +1053,13 @@
       <h2><span class="n">02</span>대형 저장 &amp; 편집</h2>
 
       <div id="presetEditControls">
-        <label class="field-label">시나리오별 대형</label>
+        <div class="fgroup">
+        <div class="fgroup-head"><span class="fg-ic">🎬</span><span class="fg-title">시나리오별 대형</span><span class="fg-sub">고르면 그 공격 상황으로 바로 전환돼요</span></div>
         <select id="presetScenarioPick"></select>
+        </div>
 
-        <div class="edit-divider"></div>
+        <div class="fgroup">
+        <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">대형 저장</span><span class="fg-sub">폴더와 이름을 정해 지금 대형을 저장해요</span></div>
         <label class="field-label" style="margin-top:0;">폴더</label>
         <select id="presetFolderSelect">
           <option value="">(폴더 없음)</option>
@@ -1050,8 +1080,9 @@
           <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
           <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
         </div>
+        </div>
 
-        <div id="finalFormationSection" class="final-box" style="margin-top:10px;">
+        <div id="finalFormationSection" class="fgroup final-box">
           <div class="final-head">⭐ 최종 대형 <span class="final-scen" id="finalScenLabel"></span></div>
           <div class="final-status" id="finalStatusText"></div>
           <div class="btn-row" style="margin-top:6px;">
@@ -1062,17 +1093,17 @@
           <div class="field-note" id="finalNote" style="margin-top:6px;"></div>
         </div>
 
-        <div class="edit-divider"></div>
-        <button class="btn" id="btnPresetInfoToggle" style="width:100%;">ℹ️ 참고사항 ▾</button>
+        <button class="btn" id="btnPresetInfoToggle" style="width:100%; margin-top:10px;">ℹ️ 참고사항 ▾</button>
         <div id="presetInfoPanel" class="note-box" style="display:none; margin-top:8px;">
           <p style="margin:0 0 8px;"><b>시나리오별 대형</b> — 목록에서 고르면 그 상황으로 바로 전환돼요. 이미 저장된 상황이면 자동으로 불러오고, 없으면 이름·폴더 칸이 채워져서 바로 저장할 수 있어요.</p>
           <p style="margin:0 0 8px;"><b>폴더</b> — 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요. 이름은 💡 Tip의 머리말로 정리하면 찾기 쉬워요.</p>
           <p style="margin:0;"><b>⭐ 최종 대형</b> — 개설자가 공격 상황마다 하나씩 확정해요. 시나리오를 고르면 가장 먼저 불러와지고, 수정 권한자는 불러오기만 할 수 있어요.</p>
         </div>
       </div>
+      <div class="fgroup">
+      <div class="fgroup-head"><span class="fg-ic">📂</span><span class="fg-title">저장된 대형 불러오기</span><span class="fg-sub">고르면 바로 코트에 불러와요</span></div>
       <div style="display:flex; align-items:flex-end; gap:8px; margin-top:0;">
         <div style="flex:1;">
-          <label class="field-label">저장된 대형 불러오기</label>
           <div style="display:flex; align-items:center; gap:6px;">
             <select id="presetLoadSelect" style="flex:1;">
               <option value="">불러올 대형 선택...</option>
@@ -1088,12 +1119,12 @@
         <input type="text" id="presetSearchInput" class="login-input" placeholder="폴더 이름으로 검색 (예: 위드나인)" style="margin-top:0;">
         <div class="preset-list" id="presetList" style="margin-top:10px;"></div>
       </div>
+      </div>
       <div class="edit-hint" id="autoSaveStatus"></div>
 
       <div id="editModeSection">
-        <div class="edit-divider"></div>
-
-        <label class="field-label">편집 모드</label>
+        <div class="fgroup">
+        <div class="fgroup-head"><span class="fg-ic">✋</span><span class="fg-title">편집 모드</span><span class="fg-sub">코트의 도트를 끌어서 위치를 바꿔요</span></div>
         <div class="seg" id="editModeSeg">
           <button data-mode="off" class="active">끔</button>
           <button data-mode="edit">시작 위치</button>
@@ -1122,10 +1153,10 @@
         </div>
 
         <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
+        </div>
 
-        <div class="edit-divider"></div>
-        <div class="share-formation" id="shareFormationSection">
-          <label class="field-label" style="margin-top:0;">대형 공유</label>
+        <div class="fgroup share-formation" id="shareFormationSection">
+          <div class="fgroup-head"><span class="fg-ic">📤</span><span class="fg-title">대형 공유</span><span class="fg-sub">링크나 GIF로 팀원에게 보내요</span></div>
           <div class="seg" id="shareTabSeg">
             <button data-stab="link" class="active">🔗 링크로 공유</button>
             <button data-stab="gif">🎞️ GIF로 공유</button>
@@ -1169,8 +1200,10 @@
         <h2><span class="n">03</span>공격 상황</h2>
 
         <div id="attackCustomControls">
-        <div id="customPanel" style="margin-top:10px;">
-          <label class="field-label">공격 위치</label>
+        <div id="customPanel">
+          <div class="fgroup">
+          <div class="fgroup-head"><span class="fg-ic">⚡</span><span class="fg-title">공격 동작</span><span class="fg-sub">어디서·얼마나 빠르게 공격할지 정해요</span></div>
+          <label class="field-label" style="margin-top:0;">공격 위치</label>
           <div class="field-note" style="margin-top:0; margin-bottom:6px;">왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. <span id="attackSideHint"></span></div>
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
@@ -1199,7 +1232,11 @@
           <div class="check-row" style="margin-top:4px;"><input type="checkbox" id="customFake"><label for="customFake">시간차(페이크) 동작 포함</label></div>
           <div class="field-note" style="margin-top:0;">중앙에서 먼저 속공하는 척(페이크)한 뒤, 실제 공격은 한 박자 늦게 들어가요. 블로커가 페이크에 먼저 반응했다가 다시 따라가요.</div>
 
-          <div class="check-row" style="margin-top:8px;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
+          </div>
+
+          <div class="fgroup">
+          <div class="fgroup-head"><span class="fg-ic">🎯</span><span class="fg-title">공 착지</span><span class="fg-sub">공이 떨어질 자리를 직접 골라요</span></div>
+          <div class="check-row" style="margin-top:0;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
           <div id="customLandingRow" style="display:none; margin-top:6px;">
             <div class="landing-court net-top" id="landingCourt">
             <div class="landing-net">네트</div>
@@ -1224,7 +1261,11 @@
             </div>
           </div>
 
-          <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
+          </div>
+
+          <div class="fgroup fgroup-save">
+          <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">시나리오에 저장</span><span class="fg-sub">위 설정을 고른 공격 상황에 덮어써요</span></div>
+          <label class="field-label" style="margin-top:0;">덮어쓸 공격 상황</label>
           <select id="customTargetSelect">
             <optgroup label="상대 공격 → 우리 팀 수비">
               <option value="L">상대 좌측(L) 오픈 공격</option>
@@ -1247,11 +1288,11 @@
             <button class="btn primary" id="btnSaveCustom">이 시나리오에 저장(덮어쓰기)</button>
           </div>
           <div class="edit-hint" id="customStatus"></div>
+          </div>
         </div>
         </div>
 
-        <div class="edit-divider"></div>
-        <button class="btn" id="btnAttackInfoToggle" style="width:100%;">ℹ️ 참고사항 ▾</button>
+        <button class="btn" id="btnAttackInfoToggle" style="width:100%; margin-top:10px;">ℹ️ 참고사항 ▾</button>
         <div id="attackInfoPanel" class="note-box" style="display:none; margin-top:8px;">
           <p style="margin:0 0 8px;"><b>공격 위치</b>의 왼쪽/오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요(상대 공격은 화면 위쪽, 우리 공격은 화면 아래쪽이 왼쪽). <b>공 착지 칸</b>은 화면과 같은 방향으로 놓여 있고, 좌우는 <b>공을 받는 팀</b> 기준이에요.</p>
           <p style="margin:0 0 8px;">착지는 정해진 코트 9구역 중 하나로 고정돼요 — 오른쪽 계열은 레프트·앞차·레프트백 구역, 왼쪽 계열은 라이트·빽차·라이트백 구역이에요. 포지션 배정을 바꾸거나 선수를 드래그해도 이 구역 자체는 달라지지 않아요.</p>
@@ -1267,6 +1308,9 @@
     <h2>매치 분석 저장</h2>
     <div class="field-note" style="margin-top:0;">경기마다 기록·그래프·종합 분석·코치 의견을 폴더 하나로 저장해요. 폴더를 새로 만들거나 불러오면 그 폴더가 "활성 폴더"가 되고, 이후 기록이 자동으로 함께 저장돼요. 영상 파일은 저장되지 않지만 파일 이름이 남아서 어느 경기였는지 알 수 있어요.</div>
     <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
+    <div class="fgroup-row">
+    <div class="fgroup fgroup-save">
+    <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">경기 폴더 저장</span><span class="fg-sub">이 경기의 기록을 폴더에 담아요</span></div>
     <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
       <div style="flex:1; min-width:180px;">
         <label class="field-label" style="margin-top:0;">저장할 이름</label>
@@ -1278,8 +1322,9 @@
     </div>
     <div class="field-note" style="margin-top:4px;">"+ 새 폴더 추가"를 누르면 지금 화면이 비워지고, 그 폴더가 바로 활성화돼서 새로 남기는 기록이 자동으로 함께 저장돼요. 지금 작성 중인 내용을 계속 쓰면서 이름만 붙이고 싶다면 "폴더로 저장"을 눌러주세요.</div>
     <div class="field-note" id="overwriteHint" style="display:none; margin-top:4px;"></div>
-    <div style="margin-top:10px;">
-      <label class="field-label" style="margin-top:0;">저장된 폴더 불러오기</label>
+    </div>
+    <div class="fgroup">
+      <div class="fgroup-head"><span class="fg-ic">📂</span><span class="fg-title">저장된 폴더 불러오기</span><span class="fg-sub">다시 보거나 조회 링크로 공유해요</span></div>
       <div style="display:flex; align-items:center; gap:6px;">
         <select id="matchFolderSelect" style="flex:1;">
           <option value="">불러올 폴더 선택...</option>
@@ -1292,6 +1337,7 @@
         <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
         <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
       </div>
+    </div>
     </div>
   </div>
   <div class="video-grid">
@@ -1385,7 +1431,9 @@
         <h2>빠른 기록 배너</h2>
         <div class="field-note" style="margin-top:0;">팀 → 결과 유형 → 세부 상황을 고르고 "기록하기"를 누르면 1점이 기록 한 줄로 남아요(시간·세트 함께 저장). 팀은 <b>그 플레이를 한 팀</b>이에요 — 예: 상대 서브가 아웃이면 "상대팀 · 범실 · 서브".</div>
 
-        <label class="field-label" style="margin-top:0;">포지션 배정 명단 (득실에 관련된 선수 표시용)</label>
+        <div class="fgroup">
+        <div class="fgroup-head"><span class="fg-ic">👥</span><span class="fg-title">명단 · 관련 선수</span><span class="fg-sub">득실에 관련된 선수를 기록에 함께 남겨요</span></div>
+        <label class="field-label" style="margin-top:0;">포지션 배정 명단</label>
         <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 아래 "관련 선수"에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 바꾸기 전까지 이후 기록에도 계속 붙어요. 명단은 서버에 저장되니 실명보다는 별명이나 이니셜을 적어주세요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
         <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
@@ -1394,9 +1442,11 @@
             <option value="">선택 안 함</option>
           </select>
         </div>
+        </div>
 
-        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-          <span class="field-label" style="margin:0; flex:none;">세트</span>
+        <div class="fgroup">
+        <div class="fgroup-head"><span class="fg-ic">🔢</span><span class="fg-title">세트</span><span class="fg-sub">지금 진행 중인 세트를 골라요</span></div>
+        <div style="display:flex; align-items:center; gap:8px;">
           <div class="seg" id="setSeg" style="flex:1;">
             <button data-set="1" class="active">1세트</button>
             <button data-set="2">2세트</button>
@@ -1405,8 +1455,11 @@
         </div>
         <div class="field-note" style="margin-top:4px;">세트가 바뀌면 기록하기 전에 여기서 먼저 바꿔주세요. 이미 남긴 기록의 세트는 "기록" 목록에서 고칠 수 있어요.</div>
 
-        <div style="display:flex; align-items:flex-start; gap:18px; flex-wrap:wrap; margin-top:10px;">
-          <div style="flex:1 1 220px; min-width:200px;" id="qrLocationArea">
+        </div>
+
+        <div style="display:flex; align-items:stretch; gap:12px; flex-wrap:wrap; margin-top:12px;">
+          <div class="fgroup" style="flex:1 1 220px; min-width:200px; margin-top:0;" id="qrLocationArea">
+            <div class="fgroup-head"><span class="fg-ic">📍</span><span class="fg-title">득실 위치</span><span class="fg-sub">점수가 난 자리(선택)</span></div>
             <div id="zonePickerWrap" style="display:none;">
               <label class="field-label" style="margin-top:0;">위치 (네트 바로 앞 전위, 선택)</label>
               <div class="field-note" style="margin-top:0; margin-bottom:6px;">블로킹이 일어난 자리를 눌러요. 다른 칸을 누르거나 해제하기 전까지 이후 블로킹 기록에도 계속 붙어요.</div>
@@ -1447,7 +1500,8 @@
             </div>
             <div id="noZoneNote" class="field-note" style="margin-top:0; display:none;">이 상황은 위치를 고르지 않아도 돼요. 위치 칸은 공격(3×3)과 블로킹(네트 앞 5칸)을 고를 때만 나타나요.</div>
           </div>
-          <div style="flex:1 1 260px; min-width:220px;">
+          <div class="fgroup fgroup-save" style="flex:1 1 260px; min-width:220px; margin-top:0;">
+            <div class="fgroup-head"><span class="fg-ic">📝</span><span class="fg-title">기록 입력</span><span class="fg-sub">팀 → 결과 → 세부 상황 → 기록하기</span></div>
             <div class="quick-record-row">
               <div class="qr-label">팀 이름 (선택)</div>
               <div style="display:flex; gap:6px;">
@@ -1516,8 +1570,9 @@
 
     <div class="settings-columns">
       <div id="settingsLeftCol" class="settings-col">
-        <div id="roomManageControls">
-          <div class="btn-row" style="margin-top:8px;">
+        <div id="roomManageControls" class="fgroup">
+          <div class="fgroup-head"><span class="fg-ic">🔗</span><span class="fg-title">초대 · 저장</span><span class="fg-sub">가입 링크를 보내거나 지금 상태를 저장해요</span></div>
+          <div class="btn-row">
             <button class="btn" id="btnShareLink">가입 링크 공유</button>
             <button class="btn" id="btnSaveRoom">변경사항 저장</button>
           </div>
@@ -1530,9 +1585,8 @@
           </div>
         </div>
 
-        <div id="passwordChangeSection">
-          <div class="edit-divider"></div>
-          <h2 style="font-size:14px;">비밀번호 변경</h2>
+        <div id="passwordChangeSection" class="fgroup">
+          <div class="fgroup-head"><span class="fg-ic">🔑</span><span class="fg-title">비밀번호 변경</span><span class="fg-sub">변경을 눌러야 바뀌어요</span></div>
           <label class="field-label" style="margin-top:0;">개설자 비밀번호</label>
           <div class="preset-input-row">
             <input type="text" id="newCreatorPwInput" class="login-input pw-current" placeholder="새 개설자 비밀번호" style="margin-top:0;" autocomplete="off">
@@ -1546,9 +1600,8 @@
           <div class="field-note" style="margin-top:4px;">칸에 지금 비밀번호가 보여요. 칸을 누르면 새 비밀번호를 적을 수 있고, <b>변경</b>을 눌러야 바뀌어요. 변경을 누르지 않고 나가면 기존 비밀번호가 그대로 유지돼요.</div>
         </div>
 
-        <div id="memberManageSection">
-          <div class="edit-divider"></div>
-          <h2 style="font-size:14px;">구성원 관리</h2>
+        <div id="memberManageSection" class="fgroup">
+          <div class="fgroup-head"><span class="fg-ic">👥</span><span class="fg-title">구성원 관리</span><span class="fg-sub">포지션·출전 상태·권한을 정해요</span></div>
           <div class="field-note" style="margin-top:0;">링크로 들어와서 이름을 적고 가입한 구성원 목록이에요. 포지션과 대회 출전 여부를 지정할 수 있고, 포지션별로 묶어서 보여줘요.</div>
           <div id="memberFilters" style="margin-top:10px;">
             <label class="field-label" style="margin-top:0;">성별 필터</label>
@@ -1576,17 +1629,18 @@
           <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
         </div>
 
-        <div class="edit-divider"></div>
+        <div class="fgroup fgroup-danger">
         <div class="btn-row">
           <button class="btn" id="btnLogoutRoom">다른 코드로 전환</button>
           <button class="btn" id="btnDeleteRoom" style="background:#D92D4A; border-color:#D92D4A; color:#fff; display:none;">이 코드 삭제</button>
+        </div>
         </div>
         <div class="edit-hint" id="settingsStatus"></div>
       </div>
 
       <div id="settingsRightCol" class="settings-col">
-        <div id="activityLogSection">
-          <h2 style="font-size:14px; margin-top:0;">수정·저장 활동 로그</h2>
+        <div id="activityLogSection" class="fgroup" style="margin-top:0;">
+          <div class="fgroup-head"><span class="fg-ic">🕘</span><span class="fg-title">수정·저장 활동 로그</span></div>
           <div class="field-note" style="margin-top:0;">누가 마지막에 대형이나 공격 상황을 수정·저장했는지 최근 순서로 보여줘요.</div>
           <div id="activityLogList" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
         </div>
