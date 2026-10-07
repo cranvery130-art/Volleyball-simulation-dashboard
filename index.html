@@ -64,6 +64,10 @@
   body.eye-mode #net rect[fill="#08090B"]{ fill:#3A3226; }
   body.eye-mode .setter-ring{ stroke:#52703A; }
   body.eye-mode #ownLabelLayer text, body.eye-mode #oppLabelLayer text{ fill:#FBF5EA; }
+  .shared-banner{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 14px; margin-bottom:14px; border:1px solid var(--accent); background:var(--accent-soft); border-radius:var(--radius-md); }
+  .shared-banner-text{ flex:1 1 260px; font-size:13px; color:var(--text); line-height:1.5; }
+  .shared-banner-text span{ display:block; font-size:11.5px; color:var(--text-dim); }
+  body.shared-view #appModeSeg button[data-appmode="video"], body.shared-view #btnFeatureGuide, body.shared-view #topCodePill, body.shared-view #shareFormationSection{ display:none !important; }
   #themeSeg{ flex:none; }
   #themeSeg button{ padding:7px 12px; font-size:12px; white-space:nowrap; }
   #btnThemeToggle{
@@ -729,6 +733,7 @@
           <li><b>대형을 직접 고쳐요</b> — "02 대형 저장 &amp; 편집"의 편집 모드에서 "시작 위치" 또는 "도착 위치"를 고른 뒤 코트의 도트를 드래그해요. 블로킹은 도트를 네트 앞 블로킹 존에 직접 놓아야 인식돼요.</li>
           <li><b>공격 상황을 직접 만들어요</b> — "03 공격 상황"에서 공격 위치·템포·시간차(페이크) 여부·공 착지 칸(3×3)을 정하고, "덮어쓸 공격 상황"을 고른 뒤 저장하면 그 시나리오가 내가 만든 상황으로 바뀌어요.</li>
           <li><b>저장하고 불러와요</b> — 이름과 폴더를 정해 대형을 저장해 두면, "저장된 대형 불러오기"에서 바로 불러올 수 있어요. ✏️로 이름 바꾸기, 🗑️로 삭제, 🔍 찾기로 폴더 검색을 할 수 있어요.</li>
+          <li><b>링크나 GIF로 공유해요</b> — 편집 모드 아래 "대형 공유"에서 지금 대형, 저장한 대형 하나, 또는 폴더 전체를 고른 뒤 🔗 링크를 만들거나 🎞️ GIF를 만들어요. 링크를 받은 사람은 코드·비밀번호 없이 보기 전용으로 애니메이션을 볼 수 있고, GIF는 카톡·발표 자료에 바로 넣을 수 있어요.</li>
         </ol>
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
@@ -739,14 +744,14 @@
 
       <div class="guide-section" id="guideSection-video">
         <ol class="guide-steps">
-          <li><b>영상을 올려요 (선택)</b> — "경기 영상"에서 경기 영상 파일을 고르고 재생해요. 영상 없이 경기를 직접 보면서 기록해도 돼요(이때는 기록을 시작한 뒤 흐른 시간이 저장돼요).</li>
+          <li><b>경기 폴더를 먼저 만들고 영상을 올려요</b> — 맨 위 "매치 분석 저장"에서 경기 이름을 적고 "+ 새 폴더 추가"를 누르면 이후 기록이 그 폴더에 자동 저장돼요. 그다음 "경기 영상"에서 경기 영상 파일을 고르고 재생해요(영상 없이 경기를 직접 보면서 기록해도 돼요).</li>
           <li><b>팀 이름·명단·세트를 정해요</b> — "빠른 기록 배너"에서 팀 이름(선택)과 포지션 명단(선택)을 적고, 지금 진행 중인 <b>세트</b>를 골라요. 세트가 바뀌면 기록하기 전에 꼭 세트 버튼부터 바꿔주세요.</li>
           <li><b>팀 → 결과 유형을 골라요</b> — 팀은 <b>점수를 딴 팀이 아니라 그 플레이를 한 팀</b>이에요. 잘해서 점수를 냈으면 "득점", 실수·파울로 점수를 내줬으면 "범실"을 골라요. (아래 예시 참고)</li>
           <li><b>세부 상황 → 방식 → 위치를 골라요</b> — 드롭다운에서 상황(공격 위치, 서브·리시브·연결, 블로킹, 파울)을 골라요. 공격이면 "공격 방식"(강타·페인트·터치아웃 / 범실이면 아웃·네트 걸림), 파울이면 "파울 종류"(네트터치·오버네트 등 13가지)를 한 번 더 고를 수 있어요. 공격은 3×3 칸, 블로킹은 네트 앞 5칸에서 위치를 찍을 수 있어요(위쪽이 네트·전위예요).</li>
           <li><b>"기록하기"를 눌러요</b> — 한 번 누를 때마다 <b>1점이 기록 한 줄</b>로 남고, 지금 시간과 세트가 함께 저장돼요. 잘못 눌렀다면 <b>↩️ 되돌리기</b>(또는 Ctrl+Z)로 바로 취소해요.</li>
           <li><b>기록을 확인·수정해요</b> — "기록" 목록에서 시간을 누르면 그 영상 장면으로 이동해요. 줄마다 세트·관련 선수·메모를 고칠 수 있고, ✕로 지울 수 있어요. 엑셀·구글시트용 파일로 내보낼 수도 있어요.</li>
           <li><b>그래프와 종합 분석을 봐요</b> — "그래프" 위의 세트 버튼(전체·1·2·3세트)으로 범위를 고르면, <b>요약</b>(우리 : 상대 점수, 자력 득점·상대 범실 구분, 주요 지표, 세트별 비교)과 <b>추세</b>가 다시 계산돼요. 계산 방법은 <b>📘 설명</b> 탭에 있어요. "종합 분석"은 강점·줄일 수 있는 실점·상대 주 득점 루트를 자동으로 정리해 주고, 그 아래에 코치 의견을 직접 적어요.</li>
-          <li><b>경기별로 폴더에 저장해요</b> — "매치 분석 저장"에서 이름을 적고 "+ 새 폴더 추가"를 누르면 빈 화면에서 새 경기를 시작하고, 이후 기록이 그 폴더에 자동으로 함께 저장돼요. 지금 화면의 기록에 이름만 붙이려면 "폴더로 저장"을 눌러요. 불러온 폴더는 🔗 조회 링크로 공유하거나 🗑️로 삭제(기록도 함께 삭제)할 수 있어요.</li>
+          <li><b>경기별로 폴더에 저장해요</b> — 화면 맨 위 "매치 분석 저장"에서 이름을 적고 "+ 새 폴더 추가"를 누르면 빈 화면에서 새 경기를 시작하고, 이후 기록이 그 폴더에 자동으로 함께 저장돼요. 지금 화면의 기록에 이름만 붙이려면 "폴더로 저장"을 눌러요. 불러온 폴더는 🔗 조회 링크로 공유하거나 🗑️로 삭제(기록도 함께 삭제)할 수 있어요.</li>
         </ol>
         <div class="guide-example">
           <h4>🧭 이럴 땐 이렇게 기록해요</h4>
@@ -797,6 +802,12 @@
 
 <div id="mainAppCol">
 <div class="app" style="display:none;">
+  <div id="sharedViewBanner" class="shared-banner" style="display:none;">
+    <div class="shared-banner-text">📤 공유받은 대형 — <b id="sharedViewTitle"></b><span>보기 전용이라 이 화면에서 바꾼 내용은 저장되지 않아요.</span></div>
+    <select id="sharedItemSelect" style="width:auto; flex:1; min-width:180px;"></select>
+    <button class="btn" id="btnSharedReplay">▶ 다시 재생</button>
+    <button class="btn" id="btnSharedExit">처음 화면으로</button>
+  </div>
 
 
   <div class="topbar">
@@ -983,6 +994,40 @@
         </div>
 
         <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
+
+        <div class="edit-divider"></div>
+        <div class="share-formation" id="shareFormationSection">
+          <label class="field-label" style="margin-top:0;">대형 공유</label>
+          <div class="seg" id="shareTabSeg">
+            <button data-stab="link" class="active">🔗 링크로 공유</button>
+            <button data-stab="gif">🎞️ GIF로 공유</button>
+          </div>
+          <label class="field-label" style="margin-top:10px;">공유할 대상</label>
+          <select id="shareTargetSelect"></select>
+          <div id="sharePaneLink" style="margin-top:8px;">
+            <button class="btn primary" id="btnMakeShareLink" style="width:100%;">🔗 공유 링크 만들기</button>
+            <div id="shareLinkResult" style="display:none; margin-top:8px;">
+              <div class="preset-input-row">
+                <input type="text" id="shareFormationLinkInput" class="login-input" readonly style="margin-top:0;">
+                <button class="btn" id="btnCopyFormationLink" style="white-space:nowrap;">링크 복사</button>
+              </div>
+              <div class="field-note" id="shareLinkMeta" style="margin-top:4px;"></div>
+            </div>
+            <div class="field-note">받는 사람은 코드·비밀번호 없이 링크만 열면 대형 애니메이션을 볼 수 있어요(보기 전용, 받는 쪽에는 아무것도 저장되지 않아요). 링크 안에 그 순간의 대형이 담기므로, 나중에 대형을 고치면 링크를 다시 만들어 보내주세요.</div>
+          </div>
+          <div id="sharePaneGif" style="display:none; margin-top:8px;">
+            <button class="btn primary" id="btnMakeGif" style="width:100%;">🎞️ GIF 만들기</button>
+            <div class="field-note" id="gifStatus" style="margin-top:6px;"></div>
+            <div id="gifResult" style="display:none; margin-top:8px;">
+              <img id="gifPreview" alt="대형 애니메이션 GIF 미리보기" style="width:100%; border-radius:10px; border:1px solid var(--border); display:block;">
+              <div class="btn-row" style="margin-top:8px;">
+                <button class="btn" id="btnDownloadGif">⬇️ GIF 저장</button>
+                <button class="btn" id="btnShareGif" style="display:none;">📤 바로 공유</button>
+              </div>
+            </div>
+            <div class="field-note">고른 대형의 애니메이션을 GIF 그림으로 만들어요. 카톡·문자·발표 자료에 그대로 넣을 수 있어요. 폴더 전체를 고르면 대형이 차례로 이어서 나와요(최대 6개). 지금 화면 모드의 색으로 만들어지고, 만드는 동안 코트가 잠깐 움직여도 끝나면 원래대로 돌아와요.</div>
+          </div>
+        </div>
       </div>
     </div>
 <div class="card" id="cardAttack">
@@ -1074,6 +1119,38 @@
 </div>
 
 <div id="videoCol" class="mode-hidden">
+  <div class="card match-save-card" style="margin-bottom:16px;">
+    <h2>매치 분석 저장</h2>
+    <div class="field-note" style="margin-top:0;">경기마다 기록·그래프·종합 분석·코치 의견을 폴더 하나로 저장해요. 폴더를 새로 만들거나 불러오면 그 폴더가 "활성 폴더"가 되고, 이후 기록이 자동으로 함께 저장돼요. 영상 파일은 저장되지 않지만 파일 이름이 남아서 어느 경기였는지 알 수 있어요.</div>
+    <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
+    <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
+      <div style="flex:1; min-width:180px;">
+        <label class="field-label" style="margin-top:0;">저장할 이름</label>
+        <input type="text" id="matchSaveName" class="login-input" style="margin-top:0;" placeholder="예: 9/26 vs 위드나인전">
+      </div>
+      <button class="btn" id="btnNewMatchFolder" title="지금 화면을 비우고, 이 이름의 새 폴더에 처음부터 기록을 시작해요">+ 새 폴더 추가</button>
+      <button class="btn primary" id="btnSaveMatchFolder">폴더로 저장</button>
+      <button class="btn" id="btnOverwriteMatchFolder" style="display:none;" title="지금 불러온 폴더에 현재 기록을 덮어써요">현재 폴더에 덮어쓰기</button>
+    </div>
+    <div class="field-note" style="margin-top:4px;">"+ 새 폴더 추가"를 누르면 지금 화면이 비워지고, 그 폴더가 바로 활성화돼서 새로 남기는 기록이 자동으로 함께 저장돼요. 지금 작성 중인 내용을 계속 쓰면서 이름만 붙이고 싶다면 "폴더로 저장"을 눌러주세요.</div>
+    <div class="field-note" id="overwriteHint" style="display:none; margin-top:4px;"></div>
+    <div style="margin-top:10px;">
+      <label class="field-label" style="margin-top:0;">저장된 폴더 불러오기</label>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <select id="matchFolderSelect" style="flex:1;">
+          <option value="">불러올 폴더 선택...</option>
+        </select>
+        <button class="btn" id="btnDeleteMatchFolder" title="선택한 폴더 삭제" style="flex:none; padding:9px 10px;">🗑️</button>
+        <button class="btn" id="btnShareFolderLink" title="선택한 폴더를 조회 전용 링크로 공유">🔗 조회 링크 공유</button>
+      </div>
+      <div class="field-note" style="margin-top:4px;">폴더를 불러온 뒤 🔗를 누르면 그 폴더만 볼 수 있는 조회 전용 링크가 만들어져요. 🗑️로 폴더를 지우면 그 안의 기록도 함께 지워져요.</div>
+      <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
+        <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
+        <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
+      </div>
+    </div>
+  </div>
+</div>
   <div class="video-grid">
     <div class="video-grid-col">
       <div class="card video-grid-card">
@@ -1286,38 +1363,6 @@
     </div>
   </div>
 
-  <div class="card" style="margin-top:16px;">
-    <h2>매치 분석 저장</h2>
-    <div class="field-note" style="margin-top:0;">경기마다 기록·그래프·종합 분석·코치 의견을 폴더 하나로 저장해요. 폴더를 새로 만들거나 불러오면 그 폴더가 "활성 폴더"가 되고, 이후 기록이 자동으로 함께 저장돼요. 영상 파일은 저장되지 않지만 파일 이름이 남아서 어느 경기였는지 알 수 있어요.</div>
-    <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
-    <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
-      <div style="flex:1; min-width:180px;">
-        <label class="field-label" style="margin-top:0;">저장할 이름</label>
-        <input type="text" id="matchSaveName" class="login-input" style="margin-top:0;" placeholder="예: 9/26 vs 위드나인전">
-      </div>
-      <button class="btn" id="btnNewMatchFolder" title="지금 화면을 비우고, 이 이름의 새 폴더에 처음부터 기록을 시작해요">+ 새 폴더 추가</button>
-      <button class="btn primary" id="btnSaveMatchFolder">폴더로 저장</button>
-      <button class="btn" id="btnOverwriteMatchFolder" style="display:none;" title="지금 불러온 폴더에 현재 기록을 덮어써요">현재 폴더에 덮어쓰기</button>
-    </div>
-    <div class="field-note" style="margin-top:4px;">"+ 새 폴더 추가"를 누르면 지금 화면이 비워지고, 그 폴더가 바로 활성화돼서 새로 남기는 기록이 자동으로 함께 저장돼요. 지금 작성 중인 내용을 계속 쓰면서 이름만 붙이고 싶다면 "폴더로 저장"을 눌러주세요.</div>
-    <div class="field-note" id="overwriteHint" style="display:none; margin-top:4px;"></div>
-    <div style="margin-top:10px;">
-      <label class="field-label" style="margin-top:0;">저장된 폴더 불러오기</label>
-      <div style="display:flex; align-items:center; gap:6px;">
-        <select id="matchFolderSelect" style="flex:1;">
-          <option value="">불러올 폴더 선택...</option>
-        </select>
-        <button class="btn" id="btnDeleteMatchFolder" title="선택한 폴더 삭제" style="flex:none; padding:9px 10px;">🗑️</button>
-        <button class="btn" id="btnShareFolderLink" title="선택한 폴더를 조회 전용 링크로 공유">🔗 조회 링크 공유</button>
-      </div>
-      <div class="field-note" style="margin-top:4px;">폴더를 불러온 뒤 🔗를 누르면 그 폴더만 볼 수 있는 조회 전용 링크가 만들어져요. 🗑️로 폴더를 지우면 그 안의 기록도 함께 지워져요.</div>
-      <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
-        <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
-        <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
-      </div>
-    </div>
-  </div>
-</div>
 </div>
 
 <div id="settingsCol" class="mode-hidden">
@@ -2552,7 +2597,329 @@
 
     if(presets.length===0){ /* nothing saved yet — search results function will show its own empty message */ }
     renderPresetSearchResults();
+    renderShareTargets();
   }
+
+  // ---------- 대형 공유: 링크(보기 전용) · GIF ----------
+  // 링크에는 대형 데이터 자체를 압축해 #vshare= 뒤에 담아요. 서버나 비밀번호 없이 누구나 열 수 있고,
+  // 받는 쪽에서는 아무것도 저장하지 않는 보기 전용 화면으로 열려요.
+  let sharedViewMode = false;
+  function shareItemFromPreset(p){
+    return {name:p.name, folder:p.folder||'', scenario: resolveScenarioForPreset(p) || scenario,
+      base: JSON.parse(JSON.stringify(p.base)), oppBase: p.oppBase ? JSON.parse(JSON.stringify(p.oppBase)) : null};
+  }
+  function shareItemCurrent(){
+    const base={}; IDS.forEach(id=>base[id]=CUSTOM_BASE[id].slice());
+    const oppBase={}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=>oppBase[id]=CUSTOM_OPP_BASE[id].slice());
+    const typed = document.getElementById('presetName').value.trim();
+    return {name: typed || SCEN_LABEL[scenario] || '현재 대형', folder: document.getElementById('presetFolder').value.trim(), scenario, base, oppBase};
+  }
+  function renderShareTargets(){
+    const sel = document.getElementById('shareTargetSelect');
+    if(!sel) return;
+    const prev = sel.value;
+    sel.innerHTML = '';
+    const cur = document.createElement('option'); cur.value='cur'; cur.textContent='🎯 지금 코트에 보이는 대형';
+    sel.appendChild(cur);
+    const byFolder = {};
+    presets.forEach((p,idx)=>{ const f=p.folder||'(폴더 없음)'; (byFolder[f]=byFolder[f]||[]).push(idx); });
+    Object.keys(byFolder).sort((a,b)=>a==='(폴더 없음)'?1:b==='(폴더 없음)'?-1:a.localeCompare(b)).forEach(folderName=>{
+      const grp = document.createElement('optgroup'); grp.label = '📁 '+folderName;
+      if(folderName!=='(폴더 없음)' && byFolder[folderName].length>1){
+        const all = document.createElement('option'); all.value='f:'+folderName; all.textContent=`📁 "${folderName}" 폴더 전체 (${byFolder[folderName].length}개)`;
+        grp.appendChild(all);
+      }
+      byFolder[folderName].forEach(idx=>{
+        const o = document.createElement('option'); o.value='p:'+idx; o.textContent='· '+presets[idx].name; grp.appendChild(o);
+      });
+      sel.appendChild(grp);
+    });
+    if([...sel.options].some(o=>o.value===prev)) sel.value = prev;
+    else if(activePreset && presets.indexOf(activePreset)>=0) sel.value = 'p:'+presets.indexOf(activePreset);
+  }
+  function shareItemsForTarget(){
+    const v = document.getElementById('shareTargetSelect').value || 'cur';
+    if(v==='cur') return {title: shareItemCurrent().name, items:[shareItemCurrent()]};
+    if(v.startsWith('p:')){ const p = presets[Number(v.slice(2))]; if(p) return {title:p.name, items:[shareItemFromPreset(p)]}; }
+    if(v.startsWith('f:')){
+      const folder = v.slice(2);
+      const items = presets.filter(p=>(p.folder||'')===folder).map(shareItemFromPreset);
+      return {title:`📁 ${folder}`, items};
+    }
+    return {title: shareItemCurrent().name, items:[shareItemCurrent()]};
+  }
+  function buildSharePayload(title, items){
+    const scens = [...new Set(items.map(i=>i.scenario))];
+    const pick = obj => { const o={}; Object.keys(obj||{}).forEach(k=>{ if(scens.some(s=>k.startsWith(s+'|'))) o[k]=obj[k]; }); return o; };
+    const attacks = {}, ourAttacks = {};
+    scens.forEach(s=>{ if(ATTACKS[s]) attacks[s]=JSON.parse(JSON.stringify(ATTACKS[s])); if(OUR_ATTACKS[s]) ourAttacks[s]=JSON.parse(JSON.stringify(OUR_ATTACKS[s])); });
+    return {v:1, title, items, positions:POSITIONS, oppPositions:OPP_POSITIONS,
+      targetOverrides:pick(TARGET_OVERRIDES), fakeTargetOverrides:pick(FAKE_TARGET_OVERRIDES), ballOverrides:pick(BALL_OVERRIDES),
+      attacks, ourAttacks};
+  }
+  function bytesToB64url(bytes){
+    let bin=''; for(let i=0;i<bytes.length;i+=0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i+0x8000));
+    return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function b64urlToBytes(s){
+    s = s.replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4) s+='=';
+    const bin = atob(s); const out = new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i); return out;
+  }
+  async function encodeShare(obj){
+    const bytes = new TextEncoder().encode(JSON.stringify(obj));
+    if(window.CompressionStream){
+      try{
+        const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+        return '1' + bytesToB64url(new Uint8Array(await new Response(stream).arrayBuffer()));
+      }catch(err){}
+    }
+    return '0' + bytesToB64url(bytes);
+  }
+  async function decodeShare(str){
+    const flag = str[0], bytes = b64urlToBytes(str.slice(1));
+    let raw = bytes;
+    if(flag==='1'){
+      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+      raw = new Uint8Array(await new Response(stream).arrayBuffer());
+    }
+    return JSON.parse(new TextDecoder().decode(raw));
+  }
+  function shareBaseUrl(){ return location.href.split('#')[0].split('?')[0]; }
+
+  document.querySelectorAll('#shareTabSeg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#shareTabSeg button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('sharePaneLink').style.display = btn.dataset.stab==='link' ? '' : 'none';
+      document.getElementById('sharePaneGif').style.display = btn.dataset.stab==='gif' ? '' : 'none';
+    });
+  });
+  document.getElementById('shareTargetSelect').addEventListener('change', ()=>{
+    document.getElementById('shareLinkResult').style.display='none';
+    document.getElementById('gifResult').style.display='none';
+  });
+  document.getElementById('btnMakeShareLink').addEventListener('click', async ()=>{
+    const {title, items} = shareItemsForTarget();
+    if(!items.length){ alert('공유할 대형이 없어요.'); return; }
+    const url = shareBaseUrl() + '#vshare=' + await encodeShare(buildSharePayload(title, items));
+    document.getElementById('shareFormationLinkInput').value = url;
+    document.getElementById('shareLinkResult').style.display = 'block';
+    document.getElementById('shareLinkMeta').textContent = `대형 ${items.length}개 · 링크 길이 ${url.length.toLocaleString()}자` + (url.length>8000 ? ' — 메신저에 따라 너무 긴 링크는 잘릴 수 있어요. 폴더 대신 대형 하나씩 공유해보세요.' : '');
+  });
+  document.getElementById('btnCopyFormationLink').addEventListener('click', ()=>{
+    const inp = document.getElementById('shareFormationLinkInput');
+    inp.select();
+    const done = ()=>{ const b=document.getElementById('btnCopyFormationLink'); b.textContent='✓ 복사됐어요'; setTimeout(()=>b.textContent='링크 복사',1500); };
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(inp.value).then(done).catch(()=>{ document.execCommand('copy'); done(); });
+    else { document.execCommand('copy'); done(); }
+  });
+
+  // ---------- GIF 만들기: 코트 SVG를 프레임마다 그림으로 찍어 직접 GIF로 인코딩해요(외부 서비스 없이 브라우저 안에서) ----------
+  const SNAP_PROPS = ['fill','fill-opacity','stroke','stroke-width','stroke-opacity','stroke-dasharray','stroke-linecap','stroke-linejoin',
+    'opacity','display','visibility','font-family','font-size','font-weight','font-style','text-anchor','dominant-baseline','letter-spacing',
+    'stop-color','stop-opacity','paint-order'];
+  function snapshotCourtSVG(){
+    const svg = document.getElementById('court');
+    const clone = svg.cloneNode(true);
+    const src = svg.querySelectorAll('*'), dst = clone.querySelectorAll('*');
+    for(let i=0;i<src.length;i++){
+      const cs = getComputedStyle(src[i]);
+      let st=''; SNAP_PROPS.forEach(p=>{ const v=cs.getPropertyValue(p); if(v) st+=p+':'+v+';'; });
+      st += 'animation:none;transition:none;';
+      dst[i].setAttribute('style', st);
+      if(src[i].tagName==='circle'){ const r=parseFloat(cs.getPropertyValue('r')); if(r) dst[i].setAttribute('r', r); }
+    }
+    const vb = svg.viewBox.baseVal;
+    clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    clone.setAttribute('width', vb.width); clone.setAttribute('height', vb.height);
+    return {xml: new XMLSerializer().serializeToString(clone), w: vb.width, h: vb.height};
+  }
+  function loadSvgImage(xml){
+    return new Promise((res, rej)=>{
+      const img = new Image();
+      img.onload = ()=>res(img); img.onerror = rej;
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+    });
+  }
+  function gifLzw(pixels, minCode, out){
+    out.push(minCode);
+    const clear = 1<<minCode, eoi = clear+1;
+    let codeSize = minCode+1, next = eoi+1;
+    const dict = new Map();
+    let cur = 0, bits = 0; const buf = [];
+    const emit = c => { cur |= c<<bits; bits += codeSize; while(bits>=8){ buf.push(cur&255); cur >>>= 8; bits -= 8; } };
+    emit(clear);
+    let prefix = pixels[0];
+    for(let i=1;i<pixels.length;i++){
+      const k = pixels[i], key = (prefix<<8)|k;
+      const found = dict.get(key);
+      if(found!==undefined){ prefix = found; continue; }
+      emit(prefix);
+      if(next<4096){ dict.set(key, next++); if(next>(1<<codeSize) && codeSize<12) codeSize++; }
+      else { emit(clear); dict.clear(); codeSize = minCode+1; next = eoi+1; }
+      prefix = k;
+    }
+    emit(prefix); emit(eoi);
+    if(bits>0) buf.push(cur&255);
+    for(let i=0;i<buf.length;i+=255){ const n=Math.min(255, buf.length-i); out.push(n); for(let j=0;j<n;j++) out.push(buf[i+j]); }
+    out.push(0);
+  }
+  function encodeGif(w, h, frames, delays, palette){
+    const out = [];
+    const b = v=>out.push(v&255), w16 = v=>{ b(v); b(v>>8); }, s = t=>{ for(const c of t) b(c.charCodeAt(0)); };
+    s('GIF89a'); w16(w); w16(h); b(0xF7); b(0); b(0);
+    for(let i=0;i<256;i++){ const c = palette[i] || [0,0,0]; b(c[0]); b(c[1]); b(c[2]); }
+    b(0x21); b(0xFF); b(11); s('NETSCAPE2.0'); b(3); b(1); w16(0); b(0);
+    frames.forEach((px, i)=>{
+      b(0x21); b(0xF9); b(4); b(0); w16(delays[i]); b(0); b(0);
+      b(0x2C); w16(0); w16(0); w16(w); w16(h); b(0);
+      gifLzw(px, 8, out);
+    });
+    b(0x3B);
+    return new Uint8Array(out);
+  }
+  function quantizeFrames(imageDatas){
+    // 많이 쓰인 색 256개로 팔레트를 만들고, 각 픽셀을 가장 가까운 색으로 바꿔요.
+    const counts = new Uint32Array(32768);
+    imageDatas.forEach(d=>{ const a=d.data; for(let i=0;i<a.length;i+=8){ counts[((a[i]>>3)<<10)|((a[i+1]>>3)<<5)|(a[i+2]>>3)]++; } });
+    const keys = []; for(let k=0;k<32768;k++) if(counts[k]) keys.push(k);
+    keys.sort((x,y)=>counts[y]-counts[x]);
+    const palette = keys.slice(0,256).map(k=>[((k>>10)&31)*8+4, ((k>>5)&31)*8+4, (k&31)*8+4]);
+    const lut = new Int16Array(32768).fill(-1);
+    const nearest = k=>{
+      if(lut[k]>=0) return lut[k];
+      const r=((k>>10)&31)*8+4, g=((k>>5)&31)*8+4, bl=(k&31)*8+4;
+      let best=0, bd=1e9;
+      for(let i=0;i<palette.length;i++){ const p=palette[i]; const d=(p[0]-r)**2*2+(p[1]-g)**2*4+(p[2]-bl)**2*3; if(d<bd){bd=d;best=i;} }
+      lut[k]=best; return best;
+    };
+    const frames = imageDatas.map(d=>{
+      const a=d.data, px=new Uint8Array(a.length/4);
+      for(let i=0,j=0;i<a.length;i+=4,j++) px[j] = nearest(((a[i]>>3)<<10)|((a[i+1]>>3)<<5)|(a[i+2]>>3));
+      return px;
+    });
+    return {palette, frames};
+  }
+  let gifBlob = null, gifFileName = 'formation.gif';
+  async function makeFormationGif(){
+    if(editMode || overrideMode){ alert('편집 모드를 끈 상태("끔")에서 만들어주세요.'); return; }
+    const {title, items} = shareItemsForTarget();
+    if(!items.length){ alert('GIF로 만들 대형이 없어요.'); return; }
+    const MAX_ITEMS = 6;
+    const list = items.slice(0, MAX_ITEMS);
+    const status = document.getElementById('gifStatus');
+    const btn = document.getElementById('btnMakeGif');
+    btn.disabled = true;
+    // 지금 화면 상태를 기억했다가 다 만든 뒤 그대로 되돌려요(저장은 하지 않아요).
+    const saved = {scenario, base:JSON.parse(JSON.stringify(CUSTOM_BASE)), oppBase:JSON.parse(JSON.stringify(CUSTOM_OPP_BASE)), progress, playing};
+    playing = false; updatePlayBtn();
+    const OUT_W = 600, HEAD = 46;
+    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+    const imageDatas = [], delays = [];
+    const bg = getComputedStyle(document.body).getPropertyValue('--panel').trim() || '#121418';
+    const fg = getComputedStyle(document.body).getPropertyValue('--text').trim() || '#F4F5F7';
+    const dim = getComputedStyle(document.body).getPropertyValue('--text-dim').trim() || '#A3A8B1';
+    try{
+      for(let n=0;n<list.length;n++){
+        const it = list[n];
+        if(it.scenario!==scenario && (ATTACKS[it.scenario]||OUR_ATTACKS[it.scenario])) switchScenario(it.scenario);
+        IDS.forEach(id=>{ if(it.base[id]) CUSTOM_BASE[id]=it.base[id].slice(); });
+        if(it.oppBase) Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ if(it.oppBase[id]) CUSTOM_OPP_BASE[id]=it.oppBase[id].slice(); });
+        const STEPS = 36;
+        for(let k=0;k<=STEPS;k++){
+          status.textContent = `GIF 만드는 중… ${list.length>1?`(${n+1}/${list.length}) `:''}${Math.round(k/STEPS*100)}%`;
+          progress = k/STEPS;
+          const f = getFormation();
+          const d = desiredOwnAt(progress); IDS.forEach(id=>current[id]=d[id].slice());
+          ballCurrent = desiredBallAt(progress, f).slice();
+          render();
+          const snap = snapshotCourtSVG();
+          const img = await loadSvgImage(snap.xml);
+          const scale = OUT_W/snap.w, H = Math.round(snap.h*scale)+HEAD;
+          if(canvas.width!==OUT_W || canvas.height!==H){ canvas.width=OUT_W; canvas.height=H; }
+          ctx.fillStyle = bg; ctx.fillRect(0,0,OUT_W,H);
+          ctx.drawImage(img, 0, HEAD, OUT_W, H-HEAD);
+          ctx.fillStyle = fg; ctx.font = '700 17px "IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif'; ctx.textBaseline='middle';
+          ctx.fillText(it.name, 14, 17);
+          ctx.fillStyle = dim; ctx.font = '500 12.5px "IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+          ctx.fillText(`${SCEN_LABEL[it.scenario]||''} · ${progress<=0.02 ? '시작 대형' : phaseText()}`, 14, 36);
+          imageDatas.push(ctx.getImageData(0,0,OUT_W,H));
+          const frameMs = currentDuration/STEPS;
+          delays.push(k===STEPS ? 150 : Math.max(4, Math.round(frameMs/10)));
+        }
+      }
+      status.textContent = 'GIF 압축하는 중…';
+      await new Promise(r=>setTimeout(r,20));
+      const {palette, frames} = quantizeFrames(imageDatas);
+      const bytes = encodeGif(canvas.width, canvas.height, frames, delays, palette);
+      gifBlob = new Blob([bytes], {type:'image/gif'});
+      gifFileName = (title.replace(/[\\/:*?"<>|📁]/g,'').trim() || '대형') + '.gif';
+      const url = URL.createObjectURL(gifBlob);
+      const prev = document.getElementById('gifPreview');
+      if(prev.dataset.url) URL.revokeObjectURL(prev.dataset.url);
+      prev.src = url; prev.dataset.url = url;
+      document.getElementById('gifResult').style.display = 'block';
+      document.getElementById('btnShareGif').style.display = (navigator.canShare && navigator.canShare({files:[new File([gifBlob], gifFileName, {type:'image/gif'})]})) ? '' : 'none';
+      status.textContent = `완성! 대형 ${list.length}개 · ${(gifBlob.size/1024/1024).toFixed(1)}MB` + (items.length>MAX_ITEMS ? ` (폴더가 커서 앞의 ${MAX_ITEMS}개만 담았어요)` : '');
+    }catch(err){
+      console.error(err);
+      status.textContent = 'GIF를 만들지 못했어요: ' + (err && err.message ? err.message : err);
+    }finally{
+      if(saved.scenario!==scenario) switchScenario(saved.scenario);
+      CUSTOM_BASE = saved.base; CUSTOM_OPP_BASE = saved.oppBase;
+      progress = saved.progress; playing = false; updatePlayBtn();
+      IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice()); ballCurrent = null;
+      updateTexts(); render();
+      btn.disabled = false;
+    }
+  }
+  document.getElementById('btnMakeGif').addEventListener('click', makeFormationGif);
+  document.getElementById('btnDownloadGif').addEventListener('click', ()=>{
+    if(!gifBlob) return;
+    const a = document.createElement('a'); a.href = URL.createObjectURL(gifBlob); a.download = gifFileName;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  });
+  document.getElementById('btnShareGif').addEventListener('click', async ()=>{
+    if(!gifBlob) return;
+    try{ await navigator.share({files:[new File([gifBlob], gifFileName, {type:'image/gif'})], title: gifFileName}); }catch(err){}
+  });
+
+  // ---------- 공유 링크로 들어온 경우: 로그인 없이 보기 전용으로 열어요 ----------
+  async function openSharedFormationIfAny(){
+    if(!location.hash.startsWith('#vshare=')) return false;
+    let data;
+    try{ data = await decodeShare(location.hash.slice('#vshare='.length)); }
+    catch(err){ alert('공유 링크를 읽지 못했어요. 링크가 중간에 잘리지 않았는지 확인해주세요.'); return false; }
+    if(!data || !Array.isArray(data.items) || !data.items.length) return false;
+    sharedViewMode = true;
+    const splash = document.getElementById('splashScreen'); if(splash) splash.style.display='none';
+    enterApp(null, null, {
+      positions:data.positions, oppPositions:data.oppPositions,
+      targetOverrides:Object.assign({}, TARGET_OVERRIDES, data.targetOverrides||{}),
+      fakeTargetOverrides:Object.assign({}, FAKE_TARGET_OVERRIDES, data.fakeTargetOverrides||{}),
+      ballOverrides:Object.assign({}, BALL_OVERRIDES, data.ballOverrides||{}),
+      attacks:data.attacks, ourAttacks:data.ourAttacks,
+      presets: data.items.map(i=>({name:i.name, folder:i.folder||'', base:i.base, oppBase:i.oppBase, scenario:i.scenario}))
+    });
+    document.body.classList.add('shared-view');
+    renderPosGrid(); renderOppPosGrid();
+    const banner = document.getElementById('sharedViewBanner');
+    banner.style.display = 'flex';
+    document.getElementById('sharedViewTitle').textContent = data.title || '공유받은 대형';
+    const sel = document.getElementById('sharedItemSelect');
+    sel.innerHTML = '';
+    presets.forEach((p,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=`${p.name} — ${SCEN_LABEL[p.scenario]||''}`; sel.appendChild(o); });
+    sel.style.display = presets.length>1 ? '' : 'none';
+    const show = i=>{ loadPreset(presets[i]); setTimeout(()=>{ progress=0; playing=true; updatePlayBtn(); }, 500); };
+    sel.addEventListener('change', ()=>show(Number(sel.value)));
+    document.getElementById('btnSharedReplay').addEventListener('click', ()=>{ progress=0; playing=true; updatePlayBtn(); });
+    document.getElementById('btnSharedExit').addEventListener('click', ()=>{ location.href = shareBaseUrl(); });
+    show(0);
+    return true;
+  }
+
+  setTimeout(openSharedFormationIfAny, 0);
 
   function renderPresetSearchResults(){
     const list=document.getElementById('presetList');
@@ -3129,6 +3496,7 @@
     if(!storageOk) return;
     const params = new URLSearchParams(location.search);
     if(params.get('code')) return; // an explicit shared link always wins over a remembered session
+    if(location.hash.startsWith('#vshare=')) return; // 대형 공유 링크는 로그인 없이 보기 전용으로 열어요
     let lastCode = null;
     try{ lastCode = localStorage.getItem(LAST_CODE_KEY); }catch(err){ return; }
     if(!lastCode) return;
@@ -3633,6 +4001,7 @@
   // 코드로 들어오면(처음 입장이든 재입장이든) 절차식 기능/사용 설명을 바로 보여줘요 —
   // "다음에 자동으로 보지 않기"를 체크해둔 경우에는 건너뛰어요.
   window.maybeAutoShowFeatureGuide = function(){
+    if(location.hash.startsWith('#vshare=')) return;
     if(localStorage.getItem(HIDE_GUIDE_KEY)==='1') return;
     openFeatureGuide();
   };
