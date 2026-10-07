@@ -115,10 +115,13 @@
   .center-stack{ display:flex; flex-direction:column; gap:14px; }
 
   .card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; }
-  .card h2{ font-family:var(--display); font-size:15px; font-weight:700; color:var(--text); margin-bottom:10px; letter-spacing:-0.01em; }
+  .card h2{ font-family:var(--display); font-size:17px; font-weight:800; color:var(--text); margin-bottom:10px; letter-spacing:-0.01em; }
   .card h2 .n{ color:var(--accent); font-family:var(--mono); font-size:11.5px; letter-spacing:0.1em; margin-right:8px; }
 
-  label.field-label{ display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+  /* sub-headings inside cards: larger, bold, full-contrast text with an accent bar so they stand apart from body/notes */
+  .field-label{ display:flex; align-items:center; gap:7px; font-family:var(--display); font-size:13.5px; font-weight:800; letter-spacing:-0.01em; color:var(--text); margin-bottom:8px; }
+  .field-label::before{ content:''; flex:none; width:3px; height:13px; border-radius:2px; background:var(--accent); }
+  .field-label .field-note{ font-weight:400; font-size:11.5px; }
   select{ width:100%; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); font-size:13.5px; font-family:inherit; cursor:pointer; }
   select:focus, button:focus-visible, input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
   optgroup{ color:var(--text-dim); font-style:normal; }
@@ -483,7 +486,8 @@
   .record-row .x:hover{ background:var(--opp); color:#fff; }
   .banner-block{ margin-bottom:14px; }
   .quick-record-row{ margin-bottom:11px; }
-  .quick-record-row .qr-label{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; color:var(--accent); margin-bottom:4px; }
+  .quick-record-row .qr-label{ display:flex; align-items:center; gap:6px; font-family:var(--display); font-size:13px; font-weight:800; letter-spacing:-0.01em; color:var(--text); margin-bottom:6px; }
+  .quick-record-row .qr-label::before{ content:''; flex:none; width:3px; height:12px; border-radius:2px; background:var(--accent); }
   .qr-controls{ display:flex; align-items:center; gap:8px; }
   .qr-controls select{ flex:0 1 220px; min-width:0; padding:8px 10px; border-radius:var(--radius-md); border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); font-family:inherit; font-size:12.5px; }
   .qr-controls button{ flex:0 0 auto; white-space:nowrap; }
@@ -1327,14 +1331,14 @@
         <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 아래 "관련 선수"에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 바꾸기 전까지 이후 기록에도 계속 붙어요. 명단은 서버에 저장되니 실명보다는 별명이나 이니셜을 적어주세요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
         <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-          <span class="field-label" style="margin-top:0; flex:none;">관련 선수</span>
+          <span class="field-label" style="margin:0; flex:none;">관련 선수</span>
           <select id="videoPlayerSelect" style="flex:1;">
             <option value="">선택 안 함</option>
           </select>
         </div>
 
         <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-          <span class="field-label" style="margin-top:0; flex:none;">세트</span>
+          <span class="field-label" style="margin:0; flex:none;">세트</span>
           <div class="seg" id="setSeg" style="flex:1;">
             <button data-set="1" class="active">1세트</button>
             <button data-set="2">2세트</button>
