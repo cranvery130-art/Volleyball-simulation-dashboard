@@ -231,6 +231,17 @@
   .zone-check-row input{ width:14px; height:14px; margin:0; }
   .folder-action{ cursor:pointer; font-size:12px; padding:2px 5px; border-radius:6px; flex:none; opacity:0.75; }
   .folder-action:hover{ opacity:1; background:rgba(255,255,255,0.06); }
+  .folder-tip-row{ display:flex; align-items:baseline; gap:8px; margin:0 0 6px; flex-wrap:wrap; }
+  .folder-tip-row span{ color:var(--text-dim); }
+  .folder-tip-row em{ font-style:normal; color:var(--muted); margin-left:4px; }
+  .folder-tip-chip{ flex:none; border:1px solid var(--accent); background:var(--panel); color:var(--accent-text); border-radius:999px; padding:3px 10px; font-size:12px; font-weight:700; font-family:inherit; cursor:pointer; }
+  .folder-tip-chip:hover{ background:var(--accent-soft); }
+  .final-box{ border:1px solid rgba(255,210,63,0.45); background:var(--warn-soft); border-radius:var(--radius-md); padding:10px 12px; }
+  .final-head{ font-family:var(--display); font-weight:800; font-size:13.5px; color:var(--text); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .final-scen{ font-weight:600; font-size:11.5px; color:var(--text-dim); }
+  .final-status{ font-size:12px; color:var(--text-dim); margin-top:4px; line-height:1.5; }
+  .final-status b{ color:var(--text); }
+  .preset-chip.final{ border-color:var(--warn); }
   .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .preset-chip{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; font-size:12px; cursor:pointer; }
   .preset-chip.active{ border-color:var(--accent); }
@@ -1006,11 +1017,31 @@
           <option value="">(폴더 없음)</option>
           <option value="__new__">+ 새 폴더 만들기...</option>
         </select>
-        <input type="text" id="presetFolderNew" class="login-input" placeholder="새 폴더 이름 (예: 1학년 3반)" style="display:none; margin-top:6px;">
+        <input type="text" id="presetFolderNew" class="login-input" placeholder="새 폴더 이름 (예: 우리팀 · 기본 로테이션)" style="display:none; margin-top:6px;">
+        <button class="btn" id="btnFolderTipToggle" type="button" style="width:100%; margin-top:6px;">💡 폴더 이름 정하는 Tip ▾</button>
+        <div id="folderTipPanel" class="note-box folder-tip" style="display:none; margin-top:8px;">
+          <p style="margin:0 0 8px;">폴더는 <b>용도별 머리말</b>로 시작하면 여러 사람이 써도 정리가 잘 돼요. 아래 머리말을 누르면 새 폴더 이름 칸에 바로 들어가요.</p>
+          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="우리팀 · ">우리팀 · </button><span>우리 팀의 기본·변형 대형 <em>예: 우리팀 · 기본 로테이션</em></span></div>
+          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="상대팀 · ">상대팀 · </button><span>상대 팀별로 분석한 대형 <em>예: 상대팀 · 한빛고</em></span></div>
+          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="의견 · " id="folderTipOpinion">의견 · 내 이름</button><span>팀원 각자 제안하는 대형(자기 이름을 붙여요) <em>예: 의견 · 민수</em></span></div>
+          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="디테일 · ">디테일 · </button><span>블로킹·시간차·커버 등 세부 상황 <em>예: 디테일 · 블로킹 2인</em></span></div>
+          <p style="margin:8px 0 0;"><b>⭐ 최종 대형</b> 폴더는 개설자가 위 폴더들의 의견을 모아 확정한 대형이 저장되는 곳이라, 개설자만 저장·수정할 수 있어요.</p>
+        </div>
         <div class="preset-input-row" style="margin-top:8px;">
           <input type="hidden" id="presetFolder">
           <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
           <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
+        </div>
+
+        <div id="finalFormationSection" class="final-box" style="margin-top:10px;">
+          <div class="final-head">⭐ 최종 대형 <span class="final-scen" id="finalScenLabel"></span></div>
+          <div class="final-status" id="finalStatusText"></div>
+          <div class="btn-row" style="margin-top:6px;">
+            <button class="btn" id="btnLoadFinal" style="display:none;">⭐ 최종 대형 불러오기</button>
+            <button class="btn primary" id="btnFinalize" style="display:none;">⭐ 지금 대형을 최종으로 확정</button>
+            <button class="btn" id="btnUnfinalize" style="display:none;">확정 해제</button>
+          </div>
+          <div class="field-note" id="finalNote" style="margin-top:6px;"></div>
         </div>
 
         <div class="edit-divider"></div>
@@ -2127,10 +2158,20 @@
   Object.keys(OUR_ATTACKS).forEach(k=>SCEN_LABEL[k]=OUR_ATTACKS[k].label);
 
   const PRESET_SCENARIO_FOLDER = '시나리오별 대형';
+  // 개설자가 여러 폴더의 의견을 모아 확정한 "최종 대형" — 공격 상황마다 하나씩, 개설자만 저장·수정·삭제할 수 있어요.
+  const FINAL_FOLDER = '⭐ 최종 대형';
+  const isFinalPreset = p => !!p && (p.final===true || (p.folder||'')===FINAL_FOLDER);
+  // 코드 없이 쓰는 로컬 모드는 혼자 쓰니 개설자와 같아요. (accessLevel/roomCode는 더 아래에서 선언돼서, 시작 직후 첫 그리기 때는 아직 접근할 수 없어요)
+  const canFinalize = () => { try{ return accessLevel==='creator' || !roomCode; }catch(err){ return true; } };
+  const finalFor = key => presets.find(p=>isFinalPreset(p) && p.scenario===key);
+  function guardFinal(p, what){
+    if(isFinalPreset(p) && !canFinalize()){ alert(`⭐ 최종 대형은 개설자만 ${what}할 수 있어요.`); return false; }
+    return true;
+  }
 
   function pickScenario(key){
     switchScenario(key);
-    const existing = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
+    const existing = finalFor(key) || presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER);
     if(existing){
       loadPreset(existing);
     } else {
@@ -2596,17 +2637,17 @@
     loadSelect.innerHTML = '<option value="">불러올 대형 선택...</option>';
     const byFolder = {};
     presets.forEach((p,idx)=>{ const f=p.folder||'(폴더 없음)'; if(!byFolder[f]) byFolder[f]=[]; byFolder[f].push(idx); });
-    Object.keys(byFolder).sort((a,b)=>a==='(폴더 없음)'?1:b==='(폴더 없음)'?-1:a.localeCompare(b)).forEach(folderName=>{
-      const grp = document.createElement('optgroup'); grp.label = '📁 '+folderName;
+    Object.keys(byFolder).sort((a,b)=>a===FINAL_FOLDER?-1:b===FINAL_FOLDER?1:a==='(폴더 없음)'?1:b==='(폴더 없음)'?-1:a.localeCompare(b)).forEach(folderName=>{
+      const grp = document.createElement('optgroup'); grp.label = folderName===FINAL_FOLDER ? folderName : '📁 '+folderName;
       byFolder[folderName].forEach(idx=>{
-        const opt=document.createElement('option'); opt.value=idx; opt.textContent=presets[idx].name;
+        const opt=document.createElement('option'); opt.value=idx; opt.textContent=(isFinalPreset(presets[idx])?'⭐ ':'')+presets[idx].name;
         grp.appendChild(opt);
       });
       loadSelect.appendChild(grp);
     });
 
     const folderSelect=document.getElementById('presetFolderSelect');
-    const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f))).sort((a,b)=>a.localeCompare(b));
+    const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f && f!==FINAL_FOLDER))).sort((a,b)=>a.localeCompare(b));
     const currentFolderValue = document.getElementById('presetFolder').value;
     const newFolderInput = document.getElementById('presetFolderNew');
     const isCreatingNew = newFolderInput.style.display!=='none';
@@ -2618,6 +2659,47 @@
     if(presets.length===0){ /* nothing saved yet — search results function will show its own empty message */ }
     renderPresetSearchResults();
     renderShareTargets();
+    renderFinalSection();
+  }
+
+  function renderFinalSection(){
+    const sec = document.getElementById('finalFormationSection');
+    if(!sec) return;
+    const fin = finalFor(scenario), owner = canFinalize();
+    document.getElementById('finalScenLabel').textContent = '· ' + (SCEN_LABEL[scenario]||'');
+    const when = fin && fin.finalizedAt ? new Date(fin.finalizedAt).toLocaleDateString('ko-KR') : '';
+    const status = document.getElementById('finalStatusText');
+    if(fin){
+      status.innerHTML = '확정됨' + (when ? ` · ${when}` : '') + (fin.basedOn ? ` · 바탕: <b></b>` : '');
+      if(fin.basedOn) status.querySelector('b').textContent = fin.basedOn;
+    } else {
+      status.textContent = '아직 이 공격 상황의 최종 대형이 없어요.';
+    }
+    const showingFinal = activePreset===fin && !!fin;
+    document.getElementById('btnLoadFinal').style.display = fin && !showingFinal ? '' : 'none';
+    document.getElementById('btnFinalize').style.display = owner ? '' : 'none';
+    document.getElementById('btnFinalize').textContent = fin ? '⭐ 지금 대형으로 최종 교체' : '⭐ 지금 대형을 최종으로 확정';
+    document.getElementById('btnUnfinalize').style.display = owner && fin ? '' : 'none';
+    document.getElementById('finalNote').textContent = owner
+      ? '의견·디테일 폴더의 대형을 불러와 비교한 뒤, 코트에 보이는 대형을 이 공격 상황의 최종 대형으로 확정해요. 시나리오를 고르면 최종 대형이 가장 먼저 불러와져요.'
+      : '최종 대형은 개설자가 팀원들의 의견을 모아 확정해요. 의견이 있으면 "의견 · 내 이름" 폴더에 저장해 주세요.';
+  }
+  function finalizeCurrent(){
+    if(!canFinalize()) return;
+    const fin = finalFor(scenario);
+    const src = activePreset && !isFinalPreset(activePreset) ? `${activePreset.folder ? activePreset.folder+' / ' : ''}${activePreset.name}` : (fin ? fin.basedOn||'' : '직접 배치');
+    if(fin && !confirm(`'${SCEN_LABEL[scenario]}'의 최종 대형을 지금 코트의 대형으로 바꿀까요?`)) return;
+    const baseCopy={}; IDS.forEach(id=>baseCopy[id]=CUSTOM_BASE[id].slice());
+    const oppCopy={}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=>oppCopy[id]=CUSTOM_OPP_BASE[id].slice());
+    const data = {name:SCEN_LABEL[scenario], folder:FINAL_FOLDER, final:true, scenario, base:baseCopy, oppBase:oppCopy,
+      basedOn: src, finalizedAt: Date.now(), finalizedBy: myDisplayName || '개설자'};
+    let target = fin;
+    if(target) Object.assign(target, data); else { target = data; presets.push(target); }
+    activePreset = target;
+    document.getElementById('presetName').value = target.name;
+    document.getElementById('presetFolder').value = FINAL_FOLDER;
+    pendingActionDescription = `'${SCEN_LABEL[scenario]}' 최종 대형을 확정했어요`;
+    renderPresets(); updateTexts(); scheduleAutoSave();
   }
 
   // ---------- 대형 공유: 링크(보기 전용) · GIF ----------
@@ -2985,6 +3067,7 @@
         const renameBtn=document.createElement('span'); renameBtn.className='folder-action'; renameBtn.title='폴더 이름 바꾸기'; renameBtn.textContent='✏️';
         renameBtn.addEventListener('click', e=>{
           e.stopPropagation();
+          if(folderKey===FINAL_FOLDER){ alert('⭐ 최종 대형 폴더는 이름을 바꿀 수 없어요.'); return; }
           const newName = (prompt(`'${folderKey}' 폴더의 새 이름을 입력하세요:`, folderKey) || '').trim();
           if(!newName || newName===folderKey) return;
           presets.forEach(p=>{ if((p.folder||'')===folderKey) p.folder = newName; });
@@ -2995,6 +3078,7 @@
         const delBtn=document.createElement('span'); delBtn.className='folder-action'; delBtn.title='폴더 전체 삭제'; delBtn.textContent='🗑️';
         delBtn.addEventListener('click', e=>{
           e.stopPropagation();
+          if(folderKey===FINAL_FOLDER && !canFinalize()){ alert('⭐ 최종 대형은 개설자만 삭제할 수 있어요.'); return; }
           if(!confirm(`'${folderKey}' 폴더 안의 대형 ${groups[folderKey].length}개를 전부 삭제할까요? 되돌릴 수 없어요.`)) return;
           if(activePreset && (activePreset.folder||'')===folderKey) activePreset=null;
           presets = presets.filter(p=>(p.folder||'')!==folderKey);
@@ -3009,12 +3093,14 @@
       groups[folderKey].forEach(({p, idx})=>{
         const chip=document.createElement('div'); chip.className='preset-chip';
         if(activePreset===p) chip.classList.add('active');
+        if(isFinalPreset(p)) chip.classList.add('final');
         const label=document.createElement('span'); label.textContent=p.name;
         const x=document.createElement('span'); x.className='x'; x.textContent='✕';
         chip.appendChild(label); chip.appendChild(x);
         label.addEventListener('click', ()=> loadPreset(p));
         x.addEventListener('click', e=>{
           e.stopPropagation();
+          if(!guardFinal(p, '삭제')) return;
           if(activePreset===p) activePreset=null;
           presets.splice(idx,1);
           renderPresets();
@@ -3061,6 +3147,7 @@
 
   function switchScenario(key){
     scenario=key;
+    renderFinalSection();
     document.getElementById('presetScenarioPick').value = key;
     document.getElementById('customTargetSelect').value = key;
     syncCustomPanelToScenario(key);
@@ -3193,6 +3280,36 @@
       document.getElementById('presetFolder').value = val;
     }
   });
+  document.getElementById('btnFolderTipToggle').addEventListener('click', ()=>{
+    const panel = document.getElementById('folderTipPanel');
+    const showing = panel.style.display!=='none';
+    panel.style.display = showing ? 'none' : 'block';
+    document.getElementById('btnFolderTipToggle').textContent = showing ? '💡 폴더 이름 정하는 Tip ▾' : '💡 폴더 이름 정하는 Tip ▴';
+    const op = document.getElementById('folderTipOpinion');
+    const me = (myDisplayName && myDisplayName!=='개설자') ? myDisplayName : '';
+    op.dataset.fill = '의견 · ' + me; op.textContent = '의견 · ' + (me || '내 이름');
+  });
+  document.querySelectorAll('.folder-tip-chip').forEach(chip=>chip.addEventListener('click', ()=>{
+    const folderSelect = document.getElementById('presetFolderSelect');
+    const input = document.getElementById('presetFolderNew');
+    folderSelect.value = '__new__';
+    input.style.display = 'block';
+    input.value = chip.dataset.fill || chip.dataset.prefix;
+    document.getElementById('presetFolder').value = input.value.trim();
+    input.focus(); input.setSelectionRange(input.value.length, input.value.length);
+  }));
+  document.getElementById('btnFinalize').addEventListener('click', finalizeCurrent);
+  document.getElementById('btnLoadFinal').addEventListener('click', ()=>{ const f = finalFor(scenario); if(f){ loadPreset(f); lastPickedPreset = f; } });
+  document.getElementById('btnUnfinalize').addEventListener('click', ()=>{
+    const f = finalFor(scenario);
+    if(!f || !canFinalize()) return;
+    if(!confirm(`'${SCEN_LABEL[scenario]}'의 최종 대형 확정을 해제할까요? (저장된 최종 대형이 지워져요)`)) return;
+    if(activePreset===f) activePreset = null;
+    if(lastPickedPreset===f) lastPickedPreset = null;
+    presets.splice(presets.indexOf(f), 1);
+    pendingActionDescription = `'${SCEN_LABEL[scenario]}' 최종 대형 확정을 해제했어요`;
+    renderPresets(); updateTexts(); scheduleAutoSave();
+  });
   document.getElementById('presetFolderNew').addEventListener('input', e=>{
     document.getElementById('presetFolder').value = e.target.value.trim();
   });
@@ -3218,6 +3335,7 @@
       alert('먼저 위 목록에서 이름을 바꿀 대형을 선택해주세요.');
       return;
     }
+    if(!guardFinal(lastPickedPreset, '이름 변경')) return;
     const newName = (prompt('새 이름을 입력해주세요.', lastPickedPreset.name) || '').trim();
     if(!newName) return;
     lastPickedPreset.name = newName.slice(0,40);
@@ -3230,6 +3348,7 @@
       alert('먼저 위 목록에서 삭제할 대형을 선택해주세요.');
       return;
     }
+    if(!guardFinal(lastPickedPreset, '삭제')) return;
     if(!confirm(`"${lastPickedPreset.name}"을(를) 삭제할까요?`)) return;
     if(activePreset===lastPickedPreset) activePreset=null;
     presets.splice(i,1);
@@ -3250,6 +3369,9 @@
     // otherwise fall back to matching by name, or create a brand-new entry.
     let target = (activePreset && activePreset.name===name && (activePreset.folder||'')===folder) ? activePreset : null;
     if(!target) target = presets.find(p=>p.name===name && (p.folder||'')===folder);
+    if(folder===FINAL_FOLDER && !canFinalize()){ alert('⭐ 최종 대형 폴더에는 개설자만 저장할 수 있어요. 의견은 "의견 · 내 이름" 같은 폴더에 저장해 주세요.'); return; }
+    if(target && !guardFinal(target, '수정')) return;
+    if(folder===FINAL_FOLDER && !target){ finalizeCurrent(); return; } // keep one final per scenario
     if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; target.scenario=scenario; activePreset=target; }
     else { const created={name, folder, base:baseCopy, oppBase:oppCopy, scenario}; presets.push(created); activePreset=created; }
     pendingActionDescription = `'${name}' 대형을 저장했어요`;
@@ -4156,7 +4278,7 @@
                  {click:'.k-cell', then:el=>el.classList.add('on')},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'저장하고 불러와요',
-        text:'이름과 폴더를 정해 대형을 저장하면 "저장된 대형 불러오기"에서 <b>한 번에</b> 불러올 수 있어요.',
+        text:'폴더 이름은 <b>💡 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)로 정리해요. 개설자는 의견들을 비교해 <b>⭐ 최종 대형</b>으로 확정할 수 있어요.',
         scene:`<div class="mk-card"><div class="mk-row"><div class="mk-input k-name" data-ph="대형 이름"></div><span class="mk-btn big k-save">저장</span></div>
           <div class="mk-lbl">저장된 대형</div><div class="mk-list k-list"><div class="mk-item">📁 기본 · 서브 리시브</div></div></div>
           <div class="mk-toast k-toast">대형을 불러왔어요</div>`,
