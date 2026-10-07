@@ -231,6 +231,10 @@
   .zone-check-row input{ width:14px; height:14px; margin:0; }
   .folder-action{ cursor:pointer; font-size:12px; padding:2px 5px; border-radius:6px; flex:none; opacity:0.75; }
   .folder-action:hover{ opacity:1; background:rgba(255,255,255,0.06); }
+  .comment-input{ width:100%; box-sizing:border-box; resize:vertical; min-height:72px; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); font-family:inherit; font-size:13.5px; line-height:1.6; }
+  .comment-input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .comment-input[readonly]{ color:var(--text-dim); cursor:default; }
+  .comment-target{ font-family:var(--body); font-weight:600; font-size:11.5px; color:var(--text-dim); }
   .folder-tip-row{ display:flex; align-items:baseline; gap:8px; margin:0 0 6px; flex-wrap:wrap; }
   .folder-tip-row span{ color:var(--text-dim); }
   .folder-tip-row em{ font-style:normal; color:var(--muted); margin-left:4px; }
@@ -997,6 +1001,12 @@
         <div class="row"><span class="ring decoy"></span>페이크 동작</div>
         <div class="row"><span class="ring setter"></span>토스(세터)</div>
       </div>
+    </div>
+
+    <div class="card" id="formationCommentCard">
+      <label class="field-label" for="formationComment" style="margin-top:0;">💬 대형 코멘트 <span class="comment-target" id="commentTarget"></span></label>
+      <textarea id="formationComment" class="comment-input" rows="3" maxlength="600" placeholder="이 대형을 만든 의도, 우발 상황 대처 등을 적어주세요. (예: 상대가 시간차로 바꾸면 5번이 먼저 중앙을 막고, 8번이 뒤를 커버)"></textarea>
+      <div class="field-note" id="commentMeta" style="margin-top:4px;"></div>
     </div>
 
 
@@ -2176,6 +2186,7 @@
       loadPreset(existing);
     } else {
       activePreset = null;
+      pendingComment = ''; // an unsaved note belongs to the arrangement that was on screen, not the newly picked scenario
       document.getElementById('presetName').value = SCEN_LABEL[key];
       document.getElementById('presetFolder').value = PRESET_SCENARIO_FOLDER;
       document.getElementById('presetFolderNew').style.display = 'none';
@@ -2660,6 +2671,7 @@
     renderPresetSearchResults();
     renderShareTargets();
     renderFinalSection();
+    renderFormationComment();
   }
 
   function renderFinalSection(){
@@ -2684,6 +2696,42 @@
       ? '의견·디테일 폴더의 대형을 불러와 비교한 뒤, 코트에 보이는 대형을 이 공격 상황의 최종 대형으로 확정해요. 시나리오를 고르면 최종 대형이 가장 먼저 불러와져요.'
       : '최종 대형은 개설자가 팀원들의 의견을 모아 확정해요. 의견이 있으면 "의견 · 내 이름" 폴더에 저장해 주세요.';
   }
+  // ---------- 대형 코멘트: 불러온(저장된) 대형마다 만든 사람의 의도·우발 상황 메모를 남겨요 ----------
+  let pendingComment = ''; // 아직 저장 안 한 대형에 적은 코멘트 — 저장하면 그 대형에 붙어요
+  function commentReadOnly(p){
+    if(sharedViewMode) return true;
+    let level = null; try{ level = accessLevel; }catch(err){}
+    if(level==='view') return true;
+    return isFinalPreset(p) && !canFinalize();
+  }
+  function renderFormationComment(){
+    const ta = document.getElementById('formationComment');
+    if(!ta) return;
+    const p = activePreset && presets.includes(activePreset) ? activePreset : null;
+    const target = document.getElementById('commentTarget'), meta = document.getElementById('commentMeta');
+    target.textContent = p ? `· ${isFinalPreset(p) ? '⭐ ' : ''}${p.folder && !isFinalPreset(p) ? p.folder+' / ' : ''}${p.name}` : '· 저장 전 대형';
+    const value = p ? (p.comment||'') : pendingComment;
+    if(document.activeElement!==ta || ta.dataset.for!==(p ? String(presets.indexOf(p)) : 'pending')) ta.value = value;
+    ta.dataset.for = p ? String(presets.indexOf(p)) : 'pending';
+    ta.readOnly = commentReadOnly(p);
+    if(p && p.comment && p.commentBy) meta.textContent = `${p.commentBy}님이 남김` + (p.commentAt ? ` · ${new Date(p.commentAt).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}` : '');
+    else if(!p) meta.textContent = '대형을 저장하면 이 코멘트도 함께 저장돼요.';
+    else meta.textContent = ta.readOnly ? (p.comment ? '' : '남겨진 코멘트가 없어요.') : '적는 즉시 이 대형에 자동 저장돼요.';
+    document.getElementById('formationCommentCard').style.display = (sharedViewMode && !value) ? 'none' : '';
+  }
+  document.getElementById('formationComment').addEventListener('input', e=>{
+    const ta = e.target;
+    const p = activePreset && presets.includes(activePreset) ? activePreset : null;
+    if(commentReadOnly(p)) return;
+    if(!p){ pendingComment = ta.value; return; }
+    p.comment = ta.value;
+    let who = null; try{ who = myDisplayName; }catch(err){}
+    p.commentBy = who || (canFinalize() ? '개설자' : '구성원'); p.commentAt = Date.now();
+    pendingActionDescription = `'${p.name}' 대형에 코멘트를 남겼어요`;
+    scheduleAutoSave();
+  });
+  document.getElementById('formationComment').addEventListener('blur', renderFormationComment);
+
   function finalizeCurrent(){
     if(!canFinalize()) return;
     const fin = finalFor(scenario);
@@ -2693,6 +2741,8 @@
     const oppCopy={}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=>oppCopy[id]=CUSTOM_OPP_BASE[id].slice());
     const data = {name:SCEN_LABEL[scenario], folder:FINAL_FOLDER, final:true, scenario, base:baseCopy, oppBase:oppCopy,
       basedOn: src, finalizedAt: Date.now(), finalizedBy: myDisplayName || '개설자'};
+    const srcComment = activePreset && !isFinalPreset(activePreset) ? activePreset.comment : (fin ? fin.comment : pendingComment);
+    if(srcComment){ data.comment = srcComment; data.commentBy = myDisplayName || '개설자'; data.commentAt = Date.now(); }
     let target = fin;
     if(target) Object.assign(target, data); else { target = data; presets.push(target); }
     activePreset = target;
@@ -2707,14 +2757,15 @@
   // 받는 쪽에서는 아무것도 저장하지 않는 보기 전용 화면으로 열려요.
   let sharedViewMode = false;
   function shareItemFromPreset(p){
-    return {name:p.name, folder:p.folder||'', scenario: resolveScenarioForPreset(p) || scenario,
+    return {name:p.name, folder:p.folder||'', scenario: resolveScenarioForPreset(p) || scenario, comment: p.comment || '',
       base: JSON.parse(JSON.stringify(p.base)), oppBase: p.oppBase ? JSON.parse(JSON.stringify(p.oppBase)) : null};
   }
   function shareItemCurrent(){
     const base={}; IDS.forEach(id=>base[id]=CUSTOM_BASE[id].slice());
     const oppBase={}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=>oppBase[id]=CUSTOM_OPP_BASE[id].slice());
     const typed = document.getElementById('presetName').value.trim();
-    return {name: typed || SCEN_LABEL[scenario] || '현재 대형', folder: document.getElementById('presetFolder').value.trim(), scenario, base, oppBase};
+    const cur = activePreset && presets.includes(activePreset) ? activePreset.comment : pendingComment;
+    return {name: typed || SCEN_LABEL[scenario] || '현재 대형', folder: document.getElementById('presetFolder').value.trim(), scenario, comment: cur || '', base, oppBase};
   }
   function renderShareTargets(){
     const sel = document.getElementById('shareTargetSelect');
@@ -3018,7 +3069,7 @@
       fakeTargetOverrides:Object.assign({}, FAKE_TARGET_OVERRIDES, data.fakeTargetOverrides||{}),
       ballOverrides:Object.assign({}, BALL_OVERRIDES, data.ballOverrides||{}),
       attacks:data.attacks, ourAttacks:data.ourAttacks,
-      presets: data.items.map(i=>({name:i.name, folder:i.folder||'', base:i.base, oppBase:i.oppBase, scenario:i.scenario}))
+      presets: data.items.map(i=>({name:i.name, folder:i.folder||'', base:i.base, oppBase:i.oppBase, scenario:i.scenario, comment:i.comment||''}))
     });
     document.body.classList.add('shared-view');
     renderPosGrid(); renderOppPosGrid();
@@ -3374,6 +3425,12 @@
     if(folder===FINAL_FOLDER && !target){ finalizeCurrent(); return; } // keep one final per scenario
     if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; target.scenario=scenario; activePreset=target; }
     else { const created={name, folder, base:baseCopy, oppBase:oppCopy, scenario}; presets.push(created); activePreset=created; }
+    if(pendingComment.trim() && !activePreset.comment){
+      activePreset.comment = pendingComment; activePreset.commentAt = Date.now();
+      let who = null; try{ who = myDisplayName; }catch(err){}
+      activePreset.commentBy = who || (canFinalize() ? '개설자' : '구성원');
+    }
+    pendingComment = '';
     pendingActionDescription = `'${name}' 대형을 저장했어요`;
     renderPresets();
     updateTexts();
