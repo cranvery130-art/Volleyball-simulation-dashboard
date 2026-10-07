@@ -1108,6 +1108,7 @@
         <div id="attackCustomControls">
         <div id="customPanel" style="margin-top:10px;">
           <label class="field-label">공격 위치</label>
+          <div class="field-note" style="margin-top:0; margin-bottom:6px;">왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. <span id="attackSideHint"></span></div>
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
             <button data-x="145">왼쪽 중간</button>
@@ -1126,7 +1127,6 @@
               <option value="370">오른쪽 끝</option>
             </select>
           </div>
-          <div class="field-note" style="margin-top:2px;">고르면 그 위치가 코트 어디쯤인지 화면에 잠깐 표시돼요 (대형에는 영향 없어요).</div>
           <label class="field-label" style="margin-top:8px;">템포(속도)</label>
           <div class="seg" id="customTempoSeg">
             <button data-tempo="fast">빠름</button>
@@ -1134,6 +1134,7 @@
             <button data-tempo="slow">느림</button>
           </div>
           <div class="check-row" style="margin-top:4px;"><input type="checkbox" id="customFake"><label for="customFake">시간차(페이크) 동작 포함</label></div>
+          <div class="field-note" style="margin-top:0;">중앙에서 먼저 속공하는 척(페이크)한 뒤, 실제 공격은 한 박자 늦게 들어가요. 블로커가 페이크에 먼저 반응했다가 다시 따라가요.</div>
 
           <div class="check-row" style="margin-top:8px;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
           <div id="customLandingRow" style="display:none; margin-top:6px;">
@@ -3303,6 +3304,8 @@
       ? (front[0] < back[0] ? 'left' : 'right')
       : (front[1] < back[1] ? 'top' : 'bottom');
     document.getElementById('landingCourt').className = 'landing-court net-' + side;
+    // attack position uses the ATTACKER's facing: opponent's left is screen-top, ours is screen-bottom (landscape court)
+    document.getElementById('attackSideHint').textContent = `(지금: ${our?'우리 팀':'상대 팀'} 기준 · 화면 ${our?'아래쪽':'위쪽'}이 왼쪽)`;
     // concrete hint for the current scenario/orientation: where the receiving team's "왼쪽" is on screen
     const leftBtn = pts.find(({xy})=> (our ? 2 - OWN_COL_X.indexOf(xy[0]) : OWN_COL_X.indexOf(xy[0])) === 0).b;
     const leftDir = (side==='left'||side==='right')
