@@ -205,6 +205,14 @@
   .nine-zone-grid button:hover{ background:rgba(255,255,255,0.04); color:var(--text); }
   .nine-zone-grid button.active{ background:var(--grad); color:var(--on-accent); border-color:transparent; }
   /* 네트 표기: 위치 칸 위쪽이 네트(전위), 아래로 갈수록 후위 */
+  /* "공 착지 방향 직접 설정" grid: laid out in the same orientation as the court view, with the net on the matching side */
+  .landing-court{ display:flex; gap:4px; }
+  .landing-court.net-left{ flex-direction:row; } .landing-court.net-right{ flex-direction:row-reverse; }
+  .landing-court.net-top{ flex-direction:column; } .landing-court.net-bottom{ flex-direction:column-reverse; }
+  .landing-court .nine-zone-grid{ flex:1; min-width:0; }
+  .landing-net{ flex:none; display:flex; align-items:center; justify-content:center; background:var(--accent); color:#fff; font-size:10.5px; font-weight:800; letter-spacing:0.12em; border-radius:4px; }
+  .landing-court.net-left .landing-net, .landing-court.net-right .landing-net{ width:20px; writing-mode:vertical-rl; }
+  .landing-court.net-top .landing-net, .landing-court.net-bottom .landing-net{ height:20px; }
   .nine-court{ display:grid; grid-template-columns:30px 1fr; column-gap:6px; }
   .net-bar{ grid-column:2; position:relative; height:20px; margin-bottom:4px; border-radius:4px;
     background:repeating-linear-gradient(90deg, rgba(255,255,255,0.18) 0 1px, transparent 1px 7px),
@@ -679,7 +687,7 @@
       <ul>
         <li><b>전술 시뮬레이션</b> — 상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 애니메이션으로 재생해요. 포지션 배정, 시작 위치·도착 위치 편집, 대형을 폴더별로 저장해서 필요할 때 바로 불러올 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b> — 블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
-        <li><b>착지 방향 9칸 설정</b> — 공이 떨어지는 자리를 그 팀이 네트를 보는 기준으로 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
+        <li><b>착지 방향 9칸 설정</b> — 공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
         <li><b>경기 영상 분석</b> — 경기 영상을 보며 팀 → 득점/범실 → 세부 상황(공격 방식·파울 종류까지) 순서로 1점씩 기록해요. 우리가 잘해서 낸 점수와 상대 실수로 얻은 점수를 나눠 집계하고, 세트별 점수·주요 지표·추세와 자동 통계 요약을 보여줘요. 기록·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
         <li><b>눈이 편한 화면</b> — 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 시력보호 화면 중에서 고를 수 있어요.</li>
         <li><b>팀과 함께 사용</b> — 코드를 만들어 팀원들과 공유하면, 같은 대형·기록을 함께 보고 수정할 수 있어요. 구성원별로 포지션·대회 출전 여부를 관리하고, 누가 언제 무엇을 수정했는지 활동 로그로 확인할 수 있어요.</li>
@@ -1065,7 +1073,9 @@
 
           <div class="check-row" style="margin-top:8px;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
           <div id="customLandingRow" style="display:none; margin-top:6px;">
-            <div class="field-note" style="margin-top:0;">공이 떨어질 진영을 그 팀이 네트를 바라보는 기준으로 9칸으로 나눴어요. 원하는 칸을 누르면 그 자리로 정확히 날아가요.</div>
+            <div class="field-note" style="margin-top:0;">공이 떨어질 진영을 경기장 화면과 같은 방향으로 9칸으로 나눴어요. 화면에서 보이는 자리 그대로 칸을 누르면 그 자리로 정확히 날아가요.</div>
+            <div class="landing-court net-top" id="landingCourt">
+            <div class="landing-net">네트</div>
             <div class="nine-zone-grid" id="landingNineZone">
               <button data-col="0" data-row="0">왼쪽 앞</button>
               <button data-col="1" data-row="0">중앙 앞</button>
@@ -1077,7 +1087,8 @@
               <button data-col="1" data-row="2">중앙 뒤</button>
               <button data-col="2" data-row="2">오른쪽 뒤</button>
             </div>
-            <div class="field-note" style="margin-top:6px;">▲ 네트에 가까운 줄이 "앞", 먼 줄이 "뒤"예요.</div>
+            </div>
+            <div class="field-note" style="margin-top:6px;" id="landingNineZoneNote">네트에 가까운 줄이 "앞", 먼 줄이 "뒤"예요. 왼쪽·오른쪽은 공을 받는 팀이 네트를 바라보는 기준이에요.</div>
           </div>
 
           <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
@@ -3028,6 +3039,7 @@
     document.getElementById('presetScenarioPick').value = key;
     document.getElementById('customTargetSelect').value = key;
     syncCustomPanelToScenario(key);
+    layoutLandingNineZone();
     currentDuration = isOur(scenario) ? OUR_ATTACKS[scenario].duration : ATTACKS[scenario].duration;
     progress=0; playing=false; updatePlayBtn();
     IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
@@ -3237,6 +3249,7 @@
   });
   document.getElementById('customTargetSelect').addEventListener('change', e=>{
     syncCustomPanelToScenario(e.target.value);
+    layoutLandingNineZone();
   });
   document.querySelectorAll('#customXSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -3259,6 +3272,39 @@
   document.getElementById('customLandingToggle').addEventListener('change', e=>{
     document.getElementById('customLandingRow').style.display = e.target.checked ? 'block' : 'none';
   });
+  // Lays the landing 9-zone grid out exactly as those zones appear on the court view: each button
+  // is placed by the on-screen position of the point it targets, so in landscape the grid turns
+  // 90° left for opponent attacks (lands on our court, screen-right) and 90° right for our attacks
+  // (lands on their court, screen-left). Labels follow the RECEIVING team facing the net, which is
+  // the reading that stays consistent with the rotated layout. The stored col/row values (attacker
+  // perspective, see nineZoneToXY) are unchanged, so saved data keeps working.
+  function layoutLandingNineZone(){
+    const key = document.getElementById('customTargetSelect').value;
+    const our = isOur(key);
+    const btns = [...document.querySelectorAll('#landingNineZone button')];
+    const pts = btns.map(b=>{
+      const xy = nineZoneToXY(Number(b.dataset.col), Number(b.dataset.row), our);
+      return {b, xy, d:toDisplay(xy)};
+    });
+    const xs = [...new Set(pts.map(p=>p.d[0]))].sort((a,b)=>a-b);
+    const ys = [...new Set(pts.map(p=>p.d[1]))].sort((a,b)=>a-b);
+    const sideNames = ['왼쪽','중앙','오른쪽'];
+    const rowNames = ['앞','중간','뒤'];
+    pts.forEach(({b, xy, d})=>{
+      b.style.gridColumn = String(xs.indexOf(d[0])+1);
+      b.style.gridRow = String(ys.indexOf(d[1])+1);
+      // receiving team's own left: our team (bottom, facing up) → smaller x; opponent (top, facing down) → larger x
+      const sideIdx = our ? 2 - OWN_COL_X.indexOf(xy[0]) : OWN_COL_X.indexOf(xy[0]);
+      const rowIdx = Number(b.dataset.row);
+      b.textContent = (sideIdx===1 && rowIdx===1) ? '중앙' : sideNames[sideIdx] + ' ' + rowNames[rowIdx];
+    });
+    // the net sits on the side of the front row
+    const front = toDisplay(nineZoneToXY(1, 0, our)), back = toDisplay(nineZoneToXY(1, 2, our));
+    const side = Math.abs(front[0]-back[0]) > Math.abs(front[1]-back[1])
+      ? (front[0] < back[0] ? 'left' : 'right')
+      : (front[1] < back[1] ? 'top' : 'bottom');
+    document.getElementById('landingCourt').className = 'landing-court net-' + side;
+  }
   // Applies a "직접 설정" combination directly to a scenario's data, exactly like using the panel
   // and clicking 저장(덮어쓰기) would — used both by that button and to seed each scenario's
   // built-in defaults at startup. Also stores the raw panel values on the scenario (_panel) so the
@@ -3339,6 +3385,7 @@
     courtSvg.setAttribute('viewBox', landscape ? '0 0 760 400' : '0 0 400 760');
     sceneGroup.setAttribute('transform', landscape ? 'matrix(0,-1,1,0,0,400)' : '');
     document.getElementById('btnOrientation').textContent = landscape ? '세로 보기로 전환' : '가로 보기로 전환';
+    layoutLandingNineZone();
     render();
   }
   document.getElementById('btnOrientation').addEventListener('click', ()=>{
@@ -3422,6 +3469,7 @@
   // ---------- init ----------
   document.getElementById('presetScenarioPick').value = scenario;
   document.getElementById('customTargetSelect').value = scenario;
+  layoutLandingNineZone();
   syncCustomPanelToScenario(scenario);
   updateTexts();
   updatePlayBtn();
