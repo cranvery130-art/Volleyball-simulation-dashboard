@@ -1073,7 +1073,6 @@
 
           <div class="check-row" style="margin-top:8px;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
           <div id="customLandingRow" style="display:none; margin-top:6px;">
-            <div class="field-note" style="margin-top:0;">공이 떨어질 진영을 경기장 화면과 같은 방향으로 9칸으로 나눴어요. 화면에서 보이는 자리 그대로 칸을 누르면 그 자리로 정확히 날아가요.</div>
             <div class="landing-court net-top" id="landingCourt">
             <div class="landing-net">네트</div>
             <div class="nine-zone-grid" id="landingNineZone">
@@ -1088,7 +1087,13 @@
               <button data-col="2" data-row="2">오른쪽 뒤</button>
             </div>
             </div>
-            <div class="field-note" style="margin-top:6px;" id="landingNineZoneNote">네트에 가까운 줄이 "앞", 먼 줄이 "뒤"예요. 왼쪽·오른쪽은 공을 받는 팀이 네트를 바라보는 기준이에요.</div>
+            <button class="btn" id="btnLandingInfoToggle" style="width:100%; margin-top:6px;">ℹ️ 참고사항 ▾</button>
+            <div id="landingInfoPanel" class="note-box" style="display:none; margin-top:8px;">
+              <p style="margin:0 0 8px;">9칸은 <b>경기장 화면과 같은 방향</b>으로 놓여 있어요. 화면에서 공을 떨어뜨리고 싶은 자리와 같은 위치의 칸을 누르면 그 자리로 정확히 날아가요. 가로 보기에서는 상대 공격이면 왼쪽으로, 우리 공격이면 오른쪽으로 90도 돌아간 모양이에요.</p>
+              <p style="margin:0 0 8px;"><b>앞·뒤</b> — 주황색 "네트" 막대에 가까운 줄이 "앞", 먼 줄이 "뒤"예요.</p>
+              <p style="margin:0 0 8px;"><b>왼쪽·오른쪽</b> — 공격하는 팀이 아니라 <b>공을 받는 팀</b>이 네트를 바라볼 때의 왼쪽·오른쪽이에요. 상대 공격이면 우리 팀 기준, 우리 공격이면 상대 팀 기준이에요.</p>
+              <p style="margin:0;" id="landingSideHint"></p>
+            </div>
           </div>
 
           <label class="field-label" style="margin-top:8px;">덮어쓸 공격 상황</label>
@@ -3241,6 +3246,12 @@
     panel.style.display = showing ? 'none' : 'block';
     document.getElementById('btnAttackInfoToggle').textContent = showing ? 'ℹ️ 참고사항 ▾' : 'ℹ️ 참고사항 ▴';
   });
+  document.getElementById('btnLandingInfoToggle').addEventListener('click', ()=>{
+    const panel = document.getElementById('landingInfoPanel');
+    const showing = panel.style.display!=='none';
+    panel.style.display = showing ? 'none' : 'block';
+    document.getElementById('btnLandingInfoToggle').textContent = showing ? 'ℹ️ 참고사항 ▾' : 'ℹ️ 참고사항 ▴';
+  });
   document.getElementById('btnPresetInfoToggle').addEventListener('click', ()=>{
     const panel = document.getElementById('presetInfoPanel');
     const showing = panel.style.display!=='none';
@@ -3304,6 +3315,14 @@
       ? (front[0] < back[0] ? 'left' : 'right')
       : (front[1] < back[1] ? 'top' : 'bottom');
     document.getElementById('landingCourt').className = 'landing-court net-' + side;
+    // concrete hint for the current scenario/orientation: where the receiving team's "왼쪽" is on screen
+    const leftBtn = pts.find(({xy})=> (our ? 2 - OWN_COL_X.indexOf(xy[0]) : OWN_COL_X.indexOf(xy[0])) === 0).b;
+    const leftDir = (side==='left'||side==='right')
+      ? (leftBtn.style.gridRow==='1' ? '위쪽' : '아래쪽')
+      : (leftBtn.style.gridColumn==='1' ? '왼쪽' : '오른쪽');
+    const rightDir = {'위쪽':'아래쪽','아래쪽':'위쪽','왼쪽':'오른쪽','오른쪽':'왼쪽'}[leftDir];
+    document.getElementById('landingSideHint').innerHTML =
+      `<b>지금 설정</b> — ${our?'우리 공격':'상대 공격'}·${landscape?'가로':'세로'} 보기라서 <b>${our?'상대 팀':'우리 팀'}</b> 기준이에요. 칸 묶음의 ${leftDir}이 "왼쪽", ${rightDir}이 "오른쪽"이에요.`;
   }
   // Applies a "직접 설정" combination directly to a scenario's data, exactly like using the panel
   // and clicking 저장(덮어쓰기) would — used both by that button and to seed each scenario's
