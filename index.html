@@ -661,6 +661,36 @@
     #posGrid, #oppPosGrid, #videoRosterGrid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
     #appModeSeg button{ font-size:11.5px; }
   }
+
+  /* ---------- 설명문(참고사항·소개·예시) 가독성 ---------- */
+  .note-box{ color:var(--text-dim); line-height:1.65; }
+  .note-box b{ color:var(--text); }
+  .note-box p + p{ margin-top:8px; }
+  .feature-list{ list-style:none; padding-left:0 !important; }
+  .feature-list li{ padding:10px 12px; margin-bottom:8px !important; background:var(--panel-2); border:1px solid var(--border); border-radius:10px; line-height:1.6; }
+  .feature-list li > b:first-child{ display:block; margin-bottom:3px; font-size:13.5px; color:var(--text); }
+  .guide-legend{ display:flex; flex-wrap:wrap; gap:6px 14px; }
+  .guide-legend span{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--text); }
+  .guide-legend i{ width:18px; height:4px; border-radius:2px; display:inline-block; }
+  .guide-note-box ul{ padding-left:18px; }
+  .guide-note-box li{ margin-bottom:6px; line-height:1.65; }
+  .folder-tip-row{ display:grid; grid-template-columns:auto minmax(0,1fr); align-items:start; column-gap:10px; }
+  .folder-tip-row em{ display:block; margin-left:0; margin-top:1px; font-size:11.5px; }
+  @media (max-width:600px){
+    .modal-body{ font-size:13.5px; line-height:1.65; }
+    .guide-card .guide-note-box{ font-size:13px; padding:12px; }
+    .guide-note-box li{ margin-bottom:8px; }
+    /* 예시표는 한 줄씩 카드로 */
+    .guide-example table, .guide-example tbody, .guide-example tr, .guide-example td{ display:block; width:100%; }
+    .guide-example thead{ display:none; }
+    .guide-example tr{ background:var(--panel-2); border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin-bottom:6px; }
+    .guide-example td{ border:none; padding:2px 0; white-space:normal !important; }
+    .guide-example td::before{ content:attr(data-label); display:block; font-size:10.5px; font-weight:700; color:var(--muted); }
+    .guide-example td:last-child{ color:var(--accent-text); font-weight:700; }
+    .note-box{ font-size:13px; padding:12px; }
+    .folder-tip-row{ grid-template-columns:1fr; row-gap:4px; margin-bottom:10px; }
+    .folder-tip-chip{ justify-self:start; }
+  }
 </style>
 <!-- ======================================================================
      FIREBASE 연결 설정
@@ -886,15 +916,15 @@
     <h2>9인제 배구 경기분석 전술 시뮬레이터 소개</h2>
     <div class="modal-body">
       <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
-      <ul>
-        <li><b>전술 시뮬레이션</b> — 상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 포지션 배정(이름 표시 가능), 시작·도착 위치 편집, 폴더별 저장·불러오기를 할 수 있어요.</li>
-        <li><b>정교한 블로킹 표현</b> — 블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
-        <li><b>착지 방향 9칸 설정</b> — 공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
-        <li><b>경기 영상 분석</b> — 경기 영상을 보며 팀 → 득점/범실 → 세부 상황(공격 방식·파울 종류까지) 순서로 1점씩 기록해요. 우리가 잘해서 낸 점수와 상대 실수로 얻은 점수를 나눠 집계하고, 세트별 점수·주요 지표·추세와 자동 통계 요약을 보여줘요. 기록·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
-        <li><b>눈이 편한 화면</b> — 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 시력보호 화면 중에서 고를 수 있어요.</li>
-        <li><b>대형 정리와 최종 확정</b> — 우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
-        <li><b>링크·GIF 공유</b> — 보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
-        <li><b>팀과 함께 사용</b> — 코드를 만들어 팀원들과 공유하면, 같은 대형·기록을 함께 보고 수정할 수 있어요. 구성원별로 포지션·대회 출전 여부를 관리하고, 누가 언제 무엇을 수정했는지 활동 로그로 확인할 수 있어요.</li>
+      <ul class="feature-list">
+        <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 포지션 배정(이름 표시 가능), 시작·도착 위치 편집, 폴더별 저장·불러오기를 할 수 있어요.</li>
+        <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
+        <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
+        <li><b>경기 영상 분석</b>경기 영상을 보며 팀 → 득점/범실 → 세부 상황(공격 방식·파울 종류까지) 순서로 1점씩 기록해요. 우리가 잘해서 낸 점수와 상대 실수로 얻은 점수를 나눠 집계하고, 세트별 점수·주요 지표·추세와 자동 통계 요약을 보여줘요. 기록·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
+        <li><b>눈이 편한 화면</b>어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 시력보호 화면 중에서 고를 수 있어요.</li>
+        <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
+        <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
+        <li><b>팀과 함께 사용</b>코드를 만들어 팀원들과 공유하면, 같은 대형·기록을 함께 보고 수정할 수 있어요. 구성원별로 포지션·대회 출전 여부를 관리하고, 누가 언제 무엇을 수정했는지 활동 로그로 확인할 수 있어요.</li>
       </ul>
       <p><b>코드는 이렇게 만들어요.</b></p>
       <ol>
@@ -930,7 +960,11 @@
     <button class="modal-close" id="btnCloseFeatureGuide">✕</button>
     <h2>🏐 기능 설명 &amp; 사용 설명</h2>
     <div class="modal-body">
-      <p class="guide-intro">탭에서 기능을 고르고, <b>다음 ▶</b>을 눌러 단계별로 넘겨보세요. 위쪽 화면에서 실제 사용하는 모습을 보여줘요. 화면의 카드 위 색 띠는 탭을 나타내고(주황 = 전술 시뮬레이션, 보라 = 경기 영상 분석, 초록 = 설정), 카드 안에서는 아이콘이 붙은 칸 하나가 기능 하나예요.</p>
+      <div class="guide-intro">
+        <p style="margin:0 0 8px;">탭에서 기능을 고르고 <b>다음 ▶</b>으로 넘겨보세요. 위쪽 데모가 실제 사용하는 모습을 보여줘요.</p>
+        <div class="guide-legend"><span><i style="background:var(--accent)"></i>전술 시뮬레이션</span><span><i style="background:var(--accent-2)"></i>경기 영상 분석</span><span><i style="background:var(--good)"></i>설정</span></div>
+        <p style="margin:8px 0 0;">카드 위 색 띠가 탭을, 카드 안 아이콘이 붙은 칸 하나가 기능 하나를 뜻해요.</p>
+      </div>
       <div class="seg" id="guideTabSeg">
         <button data-guide="sim" class="active">🏐 전술 시뮬레이션</button>
         <button data-guide="video">🎥 경기 영상 분석</button>
@@ -965,12 +999,12 @@
           <table>
             <thead><tr><th>경기 장면</th><th>팀 · 결과 · 세부 상황</th></tr></thead>
             <tbody>
-              <tr><td>우리 레프트가 페인트로 점수</td><td>우리팀 · 득점 · 레프트(페인트)</td></tr>
-              <tr><td>상대 서브가 네트에 걸리거나 아웃</td><td>상대팀 · 범실 · 서브</td></tr>
-              <tr><td>우리 공격이 상대 블로킹에 막힘</td><td>상대팀 · 득점 · 블로킹</td></tr>
-              <tr><td>상대 서브를 아무도 못 받음(서브 에이스)</td><td>상대팀 · 득점 · 서브</td></tr>
-              <tr><td>우리 리시브가 튀어 나가 실점</td><td>우리팀 · 범실 · 리시브</td></tr>
-              <tr><td>우리 선수가 네트를 건드림</td><td>우리팀 · 범실 · 파울(네트터치)</td></tr>
+              <tr><td data-label="경기 장면">우리 레프트가 페인트로 점수</td><td data-label="기록">우리팀 · 득점 · 레프트(페인트)</td></tr>
+              <tr><td data-label="경기 장면">상대 서브가 네트에 걸리거나 아웃</td><td data-label="기록">상대팀 · 범실 · 서브</td></tr>
+              <tr><td data-label="경기 장면">우리 공격이 상대 블로킹에 막힘</td><td data-label="기록">상대팀 · 득점 · 블로킹</td></tr>
+              <tr><td data-label="경기 장면">상대 서브를 아무도 못 받음(서브 에이스)</td><td data-label="기록">상대팀 · 득점 · 서브</td></tr>
+              <tr><td data-label="경기 장면">우리 리시브가 튀어 나가 실점</td><td data-label="기록">우리팀 · 범실 · 리시브</td></tr>
+              <tr><td data-label="경기 장면">우리 선수가 네트를 건드림</td><td data-label="기록">우리팀 · 범실 · 파울(네트터치)</td></tr>
             </tbody>
           </table>
         </div>
