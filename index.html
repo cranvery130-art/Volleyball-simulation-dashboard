@@ -237,10 +237,6 @@
   .preset-empty{ font-size:12px; color:var(--muted); }
 
   .stage-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px; flex-wrap:wrap; }
-  .stage-aids{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-  .stage-aids-label{ font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
-  .stage-aids label{ display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--text-dim); white-space:nowrap; cursor:pointer; }
-  .stage-aids input[type="checkbox"]{ width:14px; height:14px; margin:0; }
   .stage-top .scenario-title{ font-family:var(--display); font-weight:700; font-size:18px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
   .stage-top .scenario-title:hover{ color:var(--accent-text); }
   .stage-top .scenario-title::after{ content:'▾'; font-size:12px; color:var(--text-dim); }
@@ -354,6 +350,102 @@
   .guide-example td{ color:var(--text); }
   .guide-example td:last-child{ white-space:nowrap; }
   #guideTabSeg{ margin-bottom:16px; }
+
+  /* ---------- feature guide: step player with animated demo ---------- */
+  .modal-card.guide-card{ max-width:760px; }
+  .guide-card .guide-intro{ font-size:14px; }
+  .guide-card .guide-note-box{ font-size:13px; line-height:1.7; }
+  .guide-card .guide-example table{ font-size:13px; }
+  .gd-player{ display:flex; flex-direction:column; gap:14px; }
+  .gd-stage{ position:relative; height:260px; background:var(--panel-2); border:1px solid var(--border); border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; padding:14px; }
+  .gd-scene{ width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; position:relative; }
+  .gd-badge{ position:absolute; top:10px; left:12px; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; color:var(--muted); font-weight:700; }
+  .gd-cursor{ position:absolute; left:50%; top:110%; width:22px; height:26px; pointer-events:none; z-index:20; transition:left .6s cubic-bezier(.4,0,.2,1), top .6s cubic-bezier(.4,0,.2,1); filter:drop-shadow(0 2px 3px rgba(0,0,0,.45)); }
+  .gd-cursor.drag{ transition-duration:.9s; }
+  .gd-ripple{ position:absolute; width:34px; height:34px; margin:-17px 0 0 -17px; border-radius:50%; border:2px solid var(--accent); pointer-events:none; z-index:19; animation:gdRipple .5s ease-out forwards; }
+  @keyframes gdRipple{ from{ transform:scale(.3); opacity:1; } to{ transform:scale(1.4); opacity:0; } }
+  .gd-text{ min-height:96px; }
+  .gd-step-meta{ font-family:var(--mono); font-size:11px; letter-spacing:0.1em; color:var(--accent-text); font-weight:700; margin-bottom:4px; }
+  .gd-step-title{ font-family:var(--display); font-weight:800; font-size:20px; color:var(--text); margin:0 0 6px; letter-spacing:-0.01em; }
+  .gd-step-text{ font-size:15px; line-height:1.7; color:var(--text-dim); margin:0; }
+  .gd-step-text b{ color:var(--text); }
+  .gd-nav{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .gd-nav .btn{ min-width:92px; font-size:14px; padding:9px 14px; }
+  .gd-dots{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+  .gd-dots button{ width:9px; height:9px; padding:0; border-radius:50%; border:none; background:var(--border-2); cursor:pointer; }
+  .gd-dots button.on{ background:var(--accent); width:22px; border-radius:999px; }
+  .gd-more-btn{ width:100%; margin-top:14px; font-size:13px; }
+  .gd-more{ margin-top:10px; }
+  /* mock UI pieces used inside the demo stage */
+  .mk-card{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; }
+  .mk-h{ font-weight:800; font-size:12.5px; color:var(--text); }
+  .mk-h .n{ color:var(--accent-text); font-family:var(--mono); margin-right:6px; }
+  .mk-lbl{ font-size:11px; color:var(--muted); font-weight:600; }
+  .mk-row{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  .mk-col{ display:flex; flex-direction:column; gap:6px; }
+  .mk-btn{ padding:6px 10px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); font-size:12px; color:var(--text-dim); transition:background .25s, color .25s; white-space:nowrap; }
+  .mk-btn.on{ background:var(--grad); color:var(--on-accent); border-color:transparent; font-weight:700; }
+  .mk-btn.big{ padding:9px 16px; font-size:13px; font-weight:700; }
+  .mk-input{ flex:1; min-width:70px; min-height:28px; border:1px solid var(--border); border-radius:7px; background:var(--panel-2); font-size:12px; color:var(--text); padding:5px 8px; box-sizing:border-box; }
+  .mk-input:empty::before{ content:attr(data-ph); color:var(--muted); }
+  .mk-input.focus{ border-color:var(--accent); }
+  .mk-pos{ display:flex; flex-direction:column; gap:4px; background:var(--panel-2); border:1px solid var(--border); border-radius:8px; padding:5px; flex:1; min-width:0; }
+  .mk-pos .mk-btn{ background:var(--panel); flex:1; padding:4px 6px; font-size:11px; }
+  .mk-pos .mk-input{ background:var(--panel); min-height:24px; padding:3px 6px; font-size:11px; }
+  .mk-num{ width:20px; height:20px; border-radius:50%; background:var(--own); color:#0A0B0D; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; }
+  .mk-court{ position:relative; height:104px; background:linear-gradient(90deg,#1B4A3E,#0D241E); border:3px solid #C97456; border-radius:6px; }
+  .mk-court .net{ position:absolute; left:50%; top:-3px; bottom:-3px; width:3px; background:#E8ECF2; transform:translateX(-50%); }
+  .mk-court .zone{ position:absolute; left:50%; top:0; bottom:0; width:12%; background:rgba(255,149,112,0.07); transition:background .3s; }
+  .mk-court .zone.hot{ background:rgba(255,149,112,0.32); }
+  .mk-court svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+  .mk-court svg .aid{ opacity:0; transition:opacity .5s; }
+  .mk-court svg .aid.show{ opacity:1; }
+  .mk-dot{ position:absolute; width:20px; height:20px; border-radius:50%; background:var(--own); color:#0A0B0D; font-size:9px; font-weight:800; display:flex; align-items:center; justify-content:center; transform:translate(-50%,-50%); transition:left 1.2s ease, top 1.2s ease, box-shadow .3s; z-index:2; white-space:nowrap; }
+  .mk-dot.opp{ background:var(--opp); width:17px; height:17px; }
+  .mk-dot.fast{ transition:left .9s cubic-bezier(.4,0,.2,1), top .9s cubic-bezier(.4,0,.2,1); }
+  .mk-dot.pulse{ box-shadow:0 0 0 4px rgba(255,149,112,.6); }
+  .mk-ball{ position:absolute; width:10px; height:10px; border-radius:50%; background:var(--ball); border:1px solid #8A6A38; transform:translate(-50%,-50%); transition:left 1.3s ease-in, top 1.3s ease-out; z-index:3; }
+  .mk-title{ font-family:var(--display); font-weight:800; font-size:15px; color:var(--text); align-self:flex-start; padding:4px 6px; border-radius:6px; }
+  .mk-drop{ position:absolute; top:34px; left:0; z-index:10; background:var(--panel); border:1px solid var(--border-2); border-radius:10px; padding:5px; box-shadow:var(--shadow); display:none; min-width:220px; }
+  .mk-drop.show{ display:block; animation:mkIn .2s ease; }
+  .mk-opt{ font-size:12px; color:var(--text-dim); padding:6px 9px; border-radius:6px; }
+  .mk-opt.on{ background:var(--accent-soft); color:var(--text); font-weight:700; }
+  .mk-toast{ align-self:center; background:var(--grad); color:var(--on-accent); font-size:12.5px; font-weight:700; padding:6px 14px; border-radius:999px; opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; }
+  .mk-toast.show{ opacity:1; transform:none; }
+  .mk-list{ display:flex; flex-direction:column; gap:5px; }
+  .mk-item{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-dim); background:var(--panel-2); border:1px solid var(--border); border-radius:7px; padding:6px 9px; transition:background .25s, border-color .25s; }
+  .mk-item.on{ border-color:var(--accent); color:var(--text); }
+  .mk-item.new{ animation:mkIn .35s ease; }
+  .mk-item .t{ font-family:var(--mono); color:var(--accent-text); font-weight:700; }
+  @keyframes mkIn{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:none; } }
+  .mk-grid9{ display:grid; grid-template-columns:repeat(3,1fr); gap:3px; flex:1; }
+  .mk-grid9 span{ height:22px; border-radius:5px; background:var(--panel); border:1px solid var(--border); transition:background .25s; }
+  .mk-grid9 span.on{ background:var(--grad); border-color:transparent; }
+  .mk-net{ background:var(--accent); color:#fff; font-size:10px; font-weight:800; border-radius:4px; display:flex; align-items:center; justify-content:center; }
+  .mk-net.v{ width:16px; writing-mode:vertical-rl; letter-spacing:.1em; }
+  .mk-net.h{ height:16px; letter-spacing:.1em; }
+  .mk-video{ position:relative; height:86px; border-radius:8px; background:#07080A; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px; }
+  .mk-video .bar{ position:absolute; left:10px; right:10px; bottom:9px; height:4px; border-radius:2px; background:rgba(255,255,255,.2); }
+  .mk-video .bar i{ position:absolute; left:0; top:0; bottom:0; width:8%; border-radius:2px; background:var(--accent); transition:width .8s ease; }
+  .mk-video.playing .bar i{ width:45%; transition:width 3s linear; }
+  .mk-score{ font-family:var(--display); font-weight:800; font-size:20px; color:var(--text); text-align:center; }
+  .mk-bars{ display:flex; align-items:flex-end; gap:10px; height:84px; padding:0 6px; border-bottom:1px solid var(--border); }
+  .mk-bars i{ flex:1; border-radius:5px 5px 0 0; background:var(--own); transition:height .7s ease; }
+  .mk-bars i.o{ background:var(--opp); }
+  .mk-toggle{ width:34px; height:19px; border-radius:999px; background:var(--border-2); position:relative; transition:background .25s; flex:none; }
+  .mk-toggle::after{ content:''; position:absolute; top:2px; left:2px; width:15px; height:15px; border-radius:50%; background:#fff; transition:left .25s; }
+  .mk-toggle.on{ background:var(--good); }
+  .mk-toggle.on::after{ left:17px; }
+  @media (max-width:600px){
+    .gd-stage{ height:290px; padding:10px; }
+    .gd-scene{ gap:7px; }
+    .mk-court{ height:84px; }
+    .mk-dot{ width:16px; height:16px; font-size:8px; }
+    .mk-dot.opp{ width:14px; height:14px; }
+    .mk-pos .mk-btn{ font-size:10px; padding:3px 4px; }
+    .gd-step-title{ font-size:18px; }
+    .gd-step-text{ font-size:14.5px; }
+  }
   .guide-section{ display:none; }
   .guide-section.active{ display:block; }
   .guide-footer{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid var(--border); flex-wrap:wrap; }
@@ -722,11 +814,11 @@
 </div>
 
 <div id="featureGuideModal" class="modal-overlay" style="display:none;">
-  <div class="modal-card" style="max-width:620px;">
+  <div class="modal-card guide-card">
     <button class="modal-close" id="btnCloseFeatureGuide">✕</button>
     <h2>🏐 기능 설명 &amp; 사용 설명</h2>
     <div class="modal-body">
-      <p class="guide-intro">이 프로그램은 ① 공격 상황별 대형을 애니메이션으로 보는 <b>전술 시뮬레이션</b>, ② 경기 영상을 보며 득점·실점을 기록하고 자동으로 집계·분석하는 <b>경기 영상 분석</b>, ③ 구성원과 권한을 관리하는 <b>설정</b>(개설자·수정 권한자만 보여요) 세 기능으로 이루어져 있어요. 위쪽 탭으로 기능을 바꾸고, 오른쪽 위 <b>🌙 어두운 / ☀️ 또렷한 / 🌿 시력보호</b>로 화면 모드를 고를 수 있어요. 이 설명은 언제든 <b>❓ 기능 설명</b>을 눌러 다시 볼 수 있어요.</p>
+      <p class="guide-intro">탭에서 기능을 고르고, <b>다음 ▶</b>을 눌러 단계별로 넘겨보세요. 위쪽 화면에서 실제 사용하는 모습을 보여줘요.</p>
       <div class="seg" id="guideTabSeg">
         <button data-guide="sim" class="active">🏐 전술 시뮬레이션</button>
         <button data-guide="video">🎥 경기 영상 분석</button>
@@ -734,33 +826,23 @@
       </div>
 
       <div class="guide-section active" id="guideSection-sim">
-        <ol class="guide-steps">
-          <li><b>포지션을 배정해요</b> — "01 포지션 배정"에서 우리 팀·상대팀 9명의 포지션(레프트·세터·속공수 등)을 정해요. 공격수·세터·리시브의 움직임이 이 배정대로 반영돼요. 레프트백·센터백·라이트백은 후위 수비 역할이라 블로킹에 가담하지 않아요.</li>
-          <li><b>공격 상황을 골라요</b> — 코트 위의 제목(예: "상대 좌측(L) 오픈 공격 ▾")을 누르거나 "02 대형 저장 &amp; 편집"의 시나리오 목록에서 상대 공격 6가지, 우리 공격 6가지 중 하나를 골라요.</li>
-          <li><b>재생해서 확인해요</b> — ▶로 재생하고 ⟲로 처음으로 돌아가요. 코트 위 "시각 보조"에서 이동 동선·착지 이동선·커버리지·블로킹 범위를 켜고 끌 수 있고, "세로 보기로 전환"으로 코트 방향을 바꿀 수 있어요.</li>
-          <li><b>대형을 직접 고쳐요</b> — "02 대형 저장 &amp; 편집"의 편집 모드에서 "시작 위치" 또는 "도착 위치"를 고른 뒤 코트의 도트를 드래그해요. 블로킹은 도트를 네트 앞 블로킹 존에 직접 놓아야 인식돼요.</li>
-          <li><b>공격 상황을 직접 만들어요</b> — "03 공격 상황"에서 공격 위치·템포·시간차(페이크) 여부·공 착지 칸(3×3)을 정하고, "덮어쓸 공격 상황"을 고른 뒤 저장하면 그 시나리오가 내가 만든 상황으로 바뀌어요.</li>
-          <li><b>저장하고 불러와요</b> — 이름과 폴더를 정해 대형을 저장해 두면, "저장된 대형 불러오기"에서 바로 불러올 수 있어요. ✏️로 이름 바꾸기, 🗑️로 삭제, 🔍 찾기로 폴더 검색을 할 수 있어요.</li>
-          <li><b>링크나 GIF로 공유해요</b> — 편집 모드 아래 "대형 공유"에서 지금 대형, 저장한 대형 하나, 또는 폴더 전체를 고른 뒤 🔗 링크를 만들거나 🎞️ GIF를 만들어요. 링크를 받은 사람은 코드·비밀번호 없이 보기 전용으로 애니메이션을 볼 수 있고, GIF는 카톡·발표 자료에 바로 넣을 수 있어요.</li>
-        </ol>
+        <div class="gd-player" data-section="sim"></div>
+        <button class="btn gd-more-btn" type="button">⚠️ 참고사항 더 보기 ▾</button>
+        <div class="gd-more" style="display:none;">
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
+          <li>이동 동선·착지 이동선·커버리지·블로킹 범위는 항상 코트에 함께 표시돼요.</li>
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
           <li>여러 사람이 동시에 편집하면 서로의 변경이 바로 보이지 않아요. 저장한 뒤 새로고침하면 반영돼요.</li>
+          <li>오른쪽 위 🌙 어두운 / ☀️ 또렷한 / 🌿 시력보호로 화면 모드를 고를 수 있고, 이 설명은 ❓ 기능 설명으로 언제든 다시 볼 수 있어요.</li>
           <li>"코드 없이 계속하기"로 들어오면 이 기기에만 저장되고 다른 사람과 공유되지 않아요.</li>
         </ul></div>
+        </div>
       </div>
 
       <div class="guide-section" id="guideSection-video">
-        <ol class="guide-steps">
-          <li><b>경기 폴더를 먼저 만들고 영상을 올려요</b> — 맨 위 "매치 분석 저장"에서 경기 이름을 적고 "+ 새 폴더 추가"를 누르면 이후 기록이 그 폴더에 자동 저장돼요. 그다음 "경기 영상"에서 경기 영상 파일을 고르고 재생해요(영상 없이 경기를 직접 보면서 기록해도 돼요).</li>
-          <li><b>팀 이름·명단·세트를 정해요</b> — "빠른 기록 배너"에서 팀 이름(선택)과 포지션 명단(선택)을 적고, 지금 진행 중인 <b>세트</b>를 골라요. 세트가 바뀌면 기록하기 전에 꼭 세트 버튼부터 바꿔주세요.</li>
-          <li><b>팀 → 결과 유형을 골라요</b> — 팀은 <b>점수를 딴 팀이 아니라 그 플레이를 한 팀</b>이에요. 잘해서 점수를 냈으면 "득점", 실수·파울로 점수를 내줬으면 "범실"을 골라요. (아래 예시 참고)</li>
-          <li><b>세부 상황 → 방식 → 위치를 골라요</b> — 드롭다운에서 상황(공격 위치, 서브·리시브·연결, 블로킹, 파울)을 골라요. 공격이면 "공격 방식"(강타·페인트·터치아웃 / 범실이면 아웃·네트 걸림), 파울이면 "파울 종류"(네트터치·오버네트 등 13가지)를 한 번 더 고를 수 있어요. 공격은 3×3 칸, 블로킹은 네트 앞 5칸에서 위치를 찍을 수 있어요(위쪽이 네트·전위예요).</li>
-          <li><b>"기록하기"를 눌러요</b> — 한 번 누를 때마다 <b>1점이 기록 한 줄</b>로 남고, 지금 시간과 세트가 함께 저장돼요. 잘못 눌렀다면 <b>↩️ 되돌리기</b>(또는 Ctrl+Z)로 바로 취소해요.</li>
-          <li><b>기록을 확인·수정해요</b> — "기록" 목록에서 시간을 누르면 그 영상 장면으로 이동해요. 줄마다 세트·관련 선수·메모를 고칠 수 있고, ✕로 지울 수 있어요. 엑셀·구글시트용 파일로 내보낼 수도 있어요.</li>
-          <li><b>그래프와 종합 분석을 봐요</b> — "그래프" 위의 세트 버튼(전체·1·2·3세트)으로 범위를 고르면, <b>요약</b>(우리 : 상대 점수, 자력 득점·상대 범실 구분, 주요 지표, 세트별 비교)과 <b>추세</b>가 다시 계산돼요. 계산 방법은 <b>📘 설명</b> 탭에 있어요. "종합 분석"은 강점·줄일 수 있는 실점·상대 주 득점 루트를 자동으로 정리해 주고, 그 아래에 코치 의견을 직접 적어요.</li>
-          <li><b>경기별로 폴더에 저장해요</b> — 화면 맨 위 "매치 분석 저장"에서 이름을 적고 "+ 새 폴더 추가"를 누르면 빈 화면에서 새 경기를 시작하고, 이후 기록이 그 폴더에 자동으로 함께 저장돼요. 지금 화면의 기록에 이름만 붙이려면 "폴더로 저장"을 눌러요. 불러온 폴더는 🔗 조회 링크로 공유하거나 🗑️로 삭제(기록도 함께 삭제)할 수 있어요.</li>
-        </ol>
+        <div class="gd-player" data-section="video"></div>
+        <button class="btn gd-more-btn" type="button">⚠️ 참고사항 더 보기 ▾</button>
+        <div class="gd-more" style="display:none;">
         <div class="guide-example">
           <h4>🧭 이럴 땐 이렇게 기록해요</h4>
           <table>
@@ -783,21 +865,19 @@
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
           <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. 조회 전용 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없어요.</li>
         </ul></div>
+        </div>
       </div>
 
       <div class="guide-section" id="guideSection-settings">
-        <ol class="guide-steps">
-          <li><b>가입 링크를 공유해요</b> — "가입 링크 공유"로 링크를 만들어 보내요. 링크를 열면 코드가 자동으로 입력되고, 구성원은 조회 비밀번호로 들어와요.</li>
-          <li><b>처음 들어온 사람은 이름을 적어요</b> — 비밀번호로 처음 입장하면 이름을 입력해야 구성원으로 등록돼요. 실명 대신 별명이나 이니셜을 써도 돼요.</li>
-          <li><b>구성원과 권한을 관리해요</b> — 개설자는 구성원마다 포지션·대회 출전 상태(코치·주전·후보·무관)를 정하고, 필요하면 수정 권한이나 개설자 권한을 줄 수 있어요. 성별·출전 상태 필터로 목록을 추려 볼 수 있어요.</li>
-          <li><b>비밀번호를 관리해요</b> — 개설자는 "비밀번호 변경"에서 개설자 비밀번호와 조회 비밀번호를 언제든 바꿀 수 있어요. 각 칸 옆의 "변경"을 누르면 바로 바뀌니, 바뀐 조회 비밀번호를 구성원에게 다시 알려주세요.</li>
-          <li><b>활동 로그를 확인해요</b> — 수정 권한이 있는 사람은 누가 언제 대형이나 공격 상황을 수정·저장했는지 최근 순서로 볼 수 있어요.</li>
-        </ol>
+        <div class="gd-player" data-section="settings"></div>
+        <button class="btn gd-more-btn" type="button">⚠️ 참고사항 더 보기 ▾</button>
+        <div class="gd-more" style="display:none;">
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
           <li>구성원은 자기 권한을 스스로 바꿀 수 없어요(개설자만 가능해요).</li>
           <li>구성원을 삭제하면 권한도 함께 사라지고 되돌릴 수 없어서, 다시 가입해야 해요.</li>
           <li>"이 코드 삭제"는 개설자만 할 수 있고, 저장된 대형·기록이 모두 사라지니 신중하게 눌러주세요.</li>
         </ul></div>
+        </div>
       </div>
 
       <div class="guide-footer">
@@ -847,13 +927,6 @@
     <div>
       <div class="stage-top">
         <div class="scenario-title" id="scenarioTitle" role="button" tabindex="0" title="클릭해서 공격 상황 바꾸기">상대 좌측(L) 오픈 공격</div>
-        <div class="stage-aids" id="stageAids">
-          <span class="stage-aids-label">시각 보조</span>
-          <label><input type="checkbox" id="chkArrows"> 이동 동선</label>
-          <label><input type="checkbox" id="chkBallPath"> 착지 이동선</label>
-          <label><input type="checkbox" id="chkFans"> 커버리지·블로킹 범위</label>
-          <button class="btn" id="btnOrientation" style="white-space:nowrap;">세로 보기로 전환</button>
-        </div>
       </div>
       <div class="court-wrap">
         <svg id="court" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
@@ -1089,7 +1162,7 @@
             </div>
             <button class="btn" id="btnLandingInfoToggle" style="width:100%; margin-top:6px;">ℹ️ 참고사항 ▾</button>
             <div id="landingInfoPanel" class="note-box" style="display:none; margin-top:8px;">
-              <p style="margin:0 0 8px;">9칸은 <b>경기장 화면과 같은 방향</b>으로 놓여 있어요. 화면에서 공을 떨어뜨리고 싶은 자리와 같은 위치의 칸을 누르면 그 자리로 정확히 날아가요. 가로 보기에서는 상대 공격이면 왼쪽으로, 우리 공격이면 오른쪽으로 90도 돌아간 모양이에요.</p>
+              <p style="margin:0 0 8px;">9칸은 <b>경기장 화면과 같은 방향</b>으로 놓여 있어요. 화면에서 공을 떨어뜨리고 싶은 자리와 같은 위치의 칸을 누르면 그 자리로 정확히 날아가요. 상대 공격이면 왼쪽으로, 우리 공격이면 오른쪽으로 90도 돌아간 모양이에요.</p>
               <p style="margin:0 0 8px;"><b>앞·뒤</b> — 주황색 "네트" 막대에 가까운 줄이 "앞", 먼 줄이 "뒤"예요.</p>
               <p style="margin:0 0 8px;"><b>왼쪽·오른쪽</b> — 공격하는 팀이 아니라 <b>공을 받는 팀</b>이 네트를 바라볼 때의 왼쪽·오른쪽이에요. 상대 공격이면 우리 팀 기준, 우리 공격이면 상대 팀 기준이에요.</p>
               <p style="margin:0;" id="landingSideHint"></p>
@@ -1788,9 +1861,10 @@
   let presets=[];
   let draggingId=null;
 
-  const showArrows = ()=>document.getElementById('chkArrows').checked;
-  const showBallPath = ()=>document.getElementById('chkBallPath').checked;
-  const showFans = ()=>document.getElementById('chkFans').checked;
+  // visual aids (movement arrows, ball path, coverage/block fans) are always on
+  const showArrows = ()=>true;
+  const showBallPath = ()=>true;
+  const showFans = ()=>true;
 
   function comboKey(){ return scenario; } // block count is no longer a separate configurable axis — it's derived from where dots actually sit
 
@@ -3081,7 +3155,6 @@
     if(editMode||overrideMode) return;
     playing=false; updatePlayBtn(); progress=Number(e.target.value)/100;
   });
-  ['chkArrows','chkBallPath','chkFans'].forEach(id=>document.getElementById(id).addEventListener('change', render));
 
   function currentHasFake(){
     if(isOur(scenario)) return OUR_ATTACKS[scenario].fakeX!=null;
@@ -3322,7 +3395,7 @@
       : (leftBtn.style.gridColumn==='1' ? '왼쪽' : '오른쪽');
     const rightDir = {'위쪽':'아래쪽','아래쪽':'위쪽','왼쪽':'오른쪽','오른쪽':'왼쪽'}[leftDir];
     document.getElementById('landingSideHint').innerHTML =
-      `<b>지금 설정</b> — ${our?'우리 공격':'상대 공격'}·${landscape?'가로':'세로'} 보기라서 <b>${our?'상대 팀':'우리 팀'}</b> 기준이에요. 칸 묶음의 ${leftDir}이 "왼쪽", ${rightDir}이 "오른쪽"이에요.`;
+      `<b>지금 설정</b> — ${our?'우리 공격':'상대 공격'}이라서 <b>${our?'상대 팀':'우리 팀'}</b> 기준이에요. 칸 묶음의 ${leftDir}이 "왼쪽", ${rightDir}이 "오른쪽"이에요.`;
   }
   // Applies a "직접 설정" combination directly to a scenario's data, exactly like using the panel
   // and clicking 저장(덮어쓰기) would — used both by that button and to seed each scenario's
@@ -3403,14 +3476,9 @@
   function applyOrientation(){
     courtSvg.setAttribute('viewBox', landscape ? '0 0 760 400' : '0 0 400 760');
     sceneGroup.setAttribute('transform', landscape ? 'matrix(0,-1,1,0,0,400)' : '');
-    document.getElementById('btnOrientation').textContent = landscape ? '세로 보기로 전환' : '가로 보기로 전환';
     layoutLandingNineZone();
     render();
   }
-  document.getElementById('btnOrientation').addEventListener('click', ()=>{
-    landscape=!landscape;
-    applyOrientation();
-  });
 
   // ---------- position assignment UI ----------
   // court dot label: the hand-typed name if one is set, otherwise the player number.
@@ -4040,15 +4108,273 @@
     });
   });
 
+  // ---------- feature guide: step-by-step cards, each with a looping demo of the real tab/banner ----------
+  // Each step = short text + a small mock of that part of the UI and a script the fake cursor plays
+  // (click / type / drag), looping until the step changes or the guide closes.
+  const COURT = (dots, extra='') => `<div class="mk-court k-court"><div class="zone k-zone"></div><div class="net"></div>${extra}${dots}</div>`;
+  const OWN_DOTS = [[60,22],[60,50],[60,78],[75,22],[75,50],[75,78],[90,22],[90,50],[90,78]];
+  const OPP_DOTS = [[40,22],[40,50],[40,78],[25,22],[25,50],[25,78],[10,22],[10,50],[10,78]];
+  const dotsHtml = (list, cls, labelFn) => list.map((p,i)=>`<div class="mk-dot ${cls} k-${cls||'own'}${i+1}" style="left:${p[0]}%;top:${p[1]}%">${labelFn(i)}</div>`).join('');
+  const fullCourt = (extra='') => COURT(dotsHtml(OWN_DOTS,'',i=>i+1) + dotsHtml(OPP_DOTS,'opp',i=>i+1), extra);
+  const GUIDE_STEPS = {
+    sim: [
+      { title:'포지션을 배정해요',
+        text:'"01 포지션 배정"에서 9명의 포지션을 고르고, 아래 칸에 <b>이름</b>을 적으면 코트 도트에 번호 대신 이름이 보여요.',
+        scene:`<div class="mk-card"><div class="mk-h"><span class="n">01</span>포지션 배정</div><div class="mk-row">
+          <div class="mk-pos"><div class="mk-row"><span class="mk-num">1</span><span class="mk-btn">레프트 ▾</span></div><div class="mk-input k-name" data-ph="이름(선택)"></div></div>
+          <div class="mk-pos"><div class="mk-row"><span class="mk-num">2</span><span class="mk-btn">세터 ▾</span></div><div class="mk-input" data-ph="이름(선택)"></div></div>
+          <div class="mk-pos"><div class="mk-row"><span class="mk-num">3</span><span class="mk-btn k-sel">라이트 ▾</span></div><div class="mk-input" data-ph="이름(선택)"></div></div>
+        </div></div>${fullCourt()}`,
+        script:[ {click:'.k-sel', then:el=>el.textContent='속공수 ▾'}, {type:'.k-name', text:'민수'},
+                 {fn:sc=>{ const d=sc.querySelector('.k-own1'); d.textContent='민수'; d.classList.add('pulse'); }}, {wait:1200} ] },
+      { title:'공격 상황을 골라요',
+        text:'코트 위 <b>제목</b>을 누르면 상대 공격 6가지, 우리 공격 6가지 중에서 바로 고를 수 있어요.',
+        scene:`<div style="position:relative;"><div class="mk-title k-title">상대 좌측(L) 오픈 공격 ▾</div>
+          <div class="mk-drop k-drop"><div class="mk-opt on">상대 좌측(L) 오픈 공격</div><div class="mk-opt k-opt">상대 중앙(C) 속공</div><div class="mk-opt">상대 우측(R) 공격</div><div class="mk-opt">좌측(L) 공격 시 커버</div></div></div>${fullCourt()}`,
+        script:[ {click:'.k-title', then:(el,sc)=>sc.querySelector('.k-drop').classList.add('show')},
+                 {click:'.k-opt', then:(el,sc)=>{ sc.querySelectorAll('.mk-opt').forEach(o=>o.classList.toggle('on', o===el)); }},
+                 {wait:300}, {fn:sc=>{ sc.querySelector('.k-drop').classList.remove('show'); sc.querySelector('.k-title').textContent='상대 중앙(C) 속공 ▾'; }}, {wait:1400} ] },
+      { title:'재생해서 확인해요',
+        text:'<b>▶</b>로 재생하고 <b>⟲</b>로 처음으로 돌아가요. 이동 동선·착지 이동선·커버리지 범위는 <b>항상 함께</b> 표시돼요.',
+        scene:`${fullCourt(`<svg viewBox="0 0 100 100" preserveAspectRatio="none">
+            <line class="aid k-aid" x1="60" y1="22" x2="54" y2="30" stroke="#A3A8B1" stroke-width="1.2" stroke-dasharray="3 2" vector-effect="non-scaling-stroke"/>
+            <line class="aid k-aid" x1="75" y1="78" x2="70" y2="62" stroke="#A3A8B1" stroke-width="1.2" stroke-dasharray="3 2" vector-effect="non-scaling-stroke"/>
+            <path class="aid k-aid" d="M40 22 Q62 0 80 66" fill="none" stroke="#FF9570" stroke-width="1.2" stroke-dasharray="2 3" vector-effect="non-scaling-stroke"/>
+            <path class="aid k-aid" d="M70 62 L84 52 L86 72 Z" fill="rgba(157,180,255,0.18)" stroke="none"/>
+          </svg><div class="mk-ball k-ball" style="left:40%;top:22%"></div>`)}
+          <div class="mk-row"><span class="mk-btn big on k-play">▶</span><span class="mk-btn big">⟲</span><div style="flex:1;height:5px;border-radius:3px;background:var(--border);position:relative;overflow:hidden;"><i class="k-prog" style="position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);transition:width 2.4s linear;"></i></div></div>`,
+        script:[ {click:'.k-play', then:(el,sc)=>{ el.textContent='❚❚';
+                    sc.querySelector('.k-prog').style.width='100%';
+                    sc.querySelectorAll('.k-aid').forEach(a=>a.classList.add('show'));
+                    const mv=(k,x,y)=>{ const d=sc.querySelector(k); d.style.left=x+'%'; d.style.top=y+'%'; };
+                    mv('.k-own1',54,30); mv('.k-own6',70,62); mv('.k-own2',56,46);
+                    const b=sc.querySelector('.k-ball'); setTimeout(()=>{ b.style.left='80%'; b.style.top='66%'; }, 500); }},
+                 {wait:2600}, {fn:sc=>{ sc.querySelector('.k-play').textContent='▶'; }}, {wait:900} ] },
+      { title:'대형을 직접 고쳐요',
+        text:'"02 대형 저장 & 편집"에서 <b>시작 위치</b>나 <b>도착 위치</b>를 고른 뒤 도트를 끌어서 옮겨요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
+        scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
+        script:[ {click:'.k-end', then:el=>el.classList.add('on')},
+                 {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
+                 {wait:1500} ] },
+      { title:'공격 상황을 직접 만들어요',
+        text:'"03 공격 상황"에서 위치·템포·<b>공 착지 칸</b>을 고르고 저장하면 그 시나리오가 바뀌어요. 착지 칸은 코트 화면과 같은 방향으로 놓여 있어요.',
+        scene:`<div class="mk-card">
+          <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격 위치</span><span class="mk-btn on k-x1">왼쪽</span><span class="mk-btn k-x2">중앙</span><span class="mk-btn">오른쪽</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:52px;">템포</span><span class="mk-btn k-t1">빠름</span><span class="mk-btn on k-t2">보통</span><span class="mk-btn">느림</span></div>
+          <div class="mk-row" style="align-items:stretch;flex-wrap:nowrap;"><span class="mk-lbl" style="width:52px;align-self:center;">착지 칸</span><div class="mk-net v">네트</div>
+            <div class="mk-grid9" style="max-width:170px;">${'<span></span>'.repeat(5)}<span class="k-cell"></span>${'<span></span>'.repeat(3)}</div>
+            <span class="mk-btn big k-save" style="align-self:center;margin-left:auto;">저장</span></div></div>
+          <div class="mk-toast k-toast">'상대 중앙(C) 속공'에 저장했어요</div>`,
+        script:[ {click:'.k-x2', then:(el,sc)=>{ sc.querySelector('.k-x1').classList.remove('on'); el.classList.add('on'); }},
+                 {click:'.k-t1', then:(el,sc)=>{ sc.querySelector('.k-t2').classList.remove('on'); el.classList.add('on'); }},
+                 {click:'.k-cell', then:el=>el.classList.add('on')},
+                 {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
+      { title:'저장하고 불러와요',
+        text:'이름과 폴더를 정해 대형을 저장하면 "저장된 대형 불러오기"에서 <b>한 번에</b> 불러올 수 있어요.',
+        scene:`<div class="mk-card"><div class="mk-row"><div class="mk-input k-name" data-ph="대형 이름"></div><span class="mk-btn big k-save">저장</span></div>
+          <div class="mk-lbl">저장된 대형</div><div class="mk-list k-list"><div class="mk-item">📁 기본 · 서브 리시브</div></div></div>
+          <div class="mk-toast k-toast">대형을 불러왔어요</div>`,
+        script:[ {type:'.k-name', text:'블로킹 2인 대형'},
+                 {click:'.k-save', then:(el,sc)=>{ const it=document.createElement('div'); it.className='mk-item new k-new'; it.textContent='📁 기본 · 블로킹 2인 대형'; sc.querySelector('.k-list').appendChild(it); }},
+                 {wait:500}, {click:'.k-new', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1500} ] },
+      { title:'링크나 GIF로 공유해요',
+        text:'"대형 공유"에서 범위를 고르고 <b>🔗 링크</b>나 <b>🎞️ GIF</b>를 만들어요. 링크를 받은 사람은 비밀번호 없이 보기 전용으로 볼 수 있어요.',
+        scene:`<div class="mk-card"><div class="mk-h">대형 공유</div>
+          <div class="mk-row"><span class="mk-btn on k-r1">지금 대형</span><span class="mk-btn k-r2">저장한 대형</span><span class="mk-btn">폴더 전체</span></div>
+          <div class="mk-row"><span class="mk-btn big k-link">🔗 링크 만들기</span><span class="mk-btn big k-gif">🎞️ GIF 만들기</span></div></div>
+          <div class="mk-toast k-toast">링크를 복사했어요</div>`,
+        script:[ {click:'.k-r2', then:(el,sc)=>{ sc.querySelector('.k-r1').classList.remove('on'); el.classList.add('on'); }},
+                 {click:'.k-link', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1100},
+                 {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300},
+                 {click:'.k-gif', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='GIF를 만들었어요 · 카톡에 바로 붙여넣기'; t.classList.add('show'); }}, {wait:1500} ] }
+    ],
+    video: [
+      { title:'경기 폴더를 만들고 영상을 열어요',
+        text:'맨 위 "매치 분석 저장"에서 경기 이름을 적고 <b>+ 새 폴더 추가</b>를 누르면 이후 기록이 그 폴더에 자동 저장돼요. 그다음 경기 영상을 열어 재생해요.',
+        scene:`<div class="mk-card"><div class="mk-h">매치 분석 저장</div><div class="mk-row"><div class="mk-input k-name" data-ph="경기 이름"></div><span class="mk-btn big k-add">+ 새 폴더 추가</span></div><div class="mk-row k-chips"></div></div>
+          <div class="mk-video k-video"><span class="k-icon">▶</span><div class="bar"><i></i></div></div>`,
+        script:[ {type:'.k-name', text:'vs 한빛 0907'},
+                 {click:'.k-add', then:(el,sc)=>{ sc.querySelector('.k-chips').innerHTML='<span class="mk-btn on mk-item new">📁 vs 한빛 0907</span>'; }},
+                 {click:'.k-video', then:(el,sc)=>{ el.classList.add('playing'); sc.querySelector('.k-icon').textContent='❚❚'; }}, {wait:1800} ] },
+      { title:'팀 이름·명단·세트를 정해요',
+        text:'"빠른 기록 배너"에서 팀 이름과 명단을 적고, 지금 진행 중인 <b>세트</b>를 골라요. 세트가 바뀌면 기록 전에 세트 버튼부터 바꿔주세요.',
+        scene:`<div class="mk-card"><div class="mk-h">빠른 기록 배너</div>
+          <div class="mk-row"><div class="mk-input">우리팀</div><span class="mk-lbl">vs</span><div class="mk-input k-opp" data-ph="상대 팀 이름"></div></div>
+          <div class="mk-row"><span class="mk-lbl">세트</span><span class="mk-btn on k-s1">1세트</span><span class="mk-btn k-s2">2세트</span><span class="mk-btn">3세트</span></div></div>`,
+        script:[ {type:'.k-opp', text:'한빛'},
+                 {click:'.k-s2', then:(el,sc)=>{ sc.querySelector('.k-s1').classList.remove('on'); el.classList.add('on'); }}, {wait:1600} ] },
+      { title:'팀 → 결과를 골라요',
+        text:'팀은 점수를 딴 팀이 아니라 <b>그 플레이를 한 팀</b>이에요. 잘해서 점수를 냈으면 <b>득점</b>, 실수·파울이면 <b>범실</b>이에요.',
+        scene:`<div class="mk-card"><div class="mk-lbl">플레이한 팀</div><div class="mk-row"><span class="mk-btn big k-us">우리팀</span><span class="mk-btn big">상대팀</span></div>
+          <div class="mk-lbl">결과</div><div class="mk-row"><span class="mk-btn big k-pt">득점</span><span class="mk-btn big">범실</span></div></div>
+          <div class="mk-toast k-toast">우리팀 · 득점</div>`,
+        script:[ {click:'.k-us', then:el=>el.classList.add('on')}, {click:'.k-pt', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1600} ] },
+      { title:'세부 상황 → 방식 → 위치를 골라요',
+        text:'상황(공격 위치·서브·블로킹·파울 등)을 고르고, 공격이면 <b>강타·페인트·터치아웃</b> 같은 방식과 <b>3×3 위치</b>를 찍어요. 위쪽이 네트예요.',
+        scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:48px;">상황</span><span class="mk-btn k-sel">세부 상황 ▾</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:48px;">방식</span><span class="mk-btn">강타</span><span class="mk-btn k-feint">페인트</span><span class="mk-btn">터치아웃</span></div>
+          <div class="mk-row" style="align-items:flex-start;"><span class="mk-lbl" style="width:48px;">위치</span><div class="mk-col" style="flex:1;max-width:180px;"><div class="mk-net h">네트</div><div class="mk-grid9"><span class="k-cell"></span>${'<span></span>'.repeat(8)}</div></div></div></div>`,
+        script:[ {click:'.k-sel', then:el=>{ el.textContent='레프트 공격 ▾'; el.classList.add('on'); }}, {click:'.k-feint', then:el=>el.classList.add('on')}, {click:'.k-cell', then:el=>el.classList.add('on')}, {wait:1500} ] },
+      { title:'"기록하기"를 눌러요',
+        text:'한 번 누를 때마다 <b>1점이 기록 한 줄</b>로 남아요. 잘못 눌렀으면 <b>↩️ 되돌리기</b>(Ctrl+Z)로 바로 취소해요.',
+        scene:`<div class="mk-score"><span class="k-us">12</span> : <span>9</span></div>
+          <div class="mk-row" style="justify-content:center;"><span class="mk-lbl">우리팀 · 득점 · 레프트(페인트)</span><span class="mk-btn big on k-rec">기록하기</span><span class="mk-btn big k-undo">↩️ 되돌리기</span></div>
+          <div class="mk-list k-list"><div class="mk-item"><span class="t">05:21</span>1세트 · 상대팀 범실 · 서브</div></div>`,
+        script:[ {click:'.k-rec', then:(el,sc)=>{ sc.querySelector('.k-us').textContent='13'; const it=document.createElement('div'); it.className='mk-item new on k-new'; it.innerHTML='<span class="t">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)'; sc.querySelector('.k-list').prepend(it); }},
+                 {wait:900}, {click:'.k-undo', then:(el,sc)=>{ sc.querySelector('.k-us').textContent='12'; sc.querySelector('.k-new').remove(); }}, {wait:1300} ] },
+      { title:'기록을 확인·수정해요',
+        text:'기록 목록에서 <b>시간</b>을 누르면 그 영상 장면으로 이동해요. 줄마다 세트·관련 선수·메모를 고치거나 ✕로 지울 수 있어요.',
+        scene:`<div class="mk-video k-video">▶<div class="bar"><i class="k-bar"></i></div></div>
+          <div class="mk-list"><div class="mk-item"><span class="t">01:12</span>1세트 · 우리팀 득점 · 속공</div><div class="mk-item k-row"><span class="t k-time">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)</div></div>`,
+        script:[ {click:'.k-time', then:(el,sc)=>{ sc.querySelector('.k-row').classList.add('on'); sc.querySelector('.k-bar').style.width='62%'; }}, {wait:1800} ] },
+      { title:'그래프와 종합 분석을 봐요',
+        text:'세트 버튼으로 범위를 고르면 <b>요약·추세</b>가 다시 계산돼요. "종합 분석"은 강점과 줄일 수 있는 실점을 자동으로 정리해줘요.',
+        scene:`<div class="mk-row" style="justify-content:center;"><span class="mk-btn on k-all">전체</span><span class="mk-btn k-s1">1세트</span><span class="mk-btn">2세트</span></div>
+          <div class="mk-score"><span class="k-a">50</span> : <span class="k-b">41</span></div>
+          <div class="mk-bars"><i style="height:80%" class="k-b1"></i><i class="o k-b2" style="height:62%"></i><i class="k-b3" style="height:45%"></i><i class="o k-b4" style="height:55%"></i></div>`,
+        script:[ {click:'.k-s1', then:(el,sc)=>{ sc.querySelector('.k-all').classList.remove('on'); el.classList.add('on');
+                    sc.querySelector('.k-a').textContent='25'; sc.querySelector('.k-b').textContent='18';
+                    [['.k-b1','60%'],['.k-b2','35%'],['.k-b3','70%'],['.k-b4','30%']].forEach(([k,h])=>sc.querySelector(k).style.height=h); }}, {wait:1900} ] },
+      { title:'경기별로 폴더에 저장해요',
+        text:'지금 기록에 이름만 붙이려면 <b>폴더로 저장</b>을 눌러요. 불러온 폴더는 🔗 조회 링크로 공유할 수 있어요.',
+        scene:`<div class="mk-card"><div class="mk-h">매치 분석 저장</div><div class="mk-row"><span class="mk-btn big k-save">폴더로 저장</span><span class="mk-btn big k-link">🔗 조회 링크</span></div>
+          <div class="mk-list k-list"><div class="mk-item">📁 vs 한빛 0907</div></div></div><div class="mk-toast k-toast">폴더에 저장했어요</div>`,
+        script:[ {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1000}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300},
+                 {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] }
+    ],
+    settings: [
+      { title:'가입 링크를 공유해요',
+        text:'<b>가입 링크 공유</b>로 링크를 만들어 보내요. 링크를 열면 코드가 자동으로 입력돼요.',
+        scene:`<div class="mk-card"><div class="mk-h">구성원 초대</div><div class="mk-row"><span class="mk-btn big k-share">🔗 가입 링크 공유</span></div></div><div class="mk-toast k-toast">링크를 복사했어요 · 단톡방에 붙여넣기</div>`,
+        script:[ {click:'.k-share', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1800} ] },
+      { title:'처음 들어온 사람은 이름을 적어요',
+        text:'비밀번호로 처음 입장하면 이름을 입력해야 구성원으로 등록돼요. 별명이나 이니셜도 괜찮아요.',
+        scene:`<div class="mk-card"><div class="mk-h">처음 오셨네요!</div><div class="mk-row"><div class="mk-input k-name" data-ph="이름"></div><span class="mk-btn big k-go">입장</span></div></div><div class="mk-toast k-toast">구성원으로 등록됐어요</div>`,
+        script:[ {type:'.k-name', text:'민수'}, {click:'.k-go', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1600} ] },
+      { title:'구성원과 권한을 관리해요',
+        text:'개설자는 구성원마다 포지션과 <b>출전 상태</b>(코치·주전·후보·무관)를 정하고, 필요하면 <b>수정 권한</b>을 줄 수 있어요.',
+        scene:`<div class="mk-card"><div class="mk-row"><b style="font-size:13px;color:var(--text);min-width:40px;">민수</b><span class="mk-btn">레프트 ▾</span></div>
+          <div class="mk-row"><span class="mk-btn">코치</span><span class="mk-btn k-main">주전</span><span class="mk-btn">후보</span><span class="mk-btn">무관</span></div>
+          <div class="mk-row"><span class="mk-lbl">수정 권한</span><div class="mk-toggle k-tog"></div></div></div>`,
+        script:[ {click:'.k-main', then:el=>el.classList.add('on')}, {click:'.k-tog', then:el=>el.classList.add('on')}, {wait:1600} ] },
+      { title:'비밀번호를 관리해요',
+        text:'개설자는 개설자·조회 비밀번호를 언제든 바꿀 수 있어요. 바뀐 조회 비밀번호는 구성원에게 다시 알려주세요.',
+        scene:`<div class="mk-card"><div class="mk-h">비밀번호 변경</div>
+          <div class="mk-row"><span class="mk-lbl" style="width:60px;">개설자</span><div class="mk-input" data-ph="새 비밀번호"></div><span class="mk-btn">변경</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:60px;">조회</span><div class="mk-input k-pw" data-ph="새 비밀번호"></div><span class="mk-btn k-chg">변경</span></div></div>
+          <div class="mk-toast k-toast">조회 비밀번호를 바꿨어요</div>`,
+        script:[ {type:'.k-pw', text:'••••••'}, {click:'.k-chg', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1600} ] },
+      { title:'활동 로그를 확인해요',
+        text:'수정 권한이 있는 사람은 누가 언제 무엇을 수정·저장했는지 <b>최근 순서</b>로 볼 수 있어요.',
+        scene:`<div class="mk-card"><div class="mk-h">활동 로그</div><div class="mk-list k-list"></div></div>`,
+        script:[ {wait:300},
+                 ...[['09:12','개설자 · \'블로킹 2인 대형\'을 저장했어요'],['09:20','민수 · \'상대 중앙(C) 속공\'을 수정했어요'],['09:31','지훈 · 포지션 배정을 바꿨어요']]
+                   .flatMap(([t,m])=>[{fn:sc=>{ const it=document.createElement('div'); it.className='mk-item new'; it.innerHTML=`<span class="t">${t}</span>${m}`; sc.querySelector('.k-list').prepend(it); }},{wait:700}]),
+                 {wait:1400} ] }
+    ]
+  };
+  const GUIDE_ORDER = ['sim','video','settings'];
+  const guideState = { section:'sim', step:0, token:0 };
+  const gSleep = ms => new Promise(r=>setTimeout(r, ms));
+  function guidePlayerEl(sec){ return document.querySelector(`.gd-player[data-section="${sec}"]`); }
+  function buildGuidePlayers(){
+    GUIDE_ORDER.forEach(sec=>{
+      const el = guidePlayerEl(sec);
+      el.innerHTML = `<div class="gd-stage"><span class="gd-badge">DEMO</span><div class="gd-scene"></div><svg class="gd-cursor" viewBox="0 0 22 26"><path d="M2 2 L2 21 L7 16.5 L10.5 24 L14 22.5 L10.5 15 L17 15 Z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <div class="gd-text"><div class="gd-step-meta"></div><h3 class="gd-step-title"></h3><p class="gd-step-text"></p></div>
+        <div class="gd-nav"><button class="btn gd-prev" type="button">◀ 이전</button><div class="gd-dots"></div><button class="btn primary gd-next" type="button">다음 ▶</button></div>`;
+      el.querySelector('.gd-prev').addEventListener('click', ()=>goGuideStep(guideState.step-1));
+      el.querySelector('.gd-next').addEventListener('click', ()=>{
+        const n = GUIDE_STEPS[guideState.section].length;
+        if(guideState.step < n-1) return goGuideStep(guideState.step+1);
+        const nextSec = GUIDE_ORDER[GUIDE_ORDER.indexOf(guideState.section)+1];
+        if(nextSec) setGuideSection(nextSec); else closeFeatureGuide();
+      });
+      const dots = el.querySelector('.gd-dots');
+      GUIDE_STEPS[sec].forEach((_,i)=>{ const d=document.createElement('button'); d.type='button'; d.setAttribute('aria-label',(i+1)+'단계'); d.addEventListener('click',()=>goGuideStep(i)); dots.appendChild(d); });
+    });
+    document.querySelectorAll('.gd-more-btn').forEach(btn=>btn.addEventListener('click', ()=>{
+      const box = btn.nextElementSibling; const showing = box.style.display!=='none';
+      box.style.display = showing ? 'none' : 'block';
+      btn.textContent = showing ? '⚠️ 참고사항 더 보기 ▾' : '⚠️ 참고사항 접기 ▴';
+    }));
+  }
+  function setGuideSection(sec){
+    guideState.section = sec;
+    document.querySelectorAll('#guideTabSeg button').forEach(b=>b.classList.toggle('active', b.dataset.guide===sec));
+    document.querySelectorAll('.guide-section').forEach(s=>s.classList.toggle('active', s.id==='guideSection-'+sec));
+    document.querySelector('#featureGuideModal .modal-card').scrollTop = 0;
+    goGuideStep(0);
+  }
+  function goGuideStep(i){
+    const steps = GUIDE_STEPS[guideState.section];
+    i = Math.max(0, Math.min(steps.length-1, i));
+    guideState.step = i;
+    const el = guidePlayerEl(guideState.section), st = steps[i];
+    el.querySelector('.gd-step-meta').textContent = `STEP ${i+1} / ${steps.length}`;
+    el.querySelector('.gd-step-title').textContent = st.title;
+    el.querySelector('.gd-step-text').innerHTML = st.text;
+    el.querySelector('.gd-prev').disabled = i===0;
+    const isLast = i===steps.length-1, nextSec = GUIDE_ORDER[GUIDE_ORDER.indexOf(guideState.section)+1];
+    el.querySelector('.gd-next').textContent = !isLast ? '다음 ▶' : nextSec ? '다음 기능 ▶' : '시작하기 →';
+    el.querySelectorAll('.gd-dots button').forEach((d,k)=>d.classList.toggle('on', k===i));
+    runGuideDemo(el, st);
+  }
+  function stopGuideDemo(){ guideState.token++; }
+  async function runGuideDemo(el, st){
+    const token = ++guideState.token;
+    const stage = el.querySelector('.gd-stage'), sceneEl = el.querySelector('.gd-scene'), cursor = el.querySelector('.gd-cursor');
+    const alive = ()=> token===guideState.token;
+    const placeAt = (target)=>{
+      const sr = stage.getBoundingClientRect(), r = target.getBoundingClientRect();
+      const x = r.left - sr.left + r.width/2, y = r.top - sr.top + r.height/2;
+      cursor.style.left = (x-3)+'px'; cursor.style.top = (y-2)+'px';
+      return [x,y];
+    };
+    const ripple = ([x,y])=>{ const rp=document.createElement('div'); rp.className='gd-ripple'; rp.style.left=x+'px'; rp.style.top=y+'px'; stage.appendChild(rp); setTimeout(()=>rp.remove(), 520); };
+    while(alive()){
+      sceneEl.innerHTML = st.scene;
+      cursor.classList.remove('drag'); cursor.style.left='88%'; cursor.style.top='105%';
+      await gSleep(700); if(!alive()) return;
+      for(const a of st.script){
+        if(!alive()) return;
+        if(a.wait){ await gSleep(a.wait); continue; }
+        if(a.fn){ a.fn(sceneEl); continue; }
+        const target = sceneEl.querySelector(a.click || a.type || a.drag);
+        if(!target) continue;
+        const pt = placeAt(target); await gSleep(650); if(!alive()) return;
+        ripple(pt);
+        if(a.click){ a.then && a.then(target, sceneEl); await gSleep(650); }
+        else if(a.type){
+          target.classList.add('focus');
+          for(const ch of a.text){ if(!alive()) return; target.textContent += ch; await gSleep(110); }
+          target.classList.remove('focus'); await gSleep(350);
+        } else if(a.drag){
+          const parent = target.offsetParent.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+          cursor.classList.add('drag'); target.classList.add('fast','pulse');
+          target.style.left = a.to[0]+'%'; target.style.top = a.to[1]+'%';
+          const x = parent.left - sr.left + parent.width*a.to[0]/100, y = parent.top - sr.top + parent.height*a.to[1]/100;
+          cursor.style.left=(x-3)+'px'; cursor.style.top=(y-2)+'px';
+          await gSleep(950); if(!alive()) return; cursor.classList.remove('drag'); target.classList.remove('pulse');
+          a.then && a.then(target, sceneEl); await gSleep(400);
+        }
+      }
+      await gSleep(1200);
+    }
+  }
+  buildGuidePlayers();
+
   const HIDE_GUIDE_KEY = 'vt:hide-feature-guide';
   function openFeatureGuide(){
     document.getElementById('chkHideGuideNextTime').checked = localStorage.getItem(HIDE_GUIDE_KEY)==='1';
     document.getElementById('featureGuideModal').style.display='flex';
+    setGuideSection(guideState.section);
   }
   function closeFeatureGuide(){
     const hide = document.getElementById('chkHideGuideNextTime').checked;
     try{ localStorage.setItem(HIDE_GUIDE_KEY, hide ? '1' : '0'); }catch(err){}
     document.getElementById('featureGuideModal').style.display='none';
+    stopGuideDemo();
   }
   document.getElementById('btnFeatureGuide').addEventListener('click', openFeatureGuide);
   document.getElementById('btnCloseFeatureGuide').addEventListener('click', closeFeatureGuide);
@@ -4057,13 +4383,7 @@
     if(e.target.id==='featureGuideModal') closeFeatureGuide();
   });
   document.querySelectorAll('#guideTabSeg button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#guideTabSeg button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      document.querySelectorAll('.guide-section').forEach(sec=>sec.classList.remove('active'));
-      document.getElementById('guideSection-'+btn.dataset.guide).classList.add('active');
-      document.querySelector('.modal-body').scrollTop = 0;
-    });
+    btn.addEventListener('click', ()=>setGuideSection(btn.dataset.guide));
   });
   // 코드로 들어오면(처음 입장이든 재입장이든) 절차식 기능/사용 설명을 바로 보여줘요 —
   // "다음에 자동으로 보지 않기"를 체크해둔 경우에는 건너뛰어요.
