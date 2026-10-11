@@ -1045,7 +1045,7 @@
           <li>위치와 관련 선수는 한 번 골라두면 바꾸거나 해제할 때까지 다음 기록에도 계속 붙어요. 관련 선수는 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 세터가 공을 올릴 때마다 "이번 랠리 토스 순서"에서 팀과 보낸 곳을 눌러요. 기록하기를 누르면 그 점수에 함께 저장돼요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>득실 위치는 플레이한 팀 코트(아래)와 네트 건너편 상대 코트(위) 중에서 고를 수 있어요. 상대 코트를 고르면 기록에 "상대 코트 · 왼쪽 앞"처럼 남아요.</li>
-          <li>폴더를 고르면 화면이 그 폴더의 기록으로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 <b>+ 새 폴더 추가</b>를 눌러요.</li>
+          <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기의 팀 이름(우리팀·상대팀)으로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 <b>+ 새 폴더 추가</b>를 눌러요.</li>
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
@@ -1471,7 +1471,7 @@
         <div class="active-folder-text" id="overwriteHint"></div>
         <button class="btn" id="btnOverwriteMatchFolder" title="지금 화면의 기록을 불러온 폴더에 바로 저장해요">💾 현재 폴더에 덮어쓰기</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 폴더의 기록·그래프·종합 분석·코치 의견으로 화면이 바뀌어요. ✏️로 이름을 바꾸고, 🔗로 조회 전용 링크를 만들고, 🗑️로 폴더(안의 기록 포함)를 지워요.</div>
+      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 폴더의 기록·팀 이름·그래프·종합 분석·코치 의견으로 화면이 바뀌어요. ✏️로 이름을 바꾸고, 🔗로 조회 전용 링크를 만들고, 🗑️로 폴더(안의 기록 포함)를 지워요.</div>
       <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
         <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
         <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
@@ -5447,6 +5447,15 @@
     });
   }
 
+  // 폴더를 불러올 때 그 경기의 팀 이름으로 바꿔요(이름이 없는 예전 폴더는 지금 이름을 그대로 둬요).
+  function applyTeamNames(opp, our){
+    oppTeamName = (opp||'').trim() || '상대팀';
+    ourTeamName = (our||'').trim() || '우리팀';
+    document.getElementById('oppTeamNameInput').value = oppTeamName!=='상대팀' ? oppTeamName : '';
+    document.getElementById('ourTeamNameInput').value = ourTeamName!=='우리팀' ? ourTeamName : '';
+    updateTeamSegLabels();
+    relabelAllRecords();
+  }
   function onTeamNamesChanged(){
     updateTeamSegLabels();
     relabelAllRecords();
@@ -5974,6 +5983,7 @@
     f.records = JSON.parse(JSON.stringify(records));
     f.videoName = currentVideoName;
     f.coachNotes = document.getElementById('coachNotes').value;
+    f.oppTeamName = oppTeamName; f.ourTeamName = ourTeamName;
     f.savedAt = new Date().toISOString();
   }
   const _coreScheduleAutoSave = window.scheduleAutoSave;
@@ -6013,6 +6023,7 @@
     records = JSON.parse(JSON.stringify(f.records||[]));
     document.getElementById('coachNotes').value = f.coachNotes||'';
     currentVideoName = f.videoName||'';
+    if(f.oppTeamName || f.ourTeamName) applyTeamNames(f.oppTeamName, f.ourTeamName);
     const hint = document.getElementById('lastVideoHint');
     if(currentVideoName){
       hint.textContent = `"${f.name}" 폴더의 영상: ${currentVideoName} — 같은 파일을 다시 첨부하면 이어서 볼 수 있어요.`;
@@ -6085,7 +6096,7 @@
     // reset to a first-recording screen
     resetVideoAnalysisScreen();
 
-    const newFolder = {name, savedAt: new Date().toISOString(), videoName:'', records:[], coachNotes:''};
+    const newFolder = {name, savedAt: new Date().toISOString(), videoName:'', records:[], coachNotes:'', oppTeamName, ourTeamName};
     matchFolders.push(newFolder);
     lastPickedMatchFolder = newFolder;
     lastPickedMatchFolderIdx = matchFolders.length-1;
@@ -6105,7 +6116,8 @@
       if(!confirm(`"${name}" 폴더가 이미 있어요. 덮어쓸까요?`)) return;
       matchFolders[existingIdx] = {
         name, savedAt: new Date().toISOString(), videoName: currentVideoName,
-        records: JSON.parse(JSON.stringify(records)), coachNotes: document.getElementById('coachNotes').value
+        records: JSON.parse(JSON.stringify(records)), coachNotes: document.getElementById('coachNotes').value,
+        oppTeamName, ourTeamName
       };
       lastPickedMatchFolder = matchFolders[existingIdx];
       lastPickedMatchFolderIdx = existingIdx;
@@ -6115,7 +6127,8 @@
         savedAt: new Date().toISOString(),
         videoName: currentVideoName,
         records: JSON.parse(JSON.stringify(records)),
-        coachNotes: document.getElementById('coachNotes').value
+        coachNotes: document.getElementById('coachNotes').value,
+        oppTeamName, ourTeamName
       });
       lastPickedMatchFolder = matchFolders[matchFolders.length-1];
       lastPickedMatchFolderIdx = matchFolders.length-1;
@@ -6131,7 +6144,8 @@
     if(!confirm(`"${f.name}" 폴더에 지금 기록을 덮어쓸까요? 이전 내용은 사라져요.`)) return;
     matchFolders[lastPickedMatchFolderIdx] = {
       name: f.name, savedAt: new Date().toISOString(), videoName: currentVideoName,
-      records: JSON.parse(JSON.stringify(records)), coachNotes: document.getElementById('coachNotes').value
+      records: JSON.parse(JSON.stringify(records)), coachNotes: document.getElementById('coachNotes').value,
+      oppTeamName, ourTeamName
     };
     lastPickedMatchFolder = matchFolders[lastPickedMatchFolderIdx];
     renderMatchFolderSelect();
@@ -6289,6 +6303,8 @@
       records = JSON.parse(JSON.stringify(matchFolders[activeIdx].records||[]));
       document.getElementById('coachNotes').value = matchFolders[activeIdx].coachNotes||'';
       currentVideoName = matchFolders[activeIdx].videoName||'';
+      if(matchFolders[activeIdx].oppTeamName) vs = Object.assign({}, vs, {oppTeamName: matchFolders[activeIdx].oppTeamName});
+      if(matchFolders[activeIdx].ourTeamName) vs = Object.assign({}, vs, {ourTeamName: matchFolders[activeIdx].ourTeamName});
     }
     renderMatchFolderSelect();
     if(vs.videoRoster){
