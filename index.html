@@ -444,6 +444,7 @@
   @keyframes mkIn{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:none; } }
   .mk-grid9{ display:grid; grid-template-columns:repeat(3,1fr); gap:3px; flex:1; }
   .mk-grid9 span{ height:22px; border-radius:5px; background:var(--panel); border:1px solid var(--border); transition:background .25s; }
+  .mk-g9-sm span{ height:16px; }
   .mk-grid9 span.on{ background:var(--grad); border-color:transparent; }
   .mk-net{ background:var(--accent); color:#fff; font-size:10px; font-weight:800; border-radius:4px; display:flex; align-items:center; justify-content:center; }
   .mk-net.v{ width:16px; writing-mode:vertical-rl; letter-spacing:.1em; }
@@ -952,7 +953,7 @@
         <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 포지션 배정(이름 표시 가능), 시작·도착 위치 편집, 폴더별 저장·불러오기를 할 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
-        <li><b>경기 영상 분석</b>경기 영상을 보며 팀 → 득점/범실 → 세부 상황(공격 방식·파울 종류까지) 순서로 1점씩 기록해요. 우리가 잘해서 낸 점수와 상대 실수로 얻은 점수를 나눠 집계하고, 세트별 점수·주요 지표·추세와 자동 통계 요약을 보여줘요. 기록·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
+        <li><b>경기 영상 분석</b>경기 영상을 보며 팀 → 득점/범실 → 세부 상황(공격 방식·블로킹 유형·파울 종류까지) 순서로 1점씩 기록해요. 득실 위치는 양 코트 3×3에서, 블로킹 위치는 드롭다운에서 고르고, 원하면 랠리 중 세터의 토스 순서도 남겨요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분을 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
         <li><b>눈이 편한 화면</b>어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 시력보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
         <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
@@ -1037,6 +1038,9 @@
               <tr><td data-label="경기 장면">상대 서브를 아무도 못 받음(서브 에이스)</td><td data-label="기록">상대팀 · 득점 · 서브</td></tr>
               <tr><td data-label="경기 장면">우리 리시브가 튀어 나가 실점</td><td data-label="기록">우리팀 · 범실 · 리시브</td></tr>
               <tr><td data-label="경기 장면">우리 선수가 네트를 건드림</td><td data-label="기록">우리팀 · 범실 · 파울(네트터치)</td></tr>
+              <tr><td data-label="경기 장면">우리 세터가 토스 대신 2구로 넘겨 점수</td><td data-label="기록">우리팀 · 득점 · 세터페인트(2구 넘김)</td></tr>
+              <tr><td data-label="경기 장면">우리 2인 블록이 상대 공격을 바로 막음</td><td data-label="기록">우리팀 · 득점 · 블로킹(2인)</td></tr>
+              <tr><td data-label="경기 장면">상대 공격이 우리 블록 맞고 우리 코트에 떨어짐</td><td data-label="기록">우리팀 · 범실 · 블로킹(우리 코트 인)</td></tr>
             </tbody>
           </table>
         </div>
@@ -4645,7 +4649,7 @@
                  {click:'.k-add', then:(el,sc)=>{ sc.querySelector('.k-chips').innerHTML='<span class="mk-btn on mk-item new">📁 vs 한빛 0907</span>'; }},
                  {click:'.k-video', then:(el,sc)=>{ el.classList.add('playing'); sc.querySelector('.k-icon').textContent='❚❚'; }}, {wait:1800} ] },
       { title:'팀 이름·명단·세트를 정해요',
-        text:'"빠른 기록 배너"에서 팀 이름과 명단을 적고, 지금 진행 중인 <b>세트</b>를 골라요. 세트가 바뀌면 기록 전에 세트 버튼부터 바꿔주세요.',
+        text:'"빠른 기록 배너"에서 팀 이름과 명단을 적고, 지금 진행 중인 <b>세트</b>를 골라요. 팀 이름은 경기 폴더에 함께 저장돼서 폴더를 불러오면 그 경기 이름으로 바뀌어요.',
         scene:`<div class="mk-card"><div class="mk-h">빠른 기록 배너</div>
           <div class="mk-row"><div class="mk-input">우리팀</div><span class="mk-lbl">vs</span><div class="mk-input k-opp" data-ph="상대 팀 이름"></div></div>
           <div class="mk-row"><span class="mk-lbl">세트</span><span class="mk-btn on k-s1">1세트</span><span class="mk-btn k-s2">2세트</span><span class="mk-btn">3세트</span></div></div>`,
@@ -4661,8 +4665,27 @@
         text:'상황을 고르고(헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>), 공격이면 방식과 양 코트 3×3 위치를, 블로킹이면 위치 드롭다운과 범실 유형을 골라요. 관련 선수와 <b>이번 랠리 토스 순서</b>는 선택으로 남겨요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:48px;">상황</span><span class="mk-btn k-sel">세부 상황 ▾</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:48px;">방식</span><span class="mk-btn">강타</span><span class="mk-btn k-feint">페인트</span><span class="mk-btn">터치아웃</span></div>
-          <div class="mk-row" style="align-items:flex-start;"><span class="mk-lbl" style="width:48px;">위치</span><div class="mk-col" style="flex:1;max-width:180px;"><div class="mk-net h">네트</div><div class="mk-grid9"><span class="k-cell"></span>${'<span></span>'.repeat(8)}</div></div></div></div>`,
-        script:[ {click:'.k-sel', then:el=>{ el.textContent='레프트 공격 ▾'; el.classList.add('on'); }}, {click:'.k-feint', then:el=>el.classList.add('on')}, {click:'.k-cell', then:el=>el.classList.add('on')}, {wait:1500} ] },
+          <div class="mk-row" style="align-items:flex-start;"><span class="mk-lbl" style="width:48px;">위치</span><div class="mk-col" style="flex:1;max-width:180px;gap:3px;"><span class="mk-lbl" style="color:var(--opp);">상대 코트</span><div class="mk-grid9 mk-g9-sm">${'<span></span>'.repeat(4)}<span class="k-opp"></span>${'<span></span>'.repeat(4)}</div><div class="mk-net h">네트</div><div class="mk-grid9 mk-g9-sm"><span class="k-cell"></span>${'<span></span>'.repeat(8)}</div><span class="mk-lbl">플레이한 팀 코트</span></div></div></div>`,
+        script:[ {click:'.k-sel', then:el=>{ el.textContent='레프트 ▾'; el.classList.add('on'); }}, {click:'.k-feint', then:el=>el.classList.add('on')}, {click:'.k-opp', then:el=>el.classList.add('on')}, {wait:1500} ] },
+      { title:'블로킹을 기록해요',
+        text:'세부 상황을 <b>블로킹</b>으로 고르면 위치를 <b>드롭다운</b>에서 골라요. 블로킹 범실이면 <b>빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍</b> 중 왜 뚫렸는지, 득점이면 몇 명이 막았는지 남겨요.',
+        scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:64px;">결과</span><span class="mk-btn">득점</span><span class="mk-btn k-fault">범실</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:64px;">세부 상황</span><span class="mk-btn on">블로킹 ▾</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:64px;">블로킹 위치</span><span class="mk-btn k-zone">선택 안 함 ▾</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:64px;">범실 유형</span><span class="mk-btn k-type">구분 안 함 ▾</span></div></div>
+          <div class="mk-toast k-toast">우리팀 · 범실 · 블로킹(빈틈) · 레프트 앞</div>`,
+        script:[ {click:'.k-fault', then:el=>el.classList.add('on')}, {click:'.k-zone', then:el=>{ el.textContent='레프트 앞 ▾'; el.classList.add('on'); }},
+                 {click:'.k-type', then:(el,sc)=>{ el.textContent='빈틈(블로커 사이·옆) ▾'; el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1700} ] },
+      { title:'세터 토스 순서를 남겨요 (선택)',
+        text:'랠리 중 세터가 공을 올릴 때마다 <b>이번 랠리 토스 순서</b>에서 팀을 고르고 보낸 곳을 눌러요. 기록하기를 누르면 그 점수와 함께 저장되고, 요약의 <b>🏐 세터 배분</b>에 빈도·순서가 모여요.',
+        scene:`<div class="mk-card"><div class="mk-row"><span class="mk-btn on k-our">🔵 우리 세터</span><span class="mk-btn k-oppb">🔴 상대 세터</span></div>
+          <div class="mk-row"><span class="mk-btn k-l">레프트</span><span class="mk-btn">라이트</span><span class="mk-btn k-a">A</span><span class="mk-btn">백A</span><span class="mk-btn">세터 2구</span></div>
+          <div class="mk-row k-seq"><span class="mk-lbl">아직 고른 토스가 없어요.</span></div></div>`,
+        script:[ {click:'.k-l', then:(el,sc)=>{ sc.querySelector('.k-seq').innerHTML='<span class="mk-btn" style="color:var(--own)">1. 🔵 레프트</span>'; }},
+                 {click:'.k-oppb', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-our').classList.remove('on'); }},
+                 {click:'.k-a', then:(el,sc)=>{ sc.querySelector('.k-seq').insertAdjacentHTML('beforeend','<span class="mk-lbl">→</span><span class="mk-btn" style="color:var(--opp)">2. 🔴 A</span>'); }},
+                 {click:'.k-our', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-oppb').classList.remove('on'); }},
+                 {click:'.k-l', then:(el,sc)=>{ sc.querySelector('.k-seq').insertAdjacentHTML('beforeend','<span class="mk-lbl">→</span><span class="mk-btn" style="color:var(--own)">3. 🔵 레프트</span>'); }}, {wait:1600} ] },
       { title:'"기록하기"를 눌러요',
         text:'한 번 누를 때마다 <b>1점이 기록 한 줄</b>로 남아요. 잘못 눌렀으면 <b>↩️ 되돌리기</b>(Ctrl+Z)로 바로 취소해요.',
         scene:`<div class="mk-score"><span class="k-us">12</span> : <span>9</span></div>
@@ -4676,7 +4699,7 @@
           <div class="mk-list"><div class="mk-item"><span class="t">01:12</span>1세트 · 우리팀 득점 · 속공</div><div class="mk-item k-row"><span class="t k-time">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)</div></div>`,
         script:[ {click:'.k-time', then:(el,sc)=>{ sc.querySelector('.k-row').classList.add('on'); sc.querySelector('.k-bar').style.width='62%'; }}, {wait:1800} ] },
       { title:'그래프와 종합 분석을 봐요',
-        text:'세트 버튼으로 범위를 고르면 <b>요약·추세</b>가 다시 계산돼요. "종합 분석"은 강점과 줄일 수 있는 실점을 자동으로 정리해줘요.',
+        text:'세트 버튼으로 범위를 고르면 요약·추세가 다시 계산돼요. 요약에는 <b>🧱 블로킹 분석</b>과 <b>🏐 세터 배분</b>도 나오고, 계산 방법은 <b>📘 설명기준</b> 탭에 있어요.',
         scene:`<div class="mk-row" style="justify-content:center;"><span class="mk-btn on k-all">전체</span><span class="mk-btn k-s1">1세트</span><span class="mk-btn">2세트</span></div>
           <div class="mk-score"><span class="k-a">50</span> : <span class="k-b">41</span></div>
           <div class="mk-bars"><i style="height:80%" class="k-b1"></i><i class="o k-b2" style="height:62%"></i><i class="k-b3" style="height:45%"></i><i class="o k-b4" style="height:55%"></i></div>`,
