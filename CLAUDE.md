@@ -13,6 +13,8 @@
 - **로그인 화면 소개창** (`#introModal`): 기능 목록
 - **각 카드의 안내**: `.field-note`, `ℹ️ 참고사항` 패널(`#presetInfoPanel`, `#attackInfoPanel`, `#landingInfoPanel` 등), `💡 폴더 이름 정하는 Tip`
 - 버튼·placeholder·alert 문구 중 바뀐 동작을 설명하는 것
+- **스플래시 화면**(`#splashScreen`)의 그림·문구가 바뀐 기능과 어긋나지 않는지
+- 그래프의 **📘 설명기준** 탭(`#graphHelp`) 계산식 설명과 "이럴 땐 이렇게 기록해요" 예시표
 
 없어진 기능을 가리키는 문구(예: 지운 버튼 이름)가 남아 있지 않은지 `grep`으로 확인해요.
 
