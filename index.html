@@ -765,6 +765,12 @@
   .toss-flow-row .tf-meta{ font-size:11px; color:var(--muted); white-space:nowrap; }
   .toss-flow-row .tf-res{ grid-column:1 / -1; font-size:11.5px; }
   .toss-flow-row.win{ border-left:3px solid var(--own); } .toss-flow-row.lose{ border-left:3px solid var(--opp); }
+  .toss-team-row{ display:flex; gap:6px; align-items:stretch; }
+  .toss-team-row .seg{ flex:1; }
+  .toss-2nd-btn{ flex:none; font-size:12px; font-weight:700; padding:6px 10px; border-style:dashed; }
+  .toss-2nd-btn.on{ border-style:solid; border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--panel)); }
+  .toss-chip.second{ border-style:dashed; }
+  .toss-chip em{ font-style:normal; font-size:10px; font-weight:800; padding:0 4px; border-radius:4px; background:var(--panel-2); color:var(--text-dim); }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -1033,7 +1039,7 @@
         <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 포지션 배정(이름 표시 가능), 시작·도착 위치 편집, 폴더별 저장·불러오기를 할 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
-        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 상황 버튼 아래에서 랠리 중 세터의 토스 순서도 남겨요. 공격 방식·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 선택으로 더하고, 기록하기를 누르면 다음 점수를 위해 기본값으로 돌아가요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
+        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 상황 버튼 아래에서 랠리 중 토스 순서(2단 토스 포함)도 남겨요. 공격 방식·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 선택으로 더하고, 기록하기를 누르면 다음 점수를 위해 기본값으로 돌아가요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
         <li><b>눈이 편한 화면</b>어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 시력보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
         <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
@@ -1119,6 +1125,7 @@
               <tr><td data-label="경기 장면">우리 리시브가 튀어 나가 실점</td><td data-label="기록">우리팀 · 범실 · 리시브</td></tr>
               <tr><td data-label="경기 장면">우리 선수가 네트를 건드림</td><td data-label="기록">우리팀 · 범실 · 파울(네트터치)</td></tr>
               <tr><td data-label="경기 장면">우리 세터가 토스 대신 2구로 넘겨 점수</td><td data-label="기록">우리팀 · 득점 · 세터페인트(2구 넘김)</td></tr>
+              <tr><td data-label="경기 장면">리시브가 흔들려 리베로가 레프트로 올려 줌</td><td data-label="기록">토스 순서: ↪ 2단 토스 → 레프트 (결과는 그 공격대로)</td></tr>
               <tr><td data-label="경기 장면">우리 2인 블록이 상대 공격을 바로 막음</td><td data-label="기록">우리팀 · 득점 · 블로킹(2인)</td></tr>
               <tr><td data-label="경기 장면">우리 공격이 상대 블록 맞고 네트 앞에 떨어져 점수</td><td data-label="기록">우리팀 · 득점 · 레프트(블로킹 맞고 네트인)</td></tr>
               <tr><td data-label="경기 장면">우리 공격이 빗맞아(삑사리) 밖으로 나감</td><td data-label="기록">우리팀 · 범실 · 레프트(삑사리)</td></tr>
@@ -1130,6 +1137,7 @@
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "이 순간 자유 기록"은 점수에 들어가지 않아요.</li>
           <li>"자세히 기록"의 방식·위치·관련 선수와 토스 순서는 <b>기록하기</b>를 누르면 기본값(선택 안 함)으로 돌아가요. 다음 점수는 새로 골라요. 모두 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 세터가 공을 올릴 때마다 세부 상황 버튼 아래 "이번 랠리 토스 순서"에서 팀과 보낸 곳을 눌러요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
+          <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단 토스</b>를 먼저 누르고 보낸 곳을 눌러요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
           <li>득실 위치는 "자세히 기록" 안의 <b>📍 득실 위치</b>를 펼쳐서 플레이한 팀 코트(아래)와 네트 건너편 상대 코트(위) 중에서 고를 수 있어요. 상대 코트를 고르면 기록에 "상대 코트 · 왼쪽 앞"처럼 남아요.</li>
           <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기의 팀 이름(우리팀·상대팀)으로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 <b>🆕 새 경기 시작</b>을 눌러요. 폴더 없이 남긴 기록이 있으면 새 폴더에 담을지 물어봐요.</li>
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
@@ -1646,7 +1654,7 @@
             <div class="gh-section">
               <h4>4. 블로킹 분석 · 세터 배분</h4>
               <p><b>🧱 블로킹 분석</b>은 세부 상황을 "블로킹"으로 남긴 기록을 팀별로 모아, 블로킹 득점은 위치·인원별로, 블로킹 범실은 유형(빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍)과 위치별로 보여줘요.</p>
-              <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "이번 랠리 토스 순서"로 계산해요. 팀별로 어디로 몇 % 올렸는지(빈도), 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·시간·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
+              <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "이번 랠리 토스 순서"로 계산해요. 팀별로 어디로 몇 % 올렸는지(빈도), 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>↪ 2단 토스</b>로 남긴 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·시간·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
             </div>
             <div class="gh-section">
               <h4>5. 세트별 보기</h4>
@@ -1739,9 +1747,12 @@
               </div>
               <div class="qr-toss-box qr-optional" id="tossRow">
                 <div class="qr-label">🏐 이번 랠리 토스 순서 <span class="qr-opt-tag">선택</span></div>
-                <div class="seg" id="tossTeamSeg">
-                  <button data-tteam="our" class="active">🔵 우리 세터</button>
-                  <button data-tteam="opp">🔴 상대 세터</button>
+                <div class="toss-team-row">
+                  <div class="seg" id="tossTeamSeg">
+                    <button data-tteam="our" class="active">🔵 우리 토스</button>
+                    <button data-tteam="opp">🔴 상대 토스</button>
+                  </div>
+                  <button class="btn toss-2nd-btn" id="btnToss2nd" type="button" aria-pressed="false" title="누른 뒤 보낸 곳을 고르면 그 토스 하나만 2단 토스로 남아요">↪ 2단 토스</button>
                 </div>
                 <div class="toss-targets" id="tossTargets"></div>
                 <div class="toss-seq" id="tossSeq"></div>
@@ -1749,11 +1760,11 @@
                   <button class="btn" id="btnTossUndo" type="button">↩️ 마지막 토스 빼기</button>
                   <button class="btn" id="btnTossClear" type="button">비우기</button>
                 </div>
-                <div class="field-note" style="margin-top:4px;">랠리 중 세터가 공을 올릴 때마다 팀을 고르고 보낸 곳을 눌러요(양 팀 모두). <b>기록하기</b>를 누르면 이 순서가 그 점수에 함께 저장되고 비워져요. 쌓이면 요약의 "세터 배분"에서 어디로 얼마나 자주, 몇 번째에 올렸는지와 <b>점수별 토스 흐름</b>을 볼 수 있어요.</div>
+                <div class="field-note" style="margin-top:4px;">랠리 중 공격으로 이어지는 토스가 올라갈 때마다 팀을 고르고 보낸 곳을 눌러요(양 팀 모두). 리시브가 흔들려 세터가 아닌 선수가 올린 <b>2단 토스</b>면 <b>↪ 2단 토스</b>를 먼저 누르고 보낸 곳을 눌러요(그 토스 하나만 2단으로 남아요). <b>기록하기</b>를 누르면 이 순서가 그 점수에 함께 저장되고 비워져요. 쌓이면 요약의 "세터 배분"에서 어디로 얼마나 자주, 몇 번째에 올렸는지와 <b>점수별 토스 흐름</b>을 볼 수 있어요.</div>
               </div>
             </div>
             <details class="qr-more" id="qrMore">
-              <summary><span class="qr-more-title">➕ 자세히 기록</span><span class="qr-more-sub" id="qrMoreHint">방식·위치·관련 선수 (선택)</span></summary>
+              <summary><span class="qr-more-title">➕ 자세히 기록</span><span class="qr-more-sub" id="qrMoreHint">방식·관련 선수·위치 (선택)</span></summary>
               <div class="qr-more-body">
             <div class="quick-record-row" id="qrDetailRow" style="display:none;">
               <div class="qr-label" id="qrDetailLabel">공격 방식</div>
@@ -1761,6 +1772,15 @@
                 <select id="qrDetailSelect" style="flex:1;"></select>
               </div>
               <div class="field-note" id="qrDetailNote" style="margin-top:4px;"></div>
+            </div>
+            <div class="quick-record-row qr-optional">
+              <div class="qr-label">관련 선수 <span class="qr-opt-tag">선택</span></div>
+              <div class="qr-controls">
+                <select id="videoPlayerSelect" style="flex:1;">
+                  <option value="">선택 안 함</option>
+                </select>
+              </div>
+              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 고르면 기록에 함께 남아요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
             </div>
             <div id="zonePickerWrap" style="display:none;">
               <label class="field-label" style="margin-top:0;">블로킹 위치 (선택)</label>
@@ -1818,15 +1838,6 @@
               </details>
             </div>
             <div id="noZoneNote" class="field-note" style="margin-top:0; display:none;">이 상황은 위치를 고르지 않아도 돼요. 위치 칸은 공격(양 코트 3×3)과 블로킹(위치 드롭다운)을 고를 때만 나타나요.</div>
-            <div class="quick-record-row qr-optional">
-              <div class="qr-label">관련 선수 <span class="qr-opt-tag">선택</span></div>
-              <div class="qr-controls">
-                <select id="videoPlayerSelect" style="flex:1;">
-                  <option value="">선택 안 함</option>
-                </select>
-              </div>
-              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 고르면 기록에 함께 남아요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
-            </div>
               </div>
             </details>
             <div style="display:flex; gap:8px;">
@@ -4772,15 +4783,16 @@
         script:[ {click:'.k-fault', then:el=>el.classList.add('on')}, {click:'.k-zone', then:el=>{ el.textContent='레프트 앞 ▾'; el.classList.add('on'); }},
                  {click:'.k-type', then:(el,sc)=>{ el.textContent='빈틈(블로커 사이·옆) ▾'; el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1700} ] },
       { title:'세터 토스 순서를 남겨요 (선택)',
-        text:'상황 버튼 아래 <b>🏐 이번 랠리 토스 순서</b>에서, 세터가 공을 올릴 때마다 팀을 고르고 보낸 곳을 눌러요. 기록하기를 누르면 그 점수와 함께 저장되고 비워져요. 요약의 <b>🏐 세터 배분</b>과 <b>📜 점수별 토스 흐름</b>에 모여요.',
-        scene:`<div class="mk-card"><div class="mk-row"><span class="mk-btn on k-our">🔵 우리 세터</span><span class="mk-btn k-oppb">🔴 상대 세터</span></div>
+        text:'상황 버튼 아래 <b>🏐 이번 랠리 토스 순서</b>에서, 토스가 올라갈 때마다 팀을 고르고 보낸 곳을 눌러요. 세터가 아닌 선수가 올린 2단 토스면 <b>↪ 2단 토스</b>를 먼저 눌러요. 기록하기를 누르면 그 점수와 함께 저장되고 비워져요. 요약의 <b>🏐 세터 배분</b>과 <b>📜 점수별 토스 흐름</b>에 모여요.',
+        scene:`<div class="mk-card"><div class="mk-row"><span class="mk-btn on k-our">🔵 우리 토스</span><span class="mk-btn k-oppb">🔴 상대 토스</span><span class="mk-btn k-2nd" style="border-style:dashed;">↪ 2단 토스</span></div>
           <div class="mk-row"><span class="mk-btn k-l">레프트</span><span class="mk-btn">라이트</span><span class="mk-btn k-a">A</span><span class="mk-btn">백A</span><span class="mk-btn">세터 2구</span></div>
           <div class="mk-row k-seq"><span class="mk-lbl">아직 고른 토스가 없어요.</span></div></div>`,
         script:[ {click:'.k-l', then:(el,sc)=>{ sc.querySelector('.k-seq').innerHTML='<span class="mk-btn" style="color:var(--own)">1. 🔵 레프트</span>'; }},
                  {click:'.k-oppb', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-our').classList.remove('on'); }},
                  {click:'.k-a', then:(el,sc)=>{ sc.querySelector('.k-seq').insertAdjacentHTML('beforeend','<span class="mk-lbl">→</span><span class="mk-btn" style="color:var(--opp)">2. 🔴 A</span>'); }},
                  {click:'.k-our', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-oppb').classList.remove('on'); }},
-                 {click:'.k-l', then:(el,sc)=>{ sc.querySelector('.k-seq').insertAdjacentHTML('beforeend','<span class="mk-lbl">→</span><span class="mk-btn" style="color:var(--own)">3. 🔵 레프트</span>'); }}, {wait:1600} ] },
+                 {click:'.k-2nd', then:el=>el.classList.add('on')},
+                 {click:'.k-l', then:(el,sc)=>{ sc.querySelector('.k-2nd').classList.remove('on'); sc.querySelector('.k-seq').insertAdjacentHTML('beforeend','<span class="mk-lbl">→</span><span class="mk-btn" style="color:var(--own); border-style:dashed;">3. 🔵 레프트 2단</span>'); }}, {wait:1600} ] },
       { title:'"기록하기"를 눌러요',
         text:'한 번 누를 때마다 <b>1점이 기록 한 줄</b>로 남고, 자세히 기록·토스 순서 칸은 기본값으로 돌아가 다음 점수를 새로 시작해요. 잘못 눌렀으면 <b>↩️ 되돌리기</b>(Ctrl+Z)로 바로 취소해요.',
         scene:`<div class="mk-score"><span class="k-us">12</span> : <span>9</span></div>
@@ -5290,8 +5302,8 @@
     if(hint){
       const extras = [];
       if(typeof detailOptionsFor==='function' && detailOptionsFor(v, qrOutcome)) extras.push(v==='블로킹' ? (qrOutcome==='fault'?'범실 유형':'블로킹 인원') : v===FOUL_MAIN ? '파울 종류' : '공격 방식');
-      if(v==='블로킹') extras.push('블로킹 위치'); else if(NET_POSITION_OPTIONS.has(v)) extras.push('양 코트 위치');
       extras.push('관련 선수');
+      if(v==='블로킹') extras.push('블로킹 위치'); else if(NET_POSITION_OPTIONS.has(v)) extras.push('양 코트 위치');
       hint.textContent = extras.join('·') + ' (선택)';
     }
   }
@@ -5518,8 +5530,8 @@
     const bl = {ourScore:`🔵 ${ourTeamName} 득점`, oppError:`🎁 ${oppTeamName} 범실`, oppScore:`🔴 ${oppTeamName} 득점`, ourError:`⚠️ ${ourTeamName} 범실`};
     Object.entries(bl).forEach(([k,v])=>{ const b=document.querySelector('#qrBucketGrid .b-'+k+' b'); if(b) b.textContent=v; });
     const tOur = document.querySelector('#tossTeamSeg button[data-tteam="our"]'), tOpp = document.querySelector('#tossTeamSeg button[data-tteam="opp"]');
-    if(tOur) tOur.textContent = '🔵 '+ourTeamName+' 세터';
-    if(tOpp) tOpp.textContent = '🔴 '+oppTeamName+' 세터';
+    if(tOur) tOur.textContent = '🔵 '+ourTeamName+' 토스';
+    if(tOpp) tOpp.textContent = '🔴 '+oppTeamName+' 토스';
   }
   function categoryDisplayName(category){
     if(category==='상대공격') return oppTeamName+' 득점';
@@ -5747,32 +5759,45 @@
   // ---------- 세터 토스 순서: 한 점이 나기까지 양 팀 세터가 어디로 올렸는지 순서대로 남겨요 ----------
   const TOSS_TARGETS = ['레프트','라이트','A','백A','앞차','백차','중앙 후위(파이프)','세터 2구'];
   let tossTeam = 'our';
-  let tossSeq = []; // [{team:'our'|'opp', to:'레프트'}]
+  let tossSeq = []; // [{team:'our'|'opp', to:'레프트', kind?:'2nd'}]
+  let toss2ndArmed = false;
   function tossTeamName(t){ return t==='our' ? ourTeamName : oppTeamName; }
   function renderTossUI(){
     const box = document.getElementById('tossTargets');
     if(!box.childElementCount){
       TOSS_TARGETS.forEach(t=>{
         const b = document.createElement('button'); b.type='button'; b.className='btn toss-btn'; b.textContent=t;
-        b.addEventListener('click', ()=>{ if(readOnlyFolderView) return; tossSeq.push({team:tossTeam, to:t}); renderTossUI(); });
+        b.addEventListener('click', ()=>{
+          if(readOnlyFolderView) return;
+          const item = {team:tossTeam, to:t};
+          if(toss2ndArmed){ item.kind = '2nd'; toss2ndArmed = false; }
+          tossSeq.push(item); renderTossUI();
+        });
         box.appendChild(b);
       });
     }
     const seqEl = document.getElementById('tossSeq');
     seqEl.innerHTML = tossSeq.length
-      ? tossSeq.map((x,i)=>`<span class="toss-chip ${x.team}">${i+1}. ${x.team==='our'?'🔵':'🔴'} ${x.to}</span>`).join('<span class="toss-arrow">→</span>')
+      ? tossChipsHTML(tossSeq)
       : '<span class="field-note" style="margin:0;">아직 고른 토스가 없어요.</span>';
     document.getElementById('btnTossUndo').disabled = !tossSeq.length || readOnlyFolderView;
     document.getElementById('btnTossClear').disabled = !tossSeq.length || readOnlyFolderView;
+    const b2 = document.getElementById('btnToss2nd');
+    b2.classList.toggle('on', toss2ndArmed); b2.setAttribute('aria-pressed', toss2ndArmed?'true':'false');
+  }
+  // 2단 토스: 버튼을 누르면 "다음 토스 하나"만 2단 토스로 표시돼요(다시 누르면 취소).
+  document.getElementById('btnToss2nd').addEventListener('click', ()=>{ if(readOnlyFolderView) return; toss2ndArmed = !toss2ndArmed; renderTossUI(); });
+  function tossChipsHTML(seq){
+    return seq.map((x,i)=>`<span class="toss-chip ${x.team}${x.kind==='2nd'?' second':''}">${i+1}. ${x.team==='our'?'🔵':'🔴'}${x.to}${x.kind==='2nd'?' <em>2단</em>':''}</span>`).join('<span class="toss-arrow">→</span>');
   }
   document.querySelectorAll('#tossTeamSeg button').forEach(btn=>btn.addEventListener('click', ()=>{
     document.querySelectorAll('#tossTeamSeg button').forEach(b=>b.classList.toggle('active', b===btn));
     tossTeam = btn.dataset.tteam;
   }));
   document.getElementById('btnTossUndo').addEventListener('click', ()=>{ tossSeq.pop(); renderTossUI(); });
-  document.getElementById('btnTossClear').addEventListener('click', ()=>{ tossSeq = []; renderTossUI(); });
+  document.getElementById('btnTossClear').addEventListener('click', ()=>{ tossSeq = []; toss2ndArmed = false; renderTossUI(); });
   renderTossUI();
-  function tossLabel(seq){ return seq.map(x=>`${x.team==='our'?'🔵':'🔴'}${x.to}`).join(' → '); }
+  function tossLabel(seq){ return seq.map(x=>`${x.team==='our'?'🔵':'🔴'}${x.to}${x.kind==='2nd'?'(2단)':''}`).join(' → '); }
 
   document.getElementById('qrRecordBtn').addEventListener('click', ()=>{
     const main = document.getElementById('qrOptionSelect').value;
@@ -5794,7 +5819,7 @@
     const nf = document.getElementById('nineZoneFold'); if(nf) nf.open = false;
     selectedPlayer = null;
     document.getElementById('videoPlayerSelect').value = '';
-    tossSeq = []; renderTossUI();
+    tossSeq = []; toss2ndArmed = false; renderTossUI();
   }
 
   // ---------- 그래프에 쓰는 데이터: 세트 필터 → 기록 펼치기 → 4분류 집계 ----------
@@ -5960,7 +5985,7 @@
     const recs = recordsInScope().filter(r=>r.tosses && r.tosses.length);
     if(!recs.length) return '';
     const teamHTML = (team, name, color) => {
-      const all = []; recs.forEach(r=>{ let k=0; r.tosses.forEach(t=>{ if(t.team===team){ k++; all.push({to:t.to, order:k}); } }); });
+      const all = []; recs.forEach(r=>{ let k=0; r.tosses.forEach(t=>{ if(t.team===team){ k++; all.push({to:t.to, order:k, second:t.kind==='2nd'}); } }); });
       if(!all.length) return '';
       const freq = {}; all.forEach(t=>freq[t.to]=(freq[t.to]||0)+1);
       const freqRows = sortDesc(freq).map(([to,n])=>[`${to} (${Math.round(n/all.length*100)}%)`, n]);
@@ -5980,11 +6005,27 @@
         const won = team==='our' ? n.forUs : !n.forUs;
         dec[last] = dec[last] || {a:0,w:0}; dec[last].a++; if(won) dec[last].w++;
       });
+      // 2단 토스: 세터가 아닌 선수가 급하게 올린 토스예요. 어디로 갔는지와, 랠리의 마지막 토스가 정상/2단일 때 득점률을 비교해요.
+      const sec = all.filter(t=>t.second);
+      let secHTML = '';
+      if(sec.length){
+        const sf = {}; sec.forEach(t=>sf[t.to]=(sf[t.to]||0)+1);
+        const kd = {norm:{a:0,w:0}, sec:{a:0,w:0}};
+        recs.forEach(r=>{
+          const mine = r.tosses.filter(t=>t.team===team); if(!mine.length) return;
+          const e = (r.entries||[])[0]; const n = e ? normEntry(e) : null; if(!n || !n.bucket) return;
+          const won = team==='our' ? n.forUs : !n.forUs;
+          const k = mine[mine.length-1].kind==='2nd' ? kd.sec : kd.norm; k.a++; if(won) k.w++;
+        });
+        const pct = d => d.a ? `${d.w}/${d.a}점 (${Math.round(d.w/d.a*100)}%)` : '—';
+        secHTML = `${barsHTML(`↪ 2단 토스 ${sec.length}회 (전체의 ${Math.round(sec.length/all.length*100)}%) — 어디로 올렸나`, sortDesc(sf), color)}
+        <table class="mini-table"><thead><tr><th>마지막 토스 종류</th><th>그 팀 득점으로 끝남</th></tr></thead><tbody><tr><td>정상 토스</td><td>${pct(kd.norm)}</td></tr><tr><td>2단 토스</td><td>${pct(kd.sec)}</td></tr></tbody></table>`;
+      }
       const decRows = Object.entries(dec).sort((a,b)=>b[1].a-a[1].a).map(([to,d])=>`<tr><td>${to}</td><td>${d.w}/${d.a}점 (${Math.round(d.w/d.a*100)}%)</td></tr>`).join('');
-      return `<div><div class="analysis-team" style="color:${color};">${name} 세터 — 토스 ${all.length}회</div>
+      return `<div><div class="analysis-team" style="color:${color};">${name} 토스 — ${all.length}회${sec.length?` (2단 ${sec.length}회 포함)`:''}</div>
         ${barsHTML('어디로 올렸나 (빈도)', freqRows, color)}
         <table class="mini-table"><thead><tr><th>순서</th><th>가장 많이 간 곳</th></tr></thead><tbody>${orders}</tbody></table>
-        ${decRows ? `<table class="mini-table"><thead><tr><th>마지막 토스</th><th>그 팀 득점으로 끝남</th></tr></thead><tbody>${decRows}</tbody></table>` : ''}</div>`;
+        ${decRows ? `<table class="mini-table"><thead><tr><th>마지막 토스</th><th>그 팀 득점으로 끝남</th></tr></thead><tbody>${decRows}</tbody></table>` : ''}${secHTML}</div>`;
     };
     return `<div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
       <div class="field-label" style="margin-top:0; margin-bottom:8px;">🏐 세터 배분 <span style="font-weight:400; color:var(--muted);">— 토스 순서를 남긴 ${recs.length}개 랠리 기준</span></div>
@@ -6004,7 +6045,7 @@
       const won = n && n.bucket ? n.forUs : null;
       const len = r.tosses.length, k = len>=4 ? '4회 이상' : len+'회';
       byLen[k] = byLen[k] || {a:0,w:0}; if(won!==null){ byLen[k].a++; if(won) byLen[k].w++; }
-      const tos = r.tosses.map((t,i)=>`<span class="toss-chip ${t.team}">${i+1}. ${t.team==='our'?'🔵':'🔴'}${t.to}</span>`).join('<span class="toss-arrow">→</span>');
+      const tos = tossChipsHTML(r.tosses);
       rows.push(`<div class="toss-flow-row ${won===true?'win':won===false?'lose':''}">
         <span class="tf-meta">${set}세트 ${fmtTime(r.time)}<br>${run[set].u} : ${run[set].o}</span>
         <div class="toss-seq" style="margin-top:0; min-height:0;">${tos}</div>
@@ -6251,7 +6292,7 @@
     readOnlyFolderView = on;
     if(typeof updateUndoButton==='function') setTimeout(updateUndoButton,0);
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
-    ['qrRecordBtn','btnRecordMoment','btnClearZone','btnClearNineZone',
+    ['qrRecordBtn','btnToss2nd','btnRecordMoment','btnClearZone','btnClearNineZone',
      'videoPlayerSelect','qrOptionSelect','qrDetailSelect','qrUndoBtn','coachNotes','blockZoneSelect','btnTossUndo','btnTossClear',
      'btnNewMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
