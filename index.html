@@ -904,6 +904,14 @@
   #autoAnalysis .aa-title{ margin:0 0 2px; font-weight:800; color:var(--text); }
   #autoAnalysis .aa-sub{ font-weight:500; font-size:11.5px; color:var(--muted); }
   #autoAnalysis .aa-verdict{ margin:4px 0 0; font-size:12.5px; color:var(--text-dim); }
+  .bp-group{ margin-top:6px; padding-top:10px; border-top:1px dashed var(--border-2); }
+  .bp-grid{ display:grid; grid-template-columns:1fr 1fr; column-gap:18px; align-items:start; }
+  .bp-our{ grid-column:1; } .bp-opp{ grid-column:2; }
+  @media (max-width:560px){
+    .bp-grid{ grid-template-columns:1fr; }
+    .bp-cell{ grid-column:1 !important; grid-row:auto !important; }
+    .bp-our{ order:1; } .bp-opp{ order:2; }
+  }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -6211,13 +6219,12 @@
         ${sc.length ? barsHTML('득점 위치', countBy(sc, zoneName), color) : ''}
         ${sc.some(e=>e.detail) ? barsHTML('득점 인원', countBy(sc.filter(e=>e.detail), e=>e.detail), color) : ''}
         ${fl.length ? barsHTML('범실 유형', countBy(fl, e=>e.detail ? e.detail.replace(/\(.*\)/,'') : '유형 미지정'), 'var(--warn)') : ''}
-        ${fl.length ? barsHTML('범실 위치', countBy(fl, zoneName), 'var(--warn)') : ''}
-        ${blockPlayerHTML(sc, fl, zoneName)}</div>`;
+        ${fl.length ? barsHTML('범실 위치', countBy(fl, zoneName), 'var(--warn)') : ''}</div>`;
     };
     // 관련 선수: 블로킹 득실을 기록할 때 공이 손에 맞은 선수를 고르면, 몇 명이 떴든 누구 손에서 득실이 났는지 위치별로 모아요.
     const blockPlayerHTML = (sc, fl, zoneName) => {
       const tagged = sc.concat(fl).filter(e=>e.player && e.player.id);
-      if(!tagged.length) return '';
+      if(!tagged.length) return null;
       const pName = e => (typeof rosterLabel==='function' ? rosterLabel(e.player.id) : '') || e.player.label;
       const by = {}; tagged.forEach(e=>{ const k=pName(e); by[k]=by[k]||{s:0,f:0,z:{}}; if(e.outcome==='score') by[k].s++; else by[k].f++; const z=zoneName(e); by[k].z[z]=by[k].z[z]||{s:0,f:0}; if(e.outcome==='score') by[k].z[z].s++; else by[k].z[z].f++; });
       const rows = Object.entries(by).sort((a,b)=>(b[1].s+b[1].f)-(a[1].s+a[1].f)).map(([n,d])=>`<tr><td>${escChip(n)}</td><td>${d.s}</td><td>${d.f}</td><td style="white-space:normal;">${Object.entries(d.z).map(([z,v])=>`${z} <b style="color:var(--own)">득${v.s}</b>·<b style="color:var(--warn)">실${v.f}</b>`).join('<br>')}</td></tr>`).join('');
@@ -6225,13 +6232,30 @@
       const list = m => Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([n,c])=>`${escChip(n)} ${c}`).join(', ') || '—';
       const zRows = Object.entries(zones).map(([z,v])=>`<tr><td>${z}</td><td style="white-space:normal;">${list(v.s)}</td><td style="white-space:normal;">${list(v.f)}</td></tr>`).join('');
       const untagged = sc.length + fl.length - tagged.length;
-      return `<div class="field-label" style="margin:6px 0 4px; font-size:12px;">👤 누구 손에서 — 관련 선수별 (${tagged.length}건${untagged?` · 선수 미지정 ${untagged}건 제외`:''})</div>
-        <table class="mini-table"><thead><tr><th>선수</th><th>득점</th><th>범실</th><th>위치별</th></tr></thead><tbody>${rows}</tbody></table>
-        <table class="mini-table"><thead><tr><th>위치</th><th>득점에 관여</th><th>범실에 관여</th></tr></thead><tbody>${zRows}</tbody></table>`;
+      return {count:`${tagged.length}건${untagged?` · 선수 미지정 ${untagged}건 제외`:''}`,
+        t1:`<table class="mini-table"><thead><tr><th>선수</th><th>득점</th><th>범실</th><th>위치별</th></tr></thead><tbody>${rows}</tbody></table>`,
+        t2:`<table class="mini-table"><thead><tr><th>위치</th><th>득점에 관여</th><th>범실에 관여</th></tr></thead><tbody>${zRows}</tbody></table>`};
+    };
+    // 두 팀의 "누구 손에서" 표를 한 묶음으로: 팀 제목 · 선수별 표 · 위치별 표가 같은 줄에서 시작하도록 격자로 맞춰요.
+    const playerGroupHTML = () => {
+      const part = team => blockPlayerHTML(blk.filter(e=>e.team===team && e.outcome==='score'), blk.filter(e=>e.team===team && e.outcome==='fault'), zoneName);
+      const P = {our:part('our'), opp:part('opp')};
+      if(!P.our && !P.opp) return '';
+      const cell = (team, row, html) => `<div class="bp-cell bp-${team}" style="grid-row:${row};">${html}</div>`;
+      const head = (team, name, color) => `<div class="analysis-team" style="color:${color}; margin:0 0 4px;">${name}${P[team]?` <span style="font-weight:400; color:var(--muted); font-size:11px;">(${P[team].count})</span>`:''}</div>`;
+      const none = '<div class="field-note" style="margin:0;">관련 선수를 고른 블로킹 기록이 없어요.</div>';
+      return `<div class="bp-group">
+        <div class="field-label" style="margin:0 0 6px;">👤 누구 손에서 — 관련 선수별</div>
+        <div class="bp-grid">
+          ${cell('our',1,head('our', ourTeamName, 'var(--own)'))}${cell('opp',1,head('opp', oppTeamName, 'var(--opp)'))}
+          ${cell('our',2,P.our?P.our.t1:none)}${cell('opp',2,P.opp?P.opp.t1:none)}
+          ${cell('our',3,P.our?P.our.t2:'')}${cell('opp',3,P.opp?P.opp.t2:'')}
+        </div></div>`;
     };
     return `<div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
       <div class="field-label" style="margin-top:0; margin-bottom:8px;">🧱 블로킹 분석 <span style="font-weight:400; color:var(--muted);">— 어디서 막았고, 왜 뚫렸고, 누구 손에서 났는지</span></div>
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); column-gap:18px;">${teamBlock('our', ourTeamName, 'var(--own)')}${teamBlock('opp', oppTeamName, 'var(--opp)')}</div>
+      ${playerGroupHTML()}
     </div>`;
   }
   // 세터 배분: 기록에 함께 남긴 토스 순서로 팀별 배분 빈도, 몇 번째 토스에 어디로 갔는지, 마지막 토스가 점수로 이어졌는지를 봐요.
