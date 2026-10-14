@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>9인제 배구 경기분석 전술 시뮬레이터</title>
 <meta name="description" content="공격 상황별 수비 대형을 애니메이션으로 보고, 경기 영상을 기록·분석하는 9인제 배구 전술 시뮬레이터예요.">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -769,7 +769,8 @@
   .toss-head{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
   .toss-title{ font-weight:800; font-size:13px; color:var(--text); margin-right:auto; }
   .toss-tools{ display:flex; gap:4px; }
-  .toss-tool{ font-size:11.5px; font-weight:700; padding:5px 9px; }
+  .toss-tool{ font-size:13px; font-weight:800; padding:9px 14px; min-height:40px; border-radius:9px; }
+  @media (max-width:520px){ .toss-tools{ width:100%; } .toss-tool{ flex:1; } }
   .toss-2nd-btn{ border-style:dashed; }
   .toss-seq .toss-chip{ cursor:pointer; }
   .toss-pads{ display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; }
@@ -786,6 +787,34 @@
   .toss-2nd-btn.on{ border-style:solid; border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--panel)); }
   .toss-chip.second{ border-style:dashed; }
   .toss-chip em{ font-style:normal; font-size:10px; font-weight:800; padding:0 4px; border-radius:4px; background:var(--panel-2); color:var(--text-dim); }
+  .chip-pick{ display:flex; flex-wrap:wrap; gap:5px; width:100%; }
+  .chip-btn{ display:inline-flex; flex-direction:column; align-items:flex-start; gap:1px; padding:8px 11px; min-height:38px; border-radius:9px; border:1.5px solid var(--border-2); background:var(--panel); color:var(--text); font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer; text-align:left; line-height:1.25; }
+  .chip-btn small{ font-size:10px; font-weight:500; color:var(--muted); }
+  .chip-btn.none{ color:var(--text-dim); border-style:dashed; }
+  .chip-btn.on{ border-color:var(--accent); border-style:solid; background:color-mix(in srgb, var(--accent) 18%, var(--panel)); color:var(--text); }
+  .chip-btn:disabled{ opacity:.55; cursor:default; }
+  /* 조회 링크로 들어온 사람에게는 기록·편집 칸을 숨기고 폴더 고르기와 분석만 보여줘요. */
+  body.guest-view #grpNewMatch, body.guest-view #quickRecordCard,
+  body.guest-view #btnRenameMatchFolder, body.guest-view #btnCopyMatchFolder, body.guest-view #btnDeleteMatchFolder{ display:none !important; }
+  /* 휴대폰 브라우저(카카오톡 인앱 등)가 글자를 제멋대로 키워 비율이 깨지지 않게 해요. */
+  html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  /* 휴대폰: 여백·제목·설명 글자를 한 단계 줄여 한 화면에 더 많이, 알맞은 비율로 보여줘요. */
+  @media (max-width:520px){
+    .app{ padding:10px 8px 28px; }
+    .mode-seg-wrap{ margin:0 0 10px; padding:8px; gap:6px; }
+    .topbar{ padding:2px 2px 12px; margin-bottom:12px; }
+    .topbar h1{ font-size:19px; }
+    .topbar .sub{ font-size:12px; margin-top:4px; }
+    .card{ padding:11px; border-radius:14px; }
+    .card > h2{ font-size:15px; margin-bottom:8px; }
+    .fgroup{ padding:9px; }
+    .field-note{ font-size:11.5px; line-height:1.5; }
+    .field-label{ font-size:12.5px; }
+    .note-box{ font-size:12.5px; padding:10px; }
+    .column, .center-stack{ gap:10px; }
+    .btn{ font-size:12.5px; }
+    .login-input{ font-size:16px; } /* 16px 미만이면 아이폰이 입력할 때 화면을 확대해요 */
+  }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -1054,7 +1083,7 @@
         <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 포지션 배정(이름 표시 가능), 시작·도착 위치 편집, 폴더별 저장·불러오기를 할 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
-        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 선택으로 더하고, 기록하기를 누르면 다음 점수를 위해 기본값으로 돌아가요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나 조회 전용 링크로 공유할 수 있어요.</li>
+        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 기록하기를 누르면 다음 점수를 위해 기본값으로 돌아가요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여줘요. 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요.</li>
         <li><b>눈이 편한 화면</b>어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 시력보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
         <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
@@ -1143,6 +1172,8 @@
               <tr><td data-label="경기 장면">리시브가 흔들려 리베로가 레프트로 올려 줌</td><td data-label="기록">토스 순서: 🔵 우리팀 칸 ↪ 2단 → 레프트 (결과는 그 공격대로)</td></tr>
               <tr><td data-label="경기 장면">우리 2인 블록이 상대 공격을 바로 막음</td><td data-label="기록">우리팀 · 득점 · 블로킹(2인)</td></tr>
               <tr><td data-label="경기 장면">우리 공격이 상대 블록 맞고 네트 앞에 떨어져 점수</td><td data-label="기록">우리팀 · 득점 · 레프트(블로킹 맞고 네트인)</td></tr>
+              <tr><td data-label="경기 장면">네트 위에서 서로 공을 밀어붙이다 우리가 이김</td><td data-label="기록">우리팀 · 득점 · 레프트(네트싸움)</td></tr>
+              <tr><td data-label="경기 장면">우리 블로커(3번)가 블로킹하다 네트에 닿음</td><td data-label="기록">우리팀 · 범실 · 블로킹(네트터치) · 관련 선수 3번</td></tr>
               <tr><td data-label="경기 장면">우리 공격이 빗맞아(삑사리) 밖으로 나감</td><td data-label="기록">우리팀 · 범실 · 레프트(삑사리)</td></tr>
               <tr><td data-label="경기 장면">상대 공격이 우리 블록 맞고 우리 코트에 떨어짐</td><td data-label="기록">우리팀 · 범실 · 블로킹(우리 코트 인)</td></tr>
             </tbody>
@@ -1158,7 +1189,7 @@
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
-          <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. 조회 전용 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없어요.</li>
+          <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고, 같은 그룹의 다른 경기 폴더도 골라 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 해요.</li>
         </ul></div>
         </div>
       </div>
@@ -1559,7 +1590,7 @@
     <div class="field-note" style="margin-top:0;">경기마다 기록·그래프·종합 분석·코치 의견을 폴더 하나로 저장해요. 폴더를 새로 만들거나 불러오면 그 폴더가 "활성 폴더"가 되고, 이후 기록이 자동으로 함께 저장돼요. 영상 파일은 저장되지 않지만 파일 이름이 남아서 어느 경기였는지 알 수 있어요.</div>
     <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
     <div class="fgroup-row">
-    <div class="fgroup fgroup-save">
+    <div class="fgroup fgroup-save" id="grpNewMatch">
     <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">새 경기</span><span class="fg-sub">경기 이름을 적고 시작하면 기록이 자동 저장돼요</span></div>
     <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
       <div style="flex:1; min-width:180px;">
@@ -1584,7 +1615,7 @@
       <div class="active-folder-bar" id="activeFolderBar" style="display:none;">
         <div class="active-folder-text" id="overwriteHint"></div>
       </div>
-      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·팀 이름·그래프·코치 의견으로 화면이 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 전용 링크.</div>
+      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·팀 이름·그래프·코치 의견으로 화면이 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 링크(받는 사람은 비밀번호 없이 바로 이 폴더를 열어 볼 수 있어요).</div>
       <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
         <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
         <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
@@ -1668,7 +1699,7 @@
             </div>
             <div class="gh-section">
               <h4>4. 블로킹 분석 · 세터 배분</h4>
-              <p><b>🧱 블로킹 분석</b>은 세부 상황을 "블로킹"으로 남긴 기록을 팀별로 모아, 블로킹 득점은 위치·인원별로, 블로킹 범실은 유형(빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍)과 위치별로 보여줘요.</p>
+              <p><b>🧱 블로킹 분석</b>은 세부 상황을 "블로킹"으로 남긴 기록을 팀별로 모아, 블로킹 득점은 위치·인원별로, 블로킹 범실은 유형(빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍·네트터치)과 위치별로 보여줘요. 기록할 때 <b>관련 선수</b>에 공이 손에 맞은 블로커를 골라 두면 <b>👤 누구 손에서</b> 표에 선수별 블로킹 득점·범실과 위치별 수가 나오고, 위치마다 득점·범실에 관여한 선수가 정리돼요(몇 명이 떴든 공이 맞은 선수 기준). 선수를 고르지 않은 기록은 이 표에서 빠져요.</p>
               <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "🏐 랠리 토스 순서"로 계산해요. 팀별로 어디로 몇 % 올렸는지(빈도), 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>2단</b>으로 표시한 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·시간·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
             </div>
             <div class="gh-section">
@@ -1697,7 +1728,7 @@
       </div>
     </div>
     <div class="video-grid-col">
-      <div class="card video-grid-card">
+      <div class="card video-grid-card" id="quickRecordCard">
         <h2>빠른 기록 배너</h2>
         <div class="field-note" style="margin-top:0;"><b>결과 버튼 → 상황 버튼 → 기록하기</b>로 1점씩 남겨요(시간·세트 함께 저장). 랠리 중 토스 순서는 결과 버튼 위 칸에서 보면서 바로 누르고, 방식·위치·관련 선수는 <b>➕ 자세히 기록</b>을 열어 선택으로 남겨요. 기록하기를 누르면 이 선택들은 기본값으로 돌아가요. 팀 이름과 명단은 위쪽 <b>📋 경기 정보</b>에서 정해요.</div>
 
@@ -1773,7 +1804,7 @@
                   <li><b>서브캐치</b>: 서브를 받다가 실점 · <b>리시브</b>: 공격·랠리 중 공을 받다가 실점</li>
                   <li><b>토스 / 2단토스 / 2단연결</b>: 세터 토스, 리시브가 흔들린 뒤 올린 토스, 두 번째 터치 연결에서 실수</li>
                 </ul>
-                <p style="margin:6px 0 6px;"><b>블로킹</b> — 블로킹으로 바로 점수가 났거나(득점), 블로킹하다 실점했을 때(범실)예요. 공격 위치가 아니라 블로킹을 고르고, <b>블로킹 위치</b>는 드롭다운에서 골라요. 범실이면 <b>빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍</b> 중 왜 뚫렸는지, 득점이면 몇 명이 막았는지 고를 수 있어요.</p>
+                <p style="margin:6px 0 6px;"><b>블로킹</b> — 블로킹으로 바로 점수가 났거나(득점), 블로킹하다 실점했을 때(범실)예요. 공격 위치가 아니라 블로킹을 고르고, <b>블로킹 위치</b>는 버튼으로 눌러 골라요. 범실이면 <b>빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지, 득점이면 몇 명이 막았는지 고르고, 관련 선수에 공이 손에 맞은 블로커를 골라요. 네트 위에서 서로 공을 밀어붙이다 결정난 공은 공격 방식의 <b>네트싸움</b>으로 남겨요.</p>
                 <p style="margin:0;"><b>파울(반칙)</b> — 네트터치·라인 침범 등 규칙 위반으로 점수가 났을 때예요. 반칙한 팀을 고르고 결과는 범실로 남겨요. <b>헷갈리면</b> 공이 마지막으로 누구 손에서 문제가 됐는지를 기준으로 골라요.</p>
               </div>
             </div>
@@ -1794,12 +1825,12 @@
                   <option value="">선택 안 함</option>
                 </select>
               </div>
-              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 고르면 기록에 함께 남아요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
+              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 눌러 고르면 기록에 함께 남아요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
             </div>
             <div id="zonePickerWrap" style="display:none;">
               <label class="field-label" style="margin-top:0;">블로킹 위치 (선택)</label>
               <select id="blockZoneSelect"></select>
-              <div class="field-note" style="margin-top:4px; margin-bottom:6px;">블로킹이 일어난 네트 앞 자리를 골라요(블로킹한 팀 기준). <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요. 블로킹 <b>범실</b>이면 기록 입력에서 범실 유형도 함께 골라요.</div>
+              <div class="field-note" style="margin-top:4px; margin-bottom:6px;">블로킹이 일어난 네트 앞 자리를 눌러 골라요(블로킹한 팀 기준). <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요. 블로킹 <b>범실</b>이면 기록 입력에서 범실 유형도 함께 골라요.</div>
               <svg id="zonePickerSvg" class="legacy-zone-svg" viewBox="0 0 220 46" xmlns="http://www.w3.org/2000/svg" style="width:100%; display:block;">
                 <rect x="0" y="12" width="220" height="34" fill="var(--panel-2)" stroke="var(--border)" stroke-width="1.5"/>
                 <rect x="0" y="4" width="220" height="10" fill="var(--accent)"/>
@@ -1851,7 +1882,7 @@
               </div>
               </details>
             </div>
-            <div id="noZoneNote" class="field-note" style="margin-top:0; display:none;">이 상황은 위치를 고르지 않아도 돼요. 위치 칸은 공격(양 코트 3×3)과 블로킹(위치 드롭다운)을 고를 때만 나타나요.</div>
+            <div id="noZoneNote" class="field-note" style="margin-top:0; display:none;">이 상황은 위치를 고르지 않아도 돼요. 위치 칸은 공격(양 코트 3×3)과 블로킹(위치 버튼)을 고를 때만 나타나요.</div>
               </div>
             </details>
             <div style="display:flex; gap:8px;">
@@ -4299,10 +4330,13 @@
   let pendingActionDescription = '대형을 수정했어요'; // default description logged by doAutoSave; specific actions (preset save, custom scenario save) override this just before triggering the save
   let roomMembers = []; // cached member list for the currently open room (creator view)
 
-  function enterApp(code, level, state, memberId){
+  function enterApp(code, level, state, memberId, opts){
     roomCode = code; accessLevel = level; myMemberId = memberId || null;
+    window.__guestShareView = !!(opts && opts.guest);
+    document.body.classList.toggle('guest-view', window.__guestShareView);
     applyRoomState(state);
-    if(code) rememberDevice(code, level, memberId);
+    // 조회 링크로 비밀번호 없이 들어온 경우엔 이 기기에 입장 기록을 남기지 않아요(링크를 닫으면 끝).
+    if(code && !window.__guestShareView) rememberDevice(code, level, memberId);
     document.getElementById('loginOverlay').style.display='none';
     document.querySelector('.app').style.display='block';
     document.getElementById('settingsCodeLabel').textContent = code || '(로컬)';
@@ -4792,21 +4826,23 @@
           <div class="mk-toast k-toast">🎁 상대 범실 → 우리 +1</div>`,
         script:[{click:'.k-b1', then:el=>el.classList.add('on')}, {wait:500}, {click:'.k-b2', then:(el,sc)=>{ sc.querySelector('.k-b1').classList.remove('on'); el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1600} ] },
       { title:'상황 버튼을 누르고, 필요하면 자세히',
-        text:'버튼판에서 상황(레프트·A·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·페인트·터치아웃·블로킹 맞고 네트인·삑사리 등)·관련 선수는 <b>➕ 자세히 기록</b>에서, 양 코트 위치는 그 안의 <b>📍 득실 위치</b>를 펼쳐서 선택으로 남겨요.',
+        text:'버튼판에서 상황(레프트·A·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·관련 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러, 양 코트 위치는 그 안의 <b>📍 득실 위치</b>를 펼쳐서 선택으로 남겨요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:34px;">공격</span><span class="mk-btn k-l">레프트</span><span class="mk-btn">라이트</span><span class="mk-btn">A</span><span class="mk-btn">백A</span><span class="mk-btn">세터 2구</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:34px;">서브</span><span class="mk-btn">서브</span><span class="mk-btn">리시브</span><span class="mk-btn">블로킹</span><span class="mk-btn">파울</span></div>
           <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">공격 방식·양 코트 위치·관련 선수 (선택)</span></div>
-          <div class="mk-row k-detail" style="display:none;"><span class="mk-lbl" style="width:34px;">방식</span><span class="mk-btn">강타</span><span class="mk-btn k-feint">페인트</span><span class="mk-btn">터치아웃</span><span class="mk-btn">네트인</span><span class="mk-btn">삑사리</span></div></div>`,
+          <div class="mk-row k-detail" style="display:none;"><span class="mk-lbl" style="width:34px;">방식</span><span class="mk-btn">강타</span><span class="mk-btn k-feint">페인트</span><span class="mk-btn">터치아웃</span><span class="mk-btn">네트인</span><span class="mk-btn">네트싸움</span><span class="mk-btn">삑사리</span></div></div>`,
         script:[{click:'.k-l', then:el=>el.classList.add('on')}, {click:'.k-more', then:(el,sc)=>{ sc.querySelector('.k-detail').style.display='flex'; }}, {click:'.k-feint', then:el=>el.classList.add('on')}, {wait:1500} ] },
       { title:'블로킹을 기록해요',
-        text:'상황 버튼에서 <b>블로킹</b>을 누르고 <b>➕ 자세히 기록</b>을 열면 블로킹 위치와, 범실이면 <b>빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍</b> 중 왜 뚫렸는지(득점이면 몇 명이 막았는지) 고를 수 있어요.',
+        text:'상황 버튼에서 <b>블로킹</b>을 누르고 <b>➕ 자세히 기록</b>을 열면 버튼으로 바로 골라요: 범실이면 <b>빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지(득점이면 몇 명이 막았는지), 공이 손에 맞은 <b>관련 선수</b>, 블로킹 위치. 블로킹 분석에 누구 손에서 났는지 위치별로 모여요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:64px;">결과</span><span class="mk-btn">득점</span><span class="mk-btn k-fault">범실</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">세부 상황</span><span class="mk-btn on">블로킹 ▾</span></div>
-          <div class="mk-row"><span class="mk-lbl" style="width:64px;">블로킹 위치</span><span class="mk-btn k-zone">선택 안 함 ▾</span></div>
-          <div class="mk-row"><span class="mk-lbl" style="width:64px;">범실 유형</span><span class="mk-btn k-type">구분 안 함 ▾</span></div></div>
-          <div class="mk-toast k-toast">우리팀 · 범실 · 블로킹(빈틈) · 레프트 앞</div>`,
-        script:[ {click:'.k-fault', then:el=>el.classList.add('on')}, {click:'.k-zone', then:el=>{ el.textContent='레프트 앞 ▾'; el.classList.add('on'); }},
-                 {click:'.k-type', then:(el,sc)=>{ el.textContent='빈틈(블로커 사이·옆) ▾'; el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1700} ] },
+          <div class="mk-row"><span class="mk-lbl" style="width:64px;">범실 유형</span><span class="mk-btn k-type">빈틈</span><span class="mk-btn">자리잡기</span><span class="mk-btn">네트터치</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:64px;">관련 선수</span><span class="mk-btn">1번</span><span class="mk-btn k-pl">3번</span><span class="mk-btn">4번</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:64px;">블로킹 위치</span><span class="mk-btn k-zone">레프트 앞</span><span class="mk-btn">A 앞</span><span class="mk-btn">라이트 앞</span></div></div>
+          <div class="mk-toast k-toast">우리팀 · 범실 · 블로킹(빈틈) · 3번 · 레프트 앞</div>`,
+        script:[ {click:'.k-fault', then:el=>el.classList.add('on')}, {click:'.k-type', then:el=>el.classList.add('on')},
+                 {click:'.k-pl', then:el=>el.classList.add('on')},
+                 {click:'.k-zone', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1700} ] },
       { title:'"기록하기"를 눌러요',
         text:'한 번 누를 때마다 <b>1점이 기록 한 줄</b>로 남고, 자세히 기록·토스 순서 칸은 기본값으로 돌아가 다음 점수를 새로 시작해요. 잘못 눌렀으면 <b>↩️ 되돌리기</b>(Ctrl+Z)로 바로 취소해요.',
         scene:`<div class="mk-score"><span class="k-us">12</span> : <span>9</span></div>
@@ -4828,7 +4864,7 @@
                     sc.querySelector('.k-a').textContent='25'; sc.querySelector('.k-b').textContent='18';
                     [['.k-b1','60%'],['.k-b2','35%'],['.k-b3','70%'],['.k-b4','30%']].forEach(([k,h])=>sc.querySelector(k).style.height=h); }}, {wait:1900} ] },
       { title:'경기 폴더를 관리해요',
-        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기로 바뀌고, ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요.',
+        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기로 바뀌고, ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 그 폴더의 분석을 바로 봐요.',
         scene:`<div class="mk-card"><div class="mk-h">저장된 폴더 불러오기</div><div class="mk-row"><span class="mk-btn big k-sel">📁 vs 한빛 0907 ▾</span><span class="mk-btn big">✏️</span><span class="mk-btn big k-copy">📄</span><span class="mk-btn big k-link">🔗</span></div>
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] }
@@ -5105,10 +5141,37 @@
     location.href = location.pathname;
   });
 
+  // 폴더 조회 링크용 공유 키: 방마다 한 번 만들어 저장하고, 링크에 붙은 키가 맞으면 비밀번호 없이 조회 전용으로 열어요.
+  window.ensureFolderShareKey = async function(){
+    if(!roomCode) return null;
+    const room = await fetchRoom(roomCode);
+    if(!room) return null;
+    if(room.folderShareKey) return room.folderShareKey;
+    if(accessLevel!=='creator' && accessLevel!=='editor') return null;
+    const arr = new Uint8Array(12); (window.crypto||window.msCrypto).getRandomValues(arr);
+    room.folderShareKey = Array.from(arr, b=>b.toString(36).padStart(2,'0')).join('').slice(0,20);
+    await Backend.set(roomKey(roomCode), JSON.stringify(room));
+    return room.folderShareKey;
+  };
+
   // pre-fill from a shared link (?code=...)
   (function initFromUrl(){
     const params = new URLSearchParams(location.search);
     const urlCode = params.get('code');
+    const viewKey = params.get('view');
+    if(urlCode && viewKey && storageOk){
+      // 폴더 조회 링크: 키가 맞으면 비밀번호 입력 없이 바로 조회 전용으로 들어가요.
+      const statusEl = document.getElementById('autoRejoinStatus');
+      if(statusEl){ statusEl.textContent = '공유된 경기 폴더를 여는 중...'; statusEl.style.display='block'; }
+      fetchRoom(urlCode).then(room=>{
+        if(room && room.folderShareKey && room.folderShareKey===viewKey){
+          enterApp(urlCode, 'view', room.state, null, {guest:true});
+          if(statusEl) statusEl.style.display='none';
+        } else if(statusEl){
+          statusEl.textContent = '이 조회 링크는 더 이상 쓸 수 없어요. 링크를 보낸 분께 새 링크를 받거나, 비밀번호로 입장해주세요.';
+        }
+      }).catch(()=>{ if(statusEl) statusEl.textContent = '공유 폴더를 불러오지 못했어요. 잠시 뒤 다시 열어주세요.'; });
+    }
     if(urlCode){
       document.querySelectorAll('#loginModeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode==='enter'));
       document.getElementById('createPane').style.display='none';
@@ -5194,6 +5257,26 @@
     if(entry.name) parts.push(entry.name);
     return parts.join(' · ');
   }
+  // 자세히 기록의 드롭다운(방식·관련 선수·블로킹 위치)은 숨겨 두고, 같은 값을 바로 누르는 버튼으로 보여줘요.
+  function escChip(t){ return String(t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function refreshChips(id){
+    const sel = document.getElementById(id); if(!sel) return;
+    let box = document.getElementById(id+'Chips');
+    if(!box){
+      box = document.createElement('div'); box.id = id+'Chips'; box.className = 'chip-pick';
+      sel.insertAdjacentElement('afterend', box); sel.style.display = 'none';
+      box.addEventListener('click', e=>{
+        const b = e.target.closest('button'); if(!b || sel.disabled) return;
+        sel.value = b.dataset.v; sel.dispatchEvent(new Event('change')); refreshChips(id);
+      });
+    }
+    box.innerHTML = Array.from(sel.options).map(o=>{
+      const m = o.textContent.match(/^(.*?)\((.*)\)$/);
+      const label = m ? `${escChip(m[1])}<small>${escChip(m[2])}</small>` : escChip(o.textContent);
+      return `<button type="button" class="chip-btn${o.value===sel.value?' on':''}${o.value===''?' none':''}" data-v="${escChip(o.value)}"${sel.disabled?' disabled':''}>${label}</button>`;
+    }).join('');
+  }
+  function refreshAllChips(){ ['qrDetailSelect','videoPlayerSelect','blockZoneSelect'].forEach(refreshChips); }
   function renderVideoPlayerSelect(){
     const sel = document.getElementById('videoPlayerSelect');
     const prevValue = sel.value;
@@ -5203,6 +5286,7 @@
       sel.appendChild(opt);
     }
     sel.value = prevValue;
+    refreshChips('videoPlayerSelect');
   }
   let selectedPlayer = null; // roster id (1-9) or null
   document.getElementById('videoPlayerSelect').addEventListener('change', e=>{
@@ -5236,6 +5320,7 @@
   function renderZonePicker(){
     const bz = document.getElementById('blockZoneSelect');
     if(bz) bz.value = (selectedZone && selectedZone.row===0) ? String(selectedZone.col) : '';
+    refreshChips('blockZoneSelect');
     const g = document.getElementById('zoneCells');
     g.innerHTML = '';
     const rowLabels = ZONE_LABELS[0];
@@ -5516,11 +5601,11 @@
   const QR_UNIFIED_OPTIONS = QR_OPTION_GROUPS.flatMap(g=>g.items);
   // 공격 방식: 득점일 때와 범실일 때 고를 수 있는 방식이 달라요. ''는 "구분 안 함".
   const ATTACK_DETAILS = {
-    score: ['', '강타(스파이크)', '페인트', '터치아웃(블로킹 맞고 아웃)', '블로킹 맞고 네트인', '삑사리(빗맞았는데 득점)'],
-    fault: ['', '아웃', '네트 걸림', '삑사리(빗맞음)']
+    score: ['', '강타(스파이크)', '페인트', '터치아웃(블로킹 맞고 아웃)', '블로킹 맞고 네트인', '네트싸움(네트 위 힘싸움에서 이김)', '삑사리(빗맞았는데 득점)'],
+    fault: ['', '아웃', '네트 걸림', '네트싸움(네트 위 힘싸움에서 짐)', '삑사리(빗맞음)']
   };
   // 블로킹 범실은 왜 뚫렸는지 유형으로 남겨서 블로킹 분석에 써요.
-  const BLOCK_FAULT_TYPES = ['', '빈틈(블로커 사이·옆으로 빠짐)', '자리잡기(위치가 늦거나 어긋남)', '우리 코트 인(블록 맞고 우리 쪽에 떨어짐)', '블록 아웃(블록 맞고 밖으로 나감)', '타이밍(점프가 빠르거나 늦음)'];
+  const BLOCK_FAULT_TYPES = ['', '빈틈(블로커 사이·옆으로 빠짐)', '자리잡기(위치가 늦거나 어긋남)', '우리 코트 인(블록 맞고 우리 쪽에 떨어짐)', '블록 아웃(블록 맞고 밖으로 나감)', '타이밍(점프가 빠르거나 늦음)', '네트터치(블로킹하다 네트에 닿음)'];
   const BLOCK_SCORE_TYPES = ['', '1인 블로킹', '2인 블로킹', '3인 블로킹'];
   function detailOptionsFor(main, outcome){
     if(main===BLOCK_LOCATION_OPTION_NAME) return outcome==='fault' ? BLOCK_FAULT_TYPES : BLOCK_SCORE_TYPES;
@@ -5665,7 +5750,7 @@
     const sel = document.getElementById('qrDetailSelect');
     const note = document.getElementById('qrDetailNote');
     const opts = detailOptionsFor(main, qrOutcome);
-    if(!opts){ row.style.display = 'none'; sel.innerHTML = ''; return; }
+    if(!opts){ row.style.display = 'none'; sel.innerHTML = ''; refreshChips('qrDetailSelect'); return; }
     // 이전 기록의 방식이 다음 기록에 딸려 가지 않도록 목록이 바뀔 때마다 처음 항목으로 돌려놔요.
     sel.innerHTML = '';
     opts.forEach(v=>{
@@ -5678,8 +5763,9 @@
     document.getElementById('qrDetailLabel').textContent = main===FOUL_MAIN ? '파울 종류' : isBlock ? (qrOutcome==='fault' ? '블로킹 범실 유형' : '블로킹 인원') : '공격 방식';
     note.textContent = main===FOUL_MAIN
       ? '반칙한 팀의 범실 버튼(⚠️ 우리 범실 / 🎁 상대 범실)을 누르고 파울 종류를 골라요.'
-      : isBlock ? (qrOutcome==='fault' ? '블록이 왜 뚫렸는지 고르면 요약의 "블로킹 분석"에 유형별로 모여요.' : '몇 명이 블로킹해서 점수를 냈는지 고를 수 있어요.')
-      : (qrOutcome==='score' ? '어떻게 점수를 냈는지 고르면 "레프트·페인트"처럼 함께 남아요.' : '어떻게 범실이 났는지 고를 수 있어요.');
+      : isBlock ? (qrOutcome==='fault' ? '블록이 왜 뚫렸는지 고르면 요약의 "블로킹 분석"에 유형별로 모여요. 아래 관련 선수에 공이 맞은 블로커를 고르면 선수별로도 모여요.' : '몇 명이 블로킹했는지 고르고, 아래 관련 선수에 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에 선수별로 모여요.')
+      : (qrOutcome==='score' ? '어떻게 점수를 냈는지 고르면 "레프트·페인트"처럼 함께 남아요. 네트 위에서 서로 밀어붙인 공은 "네트싸움"을 골라요.' : '어떻게 범실이 났는지 고를 수 있어요. 네트 위 힘싸움에서 진 공은 "네트싸움"을 골라요.');
+    refreshChips('qrDetailSelect');
   }
   (function rememberFold(){
     const d = document.getElementById('qrMore'), KEY='vt:qr-more-open';
@@ -5843,6 +5929,7 @@
     selectedPlayer = null;
     document.getElementById('videoPlayerSelect').value = '';
     tossSeq = []; toss2ndArmed = false; renderTossUI();
+    refreshAllChips();
   }
 
   // ---------- 그래프에 쓰는 데이터: 세트 필터 → 기록 펼치기 → 4분류 집계 ----------
@@ -5996,10 +6083,26 @@
         ${sc.length ? barsHTML('득점 위치', countBy(sc, zoneName), color) : ''}
         ${sc.some(e=>e.detail) ? barsHTML('득점 인원', countBy(sc.filter(e=>e.detail), e=>e.detail), color) : ''}
         ${fl.length ? barsHTML('범실 유형', countBy(fl, e=>e.detail ? e.detail.replace(/\(.*\)/,'') : '유형 미지정'), 'var(--warn)') : ''}
-        ${fl.length ? barsHTML('범실 위치', countBy(fl, zoneName), 'var(--warn)') : ''}</div>`;
+        ${fl.length ? barsHTML('범실 위치', countBy(fl, zoneName), 'var(--warn)') : ''}
+        ${blockPlayerHTML(sc, fl, zoneName)}</div>`;
+    };
+    // 관련 선수: 블로킹 득실을 기록할 때 공이 손에 맞은 선수를 고르면, 몇 명이 떴든 누구 손에서 득실이 났는지 위치별로 모아요.
+    const blockPlayerHTML = (sc, fl, zoneName) => {
+      const tagged = sc.concat(fl).filter(e=>e.player && e.player.id);
+      if(!tagged.length) return '';
+      const pName = e => (typeof rosterLabel==='function' ? rosterLabel(e.player.id) : '') || e.player.label;
+      const by = {}; tagged.forEach(e=>{ const k=pName(e); by[k]=by[k]||{s:0,f:0,z:{}}; if(e.outcome==='score') by[k].s++; else by[k].f++; const z=zoneName(e); by[k].z[z]=by[k].z[z]||{s:0,f:0}; if(e.outcome==='score') by[k].z[z].s++; else by[k].z[z].f++; });
+      const rows = Object.entries(by).sort((a,b)=>(b[1].s+b[1].f)-(a[1].s+a[1].f)).map(([n,d])=>`<tr><td>${escChip(n)}</td><td>${d.s}</td><td>${d.f}</td><td style="white-space:normal;">${Object.entries(d.z).map(([z,v])=>`${z} <b style="color:var(--own)">득${v.s}</b>·<b style="color:var(--warn)">실${v.f}</b>`).join('<br>')}</td></tr>`).join('');
+      const zones = {}; tagged.forEach(e=>{ const z=zoneName(e); zones[z]=zones[z]||{s:{},f:{}}; const side=e.outcome==='score'?'s':'f'; const k=pName(e); zones[z][side][k]=(zones[z][side][k]||0)+1; });
+      const list = m => Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([n,c])=>`${escChip(n)} ${c}`).join(', ') || '—';
+      const zRows = Object.entries(zones).map(([z,v])=>`<tr><td>${z}</td><td style="white-space:normal;">${list(v.s)}</td><td style="white-space:normal;">${list(v.f)}</td></tr>`).join('');
+      const untagged = sc.length + fl.length - tagged.length;
+      return `<div class="field-label" style="margin:6px 0 4px; font-size:12px;">👤 누구 손에서 — 관련 선수별 (${tagged.length}건${untagged?` · 선수 미지정 ${untagged}건 제외`:''})</div>
+        <table class="mini-table"><thead><tr><th>선수</th><th>득점</th><th>범실</th><th>위치별</th></tr></thead><tbody>${rows}</tbody></table>
+        <table class="mini-table"><thead><tr><th>위치</th><th>득점에 관여</th><th>범실에 관여</th></tr></thead><tbody>${zRows}</tbody></table>`;
     };
     return `<div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
-      <div class="field-label" style="margin-top:0; margin-bottom:8px;">🧱 블로킹 분석 <span style="font-weight:400; color:var(--muted);">— 어디서 막았고, 왜 뚫렸는지</span></div>
+      <div class="field-label" style="margin-top:0; margin-bottom:8px;">🧱 블로킹 분석 <span style="font-weight:400; color:var(--muted);">— 어디서 막았고, 왜 뚫렸고, 누구 손에서 났는지</span></div>
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); column-gap:18px;">${teamBlock('our', ourTeamName, 'var(--own)')}${teamBlock('opp', oppTeamName, 'var(--opp)')}</div>
     </div>`;
   }
@@ -6327,6 +6430,9 @@
     document.querySelectorAll('#qrBucketGrid button, #qrOptionBoard button').forEach(el=>el.disabled=on);
     document.querySelectorAll('.qr-nine-grid button').forEach(el=>el.disabled=on);
     document.querySelectorAll('#zoneCells rect').forEach(el=>el.style.cursor = on ? 'default' : 'pointer');
+    // 조회 링크로 들어온 사람은 같은 그룹의 다른 경기 폴더도 골라 볼 수 있어요(모두 조회 전용).
+    if(on && window.__guestShareView){ const fs=document.getElementById('matchFolderSelect'); if(fs) fs.disabled=false; }
+    refreshAllChips();
   }
   // wipes the working screen (records, notes, video, pickers) back to a blank first-recording state
   function resetVideoAnalysisScreen(){
@@ -6490,7 +6596,7 @@
     if(window.scheduleAutoSave) window.scheduleAutoSave();
     alert(`"${deletedName}" 폴더와 그 안의 기록을 모두 삭제했어요.`);
   });
-  document.getElementById('btnShareFolderLink').addEventListener('click', ()=>{
+  document.getElementById('btnShareFolderLink').addEventListener('click', async ()=>{
     if(!lastPickedMatchFolder){
       alert('먼저 위 목록에서 공유할 폴더를 선택(불러오기)해주세요.');
       return;
@@ -6500,7 +6606,13 @@
       alert('코드로 입장한 방에서만 조회 링크를 만들 수 있어요.');
       return;
     }
-    const url = location.origin + location.pathname + '?code=' + encodeURIComponent(code) + '&folder=' + encodeURIComponent(lastPickedMatchFolder.name);
+    let key = null;
+    try{ key = window.ensureFolderShareKey ? await window.ensureFolderShareKey() : null; }catch(err){}
+    if(!key){
+      alert('조회 링크는 개설자나 수정 권한이 있는 구성원이 처음 한 번 만들어야 해요. 그다음부터는 누구나 같은 링크를 공유할 수 있어요.');
+      return;
+    }
+    const url = location.origin + location.pathname + '?code=' + encodeURIComponent(code) + '&folder=' + encodeURIComponent(lastPickedMatchFolder.name) + '&view=' + encodeURIComponent(key);
     document.getElementById('shareFolderLinkInput').value = url;
     document.getElementById('shareFolderLinkBox').style.display = 'block';
   });
@@ -6517,14 +6629,21 @@
     if(sharedFolderOpened) return;
     const params = new URLSearchParams(location.search);
     const folderName = params.get('folder');
-    if(!folderName) return;
-    const f = matchFolders.find(mf=>mf.name===folderName);
-    if(!f) return;
+    if(!folderName && !window.__guestShareView) return;
+    const f = folderName ? matchFolders.find(mf=>mf.name===folderName) : null;
+    if(!f && !window.__guestShareView) return;
     sharedFolderOpened = true;
     const videoTabBtn = document.querySelector('#appModeSeg button[data-appmode="video"]');
     if(videoTabBtn) videoTabBtn.click();
-    loadMatchFolder(f);
+    if(f) loadMatchFolder(f, matchFolders.indexOf(f));
     setReadOnlyFolderView(true);
+    if(window.__guestShareView){
+      renderMatchFolderSelect();
+      const fs = document.getElementById('matchFolderSelect');
+      if(fs && f) fs.value = String(matchFolders.indexOf(f));
+      document.getElementById('readOnlyFolderBanner').textContent = '🔗 조회 링크로 보고 있어요. 위 목록에서 이 그룹의 다른 경기 폴더도 골라 볼 수 있어요(기록 추가·수정은 안 돼요).';
+      const vc = document.getElementById('videoCol'); if(vc) vc.scrollIntoView({block:'start'});
+    }
   }
 
   function csvEscape(v){
