@@ -888,6 +888,17 @@
   .tl-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
   .tf-hit:hover{ fill:color-mix(in srgb, var(--text) 8%, transparent); }
   @media (max-width:520px){ .bf-head, .bf-row{ grid-template-columns:1fr 66px 1fr; } .sp-grid{ grid-template-columns:1fr; } }
+  /* 조회 링크: 경기 영상·기록 칸은 접어 두고(제목을 누르면 펼쳐요), 좁은 화면에서는 영상 → 그래프 → 종합 분석 → 기록 순서로 */
+  body.guest-view .gv-fold > h2{ cursor:pointer; display:flex; align-items:center; gap:8px; user-select:none; }
+  body.guest-view .gv-fold > h2::after{ content:'펼치기 ▾'; margin-left:auto; font-size:12px; font-weight:700; color:var(--muted); }
+  body.guest-view .gv-fold:not(.collapsed) > h2::after{ content:'접기 ▴'; }
+  body.guest-view .gv-fold.collapsed > :not(h2){ display:none !important; }
+  body.guest-view .gv-fold.collapsed > h2{ margin-bottom:0; padding-bottom:0; border-bottom:none; }
+  body.guest-view #recordsCard{ max-height:none; }
+  @media (max-width:900px){
+    body.guest-view .video-analysis-bottom{ order:2; }
+    body.guest-view #recordsCard{ order:5; }
+  }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -1267,7 +1278,7 @@
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
-          <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고, 같은 그룹의 다른 경기 폴더도 골라 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 해요.</li>
+          <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고(경기 영상·기록 칸은 접혀 있고 그래프·종합 분석이 먼저 보여요, 휴대폰에서는 기록이 맨 아래), 같은 그룹의 다른 경기 폴더도 골라 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 해요.</li>
         </ul></div>
         </div>
       </div>
@@ -1721,7 +1732,7 @@
   </div>
   <div class="video-grid">
     <div class="video-grid-col">
-      <div class="card video-grid-card">
+      <div class="card video-grid-card" id="videoCard">
         <h2>경기 영상</h2>
         <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서 오른쪽 "빠른 기록 배너"로 점수가 날 때마다 기록해요. 영상 없이 경기를 직접 보면서 기록해도 돼요.</div>
         <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
@@ -2002,7 +2013,7 @@
           <button class="btn" id="btnRecordMoment" title="점수와 상관없이 장면만 표시해요. 메모를 적어두면 나중에 찾아보기 좋아요(점수에는 들어가지 않아요).">🔴 이 순간 자유 기록</button>
         </div>
       </div>
-      <div class="card video-grid-card">
+      <div class="card video-grid-card" id="recordsCard">
         <h2>기록</h2>
         <div id="tallySummary" style="margin-bottom:10px;"></div>
         <div class="btn-row">
@@ -6604,7 +6615,7 @@
         if(best.s!==worst.s) lines.push(`<p>📊 <b>세트 흐름</b> — ${best.s}세트가 가장 좋았고(점수 차 ${best.diff>0?'+':''}${best.diff}), ${worst.s}세트가 가장 어려웠어요(점수 차 ${worst.diff>0?'+':''}${worst.diff}, 우리 범실 ${worst.err}회).</p>`);
       }
     }
-    lines.push(`<p class="analysis-disclaimer">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 계산 방법은 그래프의 "설명" 탭에서 볼 수 있어요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
+    lines.push(`<p class="analysis-disclaimer">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 계산 방법은 그래프 제목 옆 "📘 설명기준"을 눌러 볼 수 있어요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
     el.innerHTML = lines.join('');
   }
 
@@ -6903,7 +6914,16 @@
       renderMatchFolderSelect();
       const fs = document.getElementById('matchFolderSelect');
       if(fs && f) fs.value = String(matchFolders.indexOf(f));
-      document.getElementById('readOnlyFolderBanner').textContent = '🔗 조회 링크로 보고 있어요. 위 목록에서 이 그룹의 다른 경기 폴더도 골라 볼 수 있어요(기록 추가·수정은 안 돼요).';
+      document.getElementById('readOnlyFolderBanner').textContent = '🔗 조회 링크로 보고 있어요. 그래프·종합 분석을 바로 보고, 접힌 경기 영상·기록은 제목을 눌러 펼쳐요. 위 목록에서 이 그룹의 다른 경기 폴더도 골라 볼 수 있어요(기록 추가·수정은 안 돼요).';
+      ['videoCard','recordsCard'].forEach(id=>{
+        const card = document.getElementById(id); if(!card || card.classList.contains('gv-fold')) return;
+        card.classList.add('gv-fold','collapsed');
+        const h = card.querySelector(':scope > h2');
+        if(h){ h.setAttribute('role','button'); h.tabIndex = 0;
+          const toggle = ()=>card.classList.toggle('collapsed');
+          h.addEventListener('click', toggle);
+          h.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } }); }
+      });
       const vc = document.getElementById('videoCol'); if(vc) vc.scrollIntoView({block:'start'});
     }
   }
