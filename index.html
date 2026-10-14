@@ -899,7 +899,11 @@
     body.guest-view .video-analysis-bottom{ order:2; }
     body.guest-view #recordsCard{ order:5; }
   }
-  #autoAnalysis .analysis-list{ margin:-4px 0 10px; padding-left:18px; } #autoAnalysis .analysis-list li{ margin-bottom:4px; line-height:1.6; }
+  #autoAnalysis .analysis-list{ margin:2px 0 4px; padding-left:18px; } #autoAnalysis .analysis-list li{ margin-bottom:4px; line-height:1.6; }
+  #autoAnalysis .aa-topic{ margin:10px 0; padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:var(--panel-2); }
+  #autoAnalysis .aa-title{ margin:0 0 2px; font-weight:800; color:var(--text); }
+  #autoAnalysis .aa-sub{ font-weight:500; font-size:11.5px; color:var(--muted); }
+  #autoAnalysis .aa-verdict{ margin:4px 0 0; font-size:12.5px; color:var(--text-dim); }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -1779,7 +1783,7 @@
               <h4>4. 블로킹 분석 · 세터 배분 · 종합 분석</h4>
               <p><b>🧱 블로킹 분석</b>은 세부 상황을 "블로킹"으로 남긴 기록을 팀별로 모아, 블로킹 득점은 위치·인원별로, 블로킹 범실은 유형(빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치)과 위치별로 보여줘요. 기록할 때 <b>관련 선수</b>에 공이 손에 맞은 블로커를 골라 두면 <b>👤 누구 손에서</b> 표에 선수별 블로킹 득점·범실과 위치별 수가 나오고, 위치마다 득점·범실에 관여한 선수가 정리돼요(몇 명이 떴든 공이 맞은 선수 기준). 선수를 고르지 않은 기록은 이 표에서 빠져요.</p>
               <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "🏐 랠리 토스 순서"로 계산해요. 팀별로 어디로 몇 % 올렸는지(빈도), 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>2단</b>으로 표시한 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·시간·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
-                          <p><b>종합 분석</b>의 문장은 "우리"가 아니라 경기 정보에 적은 <b>팀 이름</b>을 주어로 써요. 상대 주 득점 루트에는 가장 많이 점수를 낸 상황과 함께 ① 토스 순서를 남긴 랠리에서 상대 세터가 마지막으로 어디로 올렸을 때 가장 많이 점수를 냈는지, ② 공격 위치별 성공률(득점 ÷ 득점+범실)이 높은 곳과 그 위치에서 점수가 가장 많이 난 지점(득실 위치)을 덧붙여요. <b>블로킹 영향력</b>은 두 팀 각각 블로킹 득점·범실과 득실(득점 − 범실), 가장 잘 막은 위치·가장 많이 뚫린 위치를 비교해 어느 팀이 블로킹 싸움에서 앞섰는지 알려줘요. 관련 선수를 골라 둔 기록이 있으면 우리팀은 득실이 가장 좋은 블로커와 가장 많이 관여한 블로커를, 상대팀은 그 블록에 가장 많이 막힌 선수와 그 블록을 이용해 점수를 낸 선수를 짚어요(관련 선수 명단은 경기 정보의 한 팀 명단이에요).</p>
+                          <p><b>종합 분석</b>은 주제마다 <b>두 팀을 나란히</b> 비교하고, 문장의 주어는 "우리"가 아니라 경기 정보에 적은 <b>팀 이름</b>이에요. 주제는 ✅ 주 득점 루트(가장 많이 점수를 낸 상황, 토스 순서를 남긴 랠리에서 세터가 마지막으로 어디로 올렸을 때 가장 많이 점수를 냈는지, 공격 위치별 성공률 = 득점 ÷ 득점+범실과 그 위치에서 점수가 가장 많이 난 지점), ⚠️ 범실, 🏐 공격 결정률(성공 ÷ 성공+범실+블로킹 당함), 🎯 서브 득실, 🛡️ 리시브 실점(상대 서브 득점 + 리시브·서브캐치 범실), 🧱 블로킹 영향력(두 팀의 블로킹 득점·범실·득실, 가장 잘 막은 위치·가장 많이 뚫린 위치, 관련 선수 기준 영향력이 큰 블로커와 상대 블록에 가장 많이 막힌 선수), 📊 세트 흐름이에요. 각 주제 아래 "→" 줄에서 어느 팀이 앞섰는지 짚어줘요.</p>
             </div>
             <div class="gh-section">
               <h4>5. 세트별 보기</h4>
@@ -4976,7 +4980,7 @@
           <div class="mk-list"><div class="mk-item"><span class="t">01:12</span>1세트 · 우리팀 득점 · 속공</div><div class="mk-item k-row"><span class="t k-time">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)</div></div>`,
         script:[ {click:'.k-time', then:(el,sc)=>{ sc.querySelector('.k-row').classList.add('on'); sc.querySelector('.k-bar').style.width='62%'; }}, {wait:1800} ] },
       { title:'그래프와 종합 분석을 봐요',
-        text:'세트 버튼으로 범위를 고르면 요약·추세·<b>🔎 상세 분석</b>이 다시 계산돼요. 상세 분석은 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 필터로 양 팀을 나란히 비교하고, 토스는 점수판과 함께 1포인트당 토스 배분도 보여줘요. 계산 방법은 그래프 제목 옆 <b>📘 설명기준</b>을 눌러 봐요.',
+        text:'세트 버튼으로 범위를 고르면 요약·추세·<b>🔎 상세 분석</b>이 다시 계산돼요. 상세 분석은 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 필터로 양 팀을 나란히 비교하고(종합 분석도 주제마다 두 팀을 비교해요), 토스는 점수판과 함께 1포인트당 토스 배분도 보여줘요. 계산 방법은 그래프 제목 옆 <b>📘 설명기준</b>을 눌러 봐요.',
         scene:`<div class="mk-row" style="justify-content:space-between;"><span class="mk-h" style="margin:0;">그래프</span><span class="mk-btn">📘 설명기준 ▾</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-btn">요약</span><span class="mk-btn">추세</span><span class="mk-btn on">🔎 상세 분석</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-btn on k-all">전체</span><span class="mk-btn k-s1">1세트</span><span class="mk-btn">2세트</span></div>
@@ -6563,29 +6567,28 @@
     });
   });
 
-  // 상대 주 득점 루트 보충: 세터 배분 뒤 가장 많이 성공한 공격, 포지션별 공격 성공률과 가장 잘 통한 지점
-  function oppRouteDetails(){
+  // 팀별 득점 루트 보충: 세터 배분 뒤 가장 많이 성공한 토스 방향, 공격 위치별 성공률과 가장 잘 통한 지점
+  function routeDetails(team){
     const out = [];
-    // 1) 토스 순서를 남긴 랠리에서 상대의 마지막 토스가 어디로 갔고, 그 랠리를 상대가 땄는지
-    const recs = recordsInScope().filter(r=>r.tosses && r.tosses.some(t=>t.team==='opp'));
+    const recs = recordsInScope().filter(r=>r.tosses && r.tosses.some(t=>t.team===team));
     const tg = {};
     recs.forEach(r=>{
-      const mine = r.tosses.filter(t=>t.team==='opp'); const last = mine[mine.length-1];
+      const mine = r.tosses.filter(t=>t.team===team); const last = mine[mine.length-1];
       const e = (r.entries||[])[0]; const n = e ? normEntry(e) : null; if(!n || !n.bucket) return;
-      const k = TOSS_SHORT[last.to] || last.to; tg[k] = tg[k] || {a:0,w:0}; tg[k].a++; if(!n.forUs) tg[k].w++;
+      const won = team==='our' ? n.forUs : !n.forUs;
+      const k = TOSS_SHORT[last.to] || last.to; tg[k] = tg[k] || {a:0,w:0}; tg[k].a++; if(won) tg[k].w++;
     });
     const tBest = Object.entries(tg).filter(([k,d])=>d.w>0).sort((a,b)=>(b[1].w-a[1].w) || (b[1].w/b[1].a - a[1].w/a[1].a))[0];
-    if(tBest) out.push(`세터 배분으로는 <b>${tBest[0]}</b>(으)로 올렸을 때 가장 많이 점수를 냈어요(${tBest[1].a}번 중 ${tBest[1].w}점, ${pct(tBest[1].w,tBest[1].a)}%)`);
-    // 2) 포지션별 공격 성공률(득점 / 득점+범실)과 그 포지션에서 가장 많이 점수가 난 지점
-    const atk = allEntries().filter(e=>e.team==='opp' && ATTACK_SET.has(e.main));
+    if(tBest) out.push(`세터 배분은 <b>${tBest[0]}</b>(으)로 올렸을 때 가장 많이 점수를 냈어요(${tBest[1].a}번 중 ${tBest[1].w}점, ${pct(tBest[1].w,tBest[1].a)}%)`);
+    const atk = allEntries().filter(e=>e.team===team && ATTACK_SET.has(e.main));
     const pos = {};
     atk.forEach(e=>{ const p = pos[e.main] = pos[e.main] || {s:0,f:0,z:{}}; if(e.outcome==='score'){ p.s++; if(e.grid9 && e.grid9.label){ p.z[e.grid9.label]=(p.z[e.grid9.label]||0)+1; } } else p.f++; });
     const posList = Object.entries(pos).filter(([k,d])=>d.s>0).sort((a,b)=>(b[1].s/(b[1].s+b[1].f))-(a[1].s/(a[1].s+a[1].f)) || b[1].s-a[1].s);
     if(posList.length){
       const items = posList.slice(0,3).map(([k,d])=>{ const z = sortDesc(d.z)[0]; return `${k} ${d.s}/${d.s+d.f}(${pct(d.s,d.s+d.f)}%)${z?` · 주로 <b>${z[0]}</b> ${z[1]}점`:''}`; });
-      out.push(`포지션별 공격 성공률(득점 ÷ 득점+범실)이 높은 곳은 ${items.join(', ')}이에요`);
+      out.push(`공격 위치별 성공률은 ${items.join(', ')}`);
     }
-    return out.length ? `<p style="margin-top:-4px;">↳ ${out.join('. ')}. <span style="color:var(--muted);">(토스 순서·득실 위치를 남긴 기록 기준)</span></p>` : '';
+    return out.join('. ');
   }
   // 블로킹 영향력: 두 팀 각각 블로킹으로 낸 점수·범실, 가장 잘 막은/뚫린 위치, 관련 선수(손에 맞은 선수)를 짚어요.
   // 관련 선수 명단은 경기 정보의 명단(한 팀)이라, 상대 블로킹 기록에 고른 선수는 그 블록에 막힌(또는 블록을 이용한) 선수로 읽어요.
@@ -6602,7 +6605,7 @@
       const zs = {}, zf = {};
       list.forEach(e=>{ const z = zoneOf(e); if(!z) return; if(e.outcome==='score') zs[z]=(zs[z]||0)+1; else zf[z]=(zf[z]||0)+1; });
       const bestZ = sortDesc(zs)[0], worstZ = sortDesc(zf)[0];
-      let txt = `<b>${tName}</b> — 블로킹 득점 ${s} · 범실 ${f}(득실 ${s-f>0?'+':''}${s-f})`;
+      let txt = `<b style="color:${team==='our'?'var(--own)':'var(--opp)'};">${team==='our'?'🔵':'🔴'} ${tName}</b> — 블로킹 득점 ${s} · 범실 ${f}(득실 ${s-f>0?'+':''}${s-f})`;
       const zp = [];
       if(bestZ) zp.push(`가장 잘 막은 곳은 ${bestZ[0]}(${bestZ[1]}점)`);
       if(worstZ) zp.push(`가장 많이 뚫린 곳은 ${worstZ[0]}(${worstZ[1]}회)`);
@@ -6632,7 +6635,21 @@
     const so = blkAll.filter(e=>e.team==='our'&&e.outcome==='score').length - blkAll.filter(e=>e.team==='our'&&e.outcome!=='score').length;
     const sp = blkAll.filter(e=>e.team==='opp'&&e.outcome==='score').length - blkAll.filter(e=>e.team==='opp'&&e.outcome!=='score').length;
     const verdict = so===sp ? '두 팀의 블로킹 득실이 같아요' : `블로킹 싸움은 <b>${so>sp?ourTeamName:oppTeamName}</b> 쪽이 앞섰어요(득실 ${ourTeamName} ${so>0?'+':''}${so} · ${oppTeamName} ${sp>0?'+':''}${sp})`;
-    return `<p>🧱 <b>블로킹 영향력</b> — ${verdict}.</p><ul class="analysis-list">${items}</ul>`;
+    return `<div class="aa-topic"><p class="aa-title">🧱 블로킹 영향력</p><ul class="analysis-list">${items}</ul><p class="aa-verdict">→ ${verdict}.</p></div>`;
+  }
+  // 종합 분석: 주제마다 두 팀을 나란히 비교해요(주어는 경기 정보의 팀 이름).
+  function teamStats(entries, team){
+    const me = team==='our' ? {score:'ourScore', err:'ourError'} : {score:'oppScore', err:'oppError'};
+    const other = team==='our' ? {score:'oppScore', err:'oppError'} : {score:'ourScore', err:'ourError'};
+    const isAtk = e => ATTACK_SET.has(e.main) || e.main==='공격(위치 미지정)';
+    const cnt = f => entries.filter(f).length;
+    const self = cnt(e=>e.bucket===me.score), errs = cnt(e=>e.bucket===me.err), gift = cnt(e=>e.bucket===other.err);
+    const atkWin = cnt(e=>e.bucket===me.score && isAtk(e)), atkErr = cnt(e=>e.bucket===me.err && isAtk(e));
+    const atkBlocked = cnt(e=>e.bucket===other.score && e.main===BLOCK_LOCATION_OPTION_NAME);
+    const serveWin = cnt(e=>e.bucket===me.score && e.main==='서브'), serveErr = cnt(e=>e.bucket===me.err && e.main==='서브');
+    const recvLoss = cnt(e=>(e.bucket===other.score && e.main==='서브') || (e.bucket===me.err && (e.main==='서브캐치'||e.main==='리시브')));
+    const pts = self + gift, lost = cnt(e=>e.bucket===other.score) + errs;
+    return {self, errs, gift, pts, lost, atkWin, atkErr, atkBlocked, atkTotal:atkWin+atkErr+atkBlocked, atkRate:pct(atkWin, atkWin+atkErr+atkBlocked), serveWin, serveErr, recvLoss, me, other};
   }
   function renderAutoAnalysis(){
     const el = document.getElementById('autoAnalysis');
@@ -6641,9 +6658,6 @@
       el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어서 자동 요약을 만들 수 없어요. 빠른 기록 배너로 득점·실점을 기록해보세요.' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
       return;
     }
-    const M = computeMetrics(entries);
-    const {n, T} = M;
-    // 같은 상황(예: 레프트)의 여러 방식(페인트·강타 …)을 한데 모아 보고, 괄호 안에 방식별 횟수를 보여줘요.
     const topByMain = bucket=>{
       const g = {};
       entries.filter(e=>e.bucket===bucket).forEach(e=>{
@@ -6657,39 +6671,51 @@
       const det = sortDesc(best[1].d).map(([d,k])=>`${d} ${k}`).join(', ');
       return {name:best[0], n:best[1].n, det: det ? ` (${det})` : ''};
     };
+    const S = {our:teamStats(entries,'our'), opp:teamStats(entries,'opp')};
+    const NAME = {our:ourTeamName, opp:oppTeamName};
+    const COL = {our:'var(--own)', opp:'var(--opp)'};
+    const tag = t => `<b style="color:${COL[t]};">${t==='our'?'🔵':'🔴'} ${NAME[t]}</b>`;
+    const topic = (title, rows, verdict) => {
+      const lis = rows.filter(Boolean);
+      if(!lis.length) return '';
+      return `<div class="aa-topic"><p class="aa-title">${title}</p><ul class="analysis-list">${lis.map(r=>`<li>${r}</li>`).join('')}</ul>${verdict?`<p class="aa-verdict">→ ${verdict}</p>`:''}</div>`;
+    };
+    const better = (a, b, higherIsBetter, unit, label) => {
+      if(a===null || b===null || a===b) return '';
+      const win = (higherIsBetter ? a>b : a<b) ? 'our' : 'opp';
+      return `${label}은 <b>${NAME[win]}</b> 쪽이 ${Math.abs(a-b)}${unit} 더 좋아요.`;
+    };
     const lines = [];
-    lines.push(`<p><b>${scopeLabel()}</b>에서 ${ourTeamName}은(는) <b>${T.forUs}점</b>을 얻고 <b>${T.against}점</b>을 내줬어요.${T.forUs ? ` 얻은 점수 중 <b>자력 득점이 ${n.ourScore}점</b>${n.oppError ? `, ${oppTeamName} 범실로 얻은 점수가 ${n.oppError}점` : ''}이에요.` : ''}</p>`);
-    const ourTop = topByMain('ourScore');
-    if(ourTop){
-      lines.push(`<p>✅ <b>강점</b> — 자력 득점 ${n.ourScore}점 중 "${ourTop.name}"이(가) ${ourTop.n}회(${pct(ourTop.n,n.ourScore)}%)${ourTop.det}로 가장 많아요. 잘 통하는 패턴이니 계속 활용해보세요.</p>`);
-    }
-    const errTop = topByMain('ourError');
-    if(errTop){
-      lines.push(`<p>⚠️ <b>줄일 수 있는 실점</b> — ${ourTeamName} 범실 ${n.ourError}회 중 "${errTop.name}"이(가) ${errTop.n}회${errTop.det}로 가장 많아요. 실점의 ${M.errShare}%가 ${ourTeamName} 실수였으니, 이 부분을 훈련하면 바로 점수로 이어져요.</p>`);
-    }
-    const oppTop = topByMain('oppScore');
-    if(oppTop){
-      const extra = oppRouteDetails();
-      lines.push(`<p>🔴 <b>${oppTeamName}의 주 득점 루트</b> — 가장 많이 점수를 낸 건 "${oppTop.name}" ${oppTop.n}회${oppTop.det}예요. 이 상황에 대한 수비 대형·블로킹 위치를 점검해보세요.</p>${extra}`);
-    }
+    const o = S.our, p = S.opp;
+    lines.push(`<p><b>${scopeLabel()}</b> 점수는 <b>${ourTeamName} ${o.pts} : ${p.pts} ${oppTeamName}</b>예요. ${ourTeamName}은(는) 자력 득점 ${o.self} + ${oppTeamName} 범실 ${o.gift}, ${oppTeamName}은(는) 자력 득점 ${p.self} + ${ourTeamName} 범실 ${p.gift}로 점수를 냈어요.</p>`);
+    // 1) 주 득점 루트(자력 득점 TOP + 세터 배분 + 공격 위치 성공률)
+    const route = t => { const top = topByMain(S[t].me.score); if(!top) return ''; const d = routeDetails(t); return `${tag(t)} — 자력 득점 ${S[t].self}점 중 "${top.name}" ${top.n}회(${pct(top.n,S[t].self)}%)${top.det}로 가장 많아요.${d?` ${d}.`:''}`; };
+    lines.push(topic('✅ 주 득점 루트 <span class="aa-sub">— 가장 많이 점수를 낸 상황, 세터 배분, 공격 위치별 성공률</span>', [route('our'), route('opp')],
+      (o.self!==p.self) ? `자력 득점은 <b>${NAME[o.self>p.self?'our':'opp']}</b>이(가) ${Math.abs(o.self-p.self)}점 많아요. 상대의 주 득점 루트에 맞춰 수비 대형·블로킹 위치를 점검해보세요.` : '상대의 주 득점 루트에 맞춰 수비 대형·블로킹 위치를 점검해보세요.'));
+    // 2) 범실
+    const err = t => { const top = topByMain(S[t].me.err); if(!top) return `${tag(t)} — 범실이 없어요.`; const lostTot = S[t].lost; return `${tag(t)} — 범실 ${S[t].errs}회 중 "${top.name}" ${top.n}회${top.det}로 가장 많아요. 내준 점수의 ${pct(S[t].errs,lostTot)}%가 ${NAME[t]} 실수였어요.`; };
+    lines.push(topic('⚠️ 범실 <span class="aa-sub">— 줄일 수 있는 실점</span>', [err('our'), err('opp')],
+      o.errs!==p.errs ? `범실은 <b>${NAME[o.errs<p.errs?'our':'opp']}</b>이(가) ${Math.abs(o.errs-p.errs)}회 적어요. 가장 많은 범실 상황부터 훈련하면 바로 점수로 이어져요.` : ''));
+    // 3) 공격 결정률
+    const atk = t => S[t].atkTotal ? `${tag(t)} — 공격 결정률 ${S[t].atkRate}% (성공 ${S[t].atkWin} · 범실 ${S[t].atkErr} · 블로킹 당함 ${S[t].atkBlocked})${S[t].atkBlocked>=Math.max(2,S[t].atkWin/2)?' — 블로킹에 막힌 공격이 많아요. 공격 코스나 페인트·가볍게 볼처리를 섞어보세요':''}` : '';
+    if(o.atkTotal + p.atkTotal >= 3) lines.push(topic('🏐 공격 결정률 <span class="aa-sub">— 성공 ÷ (성공 + 범실 + 블로킹 당함)</span>', [atk('our'), atk('opp')], better(o.atkRate, p.atkRate, true, '%p', '공격 결정률')));
+    // 4) 서브
+    const srv = t => (S[t].serveWin+S[t].serveErr) ? `${tag(t)} — 서브 득점 ${S[t].serveWin} · 서브 범실 ${S[t].serveErr} (득실 ${S[t].serveWin-S[t].serveErr>0?'+':''}${S[t].serveWin-S[t].serveErr})` : '';
+    if(o.serveWin+o.serveErr+p.serveWin+p.serveErr) lines.push(topic('🎯 서브', [srv('our'), srv('opp')], better(o.serveWin-o.serveErr, p.serveWin-p.serveErr, true, '점', '서브 득실')));
+    // 5) 리시브
+    const rcv = t => `${tag(t)} — 리시브 관련 실점 ${S[t].recvLoss}점 (${NAME[t==='our'?'opp':'our']} 서브 득점 + ${NAME[t]} 리시브·서브캐치 범실)`;
+    if(o.recvLoss + p.recvLoss) lines.push(topic('🛡️ 리시브', [rcv('our'), rcv('opp')], (o.recvLoss!==p.recvLoss ? `리시브는 <b>${NAME[o.recvLoss<p.recvLoss?'our':'opp']}</b>이(가) ${Math.abs(o.recvLoss-p.recvLoss)}점 덜 내줬어요. 리시브 실점이 많은 팀은 리시브 대형을 다시 확인해보세요.` : '')));
+    // 6) 블로킹
     const blkInf = blockInfluenceHTML();
     if(blkInf) lines.push(blkInf);
-    if(n.oppError>0){
-      const t = topByMain('oppError');
-      lines.push(`<p>🎁 ${oppTeamName} 범실로 얻은 점수가 ${n.oppError}회 있었어요(가장 많은 것: "${t.name}" ${t.n}회${t.det}). ${oppTeamName} 실수에 기댄 점수라서 자력 득점과는 따로 봐야 해요.</p>`);
-    }
-    if(M.atkTotal>=3){
-      lines.push(`<p>🏐 공격 결정률은 ${M.atkRate}%예요(성공 ${M.atkWin} · 범실 ${M.atkErr} · 블로킹 당함 ${M.atkBlocked}).${M.atkBlocked>=Math.max(2,M.atkWin/2)?' 블로킹에 막힌 공격이 많아요. 공격 코스나 페인트 활용을 늘려보세요.':''}</p>`);
-    }
-    if(M.recvLoss>0){
-      lines.push(`<p>🛡️ 리시브 관련 실점이 ${M.recvLoss}점이에요(${oppTeamName} 서브 득점 + 리시브·서브캐치 범실). 리시브 대형을 다시 확인해보면 좋겠어요.</p>`);
-    }
+    // 7) 세트 흐름
     if(graphSet==='all'){
       const sets = setsWithData();
       if(sets.length>=2){
-        const per = sets.map(s=>{ const m = computeMetrics(allEntries(records.filter(r=>(r.set||1)===s))); return {s, diff:m.T.forUs-m.T.against, err:m.n.ourError}; });
-        const best = per.reduce((a,b)=>b.diff>a.diff?b:a), worst = per.reduce((a,b)=>b.diff<a.diff?b:a);
-        if(best.s!==worst.s) lines.push(`<p>📊 <b>세트 흐름</b> — ${best.s}세트가 가장 좋았고(점수 차 ${best.diff>0?'+':''}${best.diff}), ${worst.s}세트가 가장 어려웠어요(점수 차 ${worst.diff>0?'+':''}${worst.diff}, ${ourTeamName} 범실 ${worst.err}회).</p>`);
+        const per = sets.map(s=>{ const es = allEntries(records.filter(r=>(r.set||1)===s)); const a = teamStats(es,'our'), b = teamStats(es,'opp'); return {s, a, b}; });
+        const rows = per.map(x=>`${x.s}세트 ${ourTeamName} ${x.a.pts} : ${x.b.pts} ${oppTeamName} (범실 ${ourTeamName} ${x.a.errs} · ${oppTeamName} ${x.b.errs})`);
+        const best = per.reduce((m,x)=>(x.a.pts-x.b.pts)>(m.a.pts-m.b.pts)?x:m), worst = per.reduce((m,x)=>(x.a.pts-x.b.pts)<(m.a.pts-m.b.pts)?x:m);
+        lines.push(topic('📊 세트 흐름', rows, best.s!==worst.s ? `${ourTeamName}에게 가장 좋았던 세트는 ${best.s}세트, ${oppTeamName}에게 가장 좋았던 세트는 ${worst.s}세트예요.` : ''));
       }
     }
     lines.push(`<p class="analysis-disclaimer">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 계산 방법은 그래프 제목 옆 "📘 설명기준"을 눌러 볼 수 있어요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
