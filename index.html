@@ -888,6 +888,17 @@
   .tl-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
   .tf-hit:hover{ fill:color-mix(in srgb, var(--text) 8%, transparent); }
   @media (max-width:520px){ .bf-head, .bf-row{ grid-template-columns:1fr 66px 1fr; } .sp-grid{ grid-template-columns:1fr; } }
+  /* 조회 링크: 경기 영상·기록 칸은 접어 두고(제목을 누르면 펼쳐요), 좁은 화면에서는 영상 → 그래프 → 종합 분석 → 기록 순서로 */
+  body.guest-view .gv-fold > h2{ cursor:pointer; display:flex; align-items:center; gap:8px; user-select:none; }
+  body.guest-view .gv-fold > h2::after{ content:'펼치기 ▾'; margin-left:auto; font-size:12px; font-weight:700; color:var(--muted); }
+  body.guest-view .gv-fold:not(.collapsed) > h2::after{ content:'접기 ▴'; }
+  body.guest-view .gv-fold.collapsed > :not(h2){ display:none !important; }
+  body.guest-view .gv-fold.collapsed > h2{ margin-bottom:0; padding-bottom:0; border-bottom:none; }
+  body.guest-view #recordsCard{ max-height:none; }
+  @media (max-width:900px){
+    body.guest-view .video-analysis-bottom{ order:2; }
+    body.guest-view #recordsCard{ order:5; }
+  }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -1253,7 +1264,7 @@
               <tr><td data-label="경기 장면">네트 위에서 서로 공을 밀어붙이다 우리가 이김</td><td data-label="기록">우리팀 · 득점 · 레프트(네트싸움)</td></tr>
               <tr><td data-label="경기 장면">우리 블로커(3번)가 블로킹하다 네트에 닿음</td><td data-label="기록">우리팀 · 범실 · 블로킹(네트터치) · 관련 선수 3번</td></tr>
               <tr><td data-label="경기 장면">우리 공격이 빗맞아(삑사리) 밖으로 나감</td><td data-label="기록">우리팀 · 범실 · 레프트(삑사리)</td></tr>
-              <tr><td data-label="경기 장면">상대 공격이 우리 블록 맞고 우리 코트에 떨어짐</td><td data-label="기록">우리팀 · 범실 · 블로킹(우리 코트 인)</td></tr>
+              <tr><td data-label="경기 장면">상대 공격이 우리 블록 맞고 우리 코트에 떨어짐</td><td data-label="기록">우리팀 · 범실 · 블로킹(블로커 코트 인)</td></tr>
             </tbody>
           </table>
         </div>
@@ -1267,7 +1278,7 @@
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
-          <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고, 같은 그룹의 다른 경기 폴더도 골라 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 해요.</li>
+          <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고(경기 영상·기록 칸은 접혀 있고 그래프·종합 분석이 먼저 보여요, 휴대폰에서는 기록이 맨 아래), 같은 그룹의 다른 경기 폴더도 골라 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 해요.</li>
         </ul></div>
         </div>
       </div>
@@ -1721,7 +1732,7 @@
   </div>
   <div class="video-grid">
     <div class="video-grid-col">
-      <div class="card video-grid-card">
+      <div class="card video-grid-card" id="videoCard">
         <h2>경기 영상</h2>
         <div class="field-note" style="margin-top:0;">영상을 올려 재생하면서 오른쪽 "빠른 기록 배너"로 점수가 날 때마다 기록해요. 영상 없이 경기를 직접 보면서 기록해도 돼요.</div>
         <input type="file" accept="video/*" id="videoFileInput" class="login-input" style="margin-top:8px;">
@@ -1764,9 +1775,10 @@
               <p>4가지 분류마다 어떤 상황이 몇 번 나왔는지 많은 순서대로 보여줘요. 공격 방식이나 파울 종류를 함께 골랐다면 "레프트·페인트", "파울·네트터치"처럼 합쳐서 세요. 득점 구성 막대는 총 득점을 자력과 상대 범실로, 실점 구성 막대는 총 실점을 상대 득점과 우리 범실로 나눠 보여줘요.</p>
             </div>
             <div class="gh-section">
-              <h4>4. 블로킹 분석 · 세터 배분</h4>
-              <p><b>🧱 블로킹 분석</b>은 세부 상황을 "블로킹"으로 남긴 기록을 팀별로 모아, 블로킹 득점은 위치·인원별로, 블로킹 범실은 유형(빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍·네트터치)과 위치별로 보여줘요. 기록할 때 <b>관련 선수</b>에 공이 손에 맞은 블로커를 골라 두면 <b>👤 누구 손에서</b> 표에 선수별 블로킹 득점·범실과 위치별 수가 나오고, 위치마다 득점·범실에 관여한 선수가 정리돼요(몇 명이 떴든 공이 맞은 선수 기준). 선수를 고르지 않은 기록은 이 표에서 빠져요.</p>
+              <h4>4. 블로킹 분석 · 세터 배분 · 종합 분석</h4>
+              <p><b>🧱 블로킹 분석</b>은 세부 상황을 "블로킹"으로 남긴 기록을 팀별로 모아, 블로킹 득점은 위치·인원별로, 블로킹 범실은 유형(빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치)과 위치별로 보여줘요. 기록할 때 <b>관련 선수</b>에 공이 손에 맞은 블로커를 골라 두면 <b>👤 누구 손에서</b> 표에 선수별 블로킹 득점·범실과 위치별 수가 나오고, 위치마다 득점·범실에 관여한 선수가 정리돼요(몇 명이 떴든 공이 맞은 선수 기준). 선수를 고르지 않은 기록은 이 표에서 빠져요.</p>
               <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "🏐 랠리 토스 순서"로 계산해요. 팀별로 어디로 몇 % 올렸는지(빈도), 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>2단</b>으로 표시한 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·시간·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
+                          <p><b>종합 분석</b>의 문장은 "우리"가 아니라 경기 정보에 적은 <b>팀 이름</b>을 주어로 써요. 상대 주 득점 루트에는 가장 많이 점수를 낸 상황과 함께 ① 토스 순서를 남긴 랠리에서 상대 세터가 마지막으로 어디로 올렸을 때 가장 많이 점수를 냈는지, ② 공격 위치별 성공률(득점 ÷ 득점+범실)이 높은 곳과 그 위치에서 점수가 가장 많이 난 지점(득실 위치)을 덧붙여요. 블로킹 득실에 관련 선수를 골라 두면 <b>블로킹 영향력</b>(득점 − 범실이 가장 큰 선수, 가장 많이 관여한 선수)도 알려줘요.</p>
             </div>
             <div class="gh-section">
               <h4>5. 세트별 보기</h4>
@@ -1784,7 +1796,7 @@
               <dl>
                 <dt>⚔️ 공격</dt><dd>공격 위치(레프트·A·백A …)별 득점·범실, 공격 방식별 득점·범실, 그리고 <b>강타·빈 곳 / 가볍게 볼처리 / 강타·사람 쪽</b> 점수의 팀별 비율이에요. 상대의 빈 곳 강타·가볍게 볼처리 점수가 많으면 수비 빈자리를, 사람 쪽 강타 점수가 많으면 수비 자세·위치를 먼저 점검해요. 강타를 둘로 나누기 전에 남긴 기록은 "강타 (구분 전 기록)"으로 따로 모여요.</dd>
                 <dt>🧱 블로킹</dt><dd>블로킹 위치별 득점·범실, 공이 손에 맞은 관련 선수별 득점·범실, 블로킹 범실 유형, 블로킹 득점 인원이에요.</dd>
-                <dt>🏐 토스</dt><dd>양 팀이 어디로 올렸는지(토스 방향)와 <b>점수 흐름 × 1포인트당 토스 배분</b>이에요. 위 선은 점수 차(우리 − 상대)이고, 아래는 점수마다 그 랠리의 토스를 1번째부터 위로 쌓은 칸이에요(팀 색, 2단은 점선 테두리, ▲ 우리 점수 · ▼ 상대 점수). 점수가 벌어지거나 좁혀질 때 어떤 토스가 이어졌는지 따라가 볼 수 있어요.</dd>
+                <dt>🏐 토스</dt><dd>양 팀이 어디로 올렸는지(토스 방향)와 <b>점수판 × 1포인트당 토스 배분</b>이에요. 세로 한 줄이 1점이고, 윗부분 점수판에는 점수를 낸 팀 줄에 색이 채워지며 그 팀의 새 점수가 적혀요(경기 기록지와 같아요). 아랫부분에는 그 랠리에서 올라간 토스를 1번째부터 아래로 팀 색 칸에 적어요(2단은 점선 테두리). 연속 득점·실점 구간에서 어떤 토스가 이어졌는지 따라가 볼 수 있어요.</dd>
               </dl>
             </div>
             <div class="gh-section">
@@ -1911,7 +1923,7 @@
                   <li><b>서브캐치</b>: 서브를 받다가 실점 · <b>리시브</b>: 공격·랠리 중 공을 받다가 실점</li>
                   <li><b>토스 / 2단토스 / 2단연결</b>: 세터 토스, 리시브가 흔들린 뒤 올린 토스, 두 번째 터치 연결에서 <b>실수해서 바로 실점</b>했을 때만 골라요. 토스가 정상으로 이어졌다면 결과 버튼 위 <b>🏐 랠리 토스 순서</b>에 남기고(2단은 ↪ 2단), 세부 상황은 그 뒤 마지막 플레이(예: 레프트 공격)로 골라요.</li>
                 </ul>
-                <p style="margin:6px 0 6px;"><b>블로킹</b> — 블로킹으로 바로 점수가 났거나(득점), 블로킹하다 실점했을 때(범실)예요. 공격 위치가 아니라 블로킹을 고르고, <b>블로킹 위치</b>는 버튼으로 눌러 골라요. 범실이면 <b>빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지, 득점이면 몇 명이 막았는지 고르고, 관련 선수에 공이 손에 맞은 블로커를 골라요. 네트 위에서 서로 공을 밀어붙이다 결정난 공은 공격 방식의 <b>네트싸움</b>으로 남겨요.</p>
+                <p style="margin:6px 0 6px;"><b>블로킹</b> — 블로킹으로 바로 점수가 났거나(득점), 블로킹하다 실점했을 때(범실)예요. 공격 위치가 아니라 블로킹을 고르고, <b>블로킹 위치</b>는 버튼으로 눌러 골라요. 범실이면 <b>빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지, 득점이면 몇 명이 막았는지 고르고, 관련 선수에 공이 손에 맞은 블로커를 골라요. 네트 위에서 서로 공을 밀어붙이다 결정난 공은 공격 방식의 <b>네트싸움</b>으로 남겨요.</p>
                 <p style="margin:0;"><b>파울(반칙)</b> — 네트터치·라인 침범 등 규칙 위반으로 점수가 났을 때예요. 단, <b>블로킹하다 네트에 닿았다면</b> 블로킹 범실의 <b>네트터치</b>로 남겨야 블로킹 분석에 들어가요. 반칙한 팀을 고르고 결과는 범실로 남겨요. <b>헷갈리면</b> 공이 마지막으로 누구 손에서 문제가 됐는지를 기준으로 골라요.</p>
               </div>
             </div>
@@ -2002,7 +2014,7 @@
           <button class="btn" id="btnRecordMoment" title="점수와 상관없이 장면만 표시해요. 메모를 적어두면 나중에 찾아보기 좋아요(점수에는 들어가지 않아요).">🔴 이 순간 자유 기록</button>
         </div>
       </div>
-      <div class="card video-grid-card">
+      <div class="card video-grid-card" id="recordsCard">
         <h2>기록</h2>
         <div id="tallySummary" style="margin-bottom:10px;"></div>
         <div class="btn-row">
@@ -4940,7 +4952,7 @@
           <div class="mk-row k-detail" style="display:none;"><span class="mk-lbl" style="width:34px;">방식</span><span class="mk-btn">강타·빈 곳</span><span class="mk-btn">강타·사람 쪽</span><span class="mk-btn">가볍게 볼처리</span><span class="mk-btn k-feint">페인트</span><span class="mk-btn">터치아웃</span><span class="mk-btn">네트인</span><span class="mk-btn">네트싸움</span><span class="mk-btn">삑사리</span></div></div>`,
         script:[{click:'.k-l', then:el=>el.classList.add('on')}, {click:'.k-more', then:(el,sc)=>{ sc.querySelector('.k-detail').style.display='flex'; }}, {click:'.k-feint', then:el=>el.classList.add('on')}, {wait:1500} ] },
       { title:'블로킹을 기록해요',
-        text:'상황 버튼에서 <b>블로킹</b>을 누르고 <b>➕ 자세히 기록</b>을 열면 버튼으로 바로 골라요: 범실이면 <b>빈틈·자리잡기·우리 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지(득점이면 몇 명이 막았는지), 공이 손에 맞은 <b>관련 선수</b>, 블로킹 위치. 블로킹 분석에 누구 손에서 났는지 위치별로 모여요.',
+        text:'상황 버튼에서 <b>블로킹</b>을 누르고 <b>➕ 자세히 기록</b>을 열면 버튼으로 바로 골라요: 범실이면 <b>빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지(득점이면 몇 명이 막았는지), 공이 손에 맞은 <b>관련 선수</b>, 블로킹 위치. 블로킹 분석에 누구 손에서 났는지 위치별로 모여요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:64px;">결과</span><span class="mk-btn">득점</span><span class="mk-btn k-fault">범실</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">세부 상황</span><span class="mk-btn on">블로킹 ▾</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">범실 유형</span><span class="mk-btn k-type">빈틈</span><span class="mk-btn">자리잡기</span><span class="mk-btn">네트터치</span></div>
@@ -4963,7 +4975,7 @@
           <div class="mk-list"><div class="mk-item"><span class="t">01:12</span>1세트 · 우리팀 득점 · 속공</div><div class="mk-item k-row"><span class="t k-time">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)</div></div>`,
         script:[ {click:'.k-time', then:(el,sc)=>{ sc.querySelector('.k-row').classList.add('on'); sc.querySelector('.k-bar').style.width='62%'; }}, {wait:1800} ] },
       { title:'그래프와 종합 분석을 봐요',
-        text:'세트 버튼으로 범위를 고르면 요약·추세·<b>🔎 상세 분석</b>이 다시 계산돼요. 상세 분석은 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 필터로 양 팀을 나란히 비교하고, 토스는 점수 흐름에 따라 1포인트당 토스 배분도 보여줘요. 계산 방법은 그래프 제목 옆 <b>📘 설명기준</b>을 눌러 봐요.',
+        text:'세트 버튼으로 범위를 고르면 요약·추세·<b>🔎 상세 분석</b>이 다시 계산돼요. 상세 분석은 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 필터로 양 팀을 나란히 비교하고, 토스는 점수판과 함께 1포인트당 토스 배분도 보여줘요. 계산 방법은 그래프 제목 옆 <b>📘 설명기준</b>을 눌러 봐요.',
         scene:`<div class="mk-row" style="justify-content:space-between;"><span class="mk-h" style="margin:0;">그래프</span><span class="mk-btn">📘 설명기준 ▾</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-btn">요약</span><span class="mk-btn">추세</span><span class="mk-btn on">🔎 상세 분석</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-btn on k-all">전체</span><span class="mk-btn k-s1">1세트</span><span class="mk-btn">2세트</span></div>
@@ -5714,7 +5726,7 @@
     fault: ['', '아웃', '네트 걸림', '네트싸움(네트 위 힘싸움에서 짐)', '삑사리(빗맞음)']
   };
   // 블로킹 범실은 왜 뚫렸는지 유형으로 남겨서 블로킹 분석에 써요.
-  const BLOCK_FAULT_TYPES = ['', '빈틈(블로커 사이·옆으로 빠짐)', '자리잡기(위치가 늦거나 어긋남)', '우리 코트 인(블록 맞고 우리 쪽에 떨어짐)', '블록 아웃(블록 맞고 밖으로 나감)', '타이밍(점프가 빠르거나 늦음)', '네트터치(블로킹하다 네트에 닿음)'];
+  const BLOCK_FAULT_TYPES = ['', '빈틈(블로커 사이·옆으로 빠짐)', '자리잡기(위치가 늦거나 어긋남)', '블로커 코트 인(블록 맞고 블로킹한 팀 쪽에 떨어짐)', '블록 아웃(블록 맞고 밖으로 나감)', '타이밍(점프가 빠르거나 늦음)', '네트터치(블로킹하다 네트에 닿음)'];
   const BLOCK_SCORE_TYPES = ['', '1인 블로킹', '2인 블로킹', '3인 블로킹'];
   function detailOptionsFor(main, outcome){
     if(main===BLOCK_LOCATION_OPTION_NAME) return outcome==='fault' ? BLOCK_FAULT_TYPES : BLOCK_SCORE_TYPES;
@@ -5766,6 +5778,7 @@
   const LEGACY_ATTACK_DETAILS = new Set(['페인트','터치아웃(블로킹 맞고 아웃)']);
   function normEntry(e){
     let main = e.optionLabel || '', detail = e.detail || '';
+    if(detail==='우리 코트 인(블록 맞고 우리 쪽에 떨어짐)') detail = '블로커 코트 인(블록 맞고 블로킹한 팀 쪽에 떨어짐)'; // 팀 이름이 아닌 '우리'가 들어간 예전 유형 이름도 새 이름으로 보여줘요
     if(detail==='강타·사람 쪽(사람 있는 쪽으로 쳐서 뚫음)') detail = '강타·사람 쪽(사람 있는 쪽으로 침)'; // 예전 문구로 남은 기록도 새 문구로 보여줘요
     // 예전 방식(한 목록에 모두 섞여 있던 항목)으로 남은 기록도 새 구조로 읽어요.
     if(!e.detail){
@@ -6137,14 +6150,14 @@
     const {n, T} = M;
     const fmt = v => v===null ? '—' : v+'%';
     const cards = [
-      statCard('총 득점', T.forUs+'점', 'var(--own)', `자력 ${n.ourScore} + ${oppTeamName} 범실 ${n.oppError}`),
-      statCard('총 실점', T.against+'점', 'var(--opp)', `${oppTeamName} 득점 ${n.oppScore} + 우리 범실 ${n.ourError}`),
-      statCard('득점률', fmt(M.pointShare), 'var(--accent-text)', '전체 랠리 중 우리가 딴 비율'),
-      statCard('자력 득점 비중', fmt(M.selfShare), 'var(--own)', '득점 중 우리가 잘해서 낸 점수'),
-      statCard('범실 실점 비중', fmt(M.errShare), 'var(--opp)', '실점 중 우리 실수로 내준 점수'),
+      statCard(`${ourTeamName} 총 득점`, T.forUs+'점', 'var(--own)', `자력 ${n.ourScore} + ${oppTeamName} 범실 ${n.oppError}`),
+      statCard(`${ourTeamName} 총 실점`, T.against+'점', 'var(--opp)', `${oppTeamName} 득점 ${n.oppScore} + ${ourTeamName} 범실 ${n.ourError}`),
+      statCard('득점률', fmt(M.pointShare), 'var(--accent-text)', `전체 랠리 중 ${ourTeamName}이(가) 딴 비율`),
+      statCard('자력 득점 비중', fmt(M.selfShare), 'var(--own)', `득점 중 ${ourTeamName}이(가) 잘해서 낸 점수`),
+      statCard('범실 실점 비중', fmt(M.errShare), 'var(--opp)', `실점 중 ${ourTeamName} 실수로 내준 점수`),
       statCard('공격 결정률', fmt(M.atkRate), 'var(--own)', `성공 ${M.atkWin} · 범실 ${M.atkErr} · 블로킹 당함 ${M.atkBlocked}`),
-      statCard('우리 서브', `${M.serveWin}득 / ${M.serveErr}범실`, 'var(--accent-text)', '서브로 낸 점수와 서브 범실'),
-      statCard('리시브 실점', M.recvLoss+'점', 'var(--opp)', `${oppTeamName} 서브 득점 + 우리 리시브·서브캐치 범실`)
+      statCard(`${ourTeamName} 서브`, `${M.serveWin}득 / ${M.serveErr}범실`, 'var(--accent-text)', '서브로 낸 점수와 서브 범실'),
+      statCard('리시브 실점', M.recvLoss+'점', 'var(--opp)', `${oppTeamName} 서브 득점 + ${ourTeamName} 리시브·서브캐치 범실`)
     ];
     const cardsHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px;">${cards.join('')}</div>`;
 
@@ -6157,8 +6170,8 @@
       </div>`;
     };
     const compHTML = `<div style="margin-top:14px;">
-      <div class="field-label" style="margin-top:0;">득점 구성</div>${stack(n.ourScore, n.oppError, 'var(--own)', 'color-mix(in srgb, var(--own) 50%, var(--panel-2))', '자력', '상대 범실')}
-      <div class="field-label">실점 구성</div>${stack(n.oppScore, n.ourError, 'var(--opp)', 'color-mix(in srgb, var(--opp) 50%, var(--panel-2))', '상대 득점', '우리 범실')}
+      <div class="field-label" style="margin-top:0;">득점 구성</div>${stack(n.ourScore, n.oppError, 'var(--own)', 'color-mix(in srgb, var(--own) 50%, var(--panel-2))', `${ourTeamName} 자력`, `${oppTeamName} 범실`)}
+      <div class="field-label">실점 구성</div>${stack(n.oppScore, n.ourError, 'var(--opp)', 'color-mix(in srgb, var(--opp) 50%, var(--panel-2))', `${oppTeamName} 득점`, `${ourTeamName} 범실`)}
     </div>`;
 
     const top = b => sortDesc(T.byLabel[b]).slice(0,6);
@@ -6295,7 +6308,7 @@
       <div class="analysis-team" style="color:var(--text);">📜 점수별 토스 흐름 — ${total}점 · 랠리당 평균 토스 ${(sumLen/total).toFixed(1)}회</div>
       ${lenRows?`<table class="mini-table"><thead><tr><th>랠리 길이</th><th>점수</th><th>${ourTeamName} 점수</th></tr></thead><tbody>${lenRows}</tbody></table>`:''}
       <div class="toss-flow-list">${rows.join('')}</div>
-      <div class="field-note" style="margin-top:4px;">왼쪽은 세트·영상 시간과 그 점수까지의 세트 점수(${ourTeamName} : ${oppTeamName})예요. 왼쪽 테두리가 파란 줄은 우리가, 빨간 줄은 상대가 낸 점수예요.</div>
+      <div class="field-note" style="margin-top:4px;">왼쪽은 세트·영상 시간과 그 점수까지의 세트 점수(${ourTeamName} : ${oppTeamName})예요. 왼쪽 테두리가 파란 줄은 ${ourTeamName}이(가), 빨간 줄은 ${oppTeamName}이(가) 낸 점수예요.</div>
     </div>`;
   }
   function setCompareHTML(){
@@ -6307,8 +6320,8 @@
       return `<tr>
         <td style="padding:6px 8px; font-weight:700;">${s}세트</td>
         <td style="padding:6px 8px; font-weight:800; white-space:nowrap;">${M.T.forUs} : ${M.T.against}</td>
-        <td style="padding:6px 8px;">${M.T.forUs} <span style="color:var(--muted); font-size:11px;">(자력 ${M.n.ourScore}·상대범실 ${M.n.oppError})</span></td>
-        <td style="padding:6px 8px;">${M.T.against} <span style="color:var(--muted); font-size:11px;">(상대 ${M.n.oppScore}·우리범실 ${M.n.ourError})</span></td>
+        <td style="padding:6px 8px;">${M.T.forUs} <span style="color:var(--muted); font-size:11px;">(자력 ${M.n.ourScore}·${oppTeamName} 범실 ${M.n.oppError})</span></td>
+        <td style="padding:6px 8px;">${M.T.against} <span style="color:var(--muted); font-size:11px;">(${oppTeamName} 득점 ${M.n.oppScore}·${ourTeamName} 범실 ${M.n.ourError})</span></td>
         <td style="padding:6px 8px;">${M.pointShare===null?'—':M.pointShare+'%'}</td>
         <td style="padding:6px 8px; font-weight:700; color:${diff>0?'var(--own)':diff<0?'var(--opp)':'var(--text-dim)'};">${diff>0?'+':''}${diff}</td>
       </tr>`;
@@ -6317,7 +6330,7 @@
       <div class="field-label" style="margin-top:0;">세트별 비교</div>
       <div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">
         <thead><tr style="color:var(--text-dim); text-align:left; border-bottom:1px solid var(--border);">
-          <th style="padding:6px 8px;">세트</th><th style="padding:6px 8px;">세트 점수<br><span style="font-weight:400;">(우리 : 상대)</span></th><th style="padding:6px 8px;">득점</th><th style="padding:6px 8px;">실점</th><th style="padding:6px 8px;">득점률</th><th style="padding:6px 8px;">점수 차</th>
+          <th style="padding:6px 8px;">세트</th><th style="padding:6px 8px;">세트 점수<br><span style="font-weight:400;">(${ourTeamName} : ${oppTeamName})</span></th><th style="padding:6px 8px;">득점</th><th style="padding:6px 8px;">실점</th><th style="padding:6px 8px;">득점률</th><th style="padding:6px 8px;">점수 차</th>
         </tr></thead><tbody>${rows}</tbody></table></div>
       <div class="field-note" style="margin-top:4px;">위의 세트 버튼을 누르면 그 세트만 따로 자세히 볼 수 있어요.</div>
     </div>`;
@@ -6357,7 +6370,7 @@
     const breaks = setBreaks.map(b=>`<line x1="${xOf(b.i)}" y1="${padT}" x2="${xOf(b.i)}" y2="${H-padB}" stroke="var(--muted)" stroke-dasharray="3 3"/><text x="${xOf(b.i)+3}" y="${padT-6}" font-size="11" fill="var(--text-dim)">${b.set}세트</text>`).join('');
     const lastP = points[points.length-1];
     el.innerHTML = `
-      <div class="field-note" style="margin-top:0;">기록 순서에 따른 누적 점수 차예요 (우리가 딴 점수 +1, 내준 점수 -1). 세로축 숫자가 그 순간의 점수 차이고, 선이 0보다 위면 ${ourTeamName}이(가) 앞선 상태예요.</div>
+      <div class="field-note" style="margin-top:0;">기록 순서에 따른 누적 점수 차예요 (${ourTeamName}이(가) 딴 점수 +1, 내준 점수 -1). 세로축 숫자가 그 순간의 점수 차이고, 선이 0보다 위면 ${ourTeamName}이(가) 앞선 상태예요.</div>
       <svg viewBox="0 0 ${W} ${H}" style="width:100%; display:block; margin-top:6px;">
         <text x="4" y="13" font-size="12" font-weight="800" fill="var(--text-dim)">↕ 점수 차</text>
         ${grid}
@@ -6477,7 +6490,7 @@
     const freq = {}; withT.forEach(r=>r.tosses.forEach(t=>{ const k=TOSS_SHORT[t.to]||t.to; freq[k]=freq[k]||{our:{s:0,f:0},opp:{s:0,f:0}}; freq[k][t.team].s++; }));
     const order = TOSS_TARGETS.map(t=>TOSS_SHORT[t]||t);
     const fRows = order.filter(k=>freq[k]).map(k=>({label:k, our:freq[k].our, opp:freq[k].opp}));
-    // 2) 점수 흐름 × 1포인트당 토스: 위는 점수 차(우리-상대) 계단선, 아래는 그 점수에서 올라간 토스를 순서대로 쌓아요.
+    // 2) 점수판 × 1포인트당 토스: 경기 기록지처럼 점수를 낸 팀 줄에 그 팀의 새 점수를 적고, 그 아래에 그 랠리의 토스를 1번째부터 아래로 적어요.
     const cols = []; const run = {};
     scope.forEach(r=>{
       const set = r.set||1; run[set] = run[set] || {u:0,o:0};
@@ -6486,46 +6499,46 @@
       if(n.forUs) run[set].u++; else run[set].o++;
       cols.push({set, u:run[set].u, o:run[set].o, won:n.forUs, tosses:r.tosses||[], label:r.label||'', time:r.time});
     });
-    const CW = 22, maxT = Math.max(1, ...cols.map(c=>c.tosses.length)), CELL = 16;
-    const W = Math.max(cols.length*CW + 44, 280), topH = 70, botH = maxT*CELL + 26, H = topH + botH + 10;
-    const diffs = cols.map(c=>c.u-c.o), dMax = Math.max(1, ...diffs.map(Math.abs));
-    const x0 = 36, yMid = topH/2 + 4, yOf = v => yMid - v/dMax*(topH/2-8);
-    let path = ''; let prevSet = null;
-    const parts = cols.map((c,i)=>{
+    const CW = 28, CELL = 18, maxT = Math.max(1, ...cols.map(c=>c.tosses.length));
+    const LBL = 74, x0 = LBL + 4;
+    const ySet = 12, yOur = 20, yOpp = yOur + CELL + 3, yT0 = yOpp + CELL + 14;
+    const H = yT0 + maxT*(CELL+2) + 6;
+    const W = Math.max(x0 + cols.length*CW + 6, 300);
+    const ownC = 'var(--own)', oppC = 'var(--opp)';
+    const short = t => t.length>5 ? t.slice(0,5)+'…' : t;
+    let prevSet = null;
+    const body = cols.map((c,i)=>{
       const x = x0 + i*CW, cx = x + CW/2;
       let svg = '';
-      if(prevSet!==null && c.set!==prevSet) svg += `<line x1="${x}" y1="4" x2="${x}" y2="${H-4}" stroke="var(--border-2)" stroke-dasharray="3 3"/><text x="${x+3}" y="12" font-size="10" fill="var(--muted)">${c.set}세트</text>`;
-      const newSet = prevSet===null || c.set!==prevSet;
-      prevSet = c.set;
-      const y = yOf(c.u-c.o);
-      path += (newSet ? `M${x},${yOf(0)} H${x} ` : '') + `V${y} H${x+CW} `;
-      // 토스 칸: 아래에서 위로 1번째, 2번째 … (팀 색, 2단은 빗금 테두리)
+      if(c.set!==prevSet){
+        if(prevSet!==null) svg += `<line x1="${x-1}" y1="${ySet-8}" x2="${x-1}" y2="${H-2}" stroke="var(--border-2)" stroke-width="2"/>`;
+        svg += `<text x="${x+2}" y="${ySet}" font-size="10" font-weight="700" fill="var(--text-dim)">${c.set}세트</text>`;
+        prevSet = c.set;
+      }
+      // 점수판: 점수를 낸 팀 칸만 색을 채우고 그 팀의 새 점수를 적어요
+      const winY = c.won ? yOur : yOpp, winC = c.won ? ownC : oppC;
+      svg += `<rect x="${x+1}" y="${yOur}" width="${CW-2}" height="${CELL}" rx="3" fill="var(--panel-2)"/>`
+           + `<rect x="${x+1}" y="${yOpp}" width="${CW-2}" height="${CELL}" rx="3" fill="var(--panel-2)"/>`
+           + `<rect x="${x+1}" y="${winY}" width="${CW-2}" height="${CELL}" rx="3" fill="${winC}"/>`
+           + `<text x="${cx}" y="${winY+CELL-5}" text-anchor="middle" font-size="11" font-weight="800" fill="#0A0B0D">${c.won?c.u:c.o}</text>`;
+      // 토스: 1번째가 맨 위, 팀 색 칸에 보낸 곳을 적어요(2단은 점선 테두리)
       c.tosses.forEach((t,k)=>{
-        const ty = topH + 10 + (maxT-1-k)*CELL;
-        svg += `<rect x="${x+2}" y="${ty}" width="${CW-4}" height="${CELL-2}" rx="3" fill="${t.team==='our'?'var(--own)':'var(--opp)'}" ${t.kind==='2nd'?'stroke="var(--text)" stroke-width="1.5" stroke-dasharray="2 2"':''}/>`
-             + `<text x="${cx}" y="${ty+CELL-5}" text-anchor="middle" font-size="8.5" font-weight="800" fill="#0A0B0D">${TOSS_ABBR[t.to]||t.to.slice(0,1)}</text>`;
+        const ty = yT0 + k*(CELL+2);
+        svg += `<rect x="${x+1}" y="${ty}" width="${CW-2}" height="${CELL}" rx="3" fill="${t.team==='our'?ownC:oppC}" fill-opacity="0.85" ${t.kind==='2nd'?'stroke="var(--text)" stroke-width="1.5" stroke-dasharray="2 2"':''}/>`
+             + `<text x="${cx}" y="${ty+CELL-5}" text-anchor="middle" font-size="9.5" font-weight="800" fill="#0A0B0D">${TOSS_ABBR[t.to]||t.to.slice(0,1)}</text>`;
       });
-      // 결과 표시(누가 점수를 냈나)
-      const ry = topH + 10 + maxT*CELL + 8;
-      svg += `<text x="${cx}" y="${ry}" text-anchor="middle" font-size="10" fill="${c.won?'var(--own)':'var(--opp)'}">${c.won?'▲':'▼'}</text>`;
-      const tip = `${c.set}세트 ${fmtTime(c.time)} · ${c.u}:${c.o} (${c.won?ourTeamName:oppTeamName} 점수)\n${c.tosses.length?tossLabel(c.tosses):'토스 기록 없음'}\n${c.label}`;
+      const tip = `${c.set}세트 ${fmtTime(c.time)} · ${c.won?ourTeamName:oppTeamName} 점수 → ${ourTeamName} ${c.u} : ${c.o} ${oppTeamName}\n${c.tosses.length?'토스: '+tossLabel(c.tosses):'토스 기록 없음'}\n${c.label}`;
       svg += `<rect x="${x}" y="0" width="${CW}" height="${H}" fill="transparent" class="tf-hit"><title>${dEsc(tip)}</title></rect>`;
       return svg;
     }).join('');
-    const xEnd = x0 + cols.length*CW;
-    const timeline = `<div class="bf-chart"><div class="bf-title">점수 흐름 × 1포인트당 토스 배분</div>
-      <div class="tl-scroll"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;">
-        <line x1="${x0}" y1="${yOf(0)}" x2="${xEnd}" y2="${yOf(0)}" stroke="var(--border-2)"/>
-        <text x="${x0-4}" y="${yOf(dMax)+4}" text-anchor="end" font-size="10" fill="var(--muted)">+${dMax}</text>
-        <text x="${x0-4}" y="${yOf(0)+4}" text-anchor="end" font-size="10" fill="var(--muted)">0</text>
-        <text x="${x0-4}" y="${yOf(-dMax)+4}" text-anchor="end" font-size="10" fill="var(--muted)">-${dMax}</text>
-        <text x="${x0-4}" y="${topH+10+CELL-4}" text-anchor="end" font-size="9" fill="var(--muted)">${maxT}번째</text>
-        <text x="${x0-4}" y="${topH+10+maxT*CELL-4}" text-anchor="end" font-size="9" fill="var(--muted)">1번째</text>
-        <path d="${path}" fill="none" stroke="var(--text-dim)" stroke-width="2"/>
-        ${parts}
-      </svg></div>
-      <div class="bf-legend"><span><i style="background:var(--own)"></i>🔵 ${dEsc(ourTeamName)} 토스</span><span><i style="background:var(--opp)"></i>🔴 ${dEsc(oppTeamName)} 토스</span><span><i style="border:1.5px dashed var(--text); background:transparent;"></i>2단</span><span class="muted">▲ 우리 점수 · ▼ 상대 점수</span></div>
-      <div class="field-note" style="margin-top:4px;">위 선은 점수 차(${dEsc(ourTeamName)} − ${dEsc(oppTeamName)})예요. 아래 칸은 그 점수에서 올라간 토스를 1번째부터 위로 쌓았어요(레=레프트·라=라이트·bA=백A·앞=앞차·백=백차·파=파이프·2구=세터 2구). 칸에 손가락을 대거나 마우스를 올리면 그 점수의 토스 순서가 나와요. 점수가 많으면 옆으로 밀어 봐요.</div></div>`;
+    const rowLabels = `<text x="${LBL}" y="${yOur+CELL-5}" text-anchor="end" font-size="10.5" font-weight="800" fill="${ownC}">${dEsc(short(ourTeamName))}</text>`
+      + `<text x="${LBL}" y="${yOpp+CELL-5}" text-anchor="end" font-size="10.5" font-weight="800" fill="${oppC}">${dEsc(short(oppTeamName))}</text>`
+      + `<text x="${LBL}" y="${yT0-4}" text-anchor="end" font-size="9.5" fill="var(--muted)">토스 순서 ↓</text>`
+      + Array.from({length:maxT}, (_,k)=>`<text x="${LBL}" y="${yT0 + k*(CELL+2) + CELL-5}" text-anchor="end" font-size="9.5" fill="var(--muted)">${k+1}번째</text>`).join('');
+    const timeline = `<div class="bf-chart"><div class="bf-title">점수판 × 1포인트당 토스 배분</div>
+      <div class="tl-scroll"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;">${rowLabels}${body}</svg></div>
+      <div class="bf-legend"><span><i style="background:var(--own)"></i>${dEsc(ourTeamName)}</span><span><i style="background:var(--opp)"></i>${dEsc(oppTeamName)}</span><span><i style="border:1.5px dashed var(--text); background:transparent;"></i>2단 토스</span></div>
+      <div class="field-note" style="margin-top:4px;">한 칸(세로 한 줄)이 1점이에요. <b>윗부분은 점수판</b>이라, 점수를 낸 팀 줄에 색이 채워지고 그 팀의 새 점수가 적혀요(경기 기록지와 같아요). <b>아랫부분은 그 점수의 랠리에서 올라간 토스</b>를 1번째부터 아래로 적었고, 칸 색은 토스한 팀이에요(레=레프트·라=라이트·bA=백A·앞=앞차·백=백차·파=파이프·2구=세터 2구). 칸을 누르거나 마우스를 올리면 그 점수의 자세한 토스 순서가 나와요. 점수가 많으면 옆으로 밀어 봐요.</div></div>`;
     return butterflyHTML('어디로 올렸나 — 토스 방향 (양 팀)', fRows, {single:true}) + timeline;
   }
 
@@ -6549,6 +6562,44 @@
     });
   });
 
+  // 상대 주 득점 루트 보충: 세터 배분 뒤 가장 많이 성공한 공격, 포지션별 공격 성공률과 가장 잘 통한 지점
+  function oppRouteDetails(){
+    const out = [];
+    // 1) 토스 순서를 남긴 랠리에서 상대의 마지막 토스가 어디로 갔고, 그 랠리를 상대가 땄는지
+    const recs = recordsInScope().filter(r=>r.tosses && r.tosses.some(t=>t.team==='opp'));
+    const tg = {};
+    recs.forEach(r=>{
+      const mine = r.tosses.filter(t=>t.team==='opp'); const last = mine[mine.length-1];
+      const e = (r.entries||[])[0]; const n = e ? normEntry(e) : null; if(!n || !n.bucket) return;
+      const k = TOSS_SHORT[last.to] || last.to; tg[k] = tg[k] || {a:0,w:0}; tg[k].a++; if(!n.forUs) tg[k].w++;
+    });
+    const tBest = Object.entries(tg).filter(([k,d])=>d.w>0).sort((a,b)=>(b[1].w-a[1].w) || (b[1].w/b[1].a - a[1].w/a[1].a))[0];
+    if(tBest) out.push(`세터 배분으로는 <b>${tBest[0]}</b>(으)로 올렸을 때 가장 많이 점수를 냈어요(${tBest[1].a}번 중 ${tBest[1].w}점, ${pct(tBest[1].w,tBest[1].a)}%)`);
+    // 2) 포지션별 공격 성공률(득점 / 득점+범실)과 그 포지션에서 가장 많이 점수가 난 지점
+    const atk = allEntries().filter(e=>e.team==='opp' && ATTACK_SET.has(e.main));
+    const pos = {};
+    atk.forEach(e=>{ const p = pos[e.main] = pos[e.main] || {s:0,f:0,z:{}}; if(e.outcome==='score'){ p.s++; if(e.grid9 && e.grid9.label){ p.z[e.grid9.label]=(p.z[e.grid9.label]||0)+1; } } else p.f++; });
+    const posList = Object.entries(pos).filter(([k,d])=>d.s>0).sort((a,b)=>(b[1].s/(b[1].s+b[1].f))-(a[1].s/(a[1].s+a[1].f)) || b[1].s-a[1].s);
+    if(posList.length){
+      const items = posList.slice(0,3).map(([k,d])=>{ const z = sortDesc(d.z)[0]; return `${k} ${d.s}/${d.s+d.f}(${pct(d.s,d.s+d.f)}%)${z?` · 주로 <b>${z[0]}</b> ${z[1]}점`:''}`; });
+      out.push(`포지션별 공격 성공률(득점 ÷ 득점+범실)이 높은 곳은 ${items.join(', ')}이에요`);
+    }
+    return out.length ? `<p style="margin-top:-4px;">↳ ${out.join('. ')}. <span style="color:var(--muted);">(토스 순서·득실 위치를 남긴 기록 기준)</span></p>` : '';
+  }
+  // 블로킹 영향력: 블로킹 득실에서 공이 손에 맞은 관련 선수를 골라 둔 기록으로, 가장 많이 관여한 선수를 짚어요
+  function blockInfluenceHTML(){
+    const blk = allEntries().filter(e=>e.team==='our' && e.main===BLOCK_LOCATION_OPTION_NAME && e.player && e.player.id);
+    if(!blk.length) return '';
+    const by = {};
+    blk.forEach(e=>{ const k = rosterLabel(e.player.id) || e.player.label; const d = by[k] = by[k] || {s:0,f:0,z:{}}; if(e.outcome==='score') d.s++; else d.f++; const z = e.zone ? ZONE_LABELS[e.zone.row][e.zone.col]+' 앞' : null; if(z) d.z[z]=(d.z[z]||0)+1; });
+    const list = Object.entries(by).sort((a,b)=>(b[1].s-b[1].f)-(a[1].s-a[1].f) || (b[1].s+b[1].f)-(a[1].s+a[1].f));
+    const [name, d] = list[0]; const z = sortDesc(d.z)[0];
+    const most = Object.entries(by).sort((a,b)=>(b[1].s+b[1].f)-(a[1].s+a[1].f))[0];
+    let txt = `🧱 <b>${ourTeamName} 블로킹 영향력</b> — 가장 영향력이 큰 선수는 <b>${escChip(name)}</b>이에요(블로킹 득점 ${d.s} · 범실 ${d.f}${z?`, 주로 ${z[0]}`:''}).`;
+    if(most[0]!==name) txt += ` 블로킹에 가장 많이 관여한 선수는 ${escChip(most[0])}(득점 ${most[1].s} · 범실 ${most[1].f})예요.`;
+    if(d.f>d.s) txt += ' 다만 범실이 득점보다 많아서 손 모양·타이밍을 함께 점검해보세요.';
+    return `<p>${txt}</p>`;
+  }
   function renderAutoAnalysis(){
     const el = document.getElementById('autoAnalysis');
     const entries = allEntries();
@@ -6580,15 +6631,18 @@
     }
     const errTop = topByMain('ourError');
     if(errTop){
-      lines.push(`<p>⚠️ <b>줄일 수 있는 실점</b> — ${ourTeamName} 범실 ${n.ourError}회 중 "${errTop.name}"이(가) ${errTop.n}회${errTop.det}로 가장 많아요. 실점의 ${M.errShare}%가 우리 실수였으니, 이 부분을 훈련하면 바로 점수로 이어져요.</p>`);
+      lines.push(`<p>⚠️ <b>줄일 수 있는 실점</b> — ${ourTeamName} 범실 ${n.ourError}회 중 "${errTop.name}"이(가) ${errTop.n}회${errTop.det}로 가장 많아요. 실점의 ${M.errShare}%가 ${ourTeamName} 실수였으니, 이 부분을 훈련하면 바로 점수로 이어져요.</p>`);
     }
     const oppTop = topByMain('oppScore');
     if(oppTop){
-      lines.push(`<p>🔴 <b>${oppTeamName}의 주 득점 루트</b> — "${oppTop.name}" ${oppTop.n}회${oppTop.det}. 이 상황에 대한 수비 대형·블로킹 위치를 점검해보세요.</p>`);
+      const extra = oppRouteDetails();
+      lines.push(`<p>🔴 <b>${oppTeamName}의 주 득점 루트</b> — 가장 많이 점수를 낸 건 "${oppTop.name}" ${oppTop.n}회${oppTop.det}예요. 이 상황에 대한 수비 대형·블로킹 위치를 점검해보세요.</p>${extra}`);
     }
+    const blkInf = blockInfluenceHTML();
+    if(blkInf) lines.push(blkInf);
     if(n.oppError>0){
       const t = topByMain('oppError');
-      lines.push(`<p>🎁 ${oppTeamName} 범실로 얻은 점수가 ${n.oppError}회 있었어요(가장 많은 것: "${t.name}" ${t.n}회${t.det}). 상대 실수에 기댄 점수라서 자력 득점과는 따로 봐야 해요.</p>`);
+      lines.push(`<p>🎁 ${oppTeamName} 범실로 얻은 점수가 ${n.oppError}회 있었어요(가장 많은 것: "${t.name}" ${t.n}회${t.det}). ${oppTeamName} 실수에 기댄 점수라서 자력 득점과는 따로 봐야 해요.</p>`);
     }
     if(M.atkTotal>=3){
       lines.push(`<p>🏐 공격 결정률은 ${M.atkRate}%예요(성공 ${M.atkWin} · 범실 ${M.atkErr} · 블로킹 당함 ${M.atkBlocked}).${M.atkBlocked>=Math.max(2,M.atkWin/2)?' 블로킹에 막힌 공격이 많아요. 공격 코스나 페인트 활용을 늘려보세요.':''}</p>`);
@@ -6601,10 +6655,10 @@
       if(sets.length>=2){
         const per = sets.map(s=>{ const m = computeMetrics(allEntries(records.filter(r=>(r.set||1)===s))); return {s, diff:m.T.forUs-m.T.against, err:m.n.ourError}; });
         const best = per.reduce((a,b)=>b.diff>a.diff?b:a), worst = per.reduce((a,b)=>b.diff<a.diff?b:a);
-        if(best.s!==worst.s) lines.push(`<p>📊 <b>세트 흐름</b> — ${best.s}세트가 가장 좋았고(점수 차 ${best.diff>0?'+':''}${best.diff}), ${worst.s}세트가 가장 어려웠어요(점수 차 ${worst.diff>0?'+':''}${worst.diff}, 우리 범실 ${worst.err}회).</p>`);
+        if(best.s!==worst.s) lines.push(`<p>📊 <b>세트 흐름</b> — ${best.s}세트가 가장 좋았고(점수 차 ${best.diff>0?'+':''}${best.diff}), ${worst.s}세트가 가장 어려웠어요(점수 차 ${worst.diff>0?'+':''}${worst.diff}, ${ourTeamName} 범실 ${worst.err}회).</p>`);
       }
     }
-    lines.push(`<p class="analysis-disclaimer">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 계산 방법은 그래프의 "설명" 탭에서 볼 수 있어요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
+    lines.push(`<p class="analysis-disclaimer">※ 이 요약은 기록된 데이터를 바탕으로 자동 계산된 통계예요. 계산 방법은 그래프 제목 옆 "📘 설명기준"을 눌러 볼 수 있어요. 실제 경기 흐름과 선수 상태는 코치님이 가장 잘 아시니, 아래에 직접 의견을 더해 완성해주세요.</p>`);
     el.innerHTML = lines.join('');
   }
 
@@ -6903,7 +6957,16 @@
       renderMatchFolderSelect();
       const fs = document.getElementById('matchFolderSelect');
       if(fs && f) fs.value = String(matchFolders.indexOf(f));
-      document.getElementById('readOnlyFolderBanner').textContent = '🔗 조회 링크로 보고 있어요. 위 목록에서 이 그룹의 다른 경기 폴더도 골라 볼 수 있어요(기록 추가·수정은 안 돼요).';
+      document.getElementById('readOnlyFolderBanner').textContent = '🔗 조회 링크로 보고 있어요. 그래프·종합 분석을 바로 보고, 접힌 경기 영상·기록은 제목을 눌러 펼쳐요. 위 목록에서 이 그룹의 다른 경기 폴더도 골라 볼 수 있어요(기록 추가·수정은 안 돼요).';
+      ['videoCard','recordsCard'].forEach(id=>{
+        const card = document.getElementById(id); if(!card || card.classList.contains('gv-fold')) return;
+        card.classList.add('gv-fold','collapsed');
+        const h = card.querySelector(':scope > h2');
+        if(h){ h.setAttribute('role','button'); h.tabIndex = 0;
+          const toggle = ()=>card.classList.toggle('collapsed');
+          h.addEventListener('click', toggle);
+          h.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } }); }
+      });
       const vc = document.getElementById('videoCol'); if(vc) vc.scrollIntoView({block:'start'});
     }
   }
