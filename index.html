@@ -899,6 +899,7 @@
     body.guest-view .video-analysis-bottom{ order:2; }
     body.guest-view #recordsCard{ order:5; }
   }
+  #autoAnalysis .analysis-list{ margin:-4px 0 10px; padding-left:18px; } #autoAnalysis .analysis-list li{ margin-bottom:4px; line-height:1.6; }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -1778,7 +1779,7 @@
               <h4>4. 블로킹 분석 · 세터 배분 · 종합 분석</h4>
               <p><b>🧱 블로킹 분석</b>은 세부 상황을 "블로킹"으로 남긴 기록을 팀별로 모아, 블로킹 득점은 위치·인원별로, 블로킹 범실은 유형(빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치)과 위치별로 보여줘요. 기록할 때 <b>관련 선수</b>에 공이 손에 맞은 블로커를 골라 두면 <b>👤 누구 손에서</b> 표에 선수별 블로킹 득점·범실과 위치별 수가 나오고, 위치마다 득점·범실에 관여한 선수가 정리돼요(몇 명이 떴든 공이 맞은 선수 기준). 선수를 고르지 않은 기록은 이 표에서 빠져요.</p>
               <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "🏐 랠리 토스 순서"로 계산해요. 팀별로 어디로 몇 % 올렸는지(빈도), 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>2단</b>으로 표시한 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·시간·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
-                          <p><b>종합 분석</b>의 문장은 "우리"가 아니라 경기 정보에 적은 <b>팀 이름</b>을 주어로 써요. 상대 주 득점 루트에는 가장 많이 점수를 낸 상황과 함께 ① 토스 순서를 남긴 랠리에서 상대 세터가 마지막으로 어디로 올렸을 때 가장 많이 점수를 냈는지, ② 공격 위치별 성공률(득점 ÷ 득점+범실)이 높은 곳과 그 위치에서 점수가 가장 많이 난 지점(득실 위치)을 덧붙여요. 블로킹 득실에 관련 선수를 골라 두면 <b>블로킹 영향력</b>(득점 − 범실이 가장 큰 선수, 가장 많이 관여한 선수)도 알려줘요.</p>
+                          <p><b>종합 분석</b>의 문장은 "우리"가 아니라 경기 정보에 적은 <b>팀 이름</b>을 주어로 써요. 상대 주 득점 루트에는 가장 많이 점수를 낸 상황과 함께 ① 토스 순서를 남긴 랠리에서 상대 세터가 마지막으로 어디로 올렸을 때 가장 많이 점수를 냈는지, ② 공격 위치별 성공률(득점 ÷ 득점+범실)이 높은 곳과 그 위치에서 점수가 가장 많이 난 지점(득실 위치)을 덧붙여요. <b>블로킹 영향력</b>은 두 팀 각각 블로킹 득점·범실과 득실(득점 − 범실), 가장 잘 막은 위치·가장 많이 뚫린 위치를 비교해 어느 팀이 블로킹 싸움에서 앞섰는지 알려줘요. 관련 선수를 골라 둔 기록이 있으면 우리팀은 득실이 가장 좋은 블로커와 가장 많이 관여한 블로커를, 상대팀은 그 블록에 가장 많이 막힌 선수와 그 블록을 이용해 점수를 낸 선수를 짚어요(관련 선수 명단은 경기 정보의 한 팀 명단이에요).</p>
             </div>
             <div class="gh-section">
               <h4>5. 세트별 보기</h4>
@@ -6586,19 +6587,52 @@
     }
     return out.length ? `<p style="margin-top:-4px;">↳ ${out.join('. ')}. <span style="color:var(--muted);">(토스 순서·득실 위치를 남긴 기록 기준)</span></p>` : '';
   }
-  // 블로킹 영향력: 블로킹 득실에서 공이 손에 맞은 관련 선수를 골라 둔 기록으로, 가장 많이 관여한 선수를 짚어요
+  // 블로킹 영향력: 두 팀 각각 블로킹으로 낸 점수·범실, 가장 잘 막은/뚫린 위치, 관련 선수(손에 맞은 선수)를 짚어요.
+  // 관련 선수 명단은 경기 정보의 명단(한 팀)이라, 상대 블로킹 기록에 고른 선수는 그 블록에 막힌(또는 블록을 이용한) 선수로 읽어요.
   function blockInfluenceHTML(){
-    const blk = allEntries().filter(e=>e.team==='our' && e.main===BLOCK_LOCATION_OPTION_NAME && e.player && e.player.id);
-    if(!blk.length) return '';
-    const by = {};
-    blk.forEach(e=>{ const k = rosterLabel(e.player.id) || e.player.label; const d = by[k] = by[k] || {s:0,f:0,z:{}}; if(e.outcome==='score') d.s++; else d.f++; const z = e.zone ? ZONE_LABELS[e.zone.row][e.zone.col]+' 앞' : null; if(z) d.z[z]=(d.z[z]||0)+1; });
-    const list = Object.entries(by).sort((a,b)=>(b[1].s-b[1].f)-(a[1].s-a[1].f) || (b[1].s+b[1].f)-(a[1].s+a[1].f));
-    const [name, d] = list[0]; const z = sortDesc(d.z)[0];
-    const most = Object.entries(by).sort((a,b)=>(b[1].s+b[1].f)-(a[1].s+a[1].f))[0];
-    let txt = `🧱 <b>${ourTeamName} 블로킹 영향력</b> — 가장 영향력이 큰 선수는 <b>${escChip(name)}</b>이에요(블로킹 득점 ${d.s} · 범실 ${d.f}${z?`, 주로 ${z[0]}`:''}).`;
-    if(most[0]!==name) txt += ` 블로킹에 가장 많이 관여한 선수는 ${escChip(most[0])}(득점 ${most[1].s} · 범실 ${most[1].f})예요.`;
-    if(d.f>d.s) txt += ' 다만 범실이 득점보다 많아서 손 모양·타이밍을 함께 점검해보세요.';
-    return `<p>${txt}</p>`;
+    const blkAll = allEntries().filter(e=>e.main===BLOCK_LOCATION_OPTION_NAME && (e.team==='our'||e.team==='opp'));
+    if(!blkAll.length) return '';
+    const zoneOf = e => e.zone ? ZONE_LABELS[e.zone.row][e.zone.col]+' 앞' : null;
+    const pName = e => rosterLabel(e.player.id) || e.player.label;
+    const teamLine = (team) => {
+      const tName = team==='our' ? ourTeamName : oppTeamName, other = team==='our' ? oppTeamName : ourTeamName;
+      const list = blkAll.filter(e=>e.team===team);
+      if(!list.length) return '';
+      const s = list.filter(e=>e.outcome==='score').length, f = list.length - s;
+      const zs = {}, zf = {};
+      list.forEach(e=>{ const z = zoneOf(e); if(!z) return; if(e.outcome==='score') zs[z]=(zs[z]||0)+1; else zf[z]=(zf[z]||0)+1; });
+      const bestZ = sortDesc(zs)[0], worstZ = sortDesc(zf)[0];
+      let txt = `<b>${tName}</b> — 블로킹 득점 ${s} · 범실 ${f}(득실 ${s-f>0?'+':''}${s-f})`;
+      const zp = [];
+      if(bestZ) zp.push(`가장 잘 막은 곳은 ${bestZ[0]}(${bestZ[1]}점)`);
+      if(worstZ) zp.push(`가장 많이 뚫린 곳은 ${worstZ[0]}(${worstZ[1]}회)`);
+      if(zp.length) txt += `. ${zp.join(', ')}`;
+      const tagged = list.filter(e=>e.player && e.player.id);
+      if(tagged.length){
+        const by = {};
+        tagged.forEach(e=>{ const k = pName(e); const d = by[k] = by[k] || {s:0,f:0,z:{}}; if(e.outcome==='score') d.s++; else d.f++; const z = zoneOf(e); if(z) d.z[z]=(d.z[z]||0)+1; });
+        if(team==='our'){
+          const rank = Object.entries(by).sort((a,b)=>(b[1].s-b[1].f)-(a[1].s-a[1].f) || (b[1].s+b[1].f)-(a[1].s+a[1].f));
+          const [name, d] = rank[0]; const z = sortDesc(d.z)[0];
+          txt += `. 가장 영향력이 큰 블로커는 <b>${escChip(name)}</b>(득점 ${d.s} · 범실 ${d.f}${z?`, 주로 ${z[0]}`:''})`;
+          const most = Object.entries(by).sort((a,b)=>(b[1].s+b[1].f)-(a[1].s+a[1].f))[0];
+          if(most[0]!==name) txt += `, 가장 많이 관여한 블로커는 ${escChip(most[0])}(득점 ${most[1].s} · 범실 ${most[1].f})`;
+          if(d.f>d.s) txt += ' — 범실이 득점보다 많아 손 모양·타이밍 점검이 필요해요';
+        } else {
+          const blocked = Object.entries(by).filter(([k,d])=>d.s>0).sort((a,b)=>b[1].s-a[1].s)[0];
+          const beat = Object.entries(by).filter(([k,d])=>d.f>0).sort((a,b)=>b[1].f-a[1].f)[0];
+          if(blocked) txt += `. ${tName} 블록에 가장 많이 막힌 ${other} 선수는 <b>${escChip(blocked[0])}</b>(${blocked[1].s}회${sortDesc(blocked[1].z)[0]?`, 주로 ${sortDesc(blocked[1].z)[0][0]}`:''})`;
+          if(beat) txt += `${blocked?',':'.'} ${tName} 블록을 가장 많이 이용해 점수를 낸 ${other} 선수는 ${escChip(beat[0])}(${beat[1].f}회)`;
+        }
+      }
+      return `<li>${txt}.</li>`;
+    };
+    const items = teamLine('our') + teamLine('opp');
+    if(!items) return '';
+    const so = blkAll.filter(e=>e.team==='our'&&e.outcome==='score').length - blkAll.filter(e=>e.team==='our'&&e.outcome!=='score').length;
+    const sp = blkAll.filter(e=>e.team==='opp'&&e.outcome==='score').length - blkAll.filter(e=>e.team==='opp'&&e.outcome!=='score').length;
+    const verdict = so===sp ? '두 팀의 블로킹 득실이 같아요' : `블로킹 싸움은 <b>${so>sp?ourTeamName:oppTeamName}</b> 쪽이 앞섰어요(득실 ${ourTeamName} ${so>0?'+':''}${so} · ${oppTeamName} ${sp>0?'+':''}${sp})`;
+    return `<p>🧱 <b>블로킹 영향력</b> — ${verdict}.</p><ul class="analysis-list">${items}</ul>`;
   }
   function renderAutoAnalysis(){
     const el = document.getElementById('autoAnalysis');
