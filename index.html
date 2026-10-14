@@ -564,12 +564,12 @@
       gap:20px;
     }
     .center-stack{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:16px; order:0; }
-    #cardPresets, #cardAttack{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; }
-    #cardPresets{ flex:0 0 320px; order:-1; }
-    #cardAttack{ flex:0 0 360px; order:1; }
-    #cardPresets .preset-input-row{ flex-direction:column; }
-    #cardPresets .preset-input-row input[type=text]{ flex:none !important; width:100%; }
-    #cardPresets .preset-input-row button{ width:100%; }
+    #sideLeft, #cardPresets{ position:sticky; top:16px; max-height:calc(100vh - 32px); overflow-y:auto; }
+    #sideLeft{ flex:0 0 360px; order:-1; }
+    #cardPresets{ flex:0 0 330px; order:1; }
+    #cardSave .preset-input-row, #cardPresets .preset-input-row{ flex-direction:column; }
+    #cardSave .preset-input-row input[type=text], #cardPresets .preset-input-row input[type=text]{ flex:none !important; width:100%; }
+    #cardSave .preset-input-row button, #cardPresets .preset-input-row button{ width:100%; }
     #cardPresets #editModeSeg{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; border-radius:12px; }
     #cardPresets #editModeSeg button{ border-radius:8px; flex:none; }
     #customXSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; padding:4px; }
@@ -637,9 +637,9 @@
     .match-save-card .fgroup-save > div[style*="flex-wrap"] > .btn{ flex:1 1 0; white-space:nowrap; }
     /* 이름+저장, 불러오기 줄이 좁은 화면에서 잘리지 않게 */
     .preset-input-row input[type=text]{ min-width:0; }
-    #cardPresets .preset-input-row{ flex-direction:row; }
-    #cardPresets .preset-input-row input[type=text]{ flex:1 1 auto !important; width:auto; }
-    #cardPresets .preset-input-row button{ width:auto; flex:none; }
+    #cardPresets .preset-input-row, #cardSave .preset-input-row{ flex-direction:row; }
+    #cardPresets .preset-input-row input[type=text], #cardSave .preset-input-row input[type=text]{ flex:1 1 auto !important; width:auto; }
+    #cardPresets .preset-input-row button, #cardSave .preset-input-row button{ width:auto; flex:none; }
     #cardPresets .fgroup > div[style*="align-items:flex-end"]{ flex-wrap:wrap; }
     #cardPresets .fgroup > div[style*="align-items:flex-end"] > div{ flex:1 1 100% !important; }
     #cardPresets .fgroup > div[style*="align-items:flex-end"] > .btn{ flex:1 1 100% !important; }
@@ -861,13 +861,14 @@
   .match-info[open] > summary .fg-title::after{ content:' ▴'; }
   .match-info:not([open]) > summary{ border-bottom:none; padding-bottom:0; }
 
-  /* ---------- 대형 카드: 쓰는 순서(불러오기 → 편집 → 저장 → 최종 → 공유)로 배치 ---------- */
+  /* ---------- 사용 순서: 왼쪽(공격 상황 편집 → 대형 저장) → 오른쪽(불러오기 → 편집 → 최종 → 공유) ---------- */
+  .side-left{ display:flex; flex-direction:column; gap:14px; }
+  #cardSave .fgroup{ margin-top:0; }
   #cardPresets{ display:flex; flex-direction:column; }
   #presetEditControls, #editModeSection{ display:contents; }
   #cardPresets > h2{ order:0; }
   #grpPresetLoad, #autoSaveStatus, #presetSearchBox{ order:1; }
   #grpEdit{ order:2; }
-  #grpPresetSave{ order:3; }
   #finalFormationSection{ order:4; }
   #btnPresetInfoToggle, #presetInfoPanel{ order:5; }
   #shareFormationSection{ order:6; }
@@ -1117,7 +1118,7 @@
     <div class="modal-body">
       <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
       <ul class="feature-list">
-        <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 포지션 배정(이름 표시 가능), 시작·도착 위치 편집, 폴더별 저장·불러오기를 할 수 있어요.</li>
+        <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 공격 상황 편집 → 대형 저장(왼쪽), 대형 불러오기·편집·⭐ 최종 확정·공유(오른쪽) 순서로 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
         <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 기록하기를 누르면 다음 점수를 위해 기본값으로 돌아가요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽으로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요.</li>
@@ -1176,6 +1177,7 @@
         <button class="btn gd-more-btn" type="button">⚠️ 참고사항 더 보기 ▾</button>
         <div class="gd-more" style="display:none;">
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
+          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집 → 대형 저장, <b>가운데</b> 대형 코멘트·코트·포지션 배정, <b>오른쪽</b> 대형 불러오기 → 편집 모드 → ⭐ 최종 대형 → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
           <li>이동 동선·착지 이동선·커버리지·블로킹 범위는 항상 코트에 함께 표시돼요.</li>
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
           <li>왼쪽·오른쪽 기준: <b>공격 위치</b>는 공격하는 팀, <b>공 착지 칸</b>은 공을 받는 팀이 네트를 바라볼 때 기준이에요.</li>
@@ -1273,19 +1275,11 @@
 <div class="center-stack">
 
 
-    <div class="card">
-      <h2><span class="n">01</span>포지션 배정</h2>
-      <div class="field-note" style="margin-top:0; margin-bottom:10px;">공격수·세터·리시브 배정과 움직임이 지정한 포지션에 맞게 반영돼요. 레프트백·센터백·라이트백은 리베로 역할이라 블로킹에 가담하지 않아요.<br>포지션 아래 칸에 <b>이름</b>을 적으면 코트 도트에 번호 대신 그 이름이 표시돼요(비워두면 번호로 보여요).</div>
-      <div class="pos-cols">
-        <div>
-          <div class="pos-team-label"><span class="dot" style="background:var(--own);"></span>아군</div>
-          <div class="pos-grid" id="posGrid"></div>
-        </div>
-        <div>
-          <div class="pos-team-label"><span class="dot" style="background:var(--opp);"></span>상대팀</div>
-          <div class="pos-grid" id="oppPosGrid"></div>
-        </div>
-      </div>
+    <div class="card" id="formationCommentCard">
+      <label class="field-label" for="formationComment" style="margin-top:0;">💬 대형 코멘트 <span class="comment-target" id="commentTarget"></span></label>
+      <div class="field-note" style="margin-top:0; margin-bottom:6px;">코트에 보이는 대형을 왜 이렇게 짰는지, 상대가 바꿔 나올 때 어떻게 움직일지 같은 <b>의도·우발 상황 대처</b>를 적어요. 불러온 대형마다 따로 저장되고, 공유 링크로 보낼 때도 함께 전달돼요.</div>
+      <textarea id="formationComment" class="comment-input" rows="3" maxlength="600" placeholder="이 대형을 만든 의도, 우발 상황 대처 등을 적어주세요. (예: 상대가 시간차로 바꾸면 5번이 먼저 중앙을 막고, 8번이 뒤를 커버)"></textarea>
+      <div class="field-note" id="commentMeta" style="margin-top:4px;"></div>
     </div>
 
       
@@ -1352,11 +1346,19 @@
       </div>
     </div>
 
-    <div class="card" id="formationCommentCard">
-      <label class="field-label" for="formationComment" style="margin-top:0;">💬 대형 코멘트 <span class="comment-target" id="commentTarget"></span></label>
-      <div class="field-note" style="margin-top:0; margin-bottom:6px;">코트에 보이는 대형을 왜 이렇게 짰는지, 상대가 바꿔 나올 때 어떻게 움직일지 같은 <b>의도·우발 상황 대처</b>를 적어요. 불러온 대형마다 따로 저장되고, 공유 링크로 보낼 때도 함께 전달돼요.</div>
-      <textarea id="formationComment" class="comment-input" rows="3" maxlength="600" placeholder="이 대형을 만든 의도, 우발 상황 대처 등을 적어주세요. (예: 상대가 시간차로 바꾸면 5번이 먼저 중앙을 막고, 8번이 뒤를 커버)"></textarea>
-      <div class="field-note" id="commentMeta" style="margin-top:4px;"></div>
+    <div class="card" id="cardPositions">
+      <h2>포지션 배정</h2>
+      <div class="field-note" style="margin-top:0; margin-bottom:10px;">공격수·세터·리시브 배정과 움직임이 지정한 포지션에 맞게 반영돼요. 레프트백·센터백·라이트백은 리베로 역할이라 블로킹에 가담하지 않아요.<br>포지션 아래 칸에 <b>이름</b>을 적으면 코트 도트에 번호 대신 그 이름이 표시돼요(비워두면 번호로 보여요).</div>
+      <div class="pos-cols">
+        <div>
+          <div class="pos-team-label"><span class="dot" style="background:var(--own);"></span>아군</div>
+          <div class="pos-grid" id="posGrid"></div>
+        </div>
+        <div>
+          <div class="pos-team-label"><span class="dot" style="background:var(--opp);"></span>상대팀</div>
+          <div class="pos-grid" id="oppPosGrid"></div>
+        </div>
+      </div>
     </div>
 
 
@@ -1364,17 +1366,116 @@
 
   
 </div>
-<div class="card" id="cardPresets">
-      <h2><span class="n">02</span>대형 저장 &amp; 편집</h2>
+<div id="sideLeft" class="side-left">
+<div class="card" id="cardAttack">
+        <details class="attack-fold" id="attackFold" open>
+        <summary><h2>공격 상황 편집</h2><span class="attack-fold-sub">① 공격 상황을 고르고 공격 과정(위치·템포·착지)을 정해요 → 아래 대형 저장</span></summary>
 
-      <div id="presetEditControls">
-        <div class="fgroup" style="display:none;">
-        <div class="fgroup-head"><span class="fg-ic">🎬</span><span class="fg-title">시나리오별 대형</span><span class="fg-sub">고르면 그 공격 상황으로 바로 전환돼요</span></div>
-        <select id="presetScenarioPick"></select>
+        <div id="attackCustomControls">
+        <div id="customPanel">
+          <div class="fgroup">
+          <div class="fgroup-head"><span class="fg-ic">⚡</span><span class="fg-title">공격 동작</span><span class="fg-sub">어디서·얼마나 빠르게 공격할지 정해요</span></div>
+          <label class="field-label" style="margin-top:0;">공격 위치</label>
+          <div class="field-note" style="margin-top:0; margin-bottom:6px;">왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. <span id="attackSideHint"></span></div>
+          <div class="seg" id="customXSeg">
+            <button data-x="30">왼쪽 끝</button>
+            <button data-x="145">왼쪽 중간</button>
+            <button data-x="370">오른쪽 끝</button>
+            <button data-x="255">오른쪽 중간</button>
+            <button data-x="200" class="active">중앙</button>
+          </div>
+          <div style="display:none;">
+            <label class="field-label" style="margin-top:0; white-space:nowrap;">위치 미리보기</label>
+            <select id="attackZonePreviewSelect" style="flex:1;">
+              <option value="">보지 않음</option>
+              <option value="30">왼쪽 끝</option>
+              <option value="145">왼쪽 중간</option>
+              <option value="200">중앙</option>
+              <option value="255">오른쪽 중간</option>
+              <option value="370">오른쪽 끝</option>
+            </select>
+          </div>
+          <label class="field-label" style="margin-top:8px;">템포(속도)</label>
+          <div class="seg" id="customTempoSeg">
+            <button data-tempo="fast">빠름</button>
+            <button data-tempo="normal" class="active">보통</button>
+            <button data-tempo="slow">느림</button>
+          </div>
+          <div class="check-row" style="margin-top:4px;"><input type="checkbox" id="customFake"><label for="customFake">시간차(페이크) 동작 포함</label></div>
+          <div class="field-note" style="margin-top:0;">중앙에서 먼저 속공하는 척(페이크)한 뒤, 실제 공격은 한 박자 늦게 들어가요. 블로커가 페이크에 먼저 반응했다가 다시 따라가요.</div>
+
+          </div>
+
+          <div class="fgroup">
+          <div class="fgroup-head"><span class="fg-ic">🎯</span><span class="fg-title">공 착지</span><span class="fg-sub">공이 떨어질 자리를 직접 골라요</span></div>
+          <div class="check-row" style="margin-top:0;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
+          <div id="customLandingRow" style="display:none; margin-top:6px;">
+            <div class="landing-court net-top" id="landingCourt">
+            <div class="landing-net">네트</div>
+            <div class="nine-zone-grid" id="landingNineZone">
+              <button data-col="0" data-row="0">왼쪽 앞</button>
+              <button data-col="1" data-row="0">중앙 앞</button>
+              <button data-col="2" data-row="0">오른쪽 앞</button>
+              <button data-col="0" data-row="1">왼쪽 중간</button>
+              <button data-col="1" data-row="1" class="active">중앙</button>
+              <button data-col="2" data-row="1">오른쪽 중간</button>
+              <button data-col="0" data-row="2">왼쪽 뒤</button>
+              <button data-col="1" data-row="2">중앙 뒤</button>
+              <button data-col="2" data-row="2">오른쪽 뒤</button>
+            </div>
+            </div>
+            <button class="btn" id="btnLandingInfoToggle" style="width:100%; margin-top:6px;">ℹ️ 참고사항 ▾</button>
+            <div id="landingInfoPanel" class="note-box" style="display:none; margin-top:8px;">
+              <p style="margin:0 0 8px;">9칸은 <b>경기장 화면과 같은 방향</b>으로 놓여 있어요. 화면에서 공을 떨어뜨리고 싶은 자리와 같은 위치의 칸을 누르면 그 자리로 정확히 날아가요. 상대 공격이면 왼쪽으로, 우리 공격이면 오른쪽으로 90도 돌아간 모양이에요.</p>
+              <p style="margin:0 0 8px;"><b>앞·뒤</b> — 주황색 "네트" 막대에 가까운 줄이 "앞", 먼 줄이 "뒤"예요.</p>
+              <p style="margin:0 0 8px;"><b>왼쪽·오른쪽</b> — 공격하는 팀이 아니라 <b>공을 받는 팀</b>이 네트를 바라볼 때의 왼쪽·오른쪽이에요. 상대 공격이면 우리 팀 기준, 우리 공격이면 상대 팀 기준이에요.</p>
+              <p style="margin:0;" id="landingSideHint"></p>
+            </div>
+          </div>
+
+          </div>
+
+          <div class="fgroup fgroup-save">
+          <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">저장</span><span class="fg-sub">위 설정을 지금 공격 상황에 덮어써요</span></div>
+          <div class="field-note" style="margin:0 0 8px;" id="customSaveTarget">지금 코트에 보이는 공격 상황에 저장돼요.</div>
+          <select id="customTargetSelect" style="display:none;">
+            <optgroup label="상대 공격 → 우리 팀 수비">
+              <option value="L">상대 좌측(L) 오픈 공격</option>
+              <option value="C">상대 중앙(C) 속공</option>
+              <option value="R">상대 우측(R) 공격</option>
+              <option value="TIMEDIFF">시간차 공격 (페이크 포함)</option>
+              <option value="BACKSLIDE">빽차 공격 (백슬라이드)</option>
+              <option value="BACKA">빽A 공격 (빽토스)</option>
+            </optgroup>
+            <optgroup label="우리 팀 공격 → 리시브·토스 커버">
+              <option value="OUR_L">좌측(L) 공격 시 커버</option>
+              <option value="OUR_C">중앙(C) 속공 시 커버</option>
+              <option value="OUR_R">우측(R) 공격 시 커버</option>
+              <option value="OUR_TIMEDIFF">시간차 공격 시 커버</option>
+              <option value="OUR_BACKSLIDE">빽차 공격 시 커버</option>
+              <option value="OUR_BACKA">빽A 공격 시 커버</option>
+            </optgroup>
+          </select>
+          <div class="btn-row" style="margin-top:8px;">
+            <button class="btn primary" id="btnSaveCustom">지금 공격 상황에 저장(덮어쓰기)</button>
+          </div>
+          <div class="edit-hint" id="customStatus"></div>
+          </div>
+        </div>
         </div>
 
+        <button class="btn" id="btnAttackInfoToggle" style="width:100%; margin-top:10px;">ℹ️ 참고사항 ▾</button>
+        <div id="attackInfoPanel" class="note-box" style="display:none; margin-top:8px;">
+          <p style="margin:0 0 8px;"><b>공격 위치</b>의 왼쪽/오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요(상대 공격은 화면 위쪽, 우리 공격은 화면 아래쪽이 왼쪽). <b>공 착지 칸</b>은 화면과 같은 방향으로 놓여 있고, 좌우는 <b>공을 받는 팀</b> 기준이에요.</p>
+          <p style="margin:0 0 8px;">착지는 정해진 코트 9구역 중 하나로 고정돼요 — 오른쪽 계열은 레프트·앞차·레프트백 구역, 왼쪽 계열은 라이트·빽차·라이트백 구역이에요. 포지션 배정을 바꾸거나 선수를 드래그해도 이 구역 자체는 달라지지 않아요.</p>
+          <p style="margin:0;">저장하면 선택한 공격 상황의 위치·속도·페이크·착지가 지금 값으로 덮어써지고, 이름은 그대로 유지돼요.</p>
+        </div>
+              </details>
+</div>
+<div class="card" id="cardSave">
+      <h2>대형 저장</h2>
+      <div class="field-note" style="margin-top:0; margin-bottom:8px;">위에서 공격 상황과 공격 과정을 정했으면, 폴더와 이름을 정해 <b>지금 코트의 대형</b>을 저장해요. 저장한 대형은 <b>대형 불러오기 &amp; 편집</b>에서 불러와 고치고, 개설자가 ⭐ 최종 대형으로 확정해요.</div>
         <div class="fgroup" id="grpPresetSave">
-        <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">대형 저장</span><span class="fg-sub">폴더와 이름을 정해 지금 대형을 저장해요</span></div>
         <label class="field-label" style="margin-top:0;">폴더</label>
         <select id="presetFolderSelect">
           <option value="">(폴더 없음)</option>
@@ -1396,6 +1497,17 @@
           <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
         </div>
         </div>
+</div>
+</div>
+<div class="card" id="cardPresets">
+      <h2>대형 불러오기 &amp; 편집</h2>
+
+      <div id="presetEditControls">
+        <div class="fgroup" style="display:none;">
+        <div class="fgroup-head"><span class="fg-ic">🎬</span><span class="fg-title">시나리오별 대형</span><span class="fg-sub">고르면 그 공격 상황으로 바로 전환돼요</span></div>
+        <select id="presetScenarioPick"></select>
+        </div>
+
 
         <div id="finalFormationSection" class="fgroup final-box">
           <div class="final-head">⭐ 최종 대형 <span class="final-scen" id="finalScenLabel"></span></div>
@@ -1514,111 +1626,6 @@
         </div>
       </div>
     </div>
-<div class="card" id="cardAttack">
-        <details class="attack-fold" id="attackFold">
-        <summary><h2><span class="n">03</span>공격 상황 편집</h2><span class="attack-fold-sub">지금 코트의 공격 상황 위치·템포·착지를 바꿀 때 열어요</span></summary>
-
-        <div id="attackCustomControls">
-        <div id="customPanel">
-          <div class="fgroup">
-          <div class="fgroup-head"><span class="fg-ic">⚡</span><span class="fg-title">공격 동작</span><span class="fg-sub">어디서·얼마나 빠르게 공격할지 정해요</span></div>
-          <label class="field-label" style="margin-top:0;">공격 위치</label>
-          <div class="field-note" style="margin-top:0; margin-bottom:6px;">왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. <span id="attackSideHint"></span></div>
-          <div class="seg" id="customXSeg">
-            <button data-x="30">왼쪽 끝</button>
-            <button data-x="145">왼쪽 중간</button>
-            <button data-x="370">오른쪽 끝</button>
-            <button data-x="255">오른쪽 중간</button>
-            <button data-x="200" class="active">중앙</button>
-          </div>
-          <div style="display:none;">
-            <label class="field-label" style="margin-top:0; white-space:nowrap;">위치 미리보기</label>
-            <select id="attackZonePreviewSelect" style="flex:1;">
-              <option value="">보지 않음</option>
-              <option value="30">왼쪽 끝</option>
-              <option value="145">왼쪽 중간</option>
-              <option value="200">중앙</option>
-              <option value="255">오른쪽 중간</option>
-              <option value="370">오른쪽 끝</option>
-            </select>
-          </div>
-          <label class="field-label" style="margin-top:8px;">템포(속도)</label>
-          <div class="seg" id="customTempoSeg">
-            <button data-tempo="fast">빠름</button>
-            <button data-tempo="normal" class="active">보통</button>
-            <button data-tempo="slow">느림</button>
-          </div>
-          <div class="check-row" style="margin-top:4px;"><input type="checkbox" id="customFake"><label for="customFake">시간차(페이크) 동작 포함</label></div>
-          <div class="field-note" style="margin-top:0;">중앙에서 먼저 속공하는 척(페이크)한 뒤, 실제 공격은 한 박자 늦게 들어가요. 블로커가 페이크에 먼저 반응했다가 다시 따라가요.</div>
-
-          </div>
-
-          <div class="fgroup">
-          <div class="fgroup-head"><span class="fg-ic">🎯</span><span class="fg-title">공 착지</span><span class="fg-sub">공이 떨어질 자리를 직접 골라요</span></div>
-          <div class="check-row" style="margin-top:0;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
-          <div id="customLandingRow" style="display:none; margin-top:6px;">
-            <div class="landing-court net-top" id="landingCourt">
-            <div class="landing-net">네트</div>
-            <div class="nine-zone-grid" id="landingNineZone">
-              <button data-col="0" data-row="0">왼쪽 앞</button>
-              <button data-col="1" data-row="0">중앙 앞</button>
-              <button data-col="2" data-row="0">오른쪽 앞</button>
-              <button data-col="0" data-row="1">왼쪽 중간</button>
-              <button data-col="1" data-row="1" class="active">중앙</button>
-              <button data-col="2" data-row="1">오른쪽 중간</button>
-              <button data-col="0" data-row="2">왼쪽 뒤</button>
-              <button data-col="1" data-row="2">중앙 뒤</button>
-              <button data-col="2" data-row="2">오른쪽 뒤</button>
-            </div>
-            </div>
-            <button class="btn" id="btnLandingInfoToggle" style="width:100%; margin-top:6px;">ℹ️ 참고사항 ▾</button>
-            <div id="landingInfoPanel" class="note-box" style="display:none; margin-top:8px;">
-              <p style="margin:0 0 8px;">9칸은 <b>경기장 화면과 같은 방향</b>으로 놓여 있어요. 화면에서 공을 떨어뜨리고 싶은 자리와 같은 위치의 칸을 누르면 그 자리로 정확히 날아가요. 상대 공격이면 왼쪽으로, 우리 공격이면 오른쪽으로 90도 돌아간 모양이에요.</p>
-              <p style="margin:0 0 8px;"><b>앞·뒤</b> — 주황색 "네트" 막대에 가까운 줄이 "앞", 먼 줄이 "뒤"예요.</p>
-              <p style="margin:0 0 8px;"><b>왼쪽·오른쪽</b> — 공격하는 팀이 아니라 <b>공을 받는 팀</b>이 네트를 바라볼 때의 왼쪽·오른쪽이에요. 상대 공격이면 우리 팀 기준, 우리 공격이면 상대 팀 기준이에요.</p>
-              <p style="margin:0;" id="landingSideHint"></p>
-            </div>
-          </div>
-
-          </div>
-
-          <div class="fgroup fgroup-save">
-          <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">저장</span><span class="fg-sub">위 설정을 지금 공격 상황에 덮어써요</span></div>
-          <div class="field-note" style="margin:0 0 8px;" id="customSaveTarget">지금 코트에 보이는 공격 상황에 저장돼요.</div>
-          <select id="customTargetSelect" style="display:none;">
-            <optgroup label="상대 공격 → 우리 팀 수비">
-              <option value="L">상대 좌측(L) 오픈 공격</option>
-              <option value="C">상대 중앙(C) 속공</option>
-              <option value="R">상대 우측(R) 공격</option>
-              <option value="TIMEDIFF">시간차 공격 (페이크 포함)</option>
-              <option value="BACKSLIDE">빽차 공격 (백슬라이드)</option>
-              <option value="BACKA">빽A 공격 (빽토스)</option>
-            </optgroup>
-            <optgroup label="우리 팀 공격 → 리시브·토스 커버">
-              <option value="OUR_L">좌측(L) 공격 시 커버</option>
-              <option value="OUR_C">중앙(C) 속공 시 커버</option>
-              <option value="OUR_R">우측(R) 공격 시 커버</option>
-              <option value="OUR_TIMEDIFF">시간차 공격 시 커버</option>
-              <option value="OUR_BACKSLIDE">빽차 공격 시 커버</option>
-              <option value="OUR_BACKA">빽A 공격 시 커버</option>
-            </optgroup>
-          </select>
-          <div class="btn-row" style="margin-top:8px;">
-            <button class="btn primary" id="btnSaveCustom">지금 공격 상황에 저장(덮어쓰기)</button>
-          </div>
-          <div class="edit-hint" id="customStatus"></div>
-          </div>
-        </div>
-        </div>
-
-        <button class="btn" id="btnAttackInfoToggle" style="width:100%; margin-top:10px;">ℹ️ 참고사항 ▾</button>
-        <div id="attackInfoPanel" class="note-box" style="display:none; margin-top:8px;">
-          <p style="margin:0 0 8px;"><b>공격 위치</b>의 왼쪽/오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요(상대 공격은 화면 위쪽, 우리 공격은 화면 아래쪽이 왼쪽). <b>공 착지 칸</b>은 화면과 같은 방향으로 놓여 있고, 좌우는 <b>공을 받는 팀</b> 기준이에요.</p>
-          <p style="margin:0 0 8px;">착지는 정해진 코트 9구역 중 하나로 고정돼요 — 오른쪽 계열은 레프트·앞차·레프트백 구역, 왼쪽 계열은 라이트·빽차·라이트백 구역이에요. 포지션 배정을 바꾸거나 선수를 드래그해도 이 구역 자체는 달라지지 않아요.</p>
-          <p style="margin:0;">저장하면 선택한 공격 상황의 위치·속도·페이크·착지가 지금 값으로 덮어써지고, 이름은 그대로 유지돼요.</p>
-        </div>
-              </details>
-</div>
 </div>
 </div>
 </div>
@@ -4359,7 +4366,7 @@
     // hide (not just disable) editor-only controls entirely, per the "view via link" default:
     // only the simulation, description, position assignment, and read-only saved-formation
     // browsing stay visible.
-    const hideIds = ['presetEditControls','editModeSection','attackCustomControls','autoSaveStatus'];
+    const hideIds = ['presetEditControls','editModeSection','attackCustomControls','autoSaveStatus','cardSave'];
     hideIds.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
     document.querySelectorAll('#posGrid select, #oppPosGrid select, #posGrid input, #oppPosGrid input').forEach(s=>s.disabled=true);
     document.getElementById('btnSaveRoom').style.display='none';
@@ -4765,8 +4772,8 @@
   const GUIDE_STEPS = {
     sim: [
       { title:'포지션을 배정해요',
-        text:'"01 포지션 배정"에서 9명의 포지션을 고르고, 아래 칸에 <b>이름</b>을 적으면 코트 도트에 번호 대신 이름이 보여요.',
-        scene:`<div class="mk-card"><div class="mk-h"><span class="n">01</span>포지션 배정</div><div class="mk-row">
+        text:'코트 아래 <b>포지션 배정</b>에서 9명의 포지션을 고르고, 아래 칸에 <b>이름</b>을 적으면 코트 도트에 번호 대신 이름이 보여요.',
+        scene:`<div class="mk-card"><div class="mk-h">포지션 배정</div><div class="mk-row">
           <div class="mk-pos"><div class="mk-row"><span class="mk-num">1</span><span class="mk-btn">레프트 ▾</span></div><div class="mk-input k-name" data-ph="이름(선택)"></div></div>
           <div class="mk-pos"><div class="mk-row"><span class="mk-num">2</span><span class="mk-btn">세터 ▾</span></div><div class="mk-input" data-ph="이름(선택)"></div></div>
           <div class="mk-pos"><div class="mk-row"><span class="mk-num">3</span><span class="mk-btn k-sel">라이트 ▾</span></div><div class="mk-input" data-ph="이름(선택)"></div></div>
@@ -4796,14 +4803,8 @@
                     mv('.k-own1',54,30); mv('.k-own6',70,62); mv('.k-own2',56,46);
                     const b=sc.querySelector('.k-ball'); setTimeout(()=>{ b.style.left='80%'; b.style.top='66%'; }, 500); }},
                  {wait:2600}, {fn:sc=>{ sc.querySelector('.k-play').textContent='▶'; }}, {wait:900} ] },
-      { title:'대형을 직접 고쳐요',
-        text:'"02 대형 저장 & 편집"의 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
-        scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
-        script:[ {click:'.k-end', then:el=>el.classList.add('on')},
-                 {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
-                 {wait:1500} ] },
       { title:'공격 상황을 편집해요',
-        text:'접혀 있는 <b>"03 공격 상황 편집"</b>을 열어 위치·템포·시간차·<b>공 착지 칸</b>을 고르고 저장하면 <b>지금 코트의 공격 상황</b>이 바뀌어요. 공격 위치는 공격하는 팀, 착지 칸은 공을 받는 팀 기준이에요.',
+        text:'먼저 왼쪽 <b>공격 상황 편집</b>에서 공격 상황을 고르고 위치·템포·시간차·<b>공 착지 칸</b>으로 공격 과정을 정해 저장하면 <b>지금 코트의 공격 상황</b>이 바뀌어요. 공격 위치는 공격하는 팀, 착지 칸은 공을 받는 팀 기준이에요.',
         scene:`<div class="mk-card">
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격 위치</span><span class="mk-btn on k-x1">왼쪽</span><span class="mk-btn k-x2">중앙</span><span class="mk-btn">오른쪽</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">템포</span><span class="mk-btn k-t1">빠름</span><span class="mk-btn on k-t2">보통</span><span class="mk-btn">느림</span></div>
@@ -4816,7 +4817,7 @@
                  {click:'.k-cell', then:el=>el.classList.add('on')},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'폴더를 정해서 저장해요',
-        text:'<b>💡 폴더 이름 정하는 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)을 누르면 폴더 이름이 바로 채워져요. 대형 이름을 적고 저장하면 "저장된 대형 불러오기"에서 언제든 불러와요.',
+        text:'공격 과정을 정했으면 바로 아래 <b>대형 저장</b>에서 저장해요. <b>💡 폴더 이름 정하는 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)을 누르면 폴더 이름이 바로 채워져요. 대형 이름을 적고 저장하면 오른쪽 "저장된 대형 불러오기"에서 언제든 불러와요.',
         scene:`<div class="mk-card"><div class="mk-lbl">💡 폴더 이름 정하는 Tip</div>
           <div class="mk-row"><span class="mk-btn">우리팀 · </span><span class="mk-btn">상대팀 · </span><span class="mk-btn k-op">의견 · 민수</span><span class="mk-btn">디테일 · </span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:40px;">폴더</span><div class="mk-input k-folder" data-ph="새 폴더 이름"></div></div>
@@ -4825,6 +4826,12 @@
         script:[ {click:'.k-op', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-folder').textContent='의견 · 민수'; }},
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
+      { title:'불러와서 고쳐요',
+        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고, 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
+        scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
+        script:[ {click:'.k-end', then:el=>el.classList.add('on')},
+                 {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
+                 {wait:1500} ] },
       { title:'⭐ 최종 대형을 확정해요 (개설자)',
         text:'개설자는 의견·디테일 폴더의 대형을 불러와 비교한 뒤 <b>⭐ 지금 대형을 최종으로 확정</b>을 눌러요. 공격 상황마다 하나씩 저장되고, 수정 권한자는 불러오기만 할 수 있어요.',
         scene:`<div class="mk-card"><div class="mk-lbl">저장된 대형 불러오기</div>
@@ -4835,7 +4842,7 @@
         script:[ {click:'.k-pick', then:el=>el.classList.add('on')},
                  {click:'.k-fin', then:(el,sc)=>{ sc.querySelector('.k-status').innerHTML='확정됨 · 바탕: <b style="color:var(--text)">의견 · 지훈 / 리시브 대형 B</b>'; el.textContent='⭐ 지금 대형으로 최종 교체'; }}, {wait:1800} ] },
       { title:'대형에 코멘트를 남겨요',
-        text:'코트 아래 <b>💬 대형 코멘트</b>에 이 대형을 짠 의도나 우발 상황 대처를 적어요. 불러온 대형마다 자동 저장되고, 공유 링크에도 함께 담겨요.',
+        text:'코트 위 <b>💬 대형 코멘트</b>에 이 대형을 짠 의도나 우발 상황 대처를 적어요. 불러온 대형마다 자동 저장되고, 공유 링크에도 함께 담겨요.',
         scene:`${fullCourt()}<div class="mk-card"><div class="mk-h">💬 대형 코멘트 <span class="mk-lbl">· 의견 · 지훈 / 리시브 대형 B</span></div>
           <div class="mk-input k-cm" data-ph="이 대형의 의도, 우발 상황 대처 등을 적어주세요" style="min-height:40px;"></div>
           <div class="mk-lbl k-meta"></div></div>`,
