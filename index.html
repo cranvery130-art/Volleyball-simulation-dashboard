@@ -974,10 +974,6 @@
   .moment-row{ display:flex; gap:6px; margin-top:8px; align-items:stretch; }
   .moment-row input{ flex:1; min-width:0; margin-top:0; font-size:13px; padding:9px 11px; }
   .moment-row .btn{ flex:none; white-space:nowrap; font-weight:700; }
-  /* 두 칸 배치(901px 이상)에서는 기록 입력 칸이 화면에 붙어 따라와요(한 줄로 쌓이는 태블릿 세로에서는 붙이지 않아요) */
-  @media (min-width:901px) and (min-height:620px){
-    body:not(.guest-view) #quickRecordCard{ position:sticky; top:8px; max-height:calc(100vh - 16px); overflow-y:auto; scrollbar-width:thin; }
-  }
   /* 태블릿 가로(901~1199px): 기록 칸을 더 넓혀 버튼이 덜 꺾이게 */
   @media (min-width:901px) and (max-width:1199px) and (min-height:620px){
     body:not(.guest-view) .video-grid-col:first-child{ flex:1 1 0 !important; }
@@ -1091,6 +1087,10 @@
   }
   .foul-desc{ margin-top:6px; padding:7px 10px; border-radius:8px; background:color-mix(in srgb, var(--accent) 10%, var(--panel-2)); border:1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); font-size:12px; line-height:1.55; color:var(--text); }
   #quickRecordCard .foul-desc{ font-size:11.5px; padding:5px 8px; margin-top:4px; }
+  .orphan-bar{ margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 12px; border-radius:10px; background:color-mix(in srgb, var(--warn) 12%, var(--panel)); border:1px solid color-mix(in srgb, var(--warn) 50%, var(--border)); }
+  .orphan-text{ flex:1 1 220px; font-size:12.5px; color:var(--text-dim); line-height:1.5; } .orphan-text b{ color:var(--text); }
+  .orphan-bar .btn{ flex:none; white-space:nowrap; }
+  body.guest-view #btnImportCsv{ display:none; }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -1461,8 +1461,10 @@
           </table>
         </div>
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
+          <li>폴더를 만들지 않고 기록했다면 매치 분석 저장 칸에 <b>⚠️ 폴더 없이 남긴 기록</b> 알림과 <b>📁 폴더에 저장</b> 버튼이 나와요. 새 이름을 적으면 새 폴더로, 기존 폴더 이름을 적으면 그 폴더 뒤에 덧붙여 저장해요.</li>
+          <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
-          <li>PC와 태블릿(가로 700px·세로 620px 이상)에서는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝낼 수 있어요(휴대폰은 기존 배치). 태블릿 가로·PC처럼 두 칸으로 보일 때는 기록 입력 칸이 화면을 내려도 위에 붙어 따라오고, 득실 위치처럼 많이 펼쳐 화면보다 길어지면 그 칸 안에서만 스크롤돼요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
+          <li>PC와 태블릿(가로 700px·세로 620px 이상)에서는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝낼 수 있어요(휴대폰은 기존 배치). 기록 입력 칸은 페이지를 스크롤해도 따라오지 않고 제자리에 있어서 아래 기록 목록·그래프를 편하게 볼 수 있어요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
           <li>"자세히 기록"의 방식·위치·관련 선수와 토스 순서는 <b>기록하기</b>를 누르면 기본값(선택 안 함)으로 돌아가요. 다음 점수는 새로 골라요. 모두 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
@@ -1911,6 +1913,10 @@
       <div class="active-folder-bar" id="activeFolderBar" style="display:none;">
         <div class="active-folder-text" id="overwriteHint"></div>
       </div>
+      <div class="orphan-bar" id="orphanBar" style="display:none;">
+        <div class="orphan-text" id="orphanText"></div>
+        <button class="btn primary" id="btnSaveOrphan" type="button">📁 폴더에 저장</button>
+      </div>
       <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·팀 이름·그래프·코치 의견으로 화면이 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 링크(받는 사람은 비밀번호 없이 바로 이 폴더를 열어 볼 수 있어요).</div>
       <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
         <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
@@ -2223,8 +2229,10 @@
         <div id="tallySummary" style="margin-bottom:10px;"></div>
         <div class="btn-row">
           <button class="btn" id="btnExportExcel">📊 기록 내보내기 (엑셀·구글시트)</button>
+          <button class="btn" id="btnImportCsv" type="button" title="이 앱에서 내보낸 기록 파일(CSV)을 다시 불러와 기록을 되살려요">📥 기록 불러오기 (백업 파일)</button>
+          <input type="file" id="importCsvInput" accept=".csv,text/csv" style="display:none;">
         </div>
-        <div class="field-note" style="margin-top:0;">영상을 올리고 남긴 기록은 왼쪽에 <b>영상 시간</b>이 나오고, 누르면 그 장면으로 이동해요. 영상 없이 남긴 기록은 시간 대신 <b>그 점수가 난 뒤의 세트 점수</b>(우리팀 : 상대팀, 딴 쪽 색)가 나와요. 줄마다 세트·관련 선수·메모를 고칠 수 있고, 실수는 ✕나 ↩️ 되돌리기로 바로잡아요. 영상을 바꿔도 기록은 그대로 남아요.</div>
+        <div class="field-note" style="margin-top:0;">영상을 올리고 남긴 기록은 왼쪽에 <b>영상 시간</b>이 나오고, 누르면 그 장면으로 이동해요. 영상 없이 남긴 기록은 시간 대신 <b>그 점수가 난 뒤의 세트 점수</b>(우리팀 : 상대팀, 딴 쪽 색)가 나와요. 줄마다 세트·관련 선수·메모를 고칠 수 있고, 실수는 ✕나 ↩️ 되돌리기로 바로잡아요. 영상을 바꿔도 기록은 그대로 남아요. <b>📊 기록 내보내기</b>로 받은 파일(CSV)은 <b>📥 기록 불러오기</b>로 다시 읽어 기록을 되살릴 수 있어요(엑셀에서 고쳤다면 CSV 형식으로 저장해요).</div>
         <div id="recordList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;"></div>
       </div>
     </div>
@@ -5189,7 +5197,7 @@
                     sc.querySelector('.k-a').textContent='25'; sc.querySelector('.k-b').textContent='18';
                     [['.k-b1','60%'],['.k-b2','35%'],['.k-b3','70%'],['.k-b4','30%']].forEach(([k,h])=>sc.querySelector(k).style.height=h); }}, {wait:1900} ] },
       { title:'경기 폴더를 관리해요',
-        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기로 바뀌고, ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 그 폴더의 분석을 바로 봐요.',
+        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기로 바뀌고, ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 그 폴더의 분석을 바로 봐요. 폴더 없이 기록했다면 위에 뜨는 <b>📁 폴더에 저장</b>으로 새 폴더를 만들거나 기존 폴더에 덧붙여요. <b>📊 기록 내보내기</b>로 받은 파일은 <b>📥 기록 불러오기</b>로 다시 읽어 백업한 기록을 되살려요.',
         scene:`<div class="mk-card"><div class="mk-h">저장된 폴더 불러오기</div><div class="mk-row"><span class="mk-btn big k-sel">📁 vs 한빛 0907 ▾</span><span class="mk-btn big">✏️</span><span class="mk-btn big k-copy">📄</span><span class="mk-btn big k-link">🔗</span></div>
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] }
@@ -5830,6 +5838,7 @@
       list.appendChild(box);
     }
     const scoreMap = scoreAtRecords();
+    if(typeof updateOrphanBar==='function') try{ updateOrphanBar(); }catch(err){}
     records.forEach((rec, idx)=>{
       const row = document.createElement('div'); row.className='record-row';
       const sc = scoreMap.get(rec);
@@ -7087,7 +7096,42 @@
     }
     updateOverwriteButton();
   }
+  // 폴더 없이 남긴 기록: 새 폴더로 저장하거나 기존 폴더에 덧붙일 수 있게 알려줘요.
+  function updateOrphanBar(){
+    const bar = document.getElementById('orphanBar'); if(!bar) return;
+    const hasActive = lastPickedMatchFolderIdx!==null && matchFolders[lastPickedMatchFolderIdx];
+    const show = !hasActive && records.length>0 && !readOnlyFolderView;
+    bar.style.display = show ? 'flex' : 'none';
+    if(show) document.getElementById('orphanText').innerHTML = `⚠️ <b>폴더 없이 남긴 기록 ${records.length}줄</b>이 있어요. 아직 어느 폴더에도 저장되지 않았으니 <b>📁 폴더에 저장</b>을 눌러 새 폴더로 만들거나 기존 폴더에 덧붙여요.`;
+  }
+  document.getElementById('btnSaveOrphan').addEventListener('click', ()=>{
+    if(readOnlyFolderView || !records.length) return;
+    const def = (document.getElementById('matchSaveName').value.trim()) || ('매치 '+(matchFolders.length+1));
+    const names = matchFolders.map(f=>f.name);
+    let name = prompt(`저장할 폴더 이름을 적어주세요.\n새 이름이면 새 폴더를 만들고, 기존 폴더 이름(${names.length?names.slice(0,5).join(', ')+(names.length>5?' …':''):'없음'})을 적으면 그 폴더 뒤에 덧붙여요.`, def);
+    if(name===null) return; name = name.trim().slice(0,40); if(!name) return;
+    const idx = matchFolders.findIndex(f=>f.name===name);
+    const copy = JSON.parse(JSON.stringify(records));
+    if(idx!==-1){
+      const f = matchFolders[idx];
+      if(!confirm(`"${name}" 폴더(기록 ${(f.records||[]).length}줄) 뒤에 지금 기록 ${copy.length}줄을 덧붙일까요?`)) return;
+      f.records = (f.records||[]).concat(copy);
+      const notes = document.getElementById('coachNotes').value.trim();
+      if(notes && !(f.coachNotes||'').includes(notes)) f.coachNotes = (f.coachNotes ? f.coachNotes+'\n' : '') + notes;
+      if(!f.videoName && currentVideoName) f.videoName = currentVideoName;
+      f.savedAt = new Date().toISOString();
+      loadMatchFolder(f, idx);
+    } else {
+      const nf = {name, savedAt:new Date().toISOString(), videoName:currentVideoName, records:copy, coachNotes:document.getElementById('coachNotes').value, oppTeamName, ourTeamName};
+      matchFolders.push(nf);
+      loadMatchFolder(nf, matchFolders.length-1);
+    }
+    renderMatchFolderSelect(); updateOrphanBar();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+    alert(`"${name}" 폴더에 기록을 저장했어요. 이후 기록도 이 폴더에 자동으로 저장돼요.`);
+  });
   function updateOverwriteButton(){
+    updateOrphanBar();
     const bar = document.getElementById('activeFolderBar');
     const hint = document.getElementById('overwriteHint');
     const has = lastPickedMatchFolderIdx!==null && matchFolders[lastPickedMatchFolderIdx] && !readOnlyFolderView;
@@ -7121,7 +7165,7 @@
     readOnlyFolderView = on;
     if(typeof updateUndoButton==='function') setTimeout(updateUndoButton,0);
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
-    ['qrRecordBtn','btnToss2nd','btnRecordMoment','momentMemo','btnClearZone','btnClearNineZone',
+    ['qrRecordBtn','btnToss2nd','btnRecordMoment','momentMemo','btnImportCsv','btnSaveOrphan','btnClearZone','btnClearNineZone',
      'videoPlayerSelect','qrOptionSelect','qrDetailSelect','qrUndoBtn','coachNotes','blockZoneSelect','btnTossUndo','btnTossClear',
      'btnNewMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
@@ -7364,7 +7408,7 @@
     return s;
   }
   function buildRecordsCSV(){
-    const header = ['세트','영상','시간','점수(그 점수 뒤)','팀','결과','분류','세부 상황','방식','위치','선수','메모'];
+    const header = ['세트','영상','시간','점수(그 점수 뒤)','팀','결과','분류','세부 상황','방식','위치','선수','메모','토스 순서'];
     const scoreMap = scoreAtRecords();
     const scoreTxt = r => { const sc = scoreMap.get(r); return sc ? `${ourTeamName} ${sc.u} : ${sc.o} ${oppTeamName}` : ''; };
     const rows = [header];
@@ -7380,14 +7424,116 @@
           const teamName = n.team==='our' ? ourTeamName : n.team==='opp' ? oppTeamName : '';
           const loc = r.grid9 ? r.grid9.label : (r.zone ? ZONE_LABELS[r.zone.row][r.zone.col] : '');
           rows.push([(r.set||1)+'세트', r.videoName||'', r.videoName?fmtTime(r.time):'', scoreTxt(r), teamName, n.outcome==='score'?'득점':n.outcome==='fault'?'범실':'',
-            n.bucket ? bucketName(n.bucket) : '', n.main, n.detail, loc, r.player ? r.player.label : '', r.label||'']);
+            n.bucket ? bucketName(n.bucket) : '', n.main, n.detail, loc, r.player ? r.player.label : '', r.label||'', r.tosses && r.tosses.length ? tossLabel(r.tosses) : '']);
         });
       } else {
-        rows.push([(r.set||1)+'세트', r.videoName||'', r.videoName?fmtTime(r.time):'', scoreTxt(r), '', '', '', '', '', '', r.player ? r.player.label : '', r.label||'']);
+        rows.push([(r.set||1)+'세트', r.videoName||'', r.videoName?fmtTime(r.time):'', scoreTxt(r), '', '', '', '', '', '', r.player ? r.player.label : '', r.label||'', '']);
       }
     });
     return rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
   }
+  // ---------- 📥 기록 불러오기: 내보낸 CSV(엑셀에서 CSV로 저장한 파일 포함)를 읽어 기록을 되살려요 ----------
+  function parseCSV(text){
+    text = text.replace(/^﻿/, '');
+    const rows = []; let row = [], cur = '', q = false;
+    for(let i=0;i<text.length;i++){
+      const c = text[i];
+      if(q){ if(c==='"'){ if(text[i+1]==='"'){ cur+='"'; i++; } else q = false; } else cur += c; }
+      else if(c==='"') q = true;
+      else if(c===','){ row.push(cur); cur=''; }
+      else if(c==='\n' || c==='\r'){ if(c==='\r' && text[i+1]==='\n') i++; row.push(cur); cur=''; if(row.some(x=>x!=='')) rows.push(row); row=[]; }
+      else cur += c;
+    }
+    row.push(cur); if(row.some(x=>x!=='')) rows.push(row);
+    return rows;
+  }
+  function parseTimeText(t){ if(!t) return null; const p = String(t).trim().split(':').map(Number); if(p.some(isNaN)) return null; return p.length===3 ? p[0]*3600+p[1]*60+p[2] : p.length===2 ? p[0]*60+p[1] : p[0]; }
+  function parseGrid9(label){
+    if(!label) return null;
+    let side = 'own', t = label.trim();
+    if(t.startsWith('상대 코트 · ')){ side = 'opp'; t = t.slice('상대 코트 · '.length); }
+    const colOf = {'왼쪽':0,'중앙':1,'오른쪽':2}, rowOf = {'앞':0,'중간':1,'뒤':2};
+    let col = null, row = null;
+    if(t==='중앙'){ col = 1; row = 1; }
+    else { const [a,b] = t.split(' '); col = colOf[a]; row = rowOf[b]; }
+    if(col===undefined || row===undefined || col===null || row===null) return null;
+    return {col, row, side, label:(side==='opp'?'상대 코트 · ':'')+t};
+  }
+  function parseTossText(t){
+    if(!t) return undefined;
+    const back = {}; Object.entries(TOSS_SHORT).forEach(([k,v])=>back[v]=k);
+    const out = t.split('→').map(x=>x.trim()).filter(Boolean).map(x=>{
+      const team = x.startsWith('🔵') ? 'our' : x.startsWith('🔴') ? 'opp' : null; if(!team) return null;
+      let to = x.slice(2).trim(); const second = /\(2단\)$/.test(to); if(second) to = to.replace(/\(2단\)$/,'').trim();
+      to = back[to] || to; const it = {team, to}; if(second) it.kind = '2nd'; return it;
+    }).filter(Boolean);
+    return out.length ? out : undefined;
+  }
+  function importRecordsCSV(text){
+    const rows = parseCSV(text);
+    if(rows.length<2){ alert('불러올 기록이 없어요. 이 앱의 "📊 기록 내보내기"로 받은 파일인지 확인해주세요.'); return; }
+    const head = rows[0].map(h=>h.trim()), col = n => head.indexOf(n);
+    const need = ['세트','팀','결과','세부 상황'];
+    if(need.some(n=>col(n)===-1)){ alert('이 파일에서 기록 열(세트·팀·결과·세부 상황)을 찾지 못했어요. 이 앱에서 내보낸 CSV 파일을 그대로(또는 엑셀에서 CSV 형식으로) 저장해 불러와주세요.'); return; }
+    const get = (r,n) => { const i = col(n); return i===-1 ? '' : (r[i]||'').trim(); };
+    const data = rows.slice(1);
+    // 팀 이름 맞추기: 파일의 팀 이름이 지금 팀 이름과 다르면 어느 쪽이 우리팀인지 물어봐요.
+    const names = [...new Set(data.map(r=>get(r,'팀')).filter(Boolean))];
+    let ourN = ourTeamName, oppN = oppTeamName;
+    const known = n => n===ourTeamName || n===oppTeamName || n==='우리팀' || n==='상대팀';
+    const unknown = names.filter(n=>!known(n));
+    if(unknown.length){
+      const cand = names.length>=2 ? names.slice(0,2) : [names[0], oppTeamName];
+      const firstIsOur = confirm(`파일의 팀 이름이 지금 화면과 달라요.\n\n확인: "${cand[0]}"을(를) 우리팀으로 불러와요.\n취소: "${cand[1]}"을(를) 우리팀으로 불러와요.`);
+      ourN = firstIsOur ? cand[0] : cand[1]; oppN = firstIsOur ? cand[1] : cand[0];
+      applyTeamNames(oppN, ourN);
+    }
+    const teamOf = n => (n===ourN || n==='우리팀') ? 'our' : (n===oppN || n==='상대팀') ? 'opp' : null;
+    let clock = 0;
+    const out = [];
+    data.forEach(r=>{
+      const set = parseInt(get(r,'세트'))||1;
+      const videoName = get(r,'영상');
+      const tt = parseTimeText(get(r,'시간'));
+      clock = Math.max(clock + 1, tt===null ? clock + 1 : tt);
+      const time = tt===null ? clock : tt;
+      const team = teamOf(get(r,'팀')), resTxt = get(r,'결과');
+      const outcome = resTxt==='득점' ? 'score' : resTxt==='범실' ? 'fault' : null;
+      const main = get(r,'세부 상황'), detail = get(r,'방식');
+      const pl = get(r,'선수'); const pid = parseInt(pl);
+      const player = pid>=1 && pid<=9 ? {id:pid, label:pl} : null;
+      const memo = get(r,'메모'), loc = get(r,'위치');
+      const rec = {time, videoName, set, player, tosses: parseTossText(get(r,'토스 순서'))};
+      if(team && outcome && main){
+        const entry = {category: qrCategoryFor(team, outcome), optionLabel: main, team, outcome};
+        if(detail) entry.detail = detail;
+        const auto = entryRecordLabel(entry);
+        rec.entries = [entry]; rec.category = entry.category; rec.optionLabel = main;
+        rec.label = memo || auto; if(memo && memo!==auto) rec.customLabel = true;
+        if(main===BLOCK_LOCATION_OPTION_NAME){ const c = ZONE_LABELS[0].indexOf(loc); rec.zone = c>=0 ? {row:0, col:c} : null; }
+        else rec.grid9 = NET_POSITION_OPTIONS.has(main) ? parseGrid9(loc) : null;
+      } else {
+        rec.category = null; rec.optionLabel = null; rec.label = memo; rec.customLabel = !!memo;
+      }
+      out.push(rec);
+    });
+    if(!out.length){ alert('불러올 기록이 없어요.'); return; }
+    let replace = true;
+    if(records.length) replace = confirm(`파일에서 기록 ${out.length}줄을 읽었어요.\n\n확인: 지금 화면의 기록 ${records.length}줄을 이 파일 기록으로 바꿔요.\n취소: 지금 기록 뒤에 덧붙여요.`);
+    pushUndo(`기록 불러오기 (${out.length}줄)`);
+    records = replace ? out : records.concat(out);
+    renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+    const hasActive = lastPickedMatchFolderIdx!==null && matchFolders[lastPickedMatchFolderIdx];
+    alert(`기록 ${out.length}줄을 불러왔어요.${hasActive ? ' 지금 폴더에 자동으로 저장돼요.' : ' 폴더에 남기려면 위의 "📁 폴더에 저장"을 눌러주세요.'}`);
+  }
+  document.getElementById('btnImportCsv').addEventListener('click', ()=>{ if(readOnlyFolderView) return; document.getElementById('importCsvInput').click(); });
+  document.getElementById('importCsvInput').addEventListener('change', e=>{
+    const f = e.target.files && e.target.files[0]; if(!f) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{ try{ importRecordsCSV(String(reader.result||'')); }catch(err){ alert('파일을 읽지 못했어요: '+(err && err.message || err)); } e.target.value=''; };
+    reader.readAsText(f, 'utf-8');
+  });
   function downloadCSV(content, filename, withBOM){
     const blob = new Blob([withBOM?'\uFEFF':'', content], {type:'text/csv;charset=utf-8'});
     const url = URL.createObjectURL(blob);
