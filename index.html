@@ -974,13 +974,22 @@
   .moment-row{ display:flex; gap:6px; margin-top:8px; align-items:stretch; }
   .moment-row input{ flex:1; min-width:0; margin-top:0; font-size:13px; padding:9px 11px; }
   .moment-row .btn{ flex:none; white-space:nowrap; font-weight:700; }
-  /* ---------- PC 브라우저(1100px 이상, 화면 높이 620px 이상): 기록 입력이 스크롤 없이 한 화면에 ----------
+  /* 두 칸 배치(901px 이상)에서는 기록 입력 칸이 화면에 붙어 따라와요(한 줄로 쌓이는 태블릿 세로에서는 붙이지 않아요) */
+  @media (min-width:901px) and (min-height:620px){
+    body:not(.guest-view) #quickRecordCard{ position:sticky; top:8px; max-height:calc(100vh - 16px); overflow-y:auto; scrollbar-width:thin; }
+  }
+  /* 태블릿 가로(901~1199px): 기록 칸을 더 넓혀 버튼이 덜 꺾이게 */
+  @media (min-width:901px) and (max-width:1199px) and (min-height:620px){
+    body:not(.guest-view) .video-grid-col:first-child{ flex:1 1 0 !important; }
+    body:not(.guest-view) .video-grid-col:last-child{ flex:1.7 1 0 !important; }
+  }
+  /* ---------- PC·태블릿(가로 700px 이상, 화면 높이 620px 이상): 기록 입력이 스크롤 없이 한 화면에 ----------
      위→아래 순서(세트 → 토스 → 결과 → 상황 → 자세히 → 기록하기)는 그대로 두고, 기록 칸을 넓혀 버튼을 한 줄에 더 놓고 간격·글자를 줄여요.
      자세히 기록을 많이 펼쳐 화면보다 길어지면 카드 안에서만 스크롤돼요. */
-  @media (min-width:1100px) and (min-height:620px){
+  @media (min-width:700px) and (min-height:620px){
     body:not(.guest-view) .video-grid-col:first-child{ flex:1 1 0; }
     body:not(.guest-view) .video-grid-col:last-child{ flex:1.3 1 0; }
-    body:not(.guest-view) #quickRecordCard{ position:sticky; top:8px; max-height:calc(100vh - 16px); overflow-y:auto; padding:10px 12px; scrollbar-width:thin; }
+    #quickRecordCard{ padding:10px 12px; }
     #quickRecordCard > h2{ font-size:15px; margin-bottom:4px; padding-bottom:6px; }
     #quickRecordCard .qr-card-note, #tossRow > .field-note, #quickRecordCard .fgroup-head .fg-sub{ display:none; }
     #quickRecordCard .fgroup-save{ padding:8px 10px; }
@@ -1451,7 +1460,7 @@
         </div>
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
-          <li>PC 브라우저(가로 1100px·세로 620px 이상)에서는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝낼 수 있어요. 기록 입력 칸은 화면을 내려도 위에 붙어 따라오고, 득실 위치처럼 많이 펼쳐 화면보다 길어지면 그 칸 안에서만 스크롤돼요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
+          <li>PC와 태블릿(가로 700px·세로 620px 이상)에서는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝낼 수 있어요(휴대폰은 기존 배치). 태블릿 가로·PC처럼 두 칸으로 보일 때는 기록 입력 칸이 화면을 내려도 위에 붙어 따라오고, 득실 위치처럼 많이 펼쳐 화면보다 길어지면 그 칸 안에서만 스크롤돼요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
           <li>"자세히 기록"의 방식·위치·관련 선수와 토스 순서는 <b>기록하기</b>를 누르면 기본값(선택 안 함)으로 돌아가요. 다음 점수는 새로 골라요. 모두 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
