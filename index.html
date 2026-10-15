@@ -81,7 +81,7 @@
   .shared-banner-text span{ display:block; font-size:11.5px; color:var(--text-dim); }
   body.shared-view #appModeSeg button[data-appmode="video"], body.shared-view #btnFeatureGuide, body.shared-view #topCodePill, body.shared-view #shareFormationSection{ display:none !important; }
   #themeSeg{ flex:none; }
-  #themeSeg button{ padding:7px 12px; font-size:12px; white-space:nowrap; }
+  #themeSeg button{ padding:9px 12px; font-size:12px; white-space:nowrap; }
   #btnThemeToggle{
     padding:9px 16px; font-size:13.5px; font-weight:600; white-space:nowrap;
     background:transparent; border:1px solid var(--border-2); color:var(--text-dim); border-radius:10px;
@@ -104,7 +104,7 @@
     .btn-row .btn{ min-width:0; flex-basis:100%; }
     .check-row input, .pos-item .num{ width:18px; height:18px; }
     .mode-seg-wrap{ padding:8px 12px; }
-    .tab-bar button{ font-size:12px; padding:8px 10px; }
+    .tab-bar button{ font-size:12px; padding:11px 10px; }
     .code-pill{ font-size:11.5px; padding:6px 10px; }
   }
   @media (max-width:700px){
@@ -136,7 +136,7 @@
   .field-note{ font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.5; }
 
   .seg{ display:flex; flex-wrap:wrap; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:3px; gap:2px; }
-  .seg button{ flex:1; min-width:44px; border:none; background:transparent; color:var(--text-dim); padding:8px 2px; border-radius:999px; font-size:11.5px; font-weight:600; font-family:inherit; cursor:pointer; }
+  .seg button{ flex:1; min-width:44px; border:none; background:transparent; color:var(--text-dim); padding:10px 2px; border-radius:999px; font-size:11.5px; font-weight:600; font-family:inherit; cursor:pointer; }
   .seg button.active{ background:var(--grad); color:var(--on-accent); }
 
   .check-row{ display:flex; align-items:center; gap:9px; padding:7px 2px; font-size:13.5px; color:var(--text); }
@@ -501,7 +501,7 @@
   @media (max-width:520px){ #settingsCol{ padding:0 8px; } }
   #mainAppCol.mode-hidden, #videoCol.mode-hidden, #settingsCol.mode-hidden{ display:none; }
   .mode-seg-wrap{
-    max-width:1400px; margin:0 auto 24px; padding:10px 16px; display:flex; flex-wrap:wrap; align-items:center; gap:12px;
+    max-width:1400px; margin:0 auto 24px; padding:12px 16px; display:flex; flex-wrap:wrap; align-items:center; gap:12px;
     background:var(--panel); border:1px solid var(--border); border-radius:16px;
     box-shadow:var(--shadow);
   }
@@ -509,7 +509,7 @@
   .code-pill b{ color:var(--text); font-weight:600; }
   .tab-bar{ display:flex; flex-wrap:wrap; gap:4px; flex:1; }
   .tab-bar button{
-    display:flex; align-items:center; gap:6px; padding:9px 14px; border:none; background:transparent;
+    display:flex; align-items:center; gap:6px; padding:12px 14px; border:none; background:transparent;
     color:var(--text-dim); font-size:13.5px; font-weight:600; font-family:inherit; white-space:nowrap;
     border-radius:10px; cursor:pointer; transition:background 0.2s ease, color 0.2s ease;
   }
@@ -632,16 +632,16 @@
     #topCodePill{ grid-row:1; grid-column:2; justify-self:start; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
     #btnLocalExit{ grid-row:1; grid-column:3; padding:7px 10px; font-size:12px; }
     #appModeSeg{ grid-row:2; grid-column:1 / -1; display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:4px; }
-    #appModeSeg button{ justify-content:center; gap:4px; padding:9px 4px; font-size:12.5px; }
+    #appModeSeg button{ justify-content:center; gap:4px; padding:12px 4px; font-size:12.5px; }
     #themeSeg{ grid-row:3; grid-column:1 / -1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
-    #themeSeg button{ padding:7px 4px; font-size:12px; }
+    #themeSeg button{ padding:9px 4px; font-size:12px; }
     /* 포지션 칸: 화면 폭을 3칸으로 고르게 */
     #posGrid, #oppPosGrid, #videoRosterGrid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
     #posGrid .pos-item, #oppPosGrid .pos-item, #videoRosterGrid .pos-item{ width:auto; min-width:0; padding:5px; }
     #posGrid .pos-item select, #oppPosGrid .pos-item select, #videoRosterGrid .pos-item select{ min-width:0; width:100%; flex:1; padding:4px 2px; font-size:11px; }
     .pos-cols{ gap:12px; }
     /* 세그먼트 버튼: 글자가 두 줄로 꺾이지 않게 */
-    .seg button{ white-space:nowrap; min-width:0; padding:8px 4px; font-size:12px; }
+    .seg button{ white-space:nowrap; min-width:0; padding:10px 4px; font-size:12px; }
     #customXSeg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; border-radius:12px; padding:4px; }
     #customXSeg button{ border-radius:8px; padding:9px 4px; }
     #customXSeg button:last-child{ grid-column:1 / -1; }
@@ -1046,7 +1046,7 @@
     #quickRecordCard > h2{ font-size:14px; margin-bottom:2px; padding-bottom:4px; }
     #quickRecordCard .fgroup-save{ padding:6px 8px; }
     #quickRecordCard .field-label{ font-size:12px; margin:4px 0 3px; }
-    #quickRecordCard .seg button{ padding:5px 4px; font-size:12px; }
+    #quickRecordCard .seg button{ padding:7px 4px; font-size:12px; }
     #quickRecordCard .qr-set-row{ margin-bottom:4px; }
     #quickRecordCard .toss-title{ font-size:12.5px; }
     #quickRecordCard .toss-tool{ min-height:28px; padding:3px 9px; font-size:11.5px; }
@@ -1089,6 +1089,8 @@
     #quickRecordCard .qr-opt-group{ flex:1 1 100%; }
     #quickRecordCard .qr-opt-group:nth-child(n+3){ flex:0 0 auto; }
   }
+  .foul-desc{ margin-top:6px; padding:7px 10px; border-radius:8px; background:color-mix(in srgb, var(--accent) 10%, var(--panel-2)); border:1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); font-size:12px; line-height:1.55; color:var(--text); }
+  #quickRecordCard .foul-desc{ font-size:11.5px; padding:5px 8px; margin-top:4px; }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -2124,7 +2126,7 @@
                   <li><b>토스 / 2단토스 / 2단연결</b>: 세터 토스, 리시브가 흔들린 뒤 올린 토스, 두 번째 터치 연결에서 <b>실수해서 바로 실점</b>했을 때만 골라요. 토스가 정상으로 이어졌다면 결과 버튼 위 <b>🏐 랠리 토스 순서</b>에 남기고(2단은 ↪ 2단), 세부 상황은 그 뒤 마지막 플레이(예: 레프트 공격)로 골라요.</li>
                 </ul>
                 <p style="margin:6px 0 6px;"><b>블로킹</b> — 블로킹으로 바로 점수가 났거나(득점), 블로킹하다 실점했을 때(범실)예요. 공격 위치가 아니라 블로킹을 고르고, <b>블로킹 위치</b>는 버튼으로 눌러 골라요. 범실이면 <b>빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지, 득점이면 몇 명이 막았는지 고르고, 관련 선수에 공이 손에 맞은 블로커를 골라요. 네트 위에서 서로 공을 밀어붙이다 결정난 공은 공격 방식의 <b>네트싸움</b>으로 남겨요.</p>
-                <p style="margin:0;"><b>파울(반칙)</b> — 네트터치·라인 침범 등 규칙 위반으로 점수가 났을 때예요. 단, <b>블로킹하다 네트에 닿았다면</b> 블로킹 범실의 <b>네트터치</b>로 남겨야 블로킹 분석에 들어가요. 반칙한 팀을 고르고 결과는 범실로 남겨요. <b>헷갈리면</b> 공이 마지막으로 누구 손에서 문제가 됐는지를 기준으로 골라요.</p>
+                <p style="margin:0;"><b>파울(반칙)</b> — 네트터치·라인 침범 등 규칙 위반으로 점수가 났을 때예요. 단, <b>블로킹하다 네트에 닿았다면</b> 블로킹 범실의 <b>네트터치</b>로 남겨야 블로킹 분석에 들어가요. 반칙한 팀을 고르고 결과는 범실로 남겨요. ➕ 자세히 기록에서 <b>파울 종류</b>를 누르면 바로 아래에 그 반칙이 무엇인지 짧은 설명이 나와요. <b>헷갈리면</b> 공이 마지막으로 누구 손에서 문제가 됐는지를 기준으로 골라요.</p>
               </div>
             </div>
             <details class="qr-more" id="qrMore">
@@ -2136,6 +2138,7 @@
                 <select id="qrDetailSelect" style="flex:1;"></select>
               </div>
               <div class="field-note" id="qrDetailNote" style="margin-top:4px;"></div>
+              <div class="foul-desc" id="qrFoulDesc" style="display:none;"></div>
             </div>
             <div class="quick-record-row qr-optional">
               <div class="qr-label">관련 선수 <span class="qr-opt-tag">선택</span></div>
@@ -5939,6 +5942,31 @@
     '경기 지연',
     '경고·벌칙(옐로·레드카드)'
   ];
+  // 파울 종류를 고르면 아래에 짧은 설명을 보여줘요.
+  const FOUL_DESC = {
+    '네트터치':'플레이 중 몸이나 옷이 네트(안테나 사이)에 닿은 반칙이에요. 블로킹하다 닿았다면 블로킹 범실의 "네트터치"로 남겨요.',
+    '오버네트(상대 코트 공 터치)':'네트 위로 손을 넘겨 상대 코트 쪽 공을 먼저 건드린 반칙이에요(블로킹은 상대 공격 뒤라면 허용).',
+    '센터라인 침범':'발이나 몸이 센터라인을 완전히 넘어 상대 코트에 닿아 플레이를 방해한 반칙이에요.',
+    '안테나 반칙(터치·바깥 통과)':'공이 안테나에 닿았거나 안테나 바깥으로 넘어간 경우예요.',
+    '아웃(라인 밖)':'공이 코트 라인 밖에 떨어졌거나 천장·벽 등 코트 밖 물체에 닿은 경우예요.',
+    '포히트(터치 횟수 초과)':'한 팀이 3번(블로킹 제외) 안에 넘기지 못하고 더 만진 반칙이에요.',
+    '더블컨택(드리블)':'같은 선수가 공을 연속으로 두 번 만진 반칙이에요(첫 터치·블로킹 예외).',
+    '홀딩(캐치볼)':'공을 튕기지 않고 잡거나 들어 올리듯 멈췄다 보낸 반칙이에요.',
+    '서브 풋폴트(엔드라인 침범)':'서브할 때 공을 치기 전에 엔드라인이나 코트 안을 밟은 반칙이에요.',
+    '서브 순서 위반':'정해진 서브 순서가 아닌 선수가 서브한 반칙이에요.',
+    '서브 시간 초과':'주심의 서브 허가 휘슬 뒤 정해진 시간 안에 서브하지 못한 반칙이에요.',
+    '경기 지연':'교체·복귀 등을 늦게 해 경기를 지연시켜 벌칙을 받은 경우예요.',
+    '경고·벌칙(옐로·레드카드)':'비신사적 행위 등으로 카드를 받아 상대에게 점수가 넘어간 경우예요.'
+  };
+  function updateFoulDesc(){
+    const box = document.getElementById('qrFoulDesc'); if(!box) return;
+    const main = document.getElementById('qrOptionSelect').value;
+    const v = document.getElementById('qrDetailSelect').value;
+    const t = main===FOUL_MAIN && v ? FOUL_DESC[v] : '';
+    box.textContent = t ? '📖 '+t : '';
+    box.style.display = t ? '' : 'none';
+  }
+  document.getElementById('qrDetailSelect').addEventListener('change', updateFoulDesc);
   const QR_OPTION_GROUPS = [
     {group:'공격', items:ATTACK_OPTIONS},
     {group:'서브·리시브·연결', items:['서브','서브캐치','리시브','토스','2단토스','2단연결']},
@@ -6115,6 +6143,7 @@
       : isBlock ? (qrOutcome==='fault' ? '블록이 왜 뚫렸는지 고르면 요약의 "블로킹 분석"에 유형별로 모여요. 아래 관련 선수에 공이 맞은 블로커를 고르면 선수별로도 모여요.' : '몇 명이 블로킹했는지 고르고, 아래 관련 선수에 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에 선수별로 모여요.')
       : (qrOutcome==='score' ? '어떻게 점수를 냈는지 고르면 "레프트·페인트"처럼 함께 남아요. 네트 위에서 서로 밀어붙인 공은 "네트싸움"을 골라요.' : '어떻게 범실이 났는지 고를 수 있어요. 네트 위 힘싸움에서 진 공은 "네트싸움"을 골라요.');
     refreshChips('qrDetailSelect');
+    updateFoulDesc();
   }
   (function rememberFold(){
     const d = document.getElementById('qrMore'), KEY='vt:qr-more-open';
@@ -6270,6 +6299,7 @@
   // 기록하기를 누르면 "자세히 기록"·토스 순서 칸을 기본값으로 돌려서, 다음 점수는 새로 시작해요.
   function resetDetailInputs(){
     const ds = document.getElementById('qrDetailSelect'); if(ds && ds.options.length) ds.selectedIndex = 0;
+    if(typeof updateFoulDesc==='function') updateFoulDesc();
     selectedZone = null; renderZonePicker(); updateZoneStatus();
     selectedNineZone = null;
     document.querySelectorAll('.qr-nine-grid button').forEach(b=>b.classList.remove('active'));
