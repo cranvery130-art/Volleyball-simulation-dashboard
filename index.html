@@ -940,37 +940,35 @@
   .sc-bar i{ display:block; height:100%; } .sc-bar i:first-child{ border-radius:4px 0 0 4px; } .sc-bar i:last-child{ border-radius:0 4px 4px 0; }
   .sc-sub{ font-size:11px; color:var(--muted); line-height:1.5; }
   .gs-card-h{ font-weight:800; font-size:13px; color:var(--text); margin-bottom:6px; }
-  .va-nav-panel{ background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:10px; box-shadow:var(--shadow); }
-  .va-nav-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; font-size:13px; color:var(--text); }
-  .va-nav-close{ display:none; border:none; background:transparent; color:var(--text-dim); font-size:16px; cursor:pointer; }
-  .va-nav-list{ display:flex; flex-direction:column; gap:2px; max-height:calc(100vh - 120px); overflow-y:auto; }
-  .va-nav-item{ text-align:left; border:none; background:transparent; color:var(--text); font-family:inherit; font-size:12.5px; font-weight:700; padding:7px 8px; border-radius:8px; cursor:pointer; }
-  .va-nav-item.sub{ font-weight:500; font-size:12px; color:var(--text-dim); padding:5px 8px 5px 22px; }
+  /* 오른쪽 가장자리에 붙은 아이콘 줄(레일): 아이콘 + 짧은 이름, 마우스를 올리면 전체 이름 */
+  #vaNav{ position:fixed; right:0; top:50%; transform:translateY(-50%); z-index:60; display:flex; align-items:center; }
+  .va-nav-panel{ background:var(--panel); border:1px solid var(--border); border-right:none; border-radius:14px 0 0 14px; box-shadow:var(--shadow); padding:6px 4px; }
+  .va-nav-head{ display:none; }
+  .va-nav-list{ display:flex; flex-direction:column; gap:1px; max-height:min(86vh, 860px); overflow-y:auto; scrollbar-width:none; }
+  .va-nav-list::-webkit-scrollbar{ display:none; }
+  .va-nav-item{ display:flex; flex-direction:column; align-items:center; gap:1px; width:54px; padding:5px 2px; border:none; border-radius:9px; background:transparent; color:var(--text-dim); font-family:inherit; cursor:pointer; }
+  .va-nav-item .ic{ font-size:17px; line-height:1.1; }
+  .va-nav-item .lb{ font-size:10px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap; }
+  .va-nav-item.sub .ic{ font-size:14px; } .va-nav-item.sub .lb{ font-size:9.5px; font-weight:600; }
   .va-nav-item:hover{ background:var(--panel-2); color:var(--text); }
-  .va-nav-item.on{ background:color-mix(in srgb, var(--accent) 16%, var(--panel)); color:var(--text); }
-  .va-nav-fab, .va-nav-backdrop{ display:none; }
+  .va-nav-item.on{ background:color-mix(in srgb, var(--accent) 20%, var(--panel)); color:var(--text); }
+  .va-nav-sep{ height:1px; margin:3px 8px; background:var(--border); }
+  .va-nav-fab, .va-nav-backdrop, .va-nav-close{ display:none; }
   @keyframes vaFlash{ 0%{ box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 60%, transparent); } 100%{ box-shadow:0 0 0 3px transparent; } }
   .va-flash{ animation:vaFlash 1.4s ease-out; border-radius:10px; }
-  /* 넓은 PC(1500px 이상): 왼쪽에 고정 목록 칸 */
-  @media (min-width:1500px){
-    #videoCol{ max-width:1640px; display:grid; grid-template-columns:200px minmax(0,1fr); column-gap:16px; align-items:start; }
-    #videoCol > *:not(#vaNav){ grid-column:2; }
-    #vaNav{ grid-column:1; grid-row:1 / span 20; position:sticky; top:12px; align-self:start; }
-  }
-  @media (min-width:1600px){ #videoCol{ max-width:2400px; } }
-  /* 휴대폰·태블릿·보통 PC: 오른쪽 아래 떠 있는 버튼 → 목록 */
-  @media (max-width:1499px){
-    #vaNav{ position:static; }
-    .va-nav-fab{ display:block; position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:60; padding:11px 16px; border-radius:999px; border:1px solid var(--border-2); background:var(--grad); color:#0A0B0D; font-family:inherit; font-weight:800; font-size:13px; box-shadow:var(--shadow); cursor:pointer; }
-    .va-nav-panel{ display:none; position:fixed; left:8px; right:8px; bottom:calc(8px + env(safe-area-inset-bottom)); z-index:62; max-height:70vh; }
-    @media (min-width:700px){ .va-nav-panel{ left:auto; width:300px; right:14px; } }
-    .va-nav-list{ max-height:calc(70vh - 50px); }
-    .va-nav-close{ display:block; }
-    #vaNav.open .va-nav-panel{ display:block; }
-    #vaNav.open .va-nav-backdrop{ display:block; position:fixed; inset:0; z-index:61; background:rgba(0,0,0,.45); }
+  /* PC·태블릿 가로(900px 이상): 레일이 항상 보이고, 내용은 레일만큼 오른쪽을 비워요 */
+  @media (min-width:900px){ #videoCol{ padding-right:calc(clamp(8px,2.2vw,40px) + 58px) !important; } }
+  /* 휴대폰·태블릿 세로: 오른쪽 가장자리의 작은 손잡이를 누르면 레일이 나와요 */
+  @media (max-width:899px){
+    #vaNav{ transform:none; top:auto; bottom:calc(18vh + env(safe-area-inset-bottom)); }
+    #vaNav.open{ bottom:auto; top:50%; transform:translateY(-50%); }
+    .va-nav-panel{ display:none; }
+    .va-nav-fab{ display:flex; flex-direction:column; align-items:center; gap:1px; padding:9px 5px 9px 7px; border:1px solid var(--border-2); border-right:none; border-radius:12px 0 0 12px; background:var(--panel); color:var(--text); font-family:inherit; font-size:10px; font-weight:800; box-shadow:var(--shadow); cursor:pointer; }
+    .va-nav-fab .ic{ font-size:17px; }
     #vaNav.open .va-nav-fab{ display:none; }
-    .va-nav-item{ font-size:14px; padding:10px; }
-    .va-nav-item.sub{ font-size:13px; padding:8px 10px 8px 26px; }
+    #vaNav.open .va-nav-panel{ display:block; position:relative; z-index:62; }
+    #vaNav.open .va-nav-backdrop{ display:block; position:fixed; top:-100vh; bottom:-100vh; right:0; width:200vw; z-index:61; background:rgba(0,0,0,.35); }
+    .va-nav-item{ width:58px; padding:6px 2px; }
   }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
@@ -1351,7 +1349,7 @@
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
-          <li><b>🧭 바로가기</b>: 넓은 PC 화면에서는 왼쪽 목록, 휴대폰·태블릿·보통 PC에서는 오른쪽 아래 <b>🧭 바로가기</b> 버튼으로 매치 분석 저장·경기 영상·빠른 기록·기록·그래프(요약 항목·추세·상세 분석)·종합 분석(주제별)·코치 의견으로 바로 이동해요. 지금 보고 있는 곳이 목록에 표시되고, 접힌 칸이나 다른 그래프 탭도 알아서 펼쳐요.</li>
+          <li><b>🧭 바로가기</b>: 화면 오른쪽 가장자리에 붙은 아이콘 줄(PC·태블릿 가로는 항상 보이고, 휴대폰은 오른쪽 가장자리의 <b>🧭 이동</b> 손잡이를 눌러 열어요)에서 아이콘을 눌러 매치 분석 저장·경기 영상·빠른 기록·기록·그래프(요약 항목·추세·상세 분석)·종합 분석(주제별)·코치 의견으로 바로 이동해요. 지금 보고 있는 곳이 목록에 표시되고, 접힌 칸이나 다른 그래프 탭도 알아서 펼쳐요.</li>
           <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고(경기 영상·기록 칸은 접혀 있고 그래프·종합 분석이 먼저 보여요. 넓은 화면에서 기록을 펼치면 기록은 오른쪽 칸, 그래프·종합 분석은 왼쪽에 조금 좁게 놓여 아래로 밀리지 않아요. 휴대폰에서는 기록이 맨 아래), 같은 그룹의 다른 경기 폴더도 골라 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 해요.</li>
         </ul></div>
         </div>
@@ -1758,7 +1756,7 @@
       <div class="va-nav-head"><b>🧭 바로가기</b><button type="button" class="va-nav-close" id="vaNavClose" aria-label="닫기">✕</button></div>
       <div class="va-nav-list" id="vaNavList"></div>
     </div>
-    <button type="button" class="va-nav-fab" id="vaNavFab" aria-expanded="false">🧭 바로가기</button>
+    <button type="button" class="va-nav-fab" id="vaNavFab" aria-expanded="false" title="바로가기"><span class="ic">🧭</span>이동</button>
     <div class="va-nav-backdrop" id="vaNavBackdrop"></div>
   </nav>
   <div class="card match-save-card" id="matchSaveCard" style="margin-bottom:16px;">
@@ -5057,7 +5055,7 @@
           <div class="mk-list"><div class="mk-item"><span class="t">01:12</span>1세트 · 우리팀 득점 · 속공</div><div class="mk-item k-row"><span class="t k-time">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)</div></div>`,
         script:[ {click:'.k-time', then:(el,sc)=>{ sc.querySelector('.k-row').classList.add('on'); sc.querySelector('.k-bar').style.width='62%'; }}, {wait:1800} ] },
       { title:'그래프와 종합 분석을 봐요',
-        text:'세트 버튼으로 범위를 고르면 요약·추세·<b>🔎 상세 분석</b>이 다시 계산돼요. 상세 분석은 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 필터로 양 팀을 나란히 비교하고(종합 분석도 주제마다 두 팀을 비교해요), 토스는 점수판과 함께 1포인트당 토스 배분도 보여줘요. 계산 방법은 그래프 제목 옆 <b>📘 설명기준</b>을 눌러 봐요. 항목이 많으면 <b>🧭 바로가기</b>(PC 왼쪽 목록 · 휴대폰 오른쪽 아래 버튼)로 바로 이동해요.',
+        text:'세트 버튼으로 범위를 고르면 요약·추세·<b>🔎 상세 분석</b>이 다시 계산돼요. 상세 분석은 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 필터로 양 팀을 나란히 비교하고(종합 분석도 주제마다 두 팀을 비교해요), 토스는 점수판과 함께 1포인트당 토스 배분도 보여줘요. 계산 방법은 그래프 제목 옆 <b>📘 설명기준</b>을 눌러 봐요. 항목이 많으면 화면 오른쪽 가장자리의 <b>🧭 바로가기</b> 아이콘 줄로 바로 이동해요.',
         scene:`<div class="mk-row" style="justify-content:space-between;"><span class="mk-h" style="margin:0;">그래프</span><span class="mk-btn">📘 설명기준 ▾</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-btn">요약</span><span class="mk-btn">추세</span><span class="mk-btn on">🔎 상세 분석</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-btn on k-all">전체</span><span class="mk-btn k-s1">1세트</span><span class="mk-btn">2세트</span></div>
@@ -6507,23 +6505,32 @@
     renderVaNav();
   }
   // ---------- 🧭 바로가기: 경기 영상 분석의 카드와 요약·종합 분석 항목으로 바로 이동해요(PC는 왼쪽 고정 목록, 휴대폰은 떠 있는 버튼) ----------
+  // 항목 이름 → [아이콘, 짧은 이름]
+  const VA_NAV_SHORT = {
+    '점수 · 주요 지표':['🔢','지표'], '득실 구성 · 세트별 비교':['📊','득실'], '득실 구성':['📊','득실'], '요인별 분석':['🧩','요인'],
+    '블로킹 분석':['🧱','블로킹'], '세터 배분':['🏐','세터'], '점수별 토스 흐름':['📜','토스'],
+    '주 득점 루트':['✅','루트'], '범실':['⚠️','범실'], '공격 결정률':['⚔️','공격'], '서브':['🎯','서브'], '리시브':['🛡️','리시브'], '블로킹 영향력':['🧱','블록'], '세트 흐름':['📈','세트']
+  };
   function renderVaNav(){
     const list = document.getElementById('vaNavList'); if(!list) return;
     const shown = id => { const el = document.getElementById(id); return el && getComputedStyle(el).display!=='none'; };
     const items = [];
-    const add = (label, target, opts) => items.push({label, target, ...(opts||{})});
-    add('📁 매치 분석 저장', 'matchSaveCard');
-    add('🎬 경기 영상', 'videoCard');
-    if(shown('quickRecordCard')) add('✍️ 빠른 기록', 'quickRecordCard');
-    add('📋 기록', 'recordsCard');
-    add('📈 그래프', 'graphCard');
-    document.querySelectorAll('#graphSummary [data-nav]').forEach((el,i)=>{ if(!el.id) el.id='gsNav'+i; add(el.dataset.nav, el.id, {sub:true, tab:'summary'}); });
-    add('추세', 'trendChart', {sub:true, tab:'trend'});
-    add('🔎 상세 분석', 'graphDetail', {sub:true, tab:'detail'});
-    add('📝 종합 분석', 'analysisCard');
-    document.querySelectorAll('#autoAnalysis [data-nav]').forEach((el,i)=>{ if(!el.id) el.id='aaNav'+i; add(el.dataset.nav, el.id, {sub:true}); });
-    add('💬 코치 의견', 'coachNotes', {sub:true});
-    list.innerHTML = items.map(it=>`<button type="button" class="va-nav-item${it.sub?' sub':''}" data-target="${it.target}"${it.tab?` data-tab="${it.tab}"`:''}>${escChip(it.label)}</button>`).join('');
+    const add = (ic, lb, full, target, opts) => items.push({ic, lb, full, target, ...(opts||{})});
+    const sep = () => items.push({sep:true});
+    add('📁','저장','매치 분석 저장','matchSaveCard');
+    add('🎬','영상','경기 영상','videoCard');
+    if(shown('quickRecordCard')) add('✍️','입력','빠른 기록','quickRecordCard');
+    add('📋','기록','기록 목록','recordsCard');
+    sep();
+    add('📈','그래프','그래프','graphCard');
+    document.querySelectorAll('#graphSummary [data-nav]').forEach((el,i)=>{ if(!el.id) el.id='gsNav'+i; const m = VA_NAV_SHORT[el.dataset.nav]||['•',el.dataset.nav.slice(0,3)]; add(m[0], m[1], el.dataset.nav, el.id, {sub:true, tab:'summary'}); });
+    add('📉','추세','추세','trendChart', {sub:true, tab:'trend'});
+    add('🔎','상세','상세 분석','graphDetail', {sub:true, tab:'detail'});
+    sep();
+    add('📝','종합','종합 분석','analysisCard');
+    document.querySelectorAll('#autoAnalysis [data-nav]').forEach((el,i)=>{ if(!el.id) el.id='aaNav'+i; const m = VA_NAV_SHORT[el.dataset.nav]||['•',el.dataset.nav.slice(0,3)]; add(m[0], m[1], el.dataset.nav, el.id, {sub:true}); });
+    add('💬','코치','코치 의견','coachNotes', {sub:true});
+    list.innerHTML = items.map(it=> it.sep ? '<div class="va-nav-sep"></div>' : `<button type="button" class="va-nav-item${it.sub?' sub':''}" data-target="${it.target}"${it.tab?` data-tab="${it.tab}"`:''} title="${escChip(it.full)}" aria-label="${escChip(it.full)}"><span class="ic">${it.ic}</span><span class="lb">${escChip(it.lb)}</span></button>`).join('');
   }
   function vaNavGo(target, tab){
     if(tab){ const tb = document.querySelector(`#graphTabSeg button[data-tab="${tab}"]`); if(tb && !tb.classList.contains('active')) tb.click(); }
