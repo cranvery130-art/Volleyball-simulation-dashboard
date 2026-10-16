@@ -2191,7 +2191,7 @@
             </div>
             <div class="gh-section">
               <h4>5. 세트별 보기</h4>
-              <p>그래프 위의 <b>세트</b> 버튼으로 전체 경기 또는 한 세트만 골라 볼 수 있어요. 고른 범위에 맞춰 요약·추세·종합 분석이 모두 다시 계산돼요. "전체"일 때 기록이 두 세트 이상이면 요약의 <b>📊 득실 구성 · 세트별 비교</b> 카드 안, 득점·실점 구성 막대 아래에 세트마다 세트 점수·득점률·점수 차와 두 팀 점수 막대가 나와요. 세트는 기록할 때 고른 세트 기준이고, 기록 목록에서 나중에 고칠 수 있어요.</p>
+              <p>그래프 카드와 종합 분석 카드 위의 <b>세트</b> 버튼으로 전체 경기 또는 한 세트만 골라 볼 수 있어요. 두 카드의 세트 버튼은 함께 움직여서, 어느 쪽에서 눌러도 요약·추세·종합 분석이 모두 그 범위로 다시 계산돼요. "전체"일 때 기록이 두 세트 이상이면 요약의 <b>📊 득실 구성 · 세트별 비교</b> 카드 안, 득점·실점 구성 막대 아래에 세트마다 세트 점수·득점률·점수 차와 두 팀 점수 막대가 나와요. 세트는 기록할 때 고른 세트 기준이고, 기록 목록에서 나중에 고칠 수 있어요.</p>
             </div>
             <div class="gh-section">
               <h4>6. 추세</h4>
@@ -2216,7 +2216,7 @@
           <div class="field-note" style="margin-top:0;">세트 버튼으로 범위(전체 또는 한 세트)를 고르면 요약·추세·상세 분석이 다시 계산돼요. 각 지표의 계산 방법은 제목 옆 <b>📘 설명기준</b>을 눌러 봐요. 득점·실점 구성과 세트별 비교는 요약의 한 카드에 함께 있어요.</div>
           <div class="graph-set-row">
             <span class="graph-set-label">세트</span>
-            <div class="seg" id="graphSetSeg">
+            <div class="seg set-scope-seg" id="graphSetSeg">
               <button data-gset="all" class="active">전체</button>
               <button data-gset="1">1세트</button>
               <button data-gset="2">2세트</button>
@@ -2241,7 +2241,16 @@
         </div>
         <div class="card" id="analysisCard">
           <h2>종합 분석</h2>
-          <div class="field-note" style="margin-top:0;">그래프에서 고른 범위(전체·세트)의 기록으로 강점, 줄일 수 있는 실점, 상대의 주 득점 루트를 자동으로 정리해요. 실제 경기 흐름은 코치님이 가장 잘 아시니, 아래에 의견을 더해 완성해보세요.</div>
+          <div class="field-note" style="margin-top:0;">아래 세트 버튼으로 고른 범위(전체·세트)의 기록으로 강점, 줄일 수 있는 실점, 상대의 주 득점 루트를 자동으로 정리해요. 세트 버튼은 그래프 카드와 함께 움직여요. 실제 경기 흐름은 코치님이 가장 잘 아시니, 아래에 의견을 더해 완성해보세요.</div>
+          <div class="graph-set-row" style="margin-bottom:10px;">
+            <span class="graph-set-label">세트</span>
+            <div class="seg set-scope-seg" id="analysisSetSeg">
+              <button data-gset="all" class="active">전체</button>
+              <button data-gset="1">1세트</button>
+              <button data-gset="2">2세트</button>
+              <button data-gset="3">3세트</button>
+            </div>
+          </div>
           <div id="autoAnalysis" style="margin-bottom:12px;"></div>
           <label class="field-label">코치 의견 (직접 작성)</label>
           <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
@@ -5404,7 +5413,7 @@
           <div class="mk-list"><div class="mk-item"><span class="t">01:12</span>1세트 · 우리팀 득점 · 속공</div><div class="mk-item k-row"><span class="t k-time">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)</div></div>`,
         script:[ {click:'.k-time', then:(el,sc)=>{ sc.querySelector('.k-row').classList.add('on'); sc.querySelector('.k-bar').style.width='62%'; }}, {wait:1800} ] },
       { title:'그래프와 종합 분석을 봐요',
-        text:'세트 버튼으로 범위를 고르면 요약·추세·<b>🔎 상세 분석</b>이 다시 계산돼요. 상세 분석은 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 필터로 양 팀을 나란히 비교하고(종합 분석도 주제마다 두 팀을 비교해요), 토스는 점수판과 함께 1포인트당 토스 배분도 보여줘요. 계산 방법은 그래프 제목 옆 <b>📘 설명기준</b>을 눌러 봐요. 항목이 많으면 화면 오른쪽 가장자리의 <b>🧭 바로가기</b> 아이콘 줄로 바로 이동해요.',
+        text:'그래프나 종합 분석 카드의 세트 버튼으로 범위를 고르면(두 카드가 함께 바뀌어요) 요약·추세·<b>🔎 상세 분석</b>·종합 분석이 다시 계산돼요. 상세 분석은 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 필터로 양 팀을 나란히 비교하고(종합 분석도 주제마다 두 팀을 비교해요), 토스는 점수판과 함께 1포인트당 토스 배분도 보여줘요. 계산 방법은 그래프 제목 옆 <b>📘 설명기준</b>을 눌러 봐요. 항목이 많으면 화면 오른쪽 가장자리의 <b>🧭 바로가기</b> 아이콘 줄로 바로 이동해요.',
         scene:`<div class="mk-row" style="justify-content:space-between;"><span class="mk-h" style="margin:0;">그래프</span><span class="mk-btn">📘 설명기준 ▾</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-btn">요약</span><span class="mk-btn">추세</span><span class="mk-btn on">🔎 상세 분석</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-btn on k-all">전체</span><span class="mk-btn k-s1">1세트</span><span class="mk-btn">2세트</span></div>
@@ -7311,11 +7320,11 @@
       });
     });
   });
-  document.querySelectorAll('#graphSetSeg button').forEach(btn=>{
+  // 그래프 카드와 종합 분석 카드의 세트 버튼은 같은 범위를 써요(어느 쪽을 눌러도 두 카드가 함께 바뀌어요).
+  document.querySelectorAll('.set-scope-seg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#graphSetSeg button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
       graphSet = btn.dataset.gset;
+      document.querySelectorAll('.set-scope-seg button').forEach(b=>b.classList.toggle('active', b.dataset.gset===graphSet));
       renderAllGraphs();
       renderAutoAnalysis();
     });
