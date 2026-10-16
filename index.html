@@ -744,6 +744,9 @@
   /* ---------- 빠른 기록: 결과 4버튼 · 상황 버튼판 · 자세히 기록 접기 · 경기 정보 ---------- */
   .qr-set-row{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
   .qr-set-row .seg{ flex:1; }
+  #qrRecordBtn.not-ready{ opacity:.55; }
+  #qrRecordBtn.shake{ animation:qrShake .3s; }
+  @keyframes qrShake{ 25%{ transform:translateX(-4px); } 75%{ transform:translateX(4px); } }
   .qr-bucket-grid{ display:grid; grid-template-columns:auto 1fr 1fr; gap:6px; margin-bottom:12px; align-items:stretch; }
   .qr-bucket-rowlab{ writing-mode:vertical-rl; text-orientation:upright; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:var(--text-dim); background:var(--panel-2); border-radius:8px; padding:4px 3px; letter-spacing:2px; }
   .qr-bucket-grid button{ display:flex; flex-direction:column; align-items:flex-start; gap:1px; padding:9px 10px; border-radius:10px; border:1.5px solid var(--border-2); background:var(--panel); color:var(--text); font-family:inherit; cursor:pointer; text-align:left; }
@@ -1546,7 +1549,7 @@
         <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 공격 상황 편집 → 대형 저장(왼쪽), 대형 불러오기·편집·⭐ 최종 확정·공유(오른쪽) 순서로 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
-        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 기록하기를 누르면 다음 점수를 위해 기본값으로 돌아가요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요.</li>
+        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요.</li>
         <li><b>눈이 편한 화면</b>어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 시력보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
         <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
@@ -1652,7 +1655,7 @@
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
           <li>PC와 태블릿(가로 700px·세로 620px 이상)에서는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝낼 수 있어요(휴대폰은 기존 배치). 기록 입력 칸은 페이지를 스크롤해도 따라오지 않고 제자리에 있어서 아래 기록 목록·그래프를 편하게 볼 수 있어요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
-          <li>"자세히 기록"의 방식·위치·관련 선수와 토스 순서는 <b>기록하기</b>를 누르면 기본값(선택 안 함)으로 돌아가요. 다음 점수는 새로 골라요. 모두 선택이라 비워둬도 돼요.</li>
+          <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
           <li>득실 위치는 "자세히 기록" 안의 <b>📍 득실 위치</b>를 펼쳐서 플레이한 팀 코트(아래)와 네트 건너편 상대 코트(위) 중에서 고를 수 있어요. 상대 코트를 고르면 기록에 "상대 코트 · 왼쪽 앞"처럼 남아요.</li>
@@ -2253,7 +2256,7 @@
           <div class="qs-list" id="qsList"></div>
           <div class="qs-note">✏️ 고치기 · ➕ 이 점수 뒤에 끼워 넣기 · 🗑️ 지우기</div>
         </aside>
-        <div class="field-note qr-card-note" style="margin-top:0;"><b>결과 버튼 → 상황 버튼 → 기록하기</b>로 1점씩 남겨요(시간·세트 함께 저장). 랠리 중 토스 순서는 결과 버튼 위 칸에서 보면서 바로 누르고, 방식·위치·관련 선수는 <b>➕ 자세히 기록</b>을 열어 선택으로 남겨요. 기록하기를 누르면 이 선택들은 기본값으로 돌아가요. 팀 이름과 명단은 위쪽 <b>📋 경기 정보</b>에서 정해요.</div>
+        <div class="field-note qr-card-note" style="margin-top:0;"><b>결과 버튼 → 상황 버튼 → 기록하기</b>로 1점씩 남겨요(시간·세트 함께 저장). 랠리 중 토스 순서는 결과 버튼 위 칸에서 보면서 바로 누르고, 방식·위치·관련 선수는 <b>➕ 자세히 기록</b>을 열어 선택으로 남겨요. 기록하기를 누르면 결과·상황 버튼까지 모든 선택이 풀려요. 팀 이름과 명단은 위쪽 <b>📋 경기 정보</b>에서 정해요.</div>
 
 
 
@@ -2284,7 +2287,7 @@
             <div class="qr-bucket-grid" id="qrBucketGrid">
               <span class="qr-bucket-rowlab">득점</span>
               <button type="button" data-team="our" data-outcome="score" class="b-ourScore"><b>🔵 우리 득점</b><small>우리가 잘해서</small></button>
-              <button type="button" data-team="opp" data-outcome="score" class="b-oppScore active"><b>🔴 상대 득점</b><small>상대가 잘해서</small></button>
+              <button type="button" data-team="opp" data-outcome="score" class="b-oppScore"><b>🔴 상대 득점</b><small>상대가 잘해서</small></button>
               <span class="qr-bucket-rowlab">범실</span>
               <button type="button" data-team="our" data-outcome="fault" class="b-ourError"><b>⚠️ 우리 범실</b><small>우리 실수로</small></button>
               <button type="button" data-team="opp" data-outcome="fault" class="b-oppError"><b>🎁 상대 범실</b><small>상대 실수로</small></button>
@@ -5378,7 +5381,7 @@
                  {click:'.k-pl', then:el=>el.classList.add('on')},
                  {click:'.k-zone', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1700} ] },
       { title:'"기록하기"를 눌러요',
-        text:'한 번 누를 때마다 <b>1점이 기록 한 줄</b>로 남고, 자세히 기록·토스 순서 칸은 기본값으로 돌아가 다음 점수를 새로 시작해요. 잘못 눌렀으면 <b>↩️ 되돌리기</b>(Ctrl+Z)로 바로 취소해요. 점수와 상관없는 장면(작전타임·교체 등)은 아래 메모 칸에 적고 Enter를 누르면 <b>🔴 자유 기록</b>으로 바로 남아요.',
+        text:'한 번 누를 때마다 <b>1점이 기록 한 줄</b>로 남고, 결과·상황 버튼 표시와 자세히 기록·토스 순서 칸이 모두 풀려 다음 점수를 새로 골라요(둘 다 골라야 기록하기가 켜져요). 잘못 눌렀으면 <b>↩️ 되돌리기</b>(Ctrl+Z)로 바로 취소해요. 점수와 상관없는 장면(작전타임·교체 등)은 아래 메모 칸에 적고 Enter를 누르면 <b>🔴 자유 기록</b>으로 바로 남아요.',
         scene:`<div class="mk-score"><span class="k-us">12</span> : <span>9</span></div>
           <div class="mk-row" style="justify-content:center;"><span class="mk-lbl">우리팀 · 득점 · 레프트(페인트)</span><span class="mk-btn big on k-rec">기록하기</span><span class="mk-btn big k-undo">↩️ 되돌리기</span></div>
           <div class="mk-list k-list"><div class="mk-item"><span class="t">05:21</span>1세트 · 상대팀 범실 · 서브</div></div>`,
@@ -6208,6 +6211,7 @@
     return outcome==='score' ? '득점' : '미스';
   }
   let qrTeam = 'opp', qrOutcome = 'score';
+  let qrBucketPicked = false; // 기록한 뒤에는 결과 버튼 표시를 지워서, 다음 점수는 새로 고르게 해요
   // 팀 이름(선택): 입력하지 않으면 "상대팀"/"우리팀"을 그대로 써요.
   let oppTeamName = '상대팀', ourTeamName = '우리팀';
   function updateTeamSegLabels(){
@@ -6325,10 +6329,25 @@
   });
   // 결과 4버튼: 팀·결과 두 단계를 한 번에 골라요(내부적으로는 예전 팀/결과 값을 그대로 써요).
   function syncBucketGrid(){
-    document.querySelectorAll('#qrBucketGrid button').forEach(b=>b.classList.toggle('active', b.dataset.team===qrTeam && b.dataset.outcome===qrOutcome));
+    document.querySelectorAll('#qrBucketGrid button').forEach(b=>b.classList.toggle('active', qrBucketPicked && b.dataset.team===qrTeam && b.dataset.outcome===qrOutcome));
+    updateRecordReady();
+  }
+  // 결과·세부 상황을 둘 다 골라야 기록하기가 켜져요.
+  function updateRecordReady(){
+    const btn = document.getElementById('qrRecordBtn'); if(!btn) return;
+    const ready = qrBucketPicked && !!document.getElementById('qrOptionSelect').value;
+    btn.classList.toggle('not-ready', !ready);
+    btn.textContent = ready ? '기록하기' : (!qrBucketPicked ? '결과를 골라요' : '세부 상황을 골라요');
+  }
+  // 기록한 뒤 결과·세부 상황 버튼 표시를 지워요(방금 누른 건지 이전 것인지 헷갈리지 않게).
+  function clearQrPick(){
+    qrBucketPicked = false;
+    document.getElementById('qrOptionSelect').selectedIndex = -1;
+    updateLocationPickerVisibility(); updateDetailRow(); syncOptionBoard(); syncBucketGrid();
   }
   document.querySelectorAll('#qrBucketGrid button').forEach(btn=>btn.addEventListener('click', ()=>{
     if(readOnlyFolderView) return;
+    qrBucketPicked = true;
     const t = document.querySelector(`#qrTeamSeg button[data-team="${btn.dataset.team}"]`);
     const o = document.querySelector(`#qrOutcomeSeg button[data-outcome="${btn.dataset.outcome}"]`);
     if(t) t.click(); if(o) o.click();
@@ -6389,7 +6408,7 @@
       });
       sel.appendChild(og);
     });
-    sel.addEventListener('change', ()=>{ updateLocationPickerVisibility(); updateDetailRow(); syncOptionBoard(); });
+    sel.addEventListener('change', ()=>{ updateLocationPickerVisibility(); updateDetailRow(); syncOptionBoard(); updateRecordReady(); });
     // 세부 상황 버튼판: 드롭다운 대신 자주 쓰는 항목을 한눈에 눌러요(값은 숨겨 둔 드롭다운과 같이 움직여요).
     const board = document.getElementById('qrOptionBoard');
     QR_OPTION_GROUPS.forEach(g=>{
@@ -6405,9 +6424,11 @@
       });
       board.appendChild(row);
     });
+    sel.selectedIndex = -1; // 처음에는 아무것도 고르지 않은 상태로 시작해요
     syncOptionBoard();
     updateLocationPickerVisibility();
     updateDetailRow();
+    syncBucketGrid();
   })();
 
   function flashBtn(btn){
@@ -6528,7 +6549,7 @@
 
   document.getElementById('qrRecordBtn').addEventListener('click', ()=>{
     const main = document.getElementById('qrOptionSelect').value;
-    if(!main) return;
+    if(!main || !qrBucketPicked){ const b = document.getElementById('qrRecordBtn'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); return; }
     const hasDetail = !!detailOptionsFor(main, qrOutcome);
     const detail = hasDetail ? document.getElementById('qrDetailSelect').value : '';
     const entry = {category: qrCategoryFor(qrTeam, qrOutcome), optionLabel: main, team: qrTeam, outcome: qrOutcome};
@@ -6536,6 +6557,7 @@
     const ed = qsEdit; qsEdit = null;
     logEvent(entry, document.getElementById('qrRecordBtn'), ed ? (ed.mode==='edit' ? {replace:ed.rec} : {insertAfter:ed.rec}) : {});
     resetDetailInputs();
+    clearQrPick();
     renderQsSide();
   });
   // 기록하기를 누르면 "자세히 기록"·토스 순서 칸을 기본값으로 돌려서, 다음 점수는 새로 시작해요.
@@ -6679,7 +6701,7 @@
     renderQsSide();
     document.getElementById('quickRecordCard').scrollTop = 0;
   });
-  document.getElementById('qsEditBar').addEventListener('click', e=>{ if(e.target.id==='qsEditCancel'){ qsEdit = null; resetDetailInputs(); renderQsSide(); } });
+  document.getElementById('qsEditBar').addEventListener('click', e=>{ if(e.target.id==='qsEditCancel'){ qsEdit = null; resetDetailInputs(); clearQrPick(); renderQsSide(); } });
   document.getElementById('btnQsToggle').addEventListener('click', ()=>{ const o = document.body.classList.toggle('qs-open'); document.getElementById('btnQsToggle').setAttribute('aria-expanded', o?'true':'false'); renderQsSide(); });
   document.getElementById('qsClose').addEventListener('click', ()=>{ document.body.classList.remove('qs-open'); document.getElementById('btnQsToggle').setAttribute('aria-expanded','false'); });
   function renderTally(){
