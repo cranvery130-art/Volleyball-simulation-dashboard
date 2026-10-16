@@ -1085,12 +1085,162 @@
     #quickRecordCard .qr-opt-group{ flex:1 1 100%; }
     #quickRecordCard .qr-opt-group:nth-child(n+3){ flex:0 0 auto; }
   }
+  /* 휴대폰에서도 빠른 기록 모드에서는 같은 촘촘한 배치로 */
+  @media (max-width:699px){
+    body.qr-mode #quickRecordCard{ padding:10px 12px; }
+    body.qr-mode #quickRecordCard > h2{ font-size:15px; margin-bottom:4px; padding-bottom:6px; }
+    body.qr-mode #quickRecordCard .qr-card-note, #tossRow > .field-note, body.qr-mode #quickRecordCard .fgroup-head .fg-sub{ display:none; }
+    body.qr-mode #quickRecordCard .fgroup-save{ padding:8px 10px; }
+    body.qr-mode #quickRecordCard .fgroup-save > .fgroup-head{ display:none; }
+    body.qr-mode #quickRecordCard .qr-set-row{ margin-bottom:6px; }
+    body.qr-mode #quickRecordCard .toss-pads .toss-targets{ grid-template-columns:repeat(4,minmax(0,1fr)); gap:3px; }
+    body.qr-mode #quickRecordCard .toss-head{ gap:4px; }
+    body.qr-mode #quickRecordCard .toss-pad-h{ margin-bottom:3px; }
+    body.qr-mode #quickRecordCard .qr-toss-box{ margin:0; padding:7px 8px; }
+    body.qr-mode #quickRecordCard .toss-tool{ min-height:32px; padding:5px 9px; font-size:12px; }
+    body.qr-mode #quickRecordCard .toss-seq{ min-height:20px; margin-top:4px; }
+    body.qr-mode #quickRecordCard .toss-pads{ gap:5px; margin-top:4px; }
+    body.qr-mode #quickRecordCard .toss-pad{ padding:4px; }
+    body.qr-mode #quickRecordCard .toss-pads .toss-btn{ padding:4px 2px; font-size:12px; }
+    body.qr-mode #quickRecordCard .fgroup-save > .field-label{ margin:6px 0 4px; }
+    body.qr-mode #quickRecordCard .qr-bucket-grid{ margin-bottom:8px; gap:5px; }
+    body.qr-mode #quickRecordCard .qr-bucket-grid button{ padding:6px 8px; }
+    body.qr-mode #quickRecordCard .qr-bucket-grid button small{ display:none; }
+    body.qr-mode #quickRecordCard .qr-opt-btn{ padding:5px 8px; font-size:12px; }
+    body.qr-mode #quickRecordCard .qr-opt-group{ margin-bottom:3px; }
+    body.qr-mode #quickRecordCard .qr-info-btn{ margin-top:2px; padding:4px 9px; font-size:11.5px; }
+    body.qr-mode #quickRecordCard .qr-more{ margin:6px 0; }
+    body.qr-mode #quickRecordCard .qr-more > summary{ padding:6px 10px; }
+    body.qr-mode #quickRecordCard .qr-more-body{ gap:6px; padding:0 8px 8px; }
+    body.qr-mode #quickRecordCard .qr-more-body .field-note{ display:none; }
+    body.qr-mode #quickRecordCard .chip-btn{ padding:5px 8px; min-height:30px; font-size:12px; }
+    body.qr-mode #quickRecordCard #qrRecordBtn, body.qr-mode #quickRecordCard #qrUndoBtn{ padding:9px 12px !important; }
+    body.qr-mode #quickRecordCard #qrUndoNote{ min-height:0; }
+    body.qr-mode #quickRecordCard .moment-row{ margin-top:6px; }
+    body.qr-mode #quickRecordCard #zonePickerWrap > div:last-child{ display:none !important; }
+    body.qr-mode #quickRecordCard .qr-more-sub{ display:none; }
+    body.qr-mode #quickRecordCard #videoPlayerSelectChips{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; }
+    body.qr-mode #quickRecordCard #blockZoneSelectChips{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; }
+    body.qr-mode #quickRecordCard #qrDetailSelectChips{ gap:4px; }
+    body.qr-mode #quickRecordCard #videoPlayerSelectChips .chip-btn, body.qr-mode #quickRecordCard #blockZoneSelectChips .chip-btn{ justify-content:center; align-items:center; text-align:center; padding:5px 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    body.qr-mode #quickRecordCard .chip-btn small{ display:none; }
+    body.qr-mode #quickRecordCard .qr-more-body .field-label{ margin:0 0 3px; font-size:12px; }
+    body.qr-mode #quickRecordCard .qr-more-body .qr-label{ font-size:12px; margin-bottom:3px; }
+    body.qr-mode #quickRecordCard .qr-optional{ padding:6px 8px; }
+    body.qr-mode #quickRecordCard .qr-sub-fold > summary{ padding:5px 8px; }
+    body.qr-mode #quickRecordCard .nine-court{ grid-template-columns:26px 1fr; }
+    body.qr-mode #quickRecordCard .nine-zone-grid{ padding:3px; gap:3px; }
+    body.qr-mode #quickRecordCard .nine-zone-grid button{ padding:2px; font-size:10.5px; line-height:1.3; }
+    body.qr-mode #quickRecordCard #nineZoneStatus{ display:none; }
+    body.qr-mode #quickRecordCard #nineZoneFold > .field-note{ display:none; }
+    body.qr-mode #quickRecordCard .row-tags{ padding:3px 0; gap:3px; font-size:10px; }
+    body.qr-mode #quickRecordCard .net-bar{ height:14px; margin-bottom:2px; }
+    body.qr-mode #quickRecordCard .net-bar span{ font-size:9.5px; padding:0 8px; }
+    body.qr-mode #quickRecordCard .court-side-label{ font-size:10px; margin:1px 0; line-height:1.2; }
+    body.qr-mode #quickRecordCard #nineZoneWrap > .qr-sub-fold > div:last-child{ margin-top:3px !important; }
+    body.qr-mode #quickRecordCard #btnClearNineZone{ padding:4px 9px; font-size:11.5px; }
+    body.qr-mode #quickRecordCard{ padding:8px 10px !important; }
+    body.qr-mode #quickRecordCard > h2{ font-size:14px; margin-bottom:2px; padding-bottom:4px; }
+    body.qr-mode #quickRecordCard .fgroup-save{ padding:6px 8px; }
+    body.qr-mode #quickRecordCard .field-label{ font-size:12px; margin:4px 0 3px; }
+    body.qr-mode #quickRecordCard .seg button{ padding:7px 4px; font-size:12px; }
+    body.qr-mode #quickRecordCard .qr-set-row{ margin-bottom:4px; }
+    body.qr-mode #quickRecordCard .toss-title{ font-size:12.5px; }
+    body.qr-mode #quickRecordCard .toss-tool{ min-height:28px; padding:3px 9px; font-size:11.5px; }
+    body.qr-mode #quickRecordCard .toss-seq:has(.field-note){ display:none; }
+    body.qr-mode #quickRecordCard .toss-pads .toss-btn{ padding:3px 2px; font-size:11.5px; line-height:1.35; }
+    body.qr-mode #quickRecordCard .toss-pad-h{ font-size:11px; }
+    body.qr-mode #quickRecordCard .qr-bucket-grid{ margin-bottom:4px; gap:4px; }
+    body.qr-mode #quickRecordCard .qr-bucket-grid button{ padding:4px 8px; flex-direction:row; align-items:center; }
+    body.qr-mode #quickRecordCard .qr-bucket-grid button b{ font-size:12.5px; }
+    body.qr-mode #quickRecordCard .qr-bucket-rowlab{ writing-mode:horizontal-tb; letter-spacing:0; padding:0 5px; font-size:10.5px; }
+    body.qr-mode #quickRecordCard #qrSituationRow{ position:relative; margin-bottom:4px; }
+    body.qr-mode #quickRecordCard #qrSituationRow > .qr-label{ font-size:12px; margin-bottom:3px; }
+    body.qr-mode #quickRecordCard #btnQrOptionInfo{ position:absolute; top:-3px; right:0; width:auto; margin:0; padding:2px 8px; font-size:11px; }
+    body.qr-mode #quickRecordCard .qr-option-board{ gap:3px; margin-top:2px; }
+    body.qr-mode #quickRecordCard .qr-opt-group{ margin-bottom:0; gap:3px; }
+    body.qr-mode #quickRecordCard .qr-opt-btn{ padding:3px 8px; font-size:11.5px; }
+    body.qr-mode #quickRecordCard .qr-opt-group-label{ flex-basis:40px; font-size:10px; }
+    body.qr-mode #quickRecordCard .qr-more{ margin:4px 0; }
+    body.qr-mode #quickRecordCard .qr-more > summary{ padding:4px 10px; }
+    body.qr-mode #quickRecordCard .qr-more-title{ font-size:12px; }
+    body.qr-mode #quickRecordCard .qr-more-body{ gap:4px; padding:0 6px 6px; }
+    body.qr-mode #quickRecordCard .quick-record-row{ margin-bottom:4px; }
+    body.qr-mode #quickRecordCard .qr-optional{ padding:4px 6px; border-radius:8px; }
+    body.qr-mode #quickRecordCard .chip-btn{ padding:3px 7px; min-height:26px; font-size:11.5px; border-radius:7px; }
+    body.qr-mode #quickRecordCard #videoPlayerSelectChips{ grid-template-columns:repeat(10,minmax(0,1fr)); gap:3px; }
+    body.qr-mode #quickRecordCard #blockZoneSelectChips{ grid-template-columns:repeat(6,minmax(0,1fr)); gap:3px; }
+    body.qr-mode #quickRecordCard #qrRecordBtn, body.qr-mode #quickRecordCard #qrUndoBtn{ padding:7px 12px !important; font-size:13.5px !important; }
+    body.qr-mode #quickRecordCard #qrUndoNote:empty{ display:none; }
+    body.qr-mode #quickRecordCard .moment-row{ margin-top:4px; }
+    body.qr-mode #quickRecordCard .moment-row input{ padding:6px 9px; font-size:12.5px; }
+    body.qr-mode #quickRecordCard .moment-row .btn{ padding:5px 10px; font-size:12px; }
+    body.qr-mode #quickRecordCard .nine-zone-grid button{ padding:0 1px; font-size:10px; min-height:19px; height:19px; line-height:19px; }
+    body.qr-mode #quickRecordCard .nine-zone-grid{ padding:2px; gap:2px; }
+    body.qr-mode #quickRecordCard .row-tags{ padding:2px 0; gap:2px; }
+    body.qr-mode #quickRecordCard .row-tags > div{ height:19px; line-height:19px; }
+    body.qr-mode #quickRecordCard .net-bar{ height:12px; margin:1px 0; }
+    body.qr-mode #quickRecordCard #nineZoneFold > div:last-child{ display:none !important; } /* 위치 해제 줄: 고른 칸을 다시 누르면 풀려요 */
+    body.qr-mode #quickRecordCard .qr-option-board{ flex-direction:row; flex-wrap:wrap; column-gap:12px; }
+    body.qr-mode #quickRecordCard .qr-opt-group{ flex:1 1 100%; }
+    body.qr-mode #quickRecordCard .qr-opt-group:nth-child(n+3){ flex:0 0 auto; }
+    body.qr-mode #quickRecordCard .toss-pads .toss-targets{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    body.qr-mode #quickRecordCard #videoPlayerSelectChips{ grid-template-columns:repeat(5,minmax(0,1fr)); }
+    body.qr-mode #quickRecordCard #blockZoneSelectChips{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  }
+
   .foul-desc{ margin-top:6px; padding:7px 10px; border-radius:8px; background:color-mix(in srgb, var(--accent) 10%, var(--panel-2)); border:1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); font-size:12px; line-height:1.55; color:var(--text); }
   #quickRecordCard .foul-desc{ font-size:11.5px; padding:5px 8px; margin-top:4px; }
   .orphan-bar{ margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 12px; border-radius:10px; background:color-mix(in srgb, var(--warn) 12%, var(--panel)); border:1px solid color-mix(in srgb, var(--warn) 50%, var(--border)); }
   .orphan-text{ flex:1 1 220px; font-size:12.5px; color:var(--text-dim); line-height:1.5; } .orphan-text b{ color:var(--text); }
   .orphan-bar .btn{ flex:none; white-space:nowrap; }
   body.guest-view #btnImportCsv{ display:none; }
+  /* ---------- 경기 정보 요약 줄 + 빠른 기록 모드 버튼 ---------- */
+  .info-mode-row{ display:flex; gap:10px; align-items:stretch; margin-top:12px; flex-wrap:wrap; }
+  .info-mode-row > .match-info{ flex:1 1 320px; margin-top:0; }
+  .mi-sum{ align-items:center; flex-wrap:wrap; gap:8px; }
+  .mi-texts{ display:flex; flex-direction:column; gap:1px; margin-right:auto; }
+  .mi-cta{ font-size:12px; font-weight:700; color:var(--accent-text); }
+  .match-info[open] .mi-cta{ color:var(--muted); font-weight:500; }
+  .mi-state{ display:flex; gap:5px; flex-wrap:wrap; }
+  .mi-chip{ font-size:11.5px; font-weight:700; padding:4px 9px; border-radius:999px; border:1px dashed var(--border-2); color:var(--muted); background:var(--panel); }
+  .mi-chip.on{ border-style:solid; color:var(--text); border-color:color-mix(in srgb, var(--accent) 40%, var(--border)); }
+  .match-info:not([open]) > summary.mi-sum{ border:1px dashed color-mix(in srgb, var(--accent) 45%, var(--border-2)); border-radius:10px; padding:8px 10px; }
+  .qr-mode-btn{ flex:0 1 260px; display:flex; align-items:center; gap:10px; text-align:left; padding:10px 14px; border-radius:12px; background:var(--grad); color:#0A0B0D; border:none; font-family:inherit; cursor:pointer; }
+  .qr-mode-btn .ic{ font-size:24px; }
+  .qr-mode-btn b{ display:block; font-size:14px; font-weight:900; }
+  .qr-mode-btn small{ display:block; font-size:11px; opacity:.8; font-weight:600; }
+  @media (max-width:600px){ .qr-mode-btn{ flex:1 1 100%; } }
+  body.guest-view .qr-mode-btn{ display:none; }
+  /* 빠른 기록 모드 */
+  .qr-mode-bar, .qm-last{ display:none; }
+  body.qr-mode{ overflow:hidden; }
+  body.qr-mode #vaNav{ display:none !important; }
+  body.qr-mode #quickRecordCard{ position:fixed !important; inset:0; z-index:300; margin:0; width:auto !important; max-height:none; border-radius:0; border:none; overflow-y:auto; padding:0 max(10px, env(safe-area-inset-left)) calc(16px + env(safe-area-inset-bottom)) !important; }
+  body.qr-mode #quickRecordCard > *{ width:100%; max-width:880px; margin-left:auto; margin-right:auto; box-sizing:border-box; }
+  body.qr-mode #quickRecordCard > h2, body.qr-mode #quickRecordCard > .qr-card-note{ display:none; }
+  body.qr-mode .qr-mode-bar{ display:flex; position:sticky; top:0; z-index:2; align-items:center; gap:8px; padding:8px 0 6px; background:var(--panel); border-bottom:1px solid var(--border); }
+  body.qr-mode .qm-last{ display:block; font-size:12px; color:var(--text-dim); padding:5px 2px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .qm-last b{ color:var(--text); } .qm-last span{ color:var(--muted); }
+  .qm-score{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; flex:1; min-width:0; }
+  .qm-set{ display:inline-flex; align-items:baseline; gap:4px; padding:4px 10px; border-radius:10px; border:1px solid var(--border); background:var(--panel-2); font-variant-numeric:tabular-nums; }
+  .qm-set em{ font-style:normal; font-size:11px; color:var(--muted); font-weight:700; }
+  .qm-set b{ font-size:18px; font-weight:900; } .qm-set i{ font-style:normal; color:var(--muted); }
+  .qm-set.on{ border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent); }
+  .qm-set .u, .qm-names .u{ color:var(--own); } .qm-set .o, .qm-names .o{ color:var(--opp); }
+  .qm-names{ font-size:11.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:40%; }
+  #btnQrModeExit{ flex:none; padding:9px 14px; font-weight:800; }
+  /* ---------- 휴대폰·태블릿(터치 화면): 경기 영상 칸과 빠른 기록 배너는 숨겨요(기록은 🎯 빠른 기록 모드에서) ----------
+     그 자리를 종합 분석(위) → 그래프(아래) → 기록 순서로 화면 너비 전체를 써요. */
+  @media (pointer:coarse) and (max-width:1366px){
+    #videoCard{ display:none !important; }
+    body:not(.qr-mode) #quickRecordCard{ display:none !important; }
+    html body .video-grid{ display:grid !important; grid-template-columns:minmax(0,1fr) !important; gap:14px; align-items:start; }
+    html body .video-grid-col, html body .video-analysis-bottom{ display:contents !important; }
+    html body #analysisCard{ grid-column:1 !important; grid-row:1 !important; width:auto !important; margin:0 !important; }
+    html body #graphCard{ grid-column:1 !important; grid-row:2 !important; width:auto !important; margin:0 !important; }
+    html body #recordsCard{ grid-column:1 !important; grid-row:3 !important; width:auto !important; position:static !important; max-height:480px; }
+  }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
@@ -1461,6 +1611,7 @@
           </table>
         </div>
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
+          <li><b>🎯 빠른 기록 모드</b>: 경기 정보 옆 버튼을 누르면 화면 전체가 빠른 기록 배너가 되고, 맨 위에 세트별 점수(지금 세트 강조)와 방금 남긴 기록이 보여요. 다 기록하면 <b>✅ 기록 종료</b>(또는 Esc)로 원래 화면에 돌아와요. 휴대폰·태블릿에서는 경기 영상 칸과 빠른 기록 배너를 숨기고 그 자리에 종합 분석·그래프를 크게 보여주니, 기록은 이 모드에서 해요.</li>
           <li>폴더를 만들지 않고 기록했다면 매치 분석 저장 칸에 <b>⚠️ 폴더 없이 남긴 기록</b> 알림과 <b>📁 폴더에 저장</b> 버튼이 나와요. 새 이름을 적으면 새 폴더로, 기존 폴더 이름을 적으면 그 폴더 뒤에 덧붙여 저장해요.</li>
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
@@ -1924,8 +2075,9 @@
       </div>
     </div>
     </div>
+    <div class="info-mode-row">
     <details class="fgroup match-info" id="matchInfoBox">
-      <summary class="fgroup-head"><span class="fg-ic">📋</span><span class="fg-title">경기 정보</span><span class="fg-sub">팀 이름·포지션 명단 — 경기 시작할 때 한 번 정해요 (폴더에 함께 저장)</span></summary>
+      <summary class="fgroup-head mi-sum"><span class="fg-ic">📋</span><span class="mi-texts"><span class="fg-title">경기 정보</span><span class="mi-cta">✏️ 팀 이름 · 포지션 명단 입력</span></span><span class="mi-state" id="matchInfoState"></span></summary>
             <div class="quick-record-row">
               <div class="qr-label">팀 이름 (선택)</div>
               <div style="display:flex; gap:6px;">
@@ -1937,6 +2089,8 @@
         <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 "기록 입력"의 <b>관련 선수</b>에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 서버에 저장되니 실명보다는 별명이나 이니셜을 적어주세요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
     </details>
+    <button class="btn qr-mode-btn" id="btnQrMode" type="button" title="휴대폰·태블릿에서 한 화면에 빠른 기록 배너만 크게 띄워 기록해요"><span class="ic">🎯</span><span><b>빠른 기록 모드</b><small>한 화면에 기록 입력만 · 세트 점수 함께</small></span></button>
+    </div>
   </div>
   <div class="video-grid">
     <div class="video-grid-col">
@@ -2050,6 +2204,11 @@
     <div class="video-grid-col">
       <div class="card video-grid-card" id="quickRecordCard">
         <h2>빠른 기록 배너</h2>
+        <div class="qr-mode-bar" id="qrModeBar">
+          <div class="qm-score" id="qmScore"></div>
+          <button class="btn primary" id="btnQrModeExit" type="button">✅ 기록 종료</button>
+        </div>
+        <div class="qm-last" id="qmLast"></div>
         <div class="field-note qr-card-note" style="margin-top:0;"><b>결과 버튼 → 상황 버튼 → 기록하기</b>로 1점씩 남겨요(시간·세트 함께 저장). 랠리 중 토스 순서는 결과 버튼 위 칸에서 보면서 바로 누르고, 방식·위치·관련 선수는 <b>➕ 자세히 기록</b>을 열어 선택으로 남겨요. 기록하기를 누르면 이 선택들은 기본값으로 돌아가요. 팀 이름과 명단은 위쪽 <b>📋 경기 정보</b>에서 정해요.</div>
 
 
@@ -5620,6 +5779,7 @@
     }
     sel.value = prevValue;
     refreshChips('videoPlayerSelect');
+    try{ updateMatchInfoState(); }catch(err){}
   }
   let selectedPlayer = null; // roster id (1-9) or null
   document.getElementById('videoPlayerSelect').addEventListener('change', e=>{
@@ -5632,6 +5792,7 @@
       document.querySelectorAll('#setSeg button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       selectedSet = Number(btn.dataset.set);
+      if(document.body.classList.contains('qr-mode')) updateQrModeScore();
     });
   });
 
@@ -6079,6 +6240,13 @@
   }
 
   // 폴더를 불러올 때 그 경기의 팀 이름으로 바꿔요(이름이 없는 예전 폴더는 지금 이름을 그대로 둬요).
+  // 경기 정보를 접어 두어도 무엇을 적는 곳인지, 지금 무엇이 적혀 있는지 바로 보이게
+  function updateMatchInfoState(){
+    const el = document.getElementById('matchInfoState'); if(!el) return;
+    let filled = 0; for(let i=1;i<=9;i++){ const r = videoRoster[i]; if(r && (r.position || r.name)) filled++; }
+    const named = ourTeamName!=='우리팀' || oppTeamName!=='상대팀';
+    el.innerHTML = `<span class="mi-chip${named?' on':''}">🏷️ ${escChip(ourTeamName)} vs ${escChip(oppTeamName)}</span><span class="mi-chip${filled?' on':''}">👥 명단 ${filled}/9</span>`;
+  }
   function applyTeamNames(opp, our){
     oppTeamName = (opp||'').trim() || '상대팀';
     ourTeamName = (our||'').trim() || '우리팀';
@@ -6086,8 +6254,10 @@
     document.getElementById('ourTeamNameInput').value = ourTeamName!=='우리팀' ? ourTeamName : '';
     updateTeamSegLabels();
     relabelAllRecords();
+    try{ updateMatchInfoState(); }catch(err){}
   }
   function onTeamNamesChanged(){
+    try{ updateMatchInfoState(); }catch(err){}
     updateTeamSegLabels();
     relabelAllRecords();
     renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
@@ -6348,6 +6518,33 @@
   const pct = (a,b)=> b ? Math.round(a/b*100) : null;
   const sortDesc = obj => Object.entries(obj).sort((a,b)=>b[1]-a[1]);
 
+  // ---------- 🎯 빠른 기록 모드: 화면 전체를 빠른 기록 배너로, 위에 세트별 점수와 방금 남긴 기록 ----------
+  function updateQrModeScore(){
+    const box = document.getElementById('qmScore'); if(!box) return;
+    const sm = scoreAtRecords(); const per = {};
+    records.forEach(r=>{ const sc = sm.get(r); if(sc) per[sc.set] = sc; });
+    const sets = [1,2,3].filter(n=>per[n] || n===selectedSet);
+    box.innerHTML = sets.map(n=>{ const sc = per[n] || {u:0,o:0}; return `<span class="qm-set${n===selectedSet?' on':''}"><em>${n}세트</em><b class="u">${sc.u}</b><i>:</i><b class="o">${sc.o}</b></span>`; }).join('')
+      + `<span class="qm-names"><b class="u">${escChip(ourTeamName)}</b> : <b class="o">${escChip(oppTeamName)}</b></span>`;
+    const scored = records.filter(r=>r.entries && r.entries.length);
+    const last = records[records.length-1];
+    document.getElementById('qmLast').innerHTML = last ? `방금 기록: <b>${escChip(last.label||'자유 기록')}</b> <span>(${last.set||1}세트 · 점수 기록 ${scored.length}개)</span>` : '아직 기록이 없어요. 결과 → 상황 → 기록하기를 눌러요.';
+  }
+  function setQrMode(on){
+    document.body.classList.toggle('qr-mode', on);
+    if(on){
+      updateQrModeScore();
+      window.scrollTo(0,0); document.getElementById('quickRecordCard').scrollTop = 0;
+      // 휴대폰·태블릿에서 되면 전체 화면으로(안 되는 브라우저는 그냥 넘어가요)
+      try{ if(window.matchMedia('(pointer:coarse)').matches && document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{}); }catch(err){}
+    } else {
+      try{ if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{}); }catch(err){}
+      const c = document.getElementById('recordsCard'); if(c) c.scrollIntoView({block:'start'});
+    }
+  }
+  document.getElementById('btnQrMode').addEventListener('click', ()=>{ if(readOnlyFolderView) return; setQrMode(true); });
+  document.getElementById('btnQrModeExit').addEventListener('click', ()=>setQrMode(false));
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.body.classList.contains('qr-mode')) setQrMode(false); });
   function renderTally(){
     const el = document.getElementById('tallySummary');
     const {byLabel} = tallyBuckets(allEntries(records));
@@ -6358,6 +6555,7 @@
       if(list.length) html += `<div class="tally-row"><b>${icons[b]} ${bucketName(b)}</b>: ${list.map(([l,n])=>`${l} ${n}회`).join(', ')}</div>`;
     });
     el.innerHTML = html || '<span class="field-note" style="margin:0;">아직 배너로 기록된 통계가 없어요.</span>';
+    if(document.body.classList.contains('qr-mode')) updateQrModeScore();
   }
 
   function barsHTML(title, entries, color, hint){
@@ -6685,7 +6883,7 @@
     const add = (ic, lb, full, target, opts) => items.push({ic, lb, full, target, ...(opts||{})});
     const sep = () => items.push({sep:true});
     add('📁','저장','매치 분석 저장','matchSaveCard');
-    add('🎬','영상','경기 영상','videoCard');
+    if(shown('videoCard')) add('🎬','영상','경기 영상','videoCard');
     if(shown('quickRecordCard')) add('✍️','입력','빠른 기록','quickRecordCard');
     add('📋','기록','기록 목록','recordsCard');
     sep();
@@ -7165,7 +7363,7 @@
     readOnlyFolderView = on;
     if(typeof updateUndoButton==='function') setTimeout(updateUndoButton,0);
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
-    ['qrRecordBtn','btnToss2nd','btnRecordMoment','momentMemo','btnImportCsv','btnSaveOrphan','btnClearZone','btnClearNineZone',
+    ['qrRecordBtn','btnToss2nd','btnRecordMoment','momentMemo','btnImportCsv','btnSaveOrphan','btnQrMode','btnClearZone','btnClearNineZone',
      'videoPlayerSelect','qrOptionSelect','qrDetailSelect','qrUndoBtn','coachNotes','blockZoneSelect','btnTossUndo','btnTossClear',
      'btnNewMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
