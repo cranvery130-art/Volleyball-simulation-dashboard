@@ -5738,7 +5738,23 @@
   function recTime(){
     if(currentVideoName) return video.currentTime||0;
     if(noVideoClockStart===null) noVideoClockStart = Date.now();
-    return (Date.now()-noVideoClockStart)/1000;
+    let t = (Date.now()-noVideoClockStart)/1000;
+    // 영상 없는 기록의 시간은 점수 순서를 정하는 데 써요. 기록 종료·새로고침·폴더 다시 열기 뒤에는 시계가 0부터 다시 시작해서
+    // 새 점수가 앞 점수들보다 앞에 끼어들어 스코어가 틀어졌어요. 이제는 이 세트의 마지막 기록보다 항상 뒤 시간으로 이어 가요.
+    const maxT = records.reduce((m,r)=>(r.set||1)===selectedSet && isFinite(r.time) ? Math.max(m, r.time) : m, -Infinity);
+    if(t <= maxT){ t = maxT + 1; noVideoClockStart = Date.now() - t*1000; }
+    return t;
+  }
+  // 예전에 시계가 0부터 다시 시작해서 순서가 뒤엉킨 영상 없는 기록을, 입력한 순서(목록 순서) 그대로 다시 이어 붙여요.
+  function fixNoVideoOrder(list){
+    const prev = {}, off = {};
+    (list||records).forEach(r=>{
+      if(r.videoName || !isFinite(r.time)) return;
+      const set = r.set||1; off[set] = off[set]||0;
+      let t = r.time + off[set];
+      if(prev[set]!==undefined && t <= prev[set]){ off[set] += prev[set] - t + 1; t = prev[set] + 1; }
+      r.time = t; prev[set] = t;
+    });
   }
   fileInput.addEventListener('change', ()=>{
     const file = fileInput.files && fileInput.files[0];
@@ -7503,6 +7519,7 @@
   function loadMatchFolder(f, idx){
     clearUndo(); // 다른 경기·화면으로 바뀌면 이전 화면의 되돌리기 기록은 지워요
     records = JSON.parse(JSON.stringify(f.records||[]));
+    fixNoVideoOrder();
     document.getElementById('coachNotes').value = f.coachNotes||'';
     currentVideoName = f.videoName||'';
     if(f.oppTeamName || f.ourTeamName) applyTeamNames(f.oppTeamName, f.ourTeamName);
@@ -7937,6 +7954,7 @@
       if(matchFolders[activeIdx].oppTeamName) vs = Object.assign({}, vs, {oppTeamName: matchFolders[activeIdx].oppTeamName});
       if(matchFolders[activeIdx].ourTeamName) vs = Object.assign({}, vs, {ourTeamName: matchFolders[activeIdx].ourTeamName});
     }
+    fixNoVideoOrder();
     renderMatchFolderSelect();
     if(vs.videoRoster){
       for(let i=1;i<=9;i++){ if(vs.videoRoster[i]) videoRoster[i] = vs.videoRoster[i]; }
