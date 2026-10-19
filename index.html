@@ -23,8 +23,8 @@
   :root{
     --bg:#0A0B0D; --panel:#121418; --panel-2:#1A1D22; --border:#22252B; --border-2:#30343C;
     --text:#F4F5F7; --text-dim:#A3A8B1; --muted:#6B717B;
-    --accent:#FF9570; --accent-2:#9E86FF; --accent-text:#FFAC8D; --accent-soft:rgba(255,149,112,0.14); --on-accent:#0A0B0D;
-    --grad:linear-gradient(100deg,#FF9570 0%,#E48AC4 50%,#9E86FF 100%);
+    --accent:#FF9570; --accent-2:#8FA6FF; --accent-text:#FFAC8D; --accent-soft:rgba(255,149,112,0.14); --on-accent:#0A0B0D;
+    --grad:linear-gradient(100deg,#FF9570 0%,#F9A65A 55%,#F2C14E 100%);
     --own:#9DB4FF; --opp:#FF6B81; --ball:#F3DFA2; --decoy:#8890A0;
     --good:#3DD68C; --good-soft:rgba(61,214,140,0.13); --warn:#FFD23F; --warn-soft:rgba(255,210,63,0.12);
     --shadow:0 20px 60px rgba(0,0,0,0.5);
@@ -39,8 +39,8 @@
   body.bright-mode{
     --bg:#F3F5F8; --panel:#FFFFFF; --panel-2:#EDF0F5; --border:#D7DCE4; --border-2:#C2C9D4;
     --text:#13161C; --text-dim:#454C58; --muted:#5B6372;
-    --accent:#E05A2B; --accent-2:#6E4FC9; --accent-text:#C8491E; --accent-soft:rgba(224,90,43,0.12);
-    --grad:linear-gradient(100deg,#E05A2B 0%,#C94E86 50%,#6E4FC9 100%);
+    --accent:#E05A2B; --accent-2:#3D5AA8; --accent-text:#C8491E; --accent-soft:rgba(224,90,43,0.12);
+    --grad:linear-gradient(100deg,#D9531F 0%,#C9771A 100%);
     --good:#148A52; --good-soft:rgba(20,138,82,0.12); --warn:#B5790A; --warn-soft:rgba(181,121,10,0.12);
     --shadow:0 16px 40px rgba(20,22,28,0.14);
   }
@@ -54,10 +54,27 @@
     --good:#1F7F52; --good-soft:rgba(31,127,82,0.12); --warn:#9A6200; --warn-soft:rgba(242,179,61,0.22);
     --shadow:0 22px 50px -22px rgba(29,39,71,0.35);
   }
-  body.ys-mode .topbar h1, body.ys-mode .login-card h1{ font-family:'Jua','IBM Plex Sans KR',sans-serif; font-style:normal; font-weight:400; letter-spacing:-0.02em; }
-  body.ys-mode #courtGrad stop:first-child{ stop-color:#2F6B4F; }
-  body.ys-mode #courtGrad stop:last-child{ stop-color:#1F4D38; }
-  /* 시력보호 모드 — 오래 봐도 눈이 덜 피로하도록 설계한 팔레트.
+  /* 양쌤 모드의 버튼·선택 표시: 홈페이지처럼 고른 것은 남색, 주황은 강조 선과 작은 표시에만 */
+  body.ys-mode{ --grad:linear-gradient(100deg,#1D2747 0%,#2A3763 100%); --navy:#1D2747; }
+  body.ys-mode .topbar h1, body.ys-mode .login-card h1{ background:none; color:var(--navy); -webkit-text-fill-color:currentColor; }
+  body.ys-mode .topbar h1 .h1-hl{ color:var(--accent); }
+  body.ys-mode .seg{ background:var(--panel-2); }
+  body.ys-mode .btn.primary, body.ys-mode .tl-btn.primary{ box-shadow:0 8px 18px -10px rgba(29,39,71,0.6); }
+  body.ys-mode .btn.primary:hover{ background:#2A3763; }
+  body.ys-mode .card{ box-shadow:0 14px 34px -26px rgba(29,39,71,0.45); }
+  body.ys-mode .scenario-title{ color:var(--navy); }
+  /* 양쌤 모드의 코트: 체육관 마루색 바닥에 흰 선, 남색 네트 */
+  body.ys-mode #courtGrad stop:first-child{ stop-color:#E2B47A; }
+  body.ys-mode #courtGrad stop:last-child{ stop-color:#D29E62; }
+  body.ys-mode #sceneGroup > rect[stroke="#C97456"]{ stroke:#E2622B; }
+  body.ys-mode #sceneGroup [stroke="#E8ECF2"]{ stroke:#FFFDF8; }
+  body.ys-mode #sceneGroup [fill="#E8ECF2"]{ fill:#FFFDF8; }
+  body.ys-mode #net rect[fill="#08090B"]{ fill:#1D2747; }
+  body.ys-mode #sceneGroup [stroke="#FF9570"]{ stroke:#C24B16; }
+  body.ys-mode .court-wrap{ background:#F2EADC; }
+  body.ys-mode .mk-court{ background:linear-gradient(90deg,#E2B47A,#D29E62); border-color:#E2622B; }
+  body.eye-mode .mk-court{ background:linear-gradient(90deg,#7A8E6C,#62755A); border-color:#A9775A; }
+  /* 눈 보호 모드 — 오래 봐도 눈이 덜 피로하도록 설계한 팔레트.
      · 순백·순흑 대신 따뜻한 종이색 배경과 짙은 갈색 글자: 눈부심(글레어)과 과한 대비를 줄여요(본문 대비 약 11:1, 회색 글씨도 4.5:1 이상 유지).
      · 파란빛이 강한 색과 형광·네온 색을 빼고, 채도를 낮춘 차분한 색만 써요(블루라이트·색 자극 감소).
      · 그라데이션·광택·그림자·움직임 효과를 줄이고, 글자 간격과 줄 간격을 조금 넓혀 초점 피로를 줄여요. */
@@ -79,7 +96,7 @@
   body.eye-mode .net-bar{ background:repeating-linear-gradient(90deg, rgba(58,50,38,0.18) 0 1px, transparent 1px 7px), repeating-linear-gradient(0deg, rgba(58,50,38,0.18) 0 1px, transparent 1px 7px), #D9CCB0; border-top-color:#5F5644; border-bottom-color:#5F5644; }
   body.eye-mode .net-bar em{ color:#5F5644; }
   body.eye-mode *, body.eye-mode *::before, body.eye-mode *::after{ transition-duration:0.01ms !important; animation-duration:0.01ms !important; animation-iteration-count:1 !important; }
-  /* 시력보호 모드의 코트: 짙은 초록·흰 선 대신 채도를 낮춘 세이지 그린과 아이보리 선으로 대비를 부드럽게 */
+  /* 눈 보호 모드의 코트: 짙은 초록·흰 선 대신 채도를 낮춘 세이지 그린과 아이보리 선으로 대비를 부드럽게 */
   body.eye-mode #courtGrad stop:first-child{ stop-color:#7A8E6C; }
   body.eye-mode #courtGrad stop:last-child{ stop-color:#62755A; }
   body.eye-mode #sceneGroup [stroke="#E8ECF2"]{ stroke:#F1E9D6; }
@@ -104,6 +121,9 @@
   html,body{margin:0;padding:0;}
   body{ background:var(--bg); color:var(--text); font-family:var(--body); min-height:100vh; -webkit-font-smoothing:antialiased; }
   h1,h2,h3{ font-family:var(--display); font-weight:700; margin:0; }
+  /* 제목은 화면 모드와 상관없이 양쌤스튜디오 홈페이지와 같은 Jua 글꼴로 */
+  :root{ --head:'Jua','IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
+
   ::selection{ background:var(--accent); color:var(--on-accent); }
   .app{ max-width:1400px; margin:0 auto; padding:20px clamp(14px,2.2vw,40px) 40px; }
   .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -1369,6 +1389,11 @@
     #matchFolderSelect{ flex:1 1 100% !important; }
     .match-save-card .fgroup > div:has(> #matchFolderSelect) > .btn{ flex:1 1 0; }
   }
+  /* 제목은 화면 모드와 상관없이 양쌤스튜디오 홈페이지와 같은 Jua 글꼴로 */
+  body h1, body h2, body h3, body .card h2, body .modal-card h2, body .gd-step-title, body .field-label, body .final-head, body .fg-title, body .quick-record-row .qr-label, body .stage-top .scenario-title, body .mk-title, body .feature-guide-block h3, body .qr-mode-btn b{ font-family:var(--head); font-weight:400; font-style:normal; letter-spacing:-0.01em; }
+  body .topbar h1, body .login-card h1{ font-family:var(--head); font-weight:400; font-style:normal; letter-spacing:-0.02em; }
+  body.ys-mode .qr-mode-btn{ background:#E2622B; color:#FFFDF8; box-shadow:0 10px 22px -12px rgba(226,98,43,0.8); }
+  body.ys-mode .qr-mode-btn:hover{ background:#C9541F; }
 </style>
 <!-- ======================================================================
      FIREBASE 연결 설정
@@ -1788,7 +1813,7 @@
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
         <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 필요하면 새 링크로 바꾸거나 꺼요).</li>
-        <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 시력보호 화면 중에서 고를 수 있어요.</li>
+        <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
         <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
         <li><b>팀과 함께 사용</b>코드를 만들어 팀원들과 공유하면, 같은 대형·기록을 함께 보고 수정할 수 있어요. 구성원별로 포지션·대회 출전 여부를 관리하고, 누가 언제 무엇을 수정했는지 활동 로그로 확인할 수 있어요.</li>
@@ -1815,10 +1840,10 @@
     <button data-appmode="settings" id="btnModeSettings" style="display:none;">⚙️ 설정</button>
   </div>
   <div class="seg" id="themeSeg" title="화면 모드">
-    <button data-theme="ys" title="양쌤스튜디오의 밝은 체육관 화면(기본)">🏐 양쌤</button>
-    <button data-theme="dark" title="어두운 화면">🌙 어두운</button>
-    <button data-theme="bright" title="어두운 화면이 잘 안 보일 때">☀️ 또렷한</button>
-    <button data-theme="eye" title="오래 볼 때 눈의 피로를 줄여요">🌿 시력보호</button>
+    <button data-theme="ys" title="양쌤스튜디오 홈페이지와 같은 밝은 체육관 화면(기본)">🏐 기본</button>
+    <button data-theme="dark" title="어두운 곳이나 밤에 볼 때">🌙 어두운</button>
+    <button data-theme="bright" title="햇빛 아래나 빔프로젝터처럼 화면이 흐리게 보일 때">☀️ 또렷한</button>
+    <button data-theme="eye" title="오래 볼 때 눈의 피로를 줄여요">🌿 눈 보호</button>
   </div>
   <button class="btn" id="btnLocalExit" style="display:none;">🚪 나가기</button>
 </div>
@@ -1852,7 +1877,7 @@
           <li>대형 코멘트는 대형마다 하나예요. 여러 사람이 동시에 고치면 마지막에 저장된 내용만 남아요.</li>
           <li>도트 크기는 실제 9인제 코트(21m×10.5m) 비율에 맞춰져 있어요. 포지션 아래 칸에 이름을 적으면 도트에 이름이 보여요.</li>
           <li>여러 사람이 동시에 편집하면 서로의 변경이 바로 보이지 않아요. 저장한 뒤 새로고침하면 반영돼요.</li>
-          <li>오른쪽 위 🏐 양쌤(기본) / 🌙 어두운 / ☀️ 또렷한 / 🌿 시력보호로 화면 모드를 고를 수 있고, 이 설명은 ❓ 기능 설명으로 언제든 다시 볼 수 있어요.</li>
+          <li>오른쪽 위 🏐 기본 / 🌙 어두운 / ☀️ 또렷한 / 🌿 눈 보호로 화면 모드를 고를 수 있고, 이 설명은 ❓ 기능 설명으로 언제든 다시 볼 수 있어요.</li>
           <li>"코드 없이 계속하기"로 들어오면 이 기기에만 저장되고 다른 사람과 공유되지 않아요.</li>
           <li>앱처럼 쓰려면: PC 크롬은 오른쪽 위 ⋮ → <b>저장 및 공유 → 바로가기 만들기</b>("창으로 열기" 체크), 휴대폰은 <b>홈 화면에 추가</b>를 누르면 배구공 9 아이콘으로 바로 열 수 있어요.</li>
         </ul></div>
@@ -1943,7 +1968,7 @@
 
 
   <div class="topbar">
-    <h1>9인제 배구 경기분석 전술 시뮬레이터</h1>
+    <h1>9인제 배구 경기분석 <span class="h1-hl">전술 시뮬레이터</span></h1>
     <span class="sub">공격 유형과 블로킹 인원에 따라 수비 대형이 어떻게 바뀌는지 살펴보고, 직접 대형과 동선을 만들어 시뮬레이션할 수 있어요</span>
   </div>
 
@@ -5339,7 +5364,7 @@
     location.href = location.pathname;
   });
 
-  // ---------- 화면 모드: 양쌤(기본) / 어두운 / 또렷한 / 시력보호 ----------
+  // ---------- 화면 모드: 기본(양쌤) / 어두운 / 또렷한 / 눈 보호 ----------
   // body 클래스(ys-mode / bright-mode / eye-mode)로 CSS 색 변수만 바꿔서 화면 전체를 다시 칠해요. 기기별로 기억해요.
   const THEME_KEY = 'vt:theme';
   const BRIGHT_MODE_KEY = 'vt:bright-mode'; // 예전 버전 설정을 이어받기 위해 남겨둬요
@@ -6068,7 +6093,7 @@
       label.setAttribute('x', x+cw/2); label.setAttribute('y', y+rowH/2+4);
       label.setAttribute('text-anchor','middle');
       label.setAttribute('font-size', '7');
-      label.setAttribute('fill', isSel ? '#0A0B0D' : 'var(--text-dim)');
+      label.setAttribute('fill', isSel ? 'var(--on-accent)' : 'var(--text-dim)');
       label.style.pointerEvents = 'none';
       label.textContent = text;
       g.appendChild(label);
