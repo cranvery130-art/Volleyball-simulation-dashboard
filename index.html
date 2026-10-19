@@ -334,7 +334,8 @@
 
   .note-box{ margin-top:14px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-soft); border:1px solid rgba(255,149,112,0.35); font-size:12px; color:var(--accent-text); line-height:1.55; }
 
-  /* 시작 스플래시 — 양쌤스튜디오 톤(따뜻한 종이색 + 남색 + 코트 주황), 9인제 대형이 자리 잡고 공이 네트를 넘어가요 */
+  /* 시작 스플래시 — 양쌤스튜디오 톤(따뜻한 종이색 + 남색 + 코트 주황)
+     양쌤 얼굴이 가운데 나타나 물결처럼 퍼지며 체육관이 열리고, 얼굴은 위 이름표로 옮겨가요. 이어서 9인제 대형이 자리 잡고 공이 네트를 넘어가요 */
   #splashScreen{
     position:fixed; inset:0; z-index:2000; overflow:hidden; cursor:pointer;
     background:#F8F3EA; color:#1D2747;
@@ -343,28 +344,40 @@
     font-family:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
   }
   #splashScreen.splash-hide{ opacity:0; pointer-events:none; }
+  .splash-reveal{ position:absolute; inset:0; background:radial-gradient(circle at 50% 46%, #FCE7CB 0%, #F8F3EA 58%); clip-path:circle(0 at 50% 50%); animation:spReveal .85s .6s cubic-bezier(.6,0,.3,1) forwards; }
+  .splash-hero{ position:absolute; left:50%; top:50%; width:128px; height:128px; margin:-64px 0 0 -64px; z-index:3; pointer-events:none; }
+  .splash-hero img{ width:100%; height:100%; border-radius:50%; object-fit:cover; border:5px solid #FFFDF8; box-shadow:0 0 0 4px #E2622B, 0 18px 40px -14px rgba(29,39,71,.45); animation:spFacePop .55s cubic-bezier(.2,1.5,.4,1) both, spFaceGo .5s .95s cubic-bezier(.6,0,.3,1) forwards; }
+  .splash-ring{ position:absolute; inset:0; border-radius:50%; border:3px solid #E2622B; opacity:0; animation:spRing 1s .35s ease-out both; }
+  .splash-ring.r2{ border-color:#F2B33D; animation-delay:.55s; }
   .splash-floor{ position:absolute; left:0; right:0; bottom:0; height:22%; background:linear-gradient(180deg,#F0CF9F,#E6B577); box-shadow:inset 0 10px 0 rgba(255,255,255,.35); }
   .splash-floor::before{ content:''; position:absolute; left:0; right:0; top:34%; height:4px; background:rgba(255,255,255,.9); }
   .splash-inner{ position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px; width:min(92vw,560px); margin-top:-6vh; }
-  .splash-chip{ display:inline-flex; align-items:center; gap:8px; padding:5px 12px 5px 5px; border-radius:999px; background:#FFFDF8; border:1px solid #EAE0CF; box-shadow:0 8px 20px -12px rgba(29,39,71,.35); font-size:13px; color:#4B5373; margin-bottom:16px; animation:spUp .5s ease both; }
-  .splash-chip img{ width:28px; height:28px; border-radius:50%; object-fit:cover; border:2px solid #E2622B; }
+  .splash-chip{ display:inline-flex; align-items:center; gap:8px; padding:5px 12px 5px 5px; border-radius:999px; background:#FFFDF8; border:1px solid #EAE0CF; box-shadow:0 8px 20px -12px rgba(29,39,71,.35); font-size:13px; color:#4B5373; margin-bottom:16px; animation:spUp .45s 1.2s ease both; }
+  .splash-chip img{ width:30px; height:30px; border-radius:50%; object-fit:cover; border:2px solid #E2622B; }
   .splash-chip b{ color:#1D2747; }
-  .splash-court{ width:100%; height:auto; filter:drop-shadow(0 18px 26px rgba(29,39,71,.22)); animation:spPop .6s cubic-bezier(.2,1.3,.4,1) both; }
+  .splash-court{ width:100%; height:auto; filter:drop-shadow(0 18px 26px rgba(29,39,71,.22)); animation:spPop .6s 1.1s cubic-bezier(.2,1.3,.4,1) both; }
   .splash-court .sp-dot{ animation:spDot .45s cubic-bezier(.2,1.5,.4,1) both; transform-box:fill-box; transform-origin:center; }
-  .splash-court .sp-arc{ stroke-dasharray:6 7; stroke-dashoffset:300; animation:spArc 1s 1.05s ease-out forwards; }
-  .splash-title{ font-family:'Jua','IBM Plex Sans KR',sans-serif; font-weight:400; font-size:clamp(40px,10vw,64px); line-height:1.02; letter-spacing:-0.02em; margin:18px 0 6px; color:#1D2747; animation:spUp .55s .25s ease both; }
+  .splash-court .sp-arc{ stroke-dasharray:6 7; stroke-dashoffset:300; animation:spArc 1s 2.1s ease-out forwards; }
+  .splash-title{ font-family:'Jua','IBM Plex Sans KR',sans-serif; font-weight:400; font-size:clamp(40px,10vw,64px); line-height:1.02; letter-spacing:-0.02em; margin:18px 0 6px; color:#1D2747; animation:spUp .55s 1.3s ease both; }
   .splash-title span{ color:#E2622B; }
-  .splash-sub{ font-family:'Jua','IBM Plex Sans KR',sans-serif; font-size:clamp(18px,4.4vw,24px); color:#2A3763; margin:0 0 8px; animation:spUp .55s .35s ease both; }
-  .splash-tagline{ font-size:clamp(13px,3.2vw,15.5px); color:#4B5373; margin:0 0 16px; animation:spUp .55s .45s ease both; }
-  .splash-bar{ width:130px; height:5px; border-radius:5px; background:#EAE0CF; overflow:hidden; }
-  .splash-bar i{ display:block; height:100%; background:linear-gradient(100deg,#E2622B,#EE8A3A 55%,#F2B33D); transform-origin:left; animation:spLoad 2.1s .1s ease both; }
+  .splash-sub{ font-family:'Jua','IBM Plex Sans KR',sans-serif; font-size:clamp(18px,4.4vw,24px); color:#2A3763; margin:0 0 8px; animation:spUp .55s 1.4s ease both; }
+  .splash-tagline{ font-size:clamp(13px,3.2vw,15.5px); color:#4B5373; margin:0 0 16px; animation:spUp .55s 1.5s ease both; }
+  .splash-bar{ width:130px; height:5px; border-radius:5px; background:#EAE0CF; overflow:hidden; animation:spUp .4s 1.5s ease both; }
+  .splash-bar i{ display:block; height:100%; background:linear-gradient(100deg,#E2622B,#EE8A3A 55%,#F2B33D); transform-origin:left; animation:spLoad 3s .2s ease both; }
   .splash-sign{ position:absolute; left:0; right:0; bottom:max(20px, env(safe-area-inset-bottom)); text-align:center; font-family:var(--mono); font-size:11px; letter-spacing:0.18em; color:#4B5373; }
   @keyframes spUp{ from{ transform:translateY(12px); opacity:0; } to{ transform:none; opacity:1; } }
   @keyframes spPop{ from{ transform:scale(.88); opacity:0; } to{ transform:none; opacity:1; } }
   @keyframes spDot{ from{ transform:translateX(var(--dx,0)) scale(.2); opacity:0; } to{ transform:none; opacity:1; } }
   @keyframes spArc{ to{ stroke-dashoffset:0; } }
+  /* 공은 SVG 애니메이션 대신 CSS로 움직여요(글꼴 로딩이 늦어도 제때 날아가요) — 경로는 위 sp-arc 곡선과 같아요 */
+  .splash-court .sp-ball{ opacity:0; animation:spBall 1s 2.1s cubic-bezier(.3,.1,.5,1) forwards; }
+  @keyframes spBall{ 0%{ opacity:1; transform:translate(175px,140px); } 10%{ transform:translate(200.3px,107.3px); } 20%{ transform:translate(226.1px,81.1px); } 30%{ transform:translate(252.4px,61.5px); } 40%{ transform:translate(279.3px,48.5px); } 50%{ transform:translate(306.8px,42.0px); } 60%{ transform:translate(334.7px,42.1px); } 70%{ transform:translate(363.2px,48.7px); } 80%{ transform:translate(392.3px,61.9px); } 90%{ transform:translate(421.9px,81.7px); } 100%{ opacity:1; transform:translate(452px,108px); } }
+  @keyframes spReveal{ to{ clip-path:circle(150vmax at 50% 50%); } }
+  @keyframes spFacePop{ from{ transform:scale(0); } to{ transform:scale(1); } }
+  @keyframes spFaceGo{ to{ transform:translate(var(--tx,0),var(--ty,-30vh)) scale(var(--ts,.23)); opacity:0; } }
+  @keyframes spRing{ 0%{ transform:scale(1); opacity:.7; } 100%{ transform:scale(4.2); opacity:0; } }
   @keyframes spLoad{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
-  @media (prefers-reduced-motion:reduce){ #splashScreen *{ animation:none !important; } .splash-court .sp-arc{ stroke-dashoffset:0; } }
+  @media (prefers-reduced-motion:reduce){ #splashScreen *{ animation:none !important; } .splash-court .sp-arc{ stroke-dashoffset:0; } .splash-court .sp-ball{ opacity:1; transform:translate(452px,108px); } .splash-reveal{ clip-path:none; } .splash-hero{ display:none; } }
   @media (max-height:560px){ .splash-court{ width:72%; } .splash-title{ margin-top:10px; } }
   #loginOverlay{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:20px; z-index:1000; overflow-y:auto; }
   .btn-link-intro{
@@ -1661,9 +1674,10 @@
 <body>
 
 <div id="splashScreen" role="img" aria-label="9인제 배구 경기분석 전술 시뮬레이터 시작 화면">
-  <div class="splash-floor" aria-hidden="true"></div>
+  <div class="splash-reveal" aria-hidden="true"><div class="splash-floor"></div></div>
+  <div class="splash-hero" aria-hidden="true"><span class="splash-ring"></span><span class="splash-ring r2"></span><img src="icons/yangssaem-face.webp" alt=""></div>
   <div class="splash-inner">
-    <div class="splash-chip"><img src="icons/yangssaem-face.webp" alt="" width="28" height="28"><span><b>양쌤스튜디오</b>가 만들었어요</span></div>
+    <div class="splash-chip"><img src="icons/yangssaem-face.webp" alt="" width="30" height="30"><span><b>양쌤스튜디오</b>가 만들었어요</span></div>
     <svg class="splash-court" viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <rect x="6" y="6" width="588" height="268" rx="16" fill="#EFCB95"/>
       <rect x="40" y="30" width="520" height="220" rx="4" fill="#E07A45"/>
@@ -1672,30 +1686,28 @@
       <line x1="387" y1="30" x2="387" y2="250" stroke="#FFFDF8" stroke-width="2.5" stroke-dasharray="7 7" opacity=".75"/>
       <rect x="295" y="16" width="10" height="248" rx="3" fill="#1D2747"/>
       <circle cx="300" cy="16" r="7" fill="#1D2747"/><circle cx="300" cy="264" r="7" fill="#1D2747"/>
-      <circle class="sp-dot" cx="250" cy="70" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.25s"/>
-      <circle class="sp-dot" cx="250" cy="140" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.29s"/>
-      <circle class="sp-dot" cx="250" cy="210" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.33s"/>
-      <circle class="sp-dot" cx="175" cy="70" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.37s"/>
-      <circle class="sp-dot" cx="175" cy="140" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.41s"/>
-      <circle class="sp-dot" cx="175" cy="210" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.45s"/>
-      <circle class="sp-dot" cx="95" cy="70" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.49s"/>
-      <circle class="sp-dot" cx="95" cy="140" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.53s"/>
-      <circle class="sp-dot" cx="95" cy="210" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:0.57s"/>
-      <circle class="sp-dot" cx="350" cy="70" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.61s"/>
-      <circle class="sp-dot" cx="350" cy="140" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.65s"/>
-      <circle class="sp-dot" cx="350" cy="210" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.69s"/>
-      <circle class="sp-dot" cx="425" cy="70" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.73s"/>
-      <circle class="sp-dot" cx="425" cy="140" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.77s"/>
-      <circle class="sp-dot" cx="425" cy="210" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.81s"/>
-      <circle class="sp-dot" cx="505" cy="70" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.85s"/>
-      <circle class="sp-dot" cx="505" cy="140" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.89s"/>
-      <circle class="sp-dot" cx="505" cy="210" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:0.93s"/>
+      <circle class="sp-dot" cx="250" cy="70" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.25s"/>
+      <circle class="sp-dot" cx="250" cy="140" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.29s"/>
+      <circle class="sp-dot" cx="250" cy="210" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.33s"/>
+      <circle class="sp-dot" cx="175" cy="70" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.37s"/>
+      <circle class="sp-dot" cx="175" cy="140" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.41s"/>
+      <circle class="sp-dot" cx="175" cy="210" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.45s"/>
+      <circle class="sp-dot" cx="95" cy="70" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.49s"/>
+      <circle class="sp-dot" cx="95" cy="140" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.53s"/>
+      <circle class="sp-dot" cx="95" cy="210" r="13" fill="#FFFDF8" stroke="#1D2747" stroke-width="3" style="--dx:-60px;animation-delay:1.57s"/>
+      <circle class="sp-dot" cx="350" cy="70" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.61s"/>
+      <circle class="sp-dot" cx="350" cy="140" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.65s"/>
+      <circle class="sp-dot" cx="350" cy="210" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.69s"/>
+      <circle class="sp-dot" cx="425" cy="70" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.73s"/>
+      <circle class="sp-dot" cx="425" cy="140" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.77s"/>
+      <circle class="sp-dot" cx="425" cy="210" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.81s"/>
+      <circle class="sp-dot" cx="505" cy="70" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.85s"/>
+      <circle class="sp-dot" cx="505" cy="140" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.89s"/>
+      <circle class="sp-dot" cx="505" cy="210" r="13" fill="#1D2747" stroke="#FFFDF8" stroke-width="3" style="--dx:60px;animation-delay:1.93s"/>
       <path class="sp-arc" d="M175,140 Q300,-40 452,108" fill="none" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round"/>
-      <g>
+      <g class="sp-ball">
         <circle r="11" fill="#F2B33D" stroke="#1D2747" stroke-width="2.5"/>
         <path d="M-11,0 Q0,-6 11,0 M-6,-9 Q-2,0 -6,9" fill="none" stroke="#1D2747" stroke-width="1.6"/>
-        <animateMotion dur="1s" begin="1.05s" fill="freeze" path="M175,140 Q300,-40 452,108" calcMode="spline" keyTimes="0;1" keySplines=".3 .1 .5 1"/>
-        <set attributeName="opacity" to="0" begin="0s" dur="1.05s"/>
       </g>
     </svg>
     <h1 class="splash-title"><span>9인제</span> 배구</h1>
@@ -1708,12 +1720,21 @@
 <script>
   (function(){
     var splash = document.getElementById('splashScreen');
+    // 가운데 얼굴이 위 이름표의 작은 얼굴 자리로 날아가도록 거리와 크기를 재 둬요
+    try{
+      var hero = splash.querySelector('.splash-hero'), chipImg = splash.querySelector('.splash-chip img');
+      var a = hero.getBoundingClientRect(), b = chipImg.getBoundingClientRect();
+      var img = hero.querySelector('img');
+      img.style.setProperty('--tx', ((b.left + b.width/2) - (a.left + a.width/2)) + 'px');
+      img.style.setProperty('--ty', ((b.top + b.height/2) - (a.top + a.height/2)) + 'px');
+      img.style.setProperty('--ts', (b.width / a.width).toFixed(3));
+    }catch(e){}
     function hideSplash(){
       if(!splash || splash.classList.contains('splash-hide')) return;
       splash.classList.add('splash-hide');
       setTimeout(function(){ splash.style.display = 'none'; }, 600);
     }
-    setTimeout(hideSplash, 2500);
+    setTimeout(hideSplash, 3600);
     splash.addEventListener('click', hideSplash);
   })();
 </script>
