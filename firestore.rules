@@ -1,0 +1,234 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ───────────────────────────────────────────────────────────────
+    // 9인제 배구 전술 시뮬레이터 — Firestore 보안 규칙 (2026-10 보안 개편)
+    // Firebase 콘솔 → Firestore Database → 규칙 탭에 이 파일 내용을 그대로 붙여넣고 "게시"를 눌러요.
+    // (Authentication → 로그인 방법에서 "익명" 로그인도 켜야 해요.)
+    //
+    //  - 모든 기기는 Firebase 익명 로그인을 해요(이름·이메일 없음). 그 기기 고유번호(uid)로 권한을 구분해요.
+    //  - 비밀번호는 원문으로 저장하지 않아요. SHA-256 해시만 vtRooms/{코드}/meta/secret에 두고,
+    //    그 문서는 아무도 읽을 수 없어요.
+    //  - 입장할 때 기기는 "내가 계산한 해시"를 claims/{uid}에 먼저 쓰고(5초에 한 번만),
+    //    이 규칙이 저장된 해시와 같은지 비교해서 members/{uid}(구성원 문서)를 만들게 해요.
+    //    개설자·수정 권한·조회 권한 구분도 이 구성원 문서로 서버가 직접 지켜요.
+    //  - 경기 폴더 조회 링크는 방과 따로 떨어진 vtShares/{무작위 번호} 문서만 읽어요.
+    //    링크에는 코드가 없고, 그 문서에는 경기 분석 자료만 들어 있어서 방에는 들어갈 수 없어요.
+    //  - 예전 방식(kv/vt:room:코드 문서 하나에 비밀번호 원문이 든 방)은 개설자가 한 번 로그인하면
+    //    새 방식으로 옮겨지고 예전 문서는 지워져요. 옮기기 전에도 예전 문서는 개설자 말고는 읽을 수 없어요.
+    // ───────────────────────────────────────────────────────────────
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function validCode(code) {
+      return code.size() >= 1 && code.size() <= 40;
+    }
+    function roomPath(code) {
+      return /databases/$(database)/documents/vtRooms/$(code);
+    }
+    function secretPath(code) {
+      return /databases/$(database)/documents/vtRooms/$(code)/meta/secret;
+    }
+    function memberPath(code, uid) {
+      return /databases/$(database)/documents/vtRooms/$(code)/members/$(uid);
+    }
+    function claimPath(code, uid) {
+      return /databases/$(database)/documents/vtRooms/$(code)/claims/$(uid);
+    }
+    function legacyPath(code) {
+      return /databases/$(database)/documents/kv/$('vt:room:' + code);
+    }
+    function shareOwnerPath(sid) {
+      return /databases/$(database)/documents/vtShareOwners/$(sid);
+    }
+
+    // 이 요청 직전 상태 기준의 내 구성원 정보
+    function isMember(code) {
+      return signedIn() && exists(memberPath(code, request.auth.uid));
+    }
+    function myRole(code) {
+      return get(memberPath(code, request.auth.uid)).data.role;
+    }
+    function isCreator(code) {
+      return isMember(code) && myRole(code) == 'creator';
+    }
+    function canEdit(code) {
+      return isMember(code) && myRole(code) in ['creator', 'editor'];
+    }
+    // 같은 묶음(batch) 쓰기까지 반영한 상태 기준
+    function canEditAfter(code) {
+      return signedIn()
+        && existsAfter(memberPath(code, request.auth.uid))
+        && getAfter(memberPath(code, request.auth.uid)).data.role in ['creator', 'editor'];
+    }
+
+    // 내가 이번에 제출한 해시(같은 묶음 쓰기 포함)
+    function hasClaim(code) {
+      return existsAfter(claimPath(code, request.auth.uid));
+    }
+    function myClaim(code) {
+      return getAfter(claimPath(code, request.auth.uid)).data;
+    }
+
+    // 예전 방식 방: 새 방식 방이 없고 kv/vt:room:코드 문서가 남아 있음.
+    // 예전 문서의 value는 방 전체를 JSON 글자로 담고 있어서, 제출한 비밀번호(JSON 글자 형태 legacy와
+    // 그것을 정규식 글자 그대로로 바꾼 legacyRe)가 "creatorPassword" 값과 똑같은지 정규식으로 비교해요.
+    //  - legacy는 완전한 JSON 문자열 한 개("..." 모양)여야 해요.
+    //  - legacyRe는 특수문자가 모두 \로 막힌 "글자 그대로" 정규식이어야 하고, legacy와 정확히 같아야 해요.
+    //    그래서 legacyRe로 아무 비밀번호나 통과시키는 식(.* 등)은 쓸 수 없어요.
+    function isLegacy(code) {
+      return !exists(roomPath(code)) && exists(legacyPath(code));
+    }
+    function legacyCreatorOk(code, c) {
+      return c.get('legacy', '') is string && c.get('legacyRe', '') is string
+        && c.legacy.size() >= 3 && c.legacy.size() <= 300
+        && c.legacy.matches('"([^"\\\\]|\\\\.)*"')
+        && c.legacyRe.matches('([^\\\\^$.*+?()\\[\\]{}|]|\\\\[\\\\^$.*+?()\\[\\]{}|])*')
+        && c.legacy.matches(c.legacyRe)
+        && get(legacyPath(code)).data.value.matches('.*[{,]"creatorPassword":' + c.legacyRe + '[,}].*');
+    }
+
+    function creatorOk(code) {
+      return hasClaim(code) && (
+        (existsAfter(secretPath(code)) && myClaim(code).c == getAfter(secretPath(code)).data.creator)
+        || (isLegacy(code) && legacyCreatorOk(code, myClaim(code)))
+      );
+    }
+    function viewOk(code) {
+      return hasClaim(code) && existsAfter(secretPath(code))
+        && myClaim(code).v == getAfter(secretPath(code)).data.view;
+    }
+
+    function memberShapeOk(d) {
+      return d.keys().hasOnly(['role', 'name', 'position', 'status', 'gender', 'joinedAt', 'enteredAt'])
+        && d.role in ['creator', 'editor', 'view']
+        && d.name is string && d.name.size() >= 1 && d.name.size() <= 30
+        && d.get('position', '') is string && d.get('position', '').size() <= 20
+        && d.get('status', '') is string && d.get('status', '').size() <= 20
+        && d.get('gender', '') is string && d.get('gender', '').size() <= 4;
+    }
+    function secretShapeOk(d) {
+      return d.keys().hasOnly(['creator', 'view'])
+        && d.creator is string && d.creator.size() == 64
+        && d.view is string && d.view.size() == 64;
+    }
+    function blobShapeOk(d) {
+      return d.keys().hasOnly(['value', 'updatedAt'])
+        && d.value is string && d.value.size() <= 1000000;
+    }
+
+    // 방(코드) 존재 확인용 문서
+    match /vtRooms/{code} {
+      allow get: if validCode(code) && signedIn();
+      allow list: if false;
+      // 새 방 만들기(같은 묶음으로 비밀번호 해시도 만들어야 함), 예전 방은 확인된 개설자만 옮기기
+      allow create: if validCode(code) && signedIn()
+        && request.resource.data.keys().hasOnly(['createdAt', 'v'])
+        && existsAfter(secretPath(code))
+        && (!exists(legacyPath(code)) || isCreator(code));
+      allow update: if isCreator(code) && request.resource.data.keys().hasOnly(['createdAt', 'v']);
+      allow delete: if isCreator(code);
+    }
+
+    // 비밀번호 해시: 아무도 읽을 수 없음
+    match /vtRooms/{code}/meta/secret {
+      allow read: if false;
+      allow create: if validCode(code) && signedIn() && secretShapeOk(request.resource.data)
+        && !exists(roomPath(code)) && existsAfter(roomPath(code))
+        && (!exists(legacyPath(code)) || isCreator(code));
+      allow update: if isCreator(code) && secretShapeOk(request.resource.data);
+      allow delete: if isCreator(code);
+    }
+
+    // 방의 실제 자료(대형·포지션·경기 영상 분석·활동 로그를 JSON 글자로)
+    match /vtRooms/{code}/meta/data {
+      allow get: if validCode(code) && isMember(code);
+      allow create, update: if validCode(code) && canEditAfter(code) && blobShapeOk(request.resource.data);
+      allow delete: if isCreator(code);
+    }
+
+    // 지금 쓰는 경기 폴더 조회 링크 번호(구성원만 볼 수 있음)
+    match /vtRooms/{code}/meta/share {
+      allow get: if validCode(code) && isMember(code);
+      allow create, update: if validCode(code) && canEdit(code)
+        && request.resource.data.keys().hasOnly(['id', 'updatedAt'])
+        && request.resource.data.id is string
+        && request.resource.data.id.size() >= 20 && request.resource.data.id.size() <= 64;
+      allow delete: if canEdit(code);
+    }
+
+    // 입장 시 제출하는 해시(본인만 쓰기, 아무도 읽지 못함, 5초에 한 번)
+    match /vtRooms/{code}/claims/{uid} {
+      allow read: if false;
+      allow create, update: if validCode(code) && signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['c', 'v', 'legacy', 'legacyRe', 'at'])
+        && request.resource.data.c is string && request.resource.data.c.size() <= 64
+        && request.resource.data.v is string && request.resource.data.v.size() <= 64
+        && request.resource.data.get('legacy', '') is string && request.resource.data.get('legacy', '').size() <= 300
+        && request.resource.data.get('legacyRe', '') is string && request.resource.data.get('legacyRe', '').size() <= 700
+        && request.resource.data.at == request.time
+        && (resource == null || request.time > resource.data.at + duration.value(5, 's'));
+      // 본인이 지우면 5초 제한이 풀리므로, 지우기는 개설자만(코드 삭제·옮기기 때)
+      allow delete: if isCreator(code);
+    }
+
+    // 구성원(개설자·수정 권한·조회)
+    match /vtRooms/{code}/members/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isCreator(code));
+      allow list: if isCreator(code);
+      // 본인만 만들 수 있고, 개설자는 개설자 비밀번호, 조회는 조회 비밀번호가 맞아야 해요(수정 권한은 개설자만 줘요)
+      allow create: if validCode(code) && signedIn() && request.auth.uid == uid
+        && memberShapeOk(request.resource.data)
+        && ((request.resource.data.role == 'creator' && creatorOk(code))
+            || (request.resource.data.role == 'view' && viewOk(code)));
+      allow update: if validCode(code) && signedIn() && memberShapeOk(request.resource.data) && (
+        // 본인: 다시 입장(비밀번호 확인)하거나 이름을 적을 때. 역할은 개설자 비밀번호로만 올릴 수 있어요.
+        (request.auth.uid == uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'name', 'enteredAt'])
+          && ((request.resource.data.role == 'creator' && creatorOk(code))
+              || (request.resource.data.role == resource.data.role && (creatorOk(code) || viewOk(code)))))
+        // 개설자: 다른 구성원의 권한·포지션·출전 상태·성별을 정해요
+        || (request.auth.uid != uid && isCreator(code))
+      );
+      allow delete: if signedIn() && (request.auth.uid == uid || isCreator(code));
+    }
+
+    // 조회 링크 번호의 주인 방(아무도 읽지 못함 — 링크로는 코드를 알 수 없어요)
+    match /vtShareOwners/{sid} {
+      allow read: if false;
+      allow create: if signedIn() && sid.size() >= 20 && sid.size() <= 64
+        && request.resource.data.keys().hasOnly(['room', 'createdAt'])
+        && request.resource.data.room is string && validCode(request.resource.data.room)
+        && canEdit(request.resource.data.room);
+      allow update: if false;
+      allow delete: if signedIn() && canEdit(resource.data.room);
+    }
+
+    // 조회 링크로 보는 자료(경기 영상 분석 폴더만, 보기 전용). 링크 번호를 아는 사람만 열 수 있어요.
+    match /vtShares/{sid} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if signedIn() && existsAfter(shareOwnerPath(sid))
+        && canEdit(getAfter(shareOwnerPath(sid)).data.room)
+        && blobShapeOk(request.resource.data);
+      allow delete: if signedIn() && exists(shareOwnerPath(sid))
+        && canEdit(get(shareOwnerPath(sid)).data.room);
+    }
+
+    // 예전 방식 방(kv/vt:room:코드): 새로 만들거나 고칠 수 없어요.
+    // 없는 문서인지 확인하는 것과, 비밀번호가 확인된 개설자가 옮기려고 읽고 지우는 것만 돼요.
+    match /kv/{docId} {
+      allow get: if docId.matches('vt:room:.+')
+        && (resource == null || isCreator(docId.split('vt:room:')[1]));
+      allow list: if false;
+      allow create, update: if false;
+      allow delete: if docId.matches('vt:room:.+') && isCreator(docId.split('vt:room:')[1]);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
