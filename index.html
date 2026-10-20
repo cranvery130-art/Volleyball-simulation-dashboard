@@ -198,7 +198,8 @@
   @media (max-width:700px){
     .desc-aids{ flex-basis:100%; border-left:none; padding-left:0; border-top:1px solid var(--border); padding-top:10px; margin-top:4px; }
   }
-  /* 태블릿·휴대폰(900px 이하): 한 줄로 쌓고, 경기 영상 → 빠른 기록 → 기록 목록 → 그래프·종합 분석 순서로 보여줘요(기록하면서 영상 바로 아래에서 누르게). */
+  /* 좁은 PC 창(900px 이하): 한 줄로 쌓고, 경기 영상 → 빠른 기록 → 기록 목록 → 그래프·종합 분석 순서로 보여줘요(기록하면서 영상 바로 아래에서 누르게).
+     휴대폰·태블릿(터치 화면)은 아래 '휴대폰·태블릿(터치 화면)' 규칙이 영상·배너를 숨기고 종합 분석 → 그래프 → 기록 순서로 바꿔요. */
   @media (max-width:900px){
     .video-grid{ flex-direction:column; align-items:stretch; }
     .video-grid-col{ display:contents; }
@@ -1812,7 +1813,7 @@
         <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 공격 상황 편집 → 대형 저장(왼쪽), 대형 불러오기·편집·⭐ 최종 확정·공유(오른쪽) 순서로 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
-        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 필요하면 새 링크로 바꾸거나 꺼요).</li>
+        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·득실 위치·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(휴대폰·태블릿은 이 모드에서 기록해요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
         <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
         <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
@@ -1918,7 +1919,7 @@
           <li>폴더를 만들지 않고 기록했다면 매치 분석 저장 칸에 <b>⚠️ 폴더 없이 남긴 기록</b> 알림과 <b>📁 폴더에 저장</b> 버튼이 나와요. 새 이름을 적으면 새 폴더로, 기존 폴더 이름을 적으면 그 폴더 뒤에 덧붙여 저장해요.</li>
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
-          <li>PC와 태블릿(가로 700px·세로 620px 이상)에서는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝낼 수 있어요(휴대폰은 기존 배치). 기록 입력 칸은 페이지를 스크롤해도 따라오지 않고 제자리에 있어서 아래 기록 목록·그래프를 편하게 볼 수 있어요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
+          <li>PC에서는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝내요. 휴대폰·태블릿은 <b>🎯 빠른 기록 모드</b>에서 같은 배치로 한 화면에 보여요. 기록 입력 칸은 페이지를 스크롤해도 따라오지 않고 제자리에 있어서 아래 기록 목록·그래프를 편하게 볼 수 있어요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
@@ -1927,8 +1928,8 @@
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
-          <li><b>🧭 바로가기</b>: 화면 오른쪽 가장자리에 붙은 아이콘 줄(PC·태블릿 가로는 항상 보이고, 휴대폰은 오른쪽 가장자리의 <b>🧭 이동</b> 손잡이를 눌러 열어요)에서 아이콘을 눌러 매치 분석 저장·경기 영상·빠른 기록·기록·그래프(요약 항목·추세·상세 분석)·종합 분석(주제별)·코치 의견으로 바로 이동해요. 지금 보고 있는 곳이 목록에 표시되고, 접힌 칸이나 다른 그래프 탭도 알아서 펼쳐요.</li>
-          <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고(경기 영상·기록 칸은 접혀 있고 그래프·종합 분석이 먼저 보여요. 넓은 화면에서 기록을 펼치면 기록은 오른쪽 칸, 그래프·종합 분석은 왼쪽에 조금 좁게 놓여 아래로 밀리지 않아요. 휴대폰에서는 기록이 맨 아래), 같은 그룹의 다른 경기 폴더도 골라 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없고, 전술 시뮬레이션·설정 화면은 보이지 않아요. 링크에는 코드·비밀번호 대신 무작위 번호만 담겨서, 받은 사람은 경기 폴더 분석만 보고 방에는 들어갈 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 하고, 기록이 자동 저장될 때마다 링크 화면도 최신으로 바뀌어요. 링크가 퍼졌다면 <b>🔄 새 링크로 바꾸기</b>(예전 링크는 끊겨요)나 <b>🚫 링크 끄기</b>를 눌러요. 예전 방식 링크(주소에 코드가 보이던 링크)는 더 이상 열리지 않으니 새로 만들어 보내주세요.</li>
+          <li><b>🧭 바로가기</b>: 화면 오른쪽 가장자리에 붙은 아이콘 줄(PC·태블릿 가로는 항상 보이고, 휴대폰은 오른쪽 가장자리의 <b>🧭 이동</b> 손잡이를 눌러 열어요)에서 아이콘을 눌러 매치 분석 저장·경기 영상·빠른 기록·기록·그래프(요약 항목·추세·상세 분석)·종합 분석(주제별)·코치 의견으로 바로 이동해요(휴대폰·태블릿에서는 영상·입력 칸이 빠지고, 빠른 기록 모드 중에는 레일이 숨어요). 지금 보고 있는 곳이 목록에 표시되고, 접힌 칸이나 다른 그래프 탭도 알아서 펼쳐요.</li>
+          <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고(경기 영상·기록 칸은 접혀 있고 그래프·종합 분석이 먼저 보여요. 넓은 화면에서 기록을 펼치면 기록은 오른쪽 칸, 그래프·종합 분석은 왼쪽에 조금 좁게 놓여 아래로 밀리지 않아요. 휴대폰에서는 기록이 맨 아래), 조회 링크는 방마다 하나라서 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없고, 전술 시뮬레이션·설정 화면은 보이지 않아요. 링크에는 코드·비밀번호 대신 무작위 번호만 담겨서, 받은 사람은 경기 폴더 분석만 보고 방에는 들어갈 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 하고, 기록이 자동 저장될 때마다 링크 화면도 최신으로 바뀌어요. 링크가 퍼졌다면 <b>🔄 새 링크로 바꾸기</b>나 <b>🚫 링크 끄기</b>를 눌러요(개설자·수정 권한 구성원만 할 수 있고, 모든 폴더의 예전 링크가 함께 끊겨요). 예전 방식 링크(주소에 코드가 보이던 링크)는 더 이상 열리지 않으니 새로 만들어 보내주세요.</li>
         </ul></div>
         </div>
       </div>
@@ -2374,7 +2375,7 @@
         <div class="orphan-text" id="orphanText"></div>
         <button class="btn primary" id="btnSaveOrphan" type="button">📁 폴더에 저장</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·팀 이름·그래프·코치 의견으로 화면이 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 링크(받는 사람은 비밀번호 없이 바로 이 폴더를 열어 볼 수 있지만, 경기 분석만 보이고 방에는 들어갈 수 없어요).</div>
+      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·팀 이름·그래프·코치 의견으로 화면이 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 링크(받는 사람은 비밀번호 없이 바로 열어 보지만, 경기 분석만 보이고 방에는 들어갈 수 없어요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 🔄 새 링크로 바꾸기·🚫 링크 끄기를 하면 모든 폴더의 예전 링크가 함께 끊겨요(개설자·수정 권한 구성원만 할 수 있어요).</div>
       <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
         <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
         <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
@@ -2382,7 +2383,7 @@
           <button class="btn" id="btnRenewFolderShare" type="button" title="예전 링크를 끊고 새 번호로 다시 만들어요">🔄 새 링크로 바꾸기</button>
           <button class="btn" id="btnRevokeFolderShare" type="button" title="보낸 조회 링크가 모두 열리지 않게 해요">🚫 링크 끄기</button>
         </div>
-        <div class="field-note" style="margin-top:4px;">링크에는 코드·비밀번호가 담기지 않고, 받는 사람은 이 방의 경기 폴더 분석만 볼 수 있어요(대형·구성원·설정은 못 봐요). 기록이 자동 저장되면 링크 화면도 최신으로 바뀌어요. 링크가 퍼졌다면 <b>🔄 새 링크로 바꾸기</b>나 <b>🚫 링크 끄기</b>로 예전 링크를 끊어요.</div>
+        <div class="field-note" style="margin-top:4px;">링크에는 코드·비밀번호가 담기지 않고, 받는 사람은 이 방의 모든 경기 폴더 분석과 포지션 명단만 볼 수 있어요(대형·구성원·설정은 못 봐요). 기록이 자동 저장되면 링크 화면도 최신으로 바뀌어요. 링크가 퍼졌다면 <b>🔄 새 링크로 바꾸기</b>나 <b>🚫 링크 끄기</b>로 예전 링크를 끊어요(모든 폴더의 예전 링크가 함께 끊겨요).</div>
       </div>
     </div>
     </div>
@@ -2397,10 +2398,10 @@
               </div>
             </div>
         <label class="field-label" style="margin-top:0;">포지션 배정 명단</label>
-        <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 "기록 입력"의 <b>관련 선수</b>에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 서버에 저장되니 실명보다는 별명이나 이니셜을 적어주세요.</div>
+        <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 "기록 입력"의 <b>관련 선수</b>에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
     </details>
-    <button class="btn qr-mode-btn" id="btnQrMode" type="button" title="휴대폰·태블릿에서 한 화면에 빠른 기록 배너만 크게 띄워 기록해요"><span class="ic">🎯</span><span><b>빠른 기록 모드</b><small>한 화면에 기록 입력만 · 세트 점수 함께</small></span></button>
+    <button class="btn qr-mode-btn" id="btnQrMode" type="button" title="한 화면에 기록 입력만 크게 띄우고, 오른쪽 📋 점수 기록에서 1점씩 고치거나 끼워 넣어요(Esc로 종료)"><span class="ic">🎯</span><span><b>빠른 기록 모드</b><small>한 화면에 기록 입력만 · 세트 점수 함께</small></span></button>
     </div>
   </div>
   <div class="video-grid">
@@ -2477,7 +2478,7 @@
               <p>개편 전에 남긴 기록은 팀·결과 정보가 따로 없어서 다음 규칙으로 읽어요. "상대팀 득점"은 상대 득점, "우리팀 범실"은 우리 범실로 봐요. 예전의 "득점" 기록 중 서브범실·파울 항목은 상대 범실로, 나머지는 자력 득점으로 봐요. 한 줄에 여러 점수가 합쳐진 예전 기록은 모두 그 줄의 세트로 계산되니, 기록 목록의 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요. 정확하게 나누려면 새 방식으로 다시 기록하는 게 가장 좋아요.</p>
             </div>
           </div>
-          <div class="field-note" style="margin-top:0;">세트 버튼으로 범위(전체 또는 한 세트)를 고르면 요약·추세·상세 분석이 다시 계산돼요. 각 지표의 계산 방법은 제목 옆 <b>📘 설명기준</b>을 눌러 봐요. 득점·실점 구성과 세트별 비교는 요약의 한 카드에 함께 있어요.</div>
+          <div class="field-note" style="margin-top:0;">세트 버튼으로 범위(전체 또는 한 세트)를 고르면 요약·추세·상세 분석과 종합 분석이 함께 다시 계산돼요(두 카드의 세트 버튼은 같이 움직여요). 각 지표의 계산 방법은 제목 옆 <b>📘 설명기준</b>을 눌러 봐요. 득점·실점 구성과 세트별 비교는 요약의 한 카드에 함께 있어요.</div>
           <div class="graph-set-row">
             <span class="graph-set-label">세트</span>
             <div class="seg set-scope-seg" id="graphSetSeg">
@@ -5499,7 +5500,7 @@
     ],
     video: [
       { title:'새 경기를 시작하고 영상을 열어요',
-        text:'"매치 분석 저장"에서 경기 이름을 적고 <b>🆕 새 경기 시작</b>을 누르면 이후 기록이 그 폴더에 <b>자동 저장</b>돼요. 저장 버튼을 따로 누를 필요 없어요. 그다음 경기 영상을 열어 재생해요.',
+        text:'"매치 분석 저장"에서 경기 이름을 적고 <b>🆕 새 경기 시작</b>을 누르면 이후 기록이 그 폴더에 <b>자동 저장</b>돼요. 저장 버튼을 따로 누를 필요 없어요. 그다음 PC에서는 경기 영상을 열어 재생해요(휴대폰·태블릿은 영상 칸 없이 <b>🎯 빠른 기록 모드</b>로 바로 기록해요).',
         scene:`<div class="mk-card"><div class="mk-h">매치 분석 저장</div><div class="mk-row"><div class="mk-input k-name" data-ph="경기 이름"></div><span class="mk-btn big k-add">🆕 새 경기 시작</span></div><div class="mk-row k-chips"></div></div>
           <div class="mk-video k-video"><span class="k-icon">▶</span><div class="bar"><i></i></div></div>`,
         script:[ {type:'.k-name', text:'vs 한빛 0907'},
@@ -5507,11 +5508,23 @@
                  {click:'.k-video', then:(el,sc)=>{ el.classList.add('playing'); sc.querySelector('.k-icon').textContent='❚❚'; }}, {wait:1800} ] },
       { title:'경기 정보와 세트를 정해요',
         text:'<b>📋 경기 정보</b>를 펼쳐 팀 이름과 포지션 명단을 적어요(폴더에 함께 저장돼요). 세트는 기록 입력 맨 위에서 골라요. 세트가 바뀌면 기록 전에 세트부터 바꿔주세요.',
-        scene:`<div class="mk-card"><div class="mk-h">빠른 기록 배너</div>
-          <div class="mk-row"><div class="mk-input">우리팀</div><span class="mk-lbl">vs</span><div class="mk-input k-opp" data-ph="상대 팀 이름"></div></div>
-          <div class="mk-row"><span class="mk-lbl">세트</span><span class="mk-btn on k-s1">1세트</span><span class="mk-btn k-s2">2세트</span><span class="mk-btn">3세트</span></div></div>`,
-        script:[ {type:'.k-opp', text:'한빛'},
+        scene:`<div class="mk-card"><div class="mk-row k-sum" style="justify-content:space-between;"><span class="mk-h">📋 경기 정보 <span class="mk-lbl">✏️ 팀 이름 · 포지션 명단 입력</span></span><span class="mk-lbl k-arrow">▸</span></div>
+          <div class="mk-col k-body" style="display:none;"><div class="mk-row"><div class="mk-input k-opp" data-ph="상대팀"></div><div class="mk-input k-our" data-ph="우리팀"></div></div>
+          <div class="mk-row"><span class="mk-lbl">포지션 배정 명단</span><span class="mk-btn">레프트 · ㄱㅁ</span><span class="mk-btn">세터 · ㅇㅈ</span></div></div></div>
+          <div class="mk-card"><div class="mk-h">기록 입력</div><div class="mk-row"><span class="mk-lbl">세트</span><span class="mk-btn on k-s1">1세트</span><span class="mk-btn k-s2">2세트</span><span class="mk-btn">3세트</span></div></div>`,
+        script:[ {click:'.k-sum', then:(el,sc)=>{ sc.querySelector('.k-body').style.display='flex'; sc.querySelector('.k-arrow').textContent='▾'; }},
+                 {type:'.k-opp', text:'한빛'}, {type:'.k-our', text:'우리팀'},
                  {click:'.k-s2', then:(el,sc)=>{ sc.querySelector('.k-s1').classList.remove('on'); el.classList.add('on'); }}, {wait:1600} ] },
+      { title:'🎯 빠른 기록 모드로 기록해요',
+        text:'경기 정보 옆 <b>🎯 빠른 기록 모드</b>를 누르면 화면 전체가 기록 입력이 되고, 맨 위에 세트별 점수와 방금 남긴 기록이 보여요. 휴대폰·태블릿에서는 이 모드에서 기록하고, 전체 화면으로 열려요. 다 기록하면 <b>✅ 기록 종료</b>(또는 Esc)로 돌아와요.',
+        scene:`<div class="mk-card k-normal"><div class="mk-row"><span class="mk-btn">📋 경기 정보 ▸</span><span class="mk-btn big k-mode">🎯 빠른 기록 모드</span></div><div class="mk-lbl">누르면 화면 전체가 기록 입력이 돼요</div></div>
+          <div class="mk-card k-qm" style="display:none;"><div class="mk-row" style="justify-content:space-between;"><span class="mk-row"><span class="mk-btn">1세트 <b>25 : 21</b></span><span class="mk-btn on">2세트 <b class="k-sc" style="color:inherit;">8 : 6</b></span></span><span class="mk-btn k-exit">✅ 기록 종료</span></div>
+          <div class="mk-lbl k-last">방금 기록: <b>상대팀 범실 · 서브</b> (2세트)</div>
+          <div class="mk-row"><span class="mk-btn k-res">🔵 우리 득점</span><span class="mk-btn k-sit">레프트</span><span class="mk-btn big k-rec">기록하기</span></div></div>`,
+        script:[ {click:'.k-mode', then:(el,sc)=>{ sc.querySelector('.k-normal').style.display='none'; sc.querySelector('.k-qm').style.display='flex'; }},
+                 {click:'.k-res', then:el=>el.classList.add('on')}, {click:'.k-sit', then:el=>el.classList.add('on')},
+                 {click:'.k-rec', then:(el,sc)=>{ sc.querySelector('.k-sc').textContent='9 : 6'; sc.querySelector('.k-last').innerHTML='방금 기록: <b>우리팀 득점 · 레프트</b> (2세트)'; sc.querySelector('.k-res').classList.remove('on'); sc.querySelector('.k-sit').classList.remove('on'); }},
+                 {wait:1200}, {click:'.k-exit', then:(el,sc)=>{ sc.querySelector('.k-qm').style.display='none'; sc.querySelector('.k-normal').style.display='flex'; }}, {wait:1200} ] },
       { title:'랠리를 보며 토스 순서를 눌러요 (선택)',
         text:'결과 버튼 위 <b>🏐 랠리 토스 순서</b>에서, 토스가 올라갈 때마다 <b>그 팀 칸</b>(🔵 우리 / 🔴 상대)의 보낸 곳을 바로 눌러요. 팀을 번갈아 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 2단 토스는 <b>↪ 2단</b>을 누르고 보내거나, 넣은 토스 칩을 눌러 바꿔요. 기록하기를 누르면 그 점수와 함께 저장되고 비워져요.',
         scene:`<div class="mk-card"><div class="mk-row k-seq"><span class="mk-lbl">랠리가 시작되면 토스한 팀 칸을 눌러요.</span></div>
@@ -5555,7 +5568,7 @@
         script:[ {click:'.k-rec', then:(el,sc)=>{ sc.querySelector('.k-us').textContent='13'; const it=document.createElement('div'); it.className='mk-item new on k-new'; it.innerHTML='<span class="t">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)'; sc.querySelector('.k-list').prepend(it); }},
                  {wait:900}, {click:'.k-undo', then:(el,sc)=>{ sc.querySelector('.k-us').textContent='12'; sc.querySelector('.k-new').remove(); }}, {wait:1300} ] },
       { title:'기록을 확인·수정해요',
-        text:'기록 목록에서 <b>시간</b>을 누르면 그 영상 장면으로 이동해요(영상 없이 남긴 기록은 시간 대신 그 점수가 난 뒤의 <b>세트 점수</b>가 보여요). 줄마다 세트·관련 선수·메모를 고치거나 ✕로 지우고, <b>📊 기록 내보내기</b>로 엑셀·구글시트 파일을 받아요.',
+        text:'기록 목록에서 <b>시간</b>을 누르면 그 영상 장면으로 이동해요(영상 없이 남긴 기록은 시간 대신 그 점수가 난 뒤의 <b>세트 점수</b>가 보여요). 줄마다 세트·관련 선수·메모를 고치거나 ✕로 지우고, <b>📊 기록 내보내기</b>로 엑셀·구글시트 파일을 받아요. 결과·상황을 잘못 골랐거나 빠뜨린 점수가 있으면 <b>🎯 빠른 기록 모드</b>의 <b>📋 점수 기록</b>에서 점수 줄을 눌러 ✏️ 고치기 · ➕ 끼워 넣기 · 🗑️ 지우기를 해요.',
         scene:`<div class="mk-video k-video">▶<div class="bar"><i class="k-bar"></i></div></div>
           <div class="mk-list"><div class="mk-item"><span class="t">01:12</span>1세트 · 우리팀 득점 · 속공</div><div class="mk-item k-row"><span class="t k-time">05:48</span>1세트 · 우리팀 득점 · 레프트(페인트)</div></div>`,
         script:[ {click:'.k-time', then:(el,sc)=>{ sc.querySelector('.k-row').classList.add('on'); sc.querySelector('.k-bar').style.width='62%'; }}, {wait:1800} ] },
@@ -5570,7 +5583,7 @@
                     sc.querySelector('.k-a').textContent='25'; sc.querySelector('.k-b').textContent='18';
                     [['.k-b1','60%'],['.k-b2','35%'],['.k-b3','70%'],['.k-b4','30%']].forEach(([k,h])=>sc.querySelector(k).style.height=h); }}, {wait:1900} ] },
       { title:'경기 폴더를 관리해요',
-        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기로 바뀌고, ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 그 폴더의 분석만 바로 보고(링크에 코드가 없어 방에는 못 들어와요), 링크가 퍼졌다면 <b>🔄 새 링크로 바꾸기</b>로 예전 링크를 끊어요. 폴더 없이 기록했다면 위에 뜨는 <b>📁 폴더에 저장</b>으로 새 폴더를 만들거나 기존 폴더에 덧붙여요. <b>📊 기록 내보내기</b>로 받은 파일은 <b>📥 기록 불러오기</b>로 다시 읽어 백업한 기록을 되살려요.',
+        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기로 바뀌고, ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 분석 화면을 바로 봐요(링크에 코드가 없어 방에는 못 들어와요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 개설자나 수정 권한 구성원이 <b>🔄 새 링크로 바꾸기</b>·<b>🚫 링크 끄기</b>를 하면 모든 폴더의 예전 링크가 함께 끊겨요. 폴더 없이 기록했다면 위에 뜨는 <b>📁 폴더에 저장</b>으로 새 폴더를 만들거나 기존 폴더에 덧붙여요. <b>📊 기록 내보내기</b>로 받은 파일은 <b>📥 기록 불러오기</b>로 다시 읽어 백업한 기록을 되살려요.',
         scene:`<div class="mk-card"><div class="mk-h">저장된 폴더 불러오기</div><div class="mk-row"><span class="mk-btn big k-sel">📁 vs 한빛 0907 ▾</span><span class="mk-btn big">✏️</span><span class="mk-btn big k-copy">📄</span><span class="mk-btn big k-link">🔗</span></div>
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] }
@@ -7005,7 +7018,7 @@
     const el = document.getElementById('graphSummary');
     const entries = allEntries();
     if(!entries.length){
-      el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어요. 빠른 기록 배너로 기록을 쌓으면 요약이 나타나요.' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
+      el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어요. 기록을 쌓으면(휴대폰·태블릿은 🎯 빠른 기록 모드에서) 요약이 나타나요.' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
       return;
     }
     const M = computeMetrics(entries);
@@ -7268,7 +7281,7 @@
     renderGraphDetail();
     renderVaNav();
   }
-  // ---------- 🧭 바로가기: 경기 영상 분석의 카드와 요약·종합 분석 항목으로 바로 이동해요(PC는 왼쪽 고정 목록, 휴대폰은 떠 있는 버튼) ----------
+  // ---------- 🧭 바로가기: 경기 영상 분석의 카드와 요약·종합 분석 항목으로 바로 이동해요(오른쪽 가장자리 아이콘 레일: 900px 이상은 항상 보이고, 좁은 화면은 🧭 이동 손잡이로 열어요. 빠른 기록 모드 중에는 숨어요) ----------
   // 항목 이름 → [아이콘, 짧은 이름]
   const VA_NAV_SHORT = {
     '점수 · 주요 지표':['🔢','지표'], '득실 구성 · 세트별 비교':['📊','득실'], '득실 구성':['📊','득실'], '요인별 분석':['🧩','요인'],
@@ -7587,7 +7600,7 @@
     const el = document.getElementById('autoAnalysis');
     const entries = allEntries();
     if(!entries.length){
-      el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어서 자동 요약을 만들 수 없어요. 빠른 기록 배너로 득점·실점을 기록해보세요.' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
+      el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어서 자동 요약을 만들 수 없어요. 득점·실점을 기록해보세요(휴대폰·태블릿은 🎯 빠른 기록 모드에서).' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
       return;
     }
     const topByMain = bucket=>{
