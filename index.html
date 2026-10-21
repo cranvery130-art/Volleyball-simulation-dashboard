@@ -184,10 +184,6 @@
   #autoAnalysis p{ margin:0 0 13px; padding-left:14px; border-left:2px solid var(--accent-soft); }
   #autoAnalysis b{ color:var(--accent-text); font-weight:700; }
   #autoAnalysis p.analysis-disclaimer{ border-left:none; padding-left:0; margin-bottom:0; font-size:11.5px; font-style:italic; color:var(--muted); line-height:1.6; }
-  #teamAnalysisResult{ font-family:var(--body); font-size:13.5px; line-height:1.7; color:var(--text); }
-  #teamAnalysisResult b{ color:var(--accent-text); font-weight:700; }
-  #teamAnalysisResult .ta-match b{ color:var(--text); }
-  #teamAnalysisResult p.analysis-disclaimer{ margin:8px 0 0; font-size:11.5px; font-style:italic; color:var(--muted); line-height:1.6; }
   .video-grid-col{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:16px; }
   .video-grid-col:first-child{ flex:1.5 1 0; } /* video column gets noticeably more width */
   .video-grid-card{ display:flex; flex-direction:column; }
@@ -965,31 +961,123 @@
   .gv-fold > h2 .fold-hint{ font-family:inherit; font-size:12px; font-weight:600; color:var(--muted); }
   .gv-fold:not(.collapsed) > h2 .fold-hint{ display:none; }
   body.guest-view #recordsCard{ max-height:none; }
-  /* 팀 누적 분석 */
-  .team-analysis{ margin-top:10px; }
+  /* 팀 누적 분석: 접혀 있어도 눈에 띄는 띠(주황 손잡이) + 결과는 막대·띠·점 그래프 */
+  .team-analysis{ margin-top:12px; }
+  .team-analysis > summary.ta-sum{ list-style:none; cursor:pointer; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:12px; border:1.5px solid color-mix(in srgb, var(--accent) 55%, var(--border)); background:color-mix(in srgb, var(--accent) 9%, var(--panel)); transition:background .2s ease-out, border-color .2s ease-out; }
+  .team-analysis > summary.ta-sum::-webkit-details-marker{ display:none; }
+  .team-analysis > summary.ta-sum:hover{ background:color-mix(in srgb, var(--accent) 15%, var(--panel)); }
+  .team-analysis[open] > summary.ta-sum{ margin-bottom:12px; }
+  .ta-sum-ic{ flex:none; width:46px; height:46px; display:grid; place-items:center; border-radius:12px; background:var(--accent); }
+  .ta-sum-ic svg{ width:30px; height:30px; }
+  .ta-sum-t{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .ta-sum-t b{ font-family:var(--head); font-weight:400; font-size:18px; color:var(--text); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .ta-sum-t b em{ font-style:normal; font-family:var(--body); font-size:10.5px; font-weight:800; letter-spacing:.06em; padding:2px 7px; border-radius:999px; background:var(--accent); color:#fff; }
+  .ta-sum-t small{ font-size:12.5px; color:var(--text-dim); line-height:1.45; }
+  .ta-sum-go{ flex:none; font-size:12.5px; font-weight:800; color:var(--accent-text); white-space:nowrap; }
+  .team-analysis[open] .ta-sum-go::after{ content:' ▴'; } .team-analysis:not([open]) .ta-sum-go::after{ content:' ▾'; }
   .ta-form{ display:flex; gap:8px; align-items:stretch; flex-wrap:wrap; }
   .ta-form input{ flex:1 1 200px; margin-top:0; }
   .ta-form .btn{ flex:none; font-weight:800; }
   .ta-chips{ margin-top:8px; }
   .ta-chip small{ display:inline; font-size:11px; font-weight:600; color:var(--muted); }
   .ta-chip.active{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--panel)); }
-  #teamAnalysisResult:not(:empty){ margin-top:12px; padding-top:10px; border-top:1px solid var(--border); }
-  #teamAnalysisResult .ta-lead{ margin:0 0 8px; font-size:14px; line-height:1.6; }
-  #teamAnalysisResult .analysis-list{ margin:2px 0 4px; padding-left:18px; } #teamAnalysisResult .analysis-list li{ margin-bottom:4px; line-height:1.6; }
-  #teamAnalysisResult .aa-topic{ margin:10px 0; padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:var(--panel-2); }
-  #teamAnalysisResult .aa-title{ margin:0 0 4px; font-weight:800; color:var(--text); }
-  #teamAnalysisResult .aa-sub{ font-weight:500; font-size:11.5px; color:var(--muted); }
-  #teamAnalysisResult .aa-verdict{ margin:6px 0 0; font-size:12.5px; line-height:1.6; color:var(--text-dim); }
+  #teamAnalysisResult{ font-family:var(--body); font-size:13px; line-height:1.5; color:var(--text); }
+  #teamAnalysisResult:not(:empty){ margin-top:12px; }
+  #teamAnalysisResult p.analysis-disclaimer{ margin:10px 0 0; font-size:11.5px; font-style:italic; color:var(--muted); line-height:1.6; }
+  .ta-hero{ display:grid; grid-template-columns:1.3fr repeat(3,1fr); gap:8px; align-items:stretch; }
+  .ta-hero-name{ display:flex; flex-direction:column; justify-content:center; padding:10px 14px; border-radius:12px; background:var(--accent); color:#fff; min-width:0; }
+  .ta-hero-name span{ font-size:11.5px; font-weight:700; opacity:.9; }
+  .ta-hero-name b{ font-family:var(--head); font-weight:400; font-size:24px; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ta-hero-name small{ font-size:11.5px; opacity:.9; }
+  .ta-tile{ padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--panel-2); display:flex; flex-direction:column; justify-content:center; gap:4px; min-width:0; }
+  .ta-tile small{ font-size:11px; color:var(--text-dim); font-weight:700; }
+  .ta-tile-ring b{ white-space:nowrap; }
+  .ta-tile > b, .ta-tile-ring b{ font-size:20px; font-weight:900; font-variant-numeric:tabular-nums; color:var(--text); }
+  .ta-tile .u{ color:var(--own); } .ta-tile .o{ color:var(--opp); }
+  .ta-wl{ display:flex; gap:3px; flex-wrap:wrap; }
+  .ta-wl i{ font-style:normal; width:20px; height:20px; border-radius:6px; display:grid; place-items:center; font-size:10.5px; font-weight:800; color:#fff; background:var(--muted); }
+  .ta-wl i.W{ background:var(--own); } .ta-wl i.L{ background:var(--opp); }
+  .ta-split{ display:flex; gap:2px; height:8px; min-width:60px; }
+  .ta-split i{ display:block; height:100%; } .ta-split i:first-child{ border-radius:4px 0 0 4px; } .ta-split i:last-child{ border-radius:0 4px 4px 0; }
+  .ta-tile-ring{ flex-direction:row; align-items:center; gap:10px; }
+  .ta-tile-ring > div{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+  .ta-ring{ flex:none; width:58px; height:58px; }
+  .ta-ring text{ font-size:15px; font-weight:900; fill:var(--text); font-family:var(--body); }
+  .ta-tsub{ font-size:10.5px; color:var(--muted); }
+  .ta-sec{ margin-top:12px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--panel-2); }
+  .ta-sec > h4{ margin:0 0 10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-family:var(--head); font-weight:400; font-size:16px; color:var(--text); }
+  .ta-sec > h4 small{ flex-basis:100%; font-family:var(--body); font-size:11.5px; color:var(--muted); margin-left:34px; margin-top:-6px; }
+  .ta-ic{ width:26px; height:26px; display:grid; place-items:center; border-radius:8px; background:var(--panel); border:1px solid var(--border); font-size:14px; }
+  .ta-note{ margin:10px 0 0; padding:7px 10px; border-radius:8px; background:var(--panel); font-size:12.5px; color:var(--text-dim); }
+  .ta-note b{ color:var(--accent-text); }
+  .ta-lab{ margin:10px 0 5px; font-size:12.5px; font-weight:800; color:var(--text); }
+  .ta-lab:first-child{ margin-top:0; }
+  .ta-lab small{ font-weight:500; color:var(--muted); font-size:11px; margin-left:4px; }
+  .ta-meters{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); column-gap:22px; row-gap:6px; }
+  .ta-meter, .ta-posrow{ display:grid; grid-template-columns:minmax(84px,34%) 1fr 40px; align-items:center; gap:8px; }
+  .ta-ml{ font-size:12px; font-weight:700; color:var(--text); line-height:1.25; min-width:0; }
+  .ta-ml small{ display:block; font-size:10.5px; font-weight:500; color:var(--muted); }
+  .ta-mtrack{ position:relative; height:12px; border-radius:6px; background:var(--panel); border:1px solid var(--border); overflow:hidden; }
+  .ta-mtrack > i{ position:absolute; left:0; top:0; bottom:0; border-radius:0 6px 6px 0; display:block; }
+  .ta-mtrack > i > i{ position:absolute; left:0; top:0; bottom:0; display:block; border-radius:0 6px 6px 0; }
+  .ta-ref{ position:absolute; top:-2px; bottom:-2px; width:0; border-left:2px dashed var(--text-dim); }
+  .ta-mv{ font-size:12.5px; font-weight:800; text-align:right; font-variant-numeric:tabular-nums; color:var(--text); }
+  .ta-two{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px; }
+  .ta-strip{ display:flex; gap:2px; height:24px; }
+  .ta-strip > i{ display:flex; align-items:center; justify-content:center; min-width:3px; overflow:hidden; }
+  .ta-strip > i:first-child{ border-radius:6px 0 0 6px; } .ta-strip > i:last-child{ border-radius:0 6px 6px 0; }
+  .ta-strip em{ font-style:normal; font-size:11px; font-weight:800; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 4px; }
+  .ta-legend{ display:flex; flex-wrap:wrap; gap:3px 12px; margin-top:4px; font-size:11.5px; color:var(--text-dim); }
+  .ta-legend span{ display:inline-flex; align-items:center; gap:4px; } .ta-legend i{ width:9px; height:9px; border-radius:3px; display:inline-block; } .ta-legend b{ color:var(--text); }
+  .ta-pos{ display:flex; flex-direction:column; gap:5px; }
+  .ta-recent{ display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border-2); }
+  .ta-rlab{ font-size:12px; font-weight:800; }
+  .ta-arrow{ font-size:12.5px; font-weight:800; padding:3px 9px; border-radius:999px; background:var(--panel); border:1px solid var(--border); }
+  .ta-arrow.up{ color:var(--own); border-color:var(--own); } .ta-arrow.down{ color:var(--opp); border-color:var(--opp); }
+  .ta-arrow small{ font-weight:500; color:var(--muted); }
+  .ta-tag{ display:inline-flex; align-items:center; gap:3px; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:999px; border:1px solid var(--border); background:var(--panel); color:var(--text-dim); white-space:nowrap; }
+  .ta-tag b{ color:var(--text); }
+  .ta-tag.up{ border-color:color-mix(in srgb, var(--own) 60%, var(--border)); } .ta-tag.up{ color:var(--own); }
+  .ta-tag.down{ border-color:color-mix(in srgb, var(--opp) 60%, var(--border)); color:var(--opp); }
+  .ta-trend{ width:100%; height:auto; display:block; }
+  .ta-trend .ta-g{ stroke:var(--border); stroke-width:1; } .ta-trend .ta-g50{ stroke:var(--text-dim); stroke-width:1; stroke-dasharray:4 4; }
+  .ta-trend .ta-ax{ font-size:11px; fill:var(--muted); font-family:var(--body); }
+  .ta-trend .ta-dv{ font-size:11px; font-weight:800; fill:var(--text); font-family:var(--body); }
+  .ta-bw{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+  .ta-bwc{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; padding:9px 11px; border-radius:10px; background:var(--panel); border:1px solid var(--border); border-top:3px solid var(--own); min-width:0; }
+  .ta-bwc.worst{ border-top-color:var(--opp); }
+  .ta-bwc small{ font-size:11px; color:var(--text-dim); font-weight:700; } .ta-bwc > b{ font-size:13.5px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .ta-bwc > span{ font-size:12px; color:var(--text-dim); }
+  .ta-fold{ margin-top:10px; } .ta-fold > summary{ cursor:pointer; font-size:12.5px; font-weight:700; color:var(--text-dim); }
+  .ta-fold[open] > summary{ margin-bottom:6px; }
   .ta-matches{ display:flex; flex-direction:column; gap:4px; }
   .ta-match{ display:flex; align-items:center; gap:10px; padding:6px 10px; border-radius:8px; background:var(--panel); border:1px solid var(--border); border-left:4px solid var(--border-2); }
   .ta-match.W{ border-left-color:var(--own); } .ta-match.L{ border-left-color:var(--opp); }
   .ta-res{ flex:none; width:22px; font-weight:900; font-size:13px; color:var(--muted); }
   .ta-match.W .ta-res{ color:var(--own); } .ta-match.L .ta-res{ color:var(--opp); }
-  .ta-mname, .ta-mnum{ display:flex; flex-direction:column; min-width:0; line-height:1.3; }
-  .ta-mname{ flex:1 1 auto; } .ta-mname b{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .ta-mnum{ flex:none; text-align:right; font-variant-numeric:tabular-nums; }
-  .ta-mname small, .ta-mnum small{ font-size:11.5px; color:var(--muted); }
-  @media (max-width:520px){ .ta-match{ flex-wrap:wrap; } .ta-mnum{ flex:1 1 100%; text-align:left; padding-left:32px; } }
+  .ta-mname{ flex:1 1 auto; display:flex; flex-direction:column; min-width:0; line-height:1.3; }
+  .ta-mname b{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .ta-mname small{ font-size:11px; color:var(--muted); }
+  .ta-mscore{ flex:0 0 96px; display:flex; flex-direction:column; gap:3px; text-align:right; font-variant-numeric:tabular-nums; }
+  .ta-opps{ display:flex; flex-direction:column; gap:10px; }
+  .ta-opp-top{ display:grid; grid-template-columns:minmax(96px,30%) 1fr 40px; align-items:center; gap:8px; }
+  .ta-opp-name{ display:flex; flex-direction:column; min-width:0; line-height:1.25; }
+  .ta-opp-name b{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .ta-opp-name small{ font-size:11px; color:var(--muted); }
+  .ta-div{ position:relative; height:14px; border-radius:7px; background:var(--panel); border:1px solid var(--border); }
+  .ta-div em{ position:absolute; left:50%; top:-3px; bottom:-3px; border-left:2px dashed var(--text-dim); }
+  .ta-div i{ position:absolute; top:0; bottom:0; display:block; }
+  .ta-div i.pos{ background:var(--own); border-radius:0 7px 7px 0; } .ta-div i.neg{ background:var(--opp); border-radius:7px 0 0 7px; }
+  .ta-tags{ display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; }
+  .ta-keys{ display:flex; flex-direction:column; gap:8px; }
+  .ta-key{ display:grid; grid-template-columns:minmax(96px,30%) 1fr; gap:8px; align-items:center; padding:6px 8px; border-radius:10px; }
+  .ta-key.hot{ background:color-mix(in srgb, var(--accent) 10%, var(--panel)); outline:1.5px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+  .ta-pair{ display:flex; flex-direction:column; gap:3px; }
+  .ta-pair .ta-meter{ grid-template-columns:62px 1fr 40px; }
+  .ta-pair .ta-ml{ font-size:11px; font-weight:600; color:var(--text-dim); }
+  @media (max-width:700px){
+    .ta-hero{ grid-template-columns:1fr 1fr; } .ta-hero-name, .ta-tile-ring{ grid-column:1 / -1; }
+    .ta-two, .ta-bw{ grid-template-columns:1fr; }
+    .ta-key{ grid-template-columns:1fr; gap:4px; }
+    .ta-sum-t small{ font-size:11.5px; }
+  }
   #autoAnalysis .analysis-list{ margin:2px 0 4px; padding-left:18px; } #autoAnalysis .analysis-list li{ margin-bottom:4px; line-height:1.6; }
   #autoAnalysis .aa-topic{ margin:10px 0; padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:var(--panel-2); }
   #autoAnalysis .aa-title{ margin:0 0 2px; font-weight:800; color:var(--text); }
@@ -1942,7 +2030,7 @@
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
           <li><b>🎯 빠른 기록 모드</b>는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝내요. 기본 화면은 접힌 경기 영상 → 종합 분석 → 그래프 → 접힌 기록 순서로 놓이고, 접힌 칸은 제목을 누르면 펼쳐져요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
-          <li><b>📊 팀 누적 분석</b>: 매치 분석 저장 카드에서 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 팀이 나온 저장 폴더를 모두 모아 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 보여줘요. 강했던 면·약했던 면은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
+          <li><b>📊 팀 누적 분석</b>: 매치 분석 저장 카드에서 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 팀이 나온 저장 폴더를 모두 모아 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
@@ -2426,14 +2514,14 @@
     </details>
     <button class="btn qr-mode-btn" id="btnQrMode" type="button" title="한 화면에 기록 입력만 크게 띄우고, 오른쪽 📋 점수 기록에서 1점씩 고치거나 끼워 넣어요(Esc로 종료)"><span class="ic">🎯</span><span><b>빠른 기록 모드</b><small>한 화면에 기록 입력만 · 세트 점수 함께</small></span></button>
     </div>
-    <details class="fgroup match-info team-analysis" id="teamAnalysisBox">
-      <summary class="fgroup-head mi-sum"><span class="fg-ic">📊</span><span class="mi-texts"><span class="fg-title">팀 누적 분석</span><span class="mi-cta">팀 이름으로 저장된 경기를 모아 분석</span></span><span class="mi-state" id="teamAnalysisState"></span></summary>
+    <details class="team-analysis" id="teamAnalysisBox">
+      <summary class="ta-sum"><span class="ta-sum-ic" aria-hidden="true"><svg viewBox="0 0 30 30"><rect x="4" y="15" width="5" height="11" rx="1.5" fill="#fff" opacity=".7"/><rect x="12.5" y="9" width="5" height="17" rx="1.5" fill="#fff"/><rect x="21" y="4" width="5" height="22" rx="1.5" fill="#fff" opacity=".85"/></svg></span><span class="ta-sum-t"><b>팀 누적 분석 <em>NEW</em></b><small>팀 이름만 고르면 저장된 경기를 모아 전적·플레이 체제·강점과 약점을 그래프로 보여줘요 <span id="teamAnalysisState"></span></small></span><span class="ta-sum-go">열기</span></summary>
       <div class="ta-form">
         <input type="text" id="teamAnalysisInput" class="login-input" maxlength="40" placeholder="팀 이름 (예: 위드나인)" autocomplete="off">
         <button class="btn primary" id="btnTeamAnalysis" type="button">📊 분석하기</button>
       </div>
       <div class="chip-pick ta-chips" id="teamAnalysisChips"></div>
-      <div class="field-note" style="margin-top:6px;">저장된 경기 폴더 중 📋 경기 정보에 이 팀 이름(우리팀·상대팀 어느 쪽이든)이 적힌 경기를 모두 모아 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표를 보여줘요. 아래 팀 이름을 눌러도 바로 분석해요.</div>
+      <div class="field-note" style="margin-top:6px;">저장된 경기 폴더 중 📋 경기 정보에 이 팀 이름(우리팀·상대팀 어느 쪽이든)이 적힌 경기를 모두 모아 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표를 막대·띠·점 그래프로 보여줘요. 아래 팀 이름을 눌러도 바로 분석하고, 그래프에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요.</div>
       <div id="teamAnalysisResult"></div>
     </details>
   </div>
@@ -5622,7 +5710,7 @@
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] },
       { title:'팀 누적 분석으로 한 팀을 모아 봐요',
-        text:'매치 분석 저장 카드의 <b>📊 팀 누적 분석</b>을 펼쳐 팀 이름을 적거나 아래 팀 이름 버튼을 누르면, 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 보여줘요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요.',
+        text:'매치 분석 저장 카드의 <b>📊 팀 누적 분석</b>을 펼쳐 팀 이름을 적거나 아래 팀 이름 버튼을 누르면, 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 구성 띠, 경기별 흐름 선, 상대팀별 좌우 막대). 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요.',
         scene:`<div class="mk-card"><div class="mk-h">📊 팀 누적 분석</div><div class="mk-row"><span class="mk-btn k-t1">위드나인 5경기</span><span class="mk-btn">한빛 2경기</span><span class="mk-btn">다온 1경기</span></div>
           <div class="mk-col k-res" style="display:none;"><div class="mk-lbl"><b>위드나인</b> · 5경기 4승 1패 · 득점률 53%</div><div class="mk-list"><div class="mk-item">승 · 9/12 vs 한빛전 · 75:45</div><div class="mk-item">패 · 9/19 vs 새솔전 · 57:75</div></div><div class="mk-lbl">🔑 승부 열쇠: 서브 효율(이긴 경기 56% · 진 경기 29%)</div></div></div>`,
         script:[ {click:'.k-t1', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-res').style.display='flex'; }}, {wait:2200} ] }
@@ -7893,7 +7981,6 @@
   function taDevs(M, base){
     return TA_METRICS.map(m=>{ const v = M[m.k], b = base[m.k]; if(v===null || b===null) return null; return {m, v, b, d:(v-b)*(m.hi?1:-1)}; }).filter(Boolean);
   }
-  const taDevText = x => `${x.m.label} ${taP(x.v)}(평균 ${taP(x.b)})`;
   function taStrongWeak(M, base){
     const ds = taDevs(M, base).sort((p,q)=>q.d-p.d);
     const strong = ds.filter(x=>x.d>=5).slice(0,2), weak = ds.filter(x=>x.d<=-5).sort((p,q)=>p.d-q.d).slice(0,2);
@@ -7904,6 +7991,47 @@
     es.filter(e=>e.bucket===bucket).forEach(e=>{ const k = e.main===FOUL_MAIN ? '파울' : e.main; g[k] = (g[k]||0)+1; });
     return sortDesc(g).slice(0, n||3);
   }
+  // 팀 누적 분석 그림 도우미: 글 대신 막대·띠·점 그래프로 보여줘요(색은 앱의 우리=파랑·상대=빨강 그대로, 숫자는 늘 글자로 함께).
+  const taCol = (i, base) => `color-mix(in srgb, var(${base||'--own'}) ${[100,74,54,38,26][i]||20}%, var(--panel-2))`;
+  // 비율 막대 한 줄: 이름 | 막대 | 값
+  function taMeter(label, v, opts){
+    const o = opts||{};
+    const w = v===null || v===undefined ? 0 : Math.max(2, Math.min(100, v));
+    const ref = o.ref!==undefined && o.ref!==null ? `<i class="ta-ref" style="left:${Math.min(100,o.ref)}%" title="${escChip(o.refLabel||'평균')} ${Math.round(o.ref)}%"></i>` : '';
+    return `<div class="ta-meter" title="${escChip(label)} ${taP(v)}${o.tip?' · '+escChip(o.tip):''}"><span class="ta-ml">${label}${o.sub?`<small>${o.sub}</small>`:''}</span><span class="ta-mtrack"><i style="width:${w}%; background:${o.color||'var(--own)'}"></i>${ref}</span><b class="ta-mv">${v===null||v===undefined?'—':Math.round(v)+'%'}</b></div>`;
+  }
+  // 구성 띠: 여러 항목이 전체에서 차지하는 몫 + 아래 범례
+  function taStrip(items, unit){
+    const tot = items.reduce((s,x)=>s+x.n,0); if(!tot) return '';
+    const segs = items.map(x=>`<i style="flex:${x.n}; background:${x.color}" title="${escChip(x.label)} ${x.n}${unit} (${pct(x.n,tot)}%)">${x.n/tot>=0.12?`<em>${escChip(x.short||x.label)}</em>`:''}</i>`).join('');
+    const leg = items.map(x=>`<span><i style="background:${x.color}"></i>${escChip(x.label)} <b>${pct(x.n,tot)}%</b></span>`).join('');
+    return `<div class="ta-strip">${segs}</div><div class="ta-legend">${leg}</div>`;
+  }
+  const taTopItems = (obj, n, base, short) => {
+    const all = sortDesc(obj); const top = all.slice(0, n); const rest = all.slice(n).reduce((s,[k,v])=>s+v,0);
+    const items = top.map(([k,v],i)=>({label:k, short:short?short(k):k, n:v, color:taCol(i, base)}));
+    if(rest) items.push({label:'기타', n:rest, color:'var(--border-2)'});
+    return items;
+  };
+  // 경기별 득점률 흐름: 50% 기준선 위는 우세, 아래는 열세. 점 색은 승(파랑)·패(빨강)
+  function taTrendSVG(ms, width){
+    const W = Math.max(300, Math.round(width||640)), H = 170, pl = 34, pr = 14, pt = 14, pb = 30;
+    const vals = ms.map(m=>m.M.rate||0);
+    const lo = Math.min(30, ...vals.map(v=>Math.floor(v/10)*10)), hi = Math.max(70, ...vals.map(v=>Math.ceil(v/10)*10));
+    const x = i => ms.length===1 ? (pl+W-pr)/2 : pl + i*(W-pl-pr)/(ms.length-1);
+    const y = v => pt + (hi-v)/(hi-lo)*(H-pt-pb);
+    const grid = [lo, 50, hi].map(g=>`<line x1="${pl}" x2="${W-pr}" y1="${y(g)}" y2="${y(g)}" class="${g===50?'ta-g50':'ta-g'}"/><text x="${pl-6}" y="${y(g)+4}" text-anchor="end" class="ta-ax">${g}%</text>`).join('');
+    const path = ms.map((m,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(vals[i]).toFixed(1)}`).join(' ');
+    const dots = ms.map((m,i)=>{
+      const c = m.result==='W' ? 'var(--own)' : m.result==='L' ? 'var(--opp)' : 'var(--muted)';
+      const tip = `${m.name} · vs ${m.opp==='상대팀'?'이름 없는 상대':m.opp} · ${m.M.a.pts}:${m.M.a.lost} · 득점률 ${taP(m.M.rate)}`;
+      const lab = (m.opp==='상대팀'?'이름없음':m.opp).slice(0,5);
+      return `<g class="ta-dot"><title>${escChip(tip)}</title><circle cx="${x(i)}" cy="${y(vals[i])}" r="14" fill="transparent"/><circle cx="${x(i)}" cy="${y(vals[i])}" r="6" fill="${c}" stroke="var(--panel)" stroke-width="2"/><text x="${x(i)}" y="${y(vals[i])-11}" text-anchor="middle" class="ta-dv">${Math.round(vals[i])}</text><text x="${x(i)}" y="${H-10}" text-anchor="middle" class="ta-ax">${escChip(lab)}</text></g>`;
+    }).join('');
+    return `<svg class="ta-trend" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="경기별 득점률 흐름">${grid}<path d="${path}" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linejoin="round"/>${dots}</svg>`;
+  }
+  // 강했던 면 ▲ / 약했던 면 ▼ 꼬리표
+  const taTag = (x, up) => `<span class="ta-tag ${up?'up':'down'}" title="${escChip(x.m.label)} ${taP(x.v)} · 평균 ${taP(x.b)}">${up?'▲':'▼'} ${x.m.label} <b>${taP(x.v)}</b></span>`;
   function renderTeamAnalysis(){
     const out = document.getElementById('teamAnalysisResult'); if(!out) return;
     const raw = document.getElementById('teamAnalysisInput').value.trim();
@@ -7920,114 +8048,117 @@
     const base = taMetrics(allEs);
     const W = ms.filter(m=>m.result==='W'), L = ms.filter(m=>m.result==='L'), D = ms.filter(m=>m.result==='D');
     const sw = ms.reduce((s,m)=>s+m.sw,0), sl = ms.reduce((s,m)=>s+m.sl,0);
-    const topic = (title, rows, verdict) => { const lis = rows.filter(Boolean); if(!lis.length) return ''; return `<div class="aa-topic"><p class="aa-title">${title}</p><ul class="analysis-list">${lis.map(r=>`<li>${r}</li>`).join('')}</ul>${verdict?`<p class="aa-verdict">→ ${verdict}</p>`:''}</div>`; };
+    const sec = (ic, title, sub, body, note) => body ? `<section class="ta-sec"><h4><span class="ta-ic">${ic}</span>${title}${sub?`<small>${sub}</small>`:''}</h4>${body}${note?`<p class="ta-note">${note}</p>`:''}</section>` : '';
     const html = [];
-    // 1) 전체 성적
-    html.push(`<p class="ta-lead"><b>${T}</b> · 저장된 경기 <b>${ms.length}</b>개 · <b>${W.length}승 ${L.length}패</b>${D.length?` ${D.length}무`:''} (세트 ${sw}:${sl}) · 점수 ${base.a.pts} : ${base.a.lost} · 득점률 <b>${taP(base.rate)}</b></p>`);
-    html.push(topic('📋 전체 지표 <span class="aa-sub">— 모든 경기를 합쳐 계산</span>', [
-      `자력 득점 ${base.a.self}점 + 상대 범실 ${base.a.gift}점 = 득점 ${base.a.pts}점 (자력 득점 비중 ${taP(base.selfShare)})`,
-      `실점 ${base.a.lost}점 중 ${T} 범실 ${base.a.errs}점 (범실 실점 비중 ${taP(base.errShare)}) · 리시브 관련 실점 ${base.a.recvLoss}점 (${taP(base.recvShare)})`,
-      base.atk!==null ? `공격 결정률 ${taP(base.atk)} (성공 ${base.a.atkWin} · 범실 ${base.a.atkErr} · 블로킹 당함 ${base.a.atkBlocked})` : '',
-      (base.a.serveWin+base.a.serveErr) ? `서브 득점 ${base.a.serveWin} · 서브 범실 ${base.a.serveErr} (서브 효율 ${taP(base.srv)})` : '',
-      (base.blkS+base.blkF) ? `블로킹 득점 ${base.blkS} · 블로킹 범실 ${base.blkF} (블로킹 효율 ${taP(base.blk)})` : ''
-    ]));
-    // 2) 지금의 플레이 체제
-    const sys = [];
-    const routes = taTop(allEs, 'ourScore', 3);
-    if(routes.length) sys.push(`주 득점 루트: ${routes.map(([k,n])=>`${escChip(k)} ${n}점(${pct(n, base.a.self)}%)`).join(', ')}`);
+    // 1) 한눈에: 전적·세트·득점률(원 그래프)·점수
+    const rate = base.rate||0, R = 26, C = 2*Math.PI*R;
+    const ring = `<svg class="ta-ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${R}" fill="none" stroke="color-mix(in srgb, var(--opp) 30%, var(--panel-2))" stroke-width="8"/><circle cx="32" cy="32" r="${R}" fill="none" stroke="var(--own)" stroke-width="8" stroke-dasharray="${(C*rate/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 32 32)" stroke-linecap="butt"/><text x="32" y="37" text-anchor="middle">${Math.round(rate)}%</text></svg>`;
+    const wl = ms.map(m=>`<i class="${m.result}" title="${escChip(m.name)} · ${m.result==='W'?'승':m.result==='L'?'패':'무'}">${m.result==='W'?'승':m.result==='L'?'패':'무'}</i>`).join('');
+    html.push(`<div class="ta-hero">
+      <div class="ta-hero-name"><span>📊 팀 누적 분석</span><b>${T}</b><small>저장된 경기 ${ms.length}개</small></div>
+      <div class="ta-tile"><small>전적</small><b><span class="u">${W.length}승</span> <span class="o">${L.length}패</span>${D.length?` ${D.length}무`:''}</b><div class="ta-wl">${wl}</div></div>
+      <div class="ta-tile"><small>세트</small><b><span class="u">${sw}</span> : <span class="o">${sl}</span></b><div class="ta-split"><i style="flex:${sw||0.001}; background:var(--own)"></i><i style="flex:${sl||0.001}; background:var(--opp)"></i></div></div>
+      <div class="ta-tile ta-tile-ring">${ring}<div><small>득점률</small><b>${base.a.pts} : ${base.a.lost}</b><span class="ta-tsub">득점 : 실점</span></div></div>
+    </div>`);
+    // 2) 전체 지표: 막대 + 득점·실점 구성 띠
+    const meters = [
+      taMeter('공격 결정률', base.atk, {sub:`성공 ${base.a.atkWin} · 범실 ${base.a.atkErr} · 막힘 ${base.a.atkBlocked}`}),
+      taMeter('서브 효율', base.srv, {sub:`득점 ${base.a.serveWin} · 범실 ${base.a.serveErr}`}),
+      taMeter('블로킹 효율', base.blk, {sub:`득점 ${base.blkS} · 범실 ${base.blkF}`}),
+      taMeter('자력 득점 비중', base.selfShare, {sub:'득점 중 잘해서 낸 점수'}),
+      taMeter('범실 실점 비중', base.errShare, {color:'var(--opp)', sub:'실점 중 우리 실수 · 낮을수록 좋아요'}),
+      taMeter('리시브 실점 비중', base.recvShare, {color:'var(--opp)', sub:'실점 중 리시브 관련 · 낮을수록 좋아요'})
+    ].join('');
+    const comp = `<div class="ta-two">
+      <div><div class="ta-lab">득점 ${base.a.pts}점은 이렇게</div>${taStrip([{label:'자력 득점', n:base.a.self, color:'var(--own)'},{label:'상대 범실', n:base.a.gift, color:taCol(3)}], '점')}</div>
+      <div><div class="ta-lab">실점 ${base.a.lost}점은 이렇게</div>${taStrip([{label:'상대 득점', n:base.a.lost-base.a.errs, color:'var(--opp)'},{label:`${T} 범실`, n:base.a.errs, color:taCol(3,'--opp')}], '점')}</div>
+    </div>`;
+    html.push(sec('📋', '전체 지표', '모든 경기를 합쳐 계산 · 막대가 길수록 높아요', `<div class="ta-meters">${meters}</div>${comp}`));
+    // 3) 지금의 플레이 체제: 득점 루트 띠, 공격 위치 막대, 세터 배분 띠
+    const routeObj = {}; allEs.filter(e=>e.bucket==='ourScore').forEach(e=>{ const k = e.main===FOUL_MAIN?'파울':e.main; routeObj[k]=(routeObj[k]||0)+1; });
     const pos = {};
     allEs.filter(e=>e.team==='our' && ATTACK_SET.has(e.main)).forEach(e=>{ const p = pos[e.main] = pos[e.main] || {s:0,f:0}; if(e.outcome==='score') p.s++; else p.f++; });
     const atkN = Object.values(pos).reduce((s,p)=>s+p.s+p.f,0);
-    const posList = Object.entries(pos).sort((a,b)=>(b[1].s+b[1].f)-(a[1].s+a[1].f)).slice(0,4);
-    if(posList.length) sys.push(`공격 위치(많이 쓴 순): ${posList.map(([k,p])=>`${escChip(k)} ${pct(p.s+p.f, atkN)}% · 성공률 ${pct(p.s, p.s+p.f)}%`).join(', ')}`);
+    const posList = Object.entries(pos).sort((a,b)=>(b[1].s+b[1].f)-(a[1].s+a[1].f)).slice(0,6);
+    const maxUse = Math.max(1, ...posList.map(([k,p])=>p.s+p.f));
+    const posHTML = posList.length ? `<div class="ta-lab">공격 위치 <small>막대 길이 = 쓴 횟수, 진한 부분 = 성공</small></div><div class="ta-pos">${posList.map(([k,p])=>`<div class="ta-posrow" title="${escChip(k)} · ${p.s+p.f}회 중 ${p.s}회 성공 (${pct(p.s,p.s+p.f)}%) · 전체 공격의 ${pct(p.s+p.f,atkN)}%"><span class="ta-ml">${escChip(k.replace('(2구 넘김)',''))}</span><span class="ta-mtrack"><i style="width:${(p.s+p.f)/maxUse*100}%; background:${taCol(3)}"><i style="width:${pct(p.s,p.s+p.f)}%; background:var(--own)"></i></i></span><b class="ta-mv">${pct(p.s,p.s+p.f)}%</b></div>`).join('')}</div>` : '';
     const tf = {}; let tN = 0, t2 = 0; const tWin = {};
-    allRecs.forEach(r=>{
-      const mine = (r.tosses||[]).filter(x=>x.team==='our'); if(!mine.length) return;
-      mine.forEach(x=>{ const k = TOSS_SHORT[x.to]||x.to; tf[k] = (tf[k]||0)+1; tN++; if(x.kind==='2nd') t2++; });
-    });
+    allRecs.forEach(r=>{ (r.tosses||[]).filter(x=>x.team==='our').forEach(x=>{ const k = TOSS_SHORT[x.to]||x.to; tf[k]=(tf[k]||0)+1; tN++; if(x.kind==='2nd') t2++; }); });
     ms.forEach(m=>m.recs.forEach(r=>{
       const mine = (r.tosses||[]).filter(x=>x.team==='our'); if(!mine.length) return;
       const e = (r.entries||[])[0]; const n = e ? normEntry(e) : null; if(!n || !n.bucket) return;
       const won = m.side==='our' ? n.forUs : !n.forUs;
       const k = TOSS_SHORT[mine[mine.length-1].to] || mine[mine.length-1].to; const d = tWin[k] = tWin[k] || {a:0,w:0}; d.a++; if(won) d.w++;
     }));
-    if(tN) sys.push(`세터 배분: ${sortDesc(tf).slice(0,4).map(([k,n])=>`${escChip(k)} ${pct(n,tN)}%`).join(', ')}${t2?` · 2단 토스 ${pct(t2,tN)}%`:''} (토스 ${tN}회)`);
     const tBest = Object.entries(tWin).filter(([k,d])=>d.a>=3).sort((a,b)=>(b[1].w/b[1].a)-(a[1].w/a[1].a))[0];
-    if(tBest) sys.push(`마지막 토스가 <b>${escChip(tBest[0])}</b>(으)로 갔을 때 득점률이 가장 높아요(${tBest[1].a}번 중 ${tBest[1].w}점, ${pct(tBest[1].w,tBest[1].a)}%)`);
-    const errs = taTop(allEs, 'ourError', 2), lostTo = taTop(allEs, 'oppScore', 2);
-    if(errs.length) sys.push(`많이 나온 범실: ${errs.map(([k,n])=>`${escChip(k)} ${n}회`).join(', ')}`);
-    if(lostTo.length) sys.push(`상대에게 가장 많이 내준 점수: ${lostTo.map(([k,n])=>`${escChip(k)} ${n}점`).join(', ')}`);
-    let sysVerdict = '';
+    const sysBody = [
+      Object.keys(routeObj).length ? `<div class="ta-lab">주 득점 루트 <small>자력 득점 ${base.a.self}점</small></div>${taStrip(taTopItems(routeObj, 4, '--own'), '점')}` : '',
+      posHTML,
+      tN ? `<div class="ta-lab">세터 배분 <small>토스 ${tN}회${t2?` · 2단 ${pct(t2,tN)}%`:''}</small></div>${taStrip(taTopItems(tf, 4, '--accent'), '회')}` : ''
+    ].join('');
+    const lostObj = {}; allEs.filter(e=>e.bucket==='oppScore').forEach(e=>{ lostObj[e.main]=(lostObj[e.main]||0)+1; });
+    const errObj = {}; allEs.filter(e=>e.bucket==='ourError').forEach(e=>{ const k = e.main===FOUL_MAIN?'파울':e.main; errObj[k]=(errObj[k]||0)+1; });
+    const leakBody = (Object.keys(errObj).length || Object.keys(lostObj).length) ? `<div class="ta-two">
+      <div>${Object.keys(errObj).length?`<div class="ta-lab">많이 나온 범실</div>${taStrip(taTopItems(errObj, 3, '--opp'), '회')}`:''}</div>
+      <div>${Object.keys(lostObj).length?`<div class="ta-lab">상대에게 내준 점수</div>${taStrip(taTopItems(lostObj, 3, '--opp'), '점')}`:''}</div></div>` : '';
+    let recentHTML = '';
     if(ms.length>=3){
       const recent = ms.slice(-2), prev = ms.slice(0,-2);
       const rM = taMetrics(recent.flatMap(m=>m.es)), pM = taMetrics(prev.flatMap(m=>m.es));
       const sv = taStrongWeak(rM, pM);
-      const parts = [];
-      if(sv.strong.length) parts.push(`좋아진 점은 ${sv.strong.map(x=>`${x.m.label} ${taP(x.v)}(이전 ${taP(x.b)})`).join(', ')}`);
-      if(sv.weak.length) parts.push(`떨어진 점은 ${sv.weak.map(x=>`${x.m.label} ${taP(x.v)}(이전 ${taP(x.b)})`).join(', ')}`);
-      sysVerdict = `최근 2경기(${recent.map(m=>escChip(m.name)).join(', ')})의 득점률은 ${taP(rM.rate)}로 이전 경기 ${taP(pM.rate)}${Math.round(rM.rate)>Math.round(pM.rate)?'보다 높아요':Math.round(rM.rate)<Math.round(pM.rate)?'보다 낮아요':'와 같아요'}.${parts.length?' '+parts.join(', ')+'이에요.':''}`;
+      const d = Math.round(rM.rate) - Math.round(pM.rate);
+      recentHTML = `<div class="ta-recent"><span class="ta-rlab">최근 2경기</span><span class="ta-arrow ${d>0?'up':d<0?'down':''}">${d>0?'▲':d<0?'▼':'＝'} 득점률 ${taP(rM.rate)} <small>이전 ${taP(pM.rate)}</small></span>${sv.strong.map(x=>taTag(x,true)).join('')}${sv.weak.map(x=>taTag(x,false)).join('')}</div>`;
     }
-    html.push(topic('🧭 지금의 플레이 체제 <span class="aa-sub">— 어떻게 점수를 내고 잃는지</span>', sys, sysVerdict));
-    // 3) 경기별
-    const rowsHTML = ms.map(m=>{
-      const sets = m.setRows.length>1 ? ` · 세트 ${m.sw}:${m.sl}` : '';
-      const rl = m.result==='W' ? '승' : m.result==='L' ? '패' : '무';
-      return `<div class="ta-match ${m.result}"><span class="ta-res">${rl}</span><span class="ta-mname"><b>${escChip(m.name)}</b><small>vs ${escChip(m.opp==='상대팀'?'이름 없는 상대':m.opp)}${sets}</small></span><span class="ta-mnum"><b>${m.M.a.pts}:${m.M.a.lost}</b><small>득점률 ${taP(m.M.rate)} · 공격 ${taP(m.M.atk)} · 범실 ${m.M.a.errs}</small></span></div>`;
-    }).join('');
-    let matchVerdict = '';
+    html.push(sec('🧭', '지금의 플레이 체제', '어떻게 점수를 내고 잃는지', sysBody + leakBody + recentHTML, tBest ? `마지막 토스가 <b>${escChip(tBest[0])}</b>(으)로 갔을 때 득점률이 가장 높아요 (${tBest[1].a}번 중 ${tBest[1].w}점, ${pct(tBest[1].w,tBest[1].a)}%)` : ''));
+    // 4) 경기별: 득점률 흐름 + 경기 줄(점수 막대)
+    let matchNote = '';
     if(ms.length>=2){
       const best = ms.reduce((x,m)=>m.M.rate>x.M.rate?m:x), worst = ms.reduce((x,m)=>m.M.rate<x.M.rate?m:x);
       const bs = taStrongWeak(best.M, base), ws = taStrongWeak(worst.M, base);
-      matchVerdict = `가장 강했던 경기는 <b>${escChip(best.name)}</b>(득점률 ${taP(best.M.rate)})${bs.strong.length?` — ${bs.strong.map(taDevText).join(', ')}`:''}. 가장 약했던 경기는 <b>${escChip(worst.name)}</b>(득점률 ${taP(worst.M.rate)})${ws.weak.length?` — ${ws.weak.map(taDevText).join(', ')}`:''}.`;
+      matchNote = `<div class="ta-bw"><div class="ta-bwc best"><small>💪 가장 강했던 경기</small><b>${escChip(best.name)}</b><span>득점률 ${taP(best.M.rate)}</span>${bs.strong.map(x=>taTag(x,true)).join('')}</div><div class="ta-bwc worst"><small>⚠️ 가장 약했던 경기</small><b>${escChip(worst.name)}</b><span>득점률 ${taP(worst.M.rate)}</span>${ws.weak.map(x=>taTag(x,false)).join('')}</div></div>`;
     }
-    html.push(`<div class="aa-topic"><p class="aa-title">🏟️ 경기별 기록 <span class="aa-sub">— 저장 순서, 득점률 = 득점 ÷ (득점 + 실점)</span></p><div class="ta-matches">${rowsHTML}</div>${matchVerdict?`<p class="aa-verdict">→ ${matchVerdict}</p>`:''}</div>`);
-    // 4) 상대팀별
+    const rowsHTML = ms.map(m=>{
+      const rl = m.result==='W' ? '승' : m.result==='L' ? '패' : '무';
+      return `<div class="ta-match ${m.result}"><span class="ta-res">${rl}</span><span class="ta-mname"><b>${escChip(m.name)}</b><small>vs ${escChip(m.opp==='상대팀'?'이름 없는 상대':m.opp)}${m.setRows.length>1?` · 세트 ${m.sw}:${m.sl}`:''} · 공격 ${taP(m.M.atk)} · 범실 ${m.M.a.errs}</small></span><span class="ta-mscore"><b>${m.M.a.pts}:${m.M.a.lost}</b><span class="ta-split"><i style="flex:${m.M.a.pts||0.001}; background:var(--own)"></i><i style="flex:${m.M.a.lost||0.001}; background:var(--opp)"></i></span></span></div>`;
+    }).join('');
+    html.push(sec('🏟️', '경기별 흐름', '점 = 그 경기 득점률(파랑 승 · 빨강 패), 가운데 점선 = 50%', `${ms.length>=2?taTrendSVG(ms, out.clientWidth-30):''}${matchNote}<details class="ta-fold"><summary>경기별 기록 ${ms.length}개 보기</summary><div class="ta-matches">${rowsHTML}</div></details>`));
+    // 5) 상대팀별: 50% 기준 좌우 막대 + 강점·약점 꼬리표
     const byOpp = new Map();
     ms.forEach(m=>{ const k = m.opp==='상대팀' ? '\u0000' : taNorm(m.opp); const g = byOpp.get(k) || {name:m.opp==='상대팀'?'이름 없는 상대':m.opp, ms:[]}; g.ms.push(m); byOpp.set(k, g); });
     const oppGroups = [...byOpp.values()].map(g=>({...g, M:taMetrics(g.ms.flatMap(m=>m.es)), w:g.ms.filter(m=>m.result==='W').length, l:g.ms.filter(m=>m.result==='L').length}));
     oppGroups.sort((a,b)=>b.M.rate-a.M.rate);
+    const span = Math.max(10, ...oppGroups.map(g=>Math.abs((g.M.rate||50)-50)));
     const oppRows = oppGroups.map(g=>{
+      const d = (g.M.rate||50) - 50, w = Math.abs(d)/span*50;
       const sw2 = taStrongWeak(g.M, base);
       const es = g.ms.flatMap(m=>m.es);
-      const lt = taTop(es, 'oppScore', 1)[0], rt = taTop(es, 'ourScore', 1)[0];
-      const bits = [];
-      if(sw2.strong.length) bits.push(`강했던 면: ${sw2.strong.map(taDevText).join(', ')}`);
-      if(sw2.weak.length) bits.push(`약했던 면: ${sw2.weak.map(taDevText).join(', ')}`);
-      if(!sw2.strong.length && !sw2.weak.length) bits.push('평균과 비슷한 경기력이었어요');
-      if(rt) bits.push(`가장 많이 낸 점수 ${escChip(rt[0])} ${rt[1]}점`);
-      if(lt) bits.push(`가장 많이 내준 점수 ${escChip(lt[0])} ${lt[1]}점`);
-      return `<b>vs ${escChip(g.name)}</b> — ${g.ms.length}경기 ${g.w}승 ${g.l}패 · 득점률 ${taP(g.M.rate)}. ${bits.join(' · ')}`;
-    });
-    let oppVerdict = '';
-    if(oppGroups.length>=2){
-      const b = oppGroups[0], w = oppGroups[oppGroups.length-1];
-      oppVerdict = `가장 강했던 상대는 <b>${escChip(b.name)}</b>(득점률 ${taP(b.M.rate)}), 가장 고전한 상대는 <b>${escChip(w.name)}</b>(득점률 ${taP(w.M.rate)})예요.`;
-    }
-    html.push(topic('🆚 상대팀별 <span class="aa-sub">— 강했던 면·약했던 면은 전체 평균과 5%p 이상 차이 난 지표</span>', oppRows, oppVerdict));
-    // 5) 어떤 팀에 강하고 약한지
-    const keys = [];
+      const lt = taTop(es, 'oppScore', 1)[0];
+      const tags = sw2.strong.map(x=>taTag(x,true)).join('') + sw2.weak.map(x=>taTag(x,false)).join('') + (lt?`<span class="ta-tag lost" title="이 상대에게 가장 많이 내준 점수">🎯 ${escChip(lt[0])}에 ${lt[1]}점 내줌</span>`:'');
+      return `<div class="ta-opp"><div class="ta-opp-top"><span class="ta-opp-name"><b>${escChip(g.name)}</b><small>${g.ms.length}경기 ${g.w}승 ${g.l}패</small></span><span class="ta-div" title="득점률 ${taP(g.M.rate)}"><i class="${d>=0?'pos':'neg'}" style="width:${w}%; ${d>=0?'left:50%':'right:50%'}"></i><em></em></span><b class="ta-mv">${taP(g.M.rate)}</b></div>${tags?`<div class="ta-tags">${tags}</div>`:''}</div>`;
+    }).join('');
+    html.push(sec('🆚', '상대팀별', '막대가 오른쪽(파랑)이면 우세, 왼쪽(빨강)이면 열세 · ▲▼는 평균보다 5%p 이상 좋았던·나빴던 지표', `<div class="ta-opps">${oppRows}</div>`));
+    // 6) 승부 열쇠: 이긴 경기 vs 진 경기 나란히 막대, 상대 유형별 득점률
+    let keyBody = '';
     if(W.length && L.length){
       const wM = taMetrics(W.flatMap(m=>m.es)), lM = taMetrics(L.flatMap(m=>m.es));
-      const ds = taDevs(wM, lM).sort((p,q)=>q.d-p.d).filter(x=>x.d>=5).slice(0,2);
-      if(ds.length) keys.push(`이긴 경기와 진 경기를 가장 크게 가른 지표는 ${ds.map(x=>`<b>${x.m.label}</b>(이긴 경기 ${taP(x.v)} · 진 경기 ${taP(x.b)})`).join(', ')}예요. ${ds.length>1?'이 지표들이':'이 지표가'} ${T}의 승부 열쇠예요.`);
-      else keys.push('이긴 경기와 진 경기의 지표 차이가 크지 않아요. 세트 막판 흐름이나 연속 실점 구간을 기록 목록에서 함께 살펴보세요.');
+      const ds = taDevs(wM, lM).sort((p,q)=>q.d-p.d);
+      const top = ds.filter(x=>x.d>=5).slice(0,2).map(x=>x.m.k);
+      keyBody += `<div class="ta-lab">이긴 경기 vs 진 경기 <small>🔑 = 차이가 가장 큰 지표</small></div><div class="ta-keys">${ds.map(x=>`<div class="ta-key${top.includes(x.m.k)?' hot':''}"><span class="ta-ml">${top.includes(x.m.k)?'🔑 ':''}${x.m.label}${x.m.hi?'':'<small>낮을수록 좋아요</small>'}</span><span class="ta-pair">${taMeter('이긴 경기', x.v, {color:'var(--own)'})}${taMeter('진 경기', x.b, {color:'var(--opp)'})}</span></div>`).join('')}</div>`;
     }
-    const typeLine = (labelFn, getter) => {
+    const typeRow = (label, getter) => {
       const vals = ms.map(m=>({m, v:getter(m)})).filter(x=>x.v!==null && x.v!==undefined);
       if(vals.length<3) return '';
       const sorted = vals.map(x=>x.v).sort((a,b)=>a-b); const med = sorted[Math.floor(sorted.length/2)];
       const hi = vals.filter(x=>x.v>=med).map(x=>x.m), lo = vals.filter(x=>x.v<med).map(x=>x.m);
       if(!hi.length || !lo.length) return '';
       const hR = taMetrics(hi.flatMap(m=>m.es)).rate, lR = taMetrics(lo.flatMap(m=>m.es)).rate;
-      const diff = Math.round(hR) - Math.round(lR);
-      return `${labelFn(med)}를 만났을 때 득점률 ${taP(hR)}, 그렇지 않은 상대에게는 ${taP(lR)} — ${Math.abs(diff)<3 ? '상대 스타일과 상관없이 비슷했어요' : diff>0 ? `오히려 이런 상대에게 강했어요` : `이런 상대에게 약한 편이에요`}`;
+      return `<div class="ta-key"><span class="ta-ml">${label(med)}</span><span class="ta-pair">${taMeter('이런 상대', hR, {color:'var(--accent)', ref:50, refLabel:'기준'})}${taMeter('그 외 상대', lR, {color:'var(--border-2)', ref:50, refLabel:'기준'})}</span></div>`;
     };
-    const tl1 = typeLine(med=>`공격이 강한 상대(상대 공격 결정률 ${Math.round(med)}% 이상)`, m=>m.M.oppAtk);
-    const tl2 = typeLine(med=>`서브가 강한 상대(세트당 상대 서브 득점 ${Math.round(med*10)/10}점 이상)`, m=>m.M.b.serveWin/Math.max(1,m.setRows.length));
-    if(tl1) keys.push(tl1);
-    if(tl2) keys.push(tl2);
-    html.push(topic('🔑 승부 열쇠 · 어떤 상대에 강하고 약한지', keys, ''));
-    html.push(`<p class="analysis-disclaimer">※ 저장된 폴더의 기록을 모아 자동 계산한 통계예요. 경기마다 기록한 양이 다르면 결과가 달라질 수 있고, 승패는 기록된 세트 점수로 판단해요. 표본이 3회보다 적은 지표(공격·서브·블로킹 효율)는 빼고 계산해요.</p>`);
+    const t1 = typeRow(med=>`공격이 강한 상대<small>상대 공격 결정률 ${Math.round(med)}% 이상</small>`, m=>m.M.oppAtk);
+    const t2r = typeRow(med=>`서브가 강한 상대<small>세트당 상대 서브 득점 ${Math.round(med*10)/10}점 이상</small>`, m=>m.M.b.serveWin/Math.max(1,m.setRows.length));
+    if(t1 || t2r) keyBody += `<div class="ta-lab">어떤 상대에 강하고 약한지 <small>막대 = 그런 상대를 만났을 때 ${T}의 득점률</small></div><div class="ta-keys">${t1}${t2r}</div>`;
+    html.push(sec('🔑', '승부 열쇠', '', keyBody));
+    html.push(`<p class="analysis-disclaimer">※ 저장된 폴더의 기록을 모아 자동 계산한 통계예요. 막대에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요. 경기마다 기록한 양이 다르면 결과가 달라질 수 있고, 승패는 기록된 세트 점수로 판단해요. 3회보다 적게 나온 지표(공격·서브·블로킹 효율)는 빼고 계산해요.</p>`);
     out.innerHTML = html.join('');
   }
   function renderTeamAnalysisChips(){
@@ -8037,7 +8168,7 @@
     box.innerHTML = list.length
       ? list.slice(0,12).map(t=>`<button type="button" class="chip-btn ta-chip${taNorm(t.name)===cur?' active':''}" data-team="${escChip(t.name)}">${escChip(t.name)} <small>${t.n}경기</small></button>`).join('')
       : '<span class="field-note" style="margin:0;">아직 팀 이름이 적힌 저장 폴더가 없어요. 경기 폴더의 📋 경기 정보에 팀 이름을 적어 두면 여기에 나와요.</span>';
-    const st = document.getElementById('teamAnalysisState'); if(st) st.textContent = list.length ? `팀 ${list.length}개` : '';
+    const st = document.getElementById('teamAnalysisState'); if(st) st.textContent = list.length ? `· 저장된 팀 ${list.length}개` : '';
   }
   (function initTeamAnalysis(){
     const box = document.getElementById('teamAnalysisBox'); if(!box) return;
