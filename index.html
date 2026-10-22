@@ -919,6 +919,19 @@
   .card-title-row h2{ margin-bottom:0 !important; }
   .card-title-row .qr-info-btn{ margin:0; flex:none; width:auto !important; padding:7px 12px; }
   #graphHelp{ margin:0 0 10px; }
+  .court-metric-seg{ margin-top:10px; }
+  .court-an{ display:grid; grid-template-columns:minmax(0,1fr); gap:12px; margin-top:10px; align-items:start; }
+  @media (min-width:900px){ .court-an{ grid-template-columns:minmax(0,300px) minmax(0,1fr); } }
+  .court-an-svg{ width:100%; max-width:340px; display:block; margin:0 auto; }
+  .court-an-team{ font-size:17px; font-weight:800; }
+  .court-an-num{ font-size:15px; font-weight:800; fill:var(--text); }
+  .court-an-lbl{ font-size:15px; font-weight:800; paint-order:stroke; stroke:var(--panel-2); stroke-width:4px; }
+  .court-an-who{ font-size:15px; font-weight:700; fill:var(--text); paint-order:stroke; stroke:var(--panel-2); stroke-width:4px; stroke-linejoin:round; }
+  .court-an-side{ min-width:0; overflow-x:auto; }
+  .court-an-table{ width:100%; border-collapse:collapse; font-size:12px; }
+  .court-an-table th, .court-an-table td{ padding:5px 6px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
+  .court-an-table th{ font-size:11px; color:var(--muted); font-weight:700; }
+  .court-an-table td small{ display:block; font-size:10.5px; color:var(--muted); }
   .bf-chart{ margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
   .bf-title{ font-size:13px; font-weight:800; color:var(--text); margin-bottom:6px; }
   .bf-head{ display:grid; grid-template-columns:1fr 84px 1fr; font-size:11px; font-weight:800; margin-bottom:3px; }
@@ -2652,6 +2665,7 @@
               <dl>
                 <dt>⚔️ 공격</dt><dd>공격 위치(레프트·A·백A …)별 득점·범실, 공격 방식별 득점·범실, 그리고 <b>강타·빈 곳 / 가볍게 볼처리 / 강타·사람 쪽</b> 점수의 팀별 비율이에요. 상대의 빈 곳 강타·가볍게 볼처리 점수가 많으면 수비 빈자리를, 사람 쪽 강타 점수가 많으면 수비 자세·위치를 먼저 점검해요. 강타를 둘로 나누기 전에 남긴 기록은 "강타 (구분 전 기록)"으로 따로 모여요.</dd>
                 <dt>🧱 블로킹</dt><dd>블로킹 위치별 득점·범실, 공이 손에 맞은 관련 선수별 득점·범실, 블로킹 범실 유형, 블로킹 득점 인원이에요.</dd>
+                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. 원이 크고 진할수록 많이 일어난 곳이고 숫자가 횟수예요. 원 옆에는 그 자리에서 가장 많이 나온 선수 이름(이름이 없으면 번호와 포지션)을 적고, 여러 명이면 "외 N"을 붙여요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 아래 표는 어떤 대형 기준으로 놓였는지 대형별로 나눠 보여줘요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
                 <dt>🏐 토스</dt><dd>양 팀이 어디로 올렸는지(토스 방향)와 <b>점수판 × 1포인트당 토스 배분</b>이에요. 세로 한 줄이 1점이고, 윗부분 점수판에는 점수를 낸 팀 줄에 색이 채워지며 그 팀의 새 점수가 적혀요(경기 기록지와 같아요). 아랫부분에는 그 랠리에서 올라간 토스를 1번째부터 아래로 팀 색 칸에 적어요(2단은 점선 테두리). 연속 득점·실점 구간에서 어떤 토스가 이어졌는지 따라가 볼 수 있어요.</dd>
               </dl>
             </div>
@@ -2682,6 +2696,7 @@
               <button data-dfilter="attack" class="active">⚔️ 공격</button>
               <button data-dfilter="block">🧱 블로킹</button>
               <button data-dfilter="toss">🏐 토스</button>
+              <button data-dfilter="court">📍 코트 위치</button>
             </div>
             <div id="graphDetailBody"></div>
           </div>
@@ -7845,7 +7860,127 @@
     const entries = allEntries().filter(e=>e.team==='our'||e.team==='opp');
     if(detailFilter==='attack') el.innerHTML = attackDetailHTML(entries);
     else if(detailFilter==='block') el.innerHTML = blockDetailHTML(entries);
+    else if(detailFilter==='court') el.innerHTML = courtDetailHTML();
     else el.innerHTML = tossDetailHTML();
+  }
+  // ---------- 📍 코트 위치 분석: 대형으로 정한 선수 자리를 양 팀 코트 위에 색 진하기·숫자·선으로 그려요 ----------
+  let courtMetric = 'score';
+  const COURT_METRICS = [['score','득점'],['lost','실점'],['fault','범실'],['block','블로킹'],['toss','토스']];
+  document.getElementById('graphDetailBody').addEventListener('click', e=>{
+    const b = e.target.closest('[data-cmetric]'); if(!b) return;
+    courtMetric = b.dataset.cmetric; renderGraphDetail();
+  });
+  const TOSS_POS = {'레프트':'LEFT','라이트':'RIGHT','A':'QA','B':'QA','백A':'QBACKA','앞차':'FRONTSLIDE','백차':'BACKSLIDE','중앙 후위(파이프)':'CBACK','세터 2구':'SETTER'};
+  // 예전에 직접 고른 3×3 득실 위치를 같은 코트 좌표로 바꿔요(플레이한 팀 코트 = side own)
+  function grid9Spot(g, actor){
+    if(!g || g.col==null || g.row==null) return null;
+    const onOur = (g.side==='opp') ? actor==='opp' : actor==='our';
+    const x = [80,200,320][g.col], y = [440,560,680][g.row];
+    return onOur ? {x, y, folder:'직접 고른 위치', scenLabel:''} : {x:400-x, y:760-y, folder:'직접 고른 위치', scenLabel:''};
+  }
+  function courtDetailHTML(){
+    const recs = recordsInScope();
+    const seg = `<div class="seg court-metric-seg">${COURT_METRICS.map(([k,l])=>`<button type="button" data-cmetric="${k}" class="${k===courtMetric?'active':''}">${l}</button>`).join('')}</div>`;
+    const W = 400, H = 760;
+    const court = inner => `<svg class="court-an-svg" viewBox="-14 -26 ${W+28} ${H+52}" role="img" aria-label="코트 위치 분석">
+      <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="var(--panel-2)" stroke="var(--border)" stroke-width="2"/>
+      <line x1="0" x2="${W}" y1="260" y2="260" stroke="var(--border)" stroke-dasharray="6 6"/><line x1="0" x2="${W}" y1="500" y2="500" stroke="var(--border)" stroke-dasharray="6 6"/>
+      <rect x="-8" y="375" width="${W+16}" height="10" rx="3" fill="var(--accent)"/>
+      <text x="${W/2}" y="-9" text-anchor="middle" class="court-an-team" fill="var(--opp)">🔴 ${dEsc(oppTeamName)}</text>
+      <text x="${W/2}" y="${H+19}" text-anchor="middle" class="court-an-team" fill="var(--own)">🔵 ${dEsc(ourTeamName)}</text>${inner}</svg>`;
+    const col = t => t==='our' ? 'var(--own)' : 'var(--opp)';
+    let svgInner = '', table = '', empty = '';
+    if(courtMetric==='toss'){
+      // 팀별: 세터 자리 → 보낸 곳 자리 선(굵기 = 횟수), 끝 번호 = 주로 몇 번째 토스
+      const by = {our:{}, opp:{}}; let any = 0;
+      recs.forEach(r=>{
+        const mine = {our:0, opp:0};
+        const e = (r.entries||[])[0]; const n = e ? normEntry(e) : null;
+        const won = n ? (n.bucket==='ourScore'||n.bucket==='oppError' ? 'our' : 'opp') : null;
+        const ts = r.tosses||[];
+        ts.forEach((t, i)=>{
+          if(t.team!=='our' && t.team!=='opp') return;
+          mine[t.team]++;
+          const k = TOSS_SHORT[t.to]||t.to;
+          const d = by[t.team][k] = by[t.team][k] || {n:0, ord:{}, last:0, lastWin:0, raw:t.to};
+          d.n++; any++; d.ord[mine[t.team]] = (d.ord[mine[t.team]]||0)+1;
+          const isLast = !ts.slice(i+1).some(x=>x.team===t.team);
+          if(isLast){ d.last++; if(won===t.team) d.lastWin++; }
+        });
+      });
+      if(!any) empty = `${scopeLabel()}에 토스 순서를 남긴 점수가 아직 없어요. 결과 버튼 위 "🏐 랠리 토스 순서"에서 토스를 눌러 남겨요.`;
+      const rows = [];
+      ['our','opp'].forEach(team=>{
+        const items = Object.entries(by[team]); if(!items.length) return;
+        const tot = items.reduce((a,[,d])=>a+d.n,0), max = Math.max(...items.map(([,d])=>d.n));
+        const setter = formationSpot(team, 'SETTER', '', team);
+        items.sort((a,b)=>b[1].n-a[1].n).forEach(([k, d])=>{
+          const ordTop = Object.entries(d.ord).sort((a,b)=>b[1]-a[1])[0];
+          const pos = TOSS_POS[d.raw];
+          const sp = pos ? formationSpot(team, pos, d.raw, team) : null;
+          const share = Math.round(d.n/tot*100);
+          rows.push(`<tr><td style="color:${col(team)};">${team==='our'?'🔵':'🔴'}</td><td><b>${dEsc(k)}</b>${sp?`<small>${dEsc(sp.folder)}${sp.scenLabel?' · '+dEsc(sp.scenLabel):''}</small>`:'<small>코트 자리 없음</small>'}</td><td>${d.n}회 (${share}%)</td><td>주로 ${ordTop[0]}번째</td><td>${d.last ? `${Math.round(d.lastWin/d.last*100)}% <small>(${d.lastWin}/${d.last})</small>` : '—'}</td></tr>`);
+          if(!sp || !setter) return;
+          const w = 2 + 9*d.n/max, op = 0.35 + 0.55*d.n/max;
+          const mx = (setter.x+sp.x)/2 + (team==='our'?-1:1)*(sp.y===setter.y?0:18), my = (setter.y+sp.y)/2 + (team==='our'?28:-28);
+          if(pos==='SETTER'){
+            svgInner += `<circle cx="${sp.x}" cy="${sp.y}" r="${16+8*d.n/max}" fill="none" stroke="${col(team)}" stroke-width="${w/2}" stroke-dasharray="4 3" opacity="${op}"/>`;
+          } else {
+            svgInner += `<path d="M${setter.x},${setter.y} Q${mx},${my} ${sp.x},${sp.y}" fill="none" stroke="${col(team)}" stroke-width="${w.toFixed(1)}" stroke-linecap="round" opacity="${op.toFixed(2)}"><title>${dEsc(k)} ${d.n}회 · 주로 ${ordTop[0]}번째</title></path>`;
+          }
+          svgInner += `<circle cx="${sp.x}" cy="${sp.y}" r="13" fill="var(--panel)" stroke="${col(team)}" stroke-width="2.5"/><text x="${sp.x}" y="${sp.y+4.5}" text-anchor="middle" class="court-an-num">${ordTop[0]}</text><text x="${sp.x}" y="${sp.y+(team==='our'?32:-21)}" text-anchor="middle" class="court-an-who">${dEsc(k)}</text>`;
+          svgInner += `<text x="${mx}" y="${my+4}" text-anchor="middle" class="court-an-lbl" fill="${col(team)}">${d.n}</text>`;
+        });
+        if(setter) svgInner += `<rect x="${setter.x-11}" y="${setter.y-11}" width="22" height="22" rx="5" fill="${col(team)}"/><text x="${setter.x}" y="${setter.y+4.5}" text-anchor="middle" class="court-an-num" fill="#fff">S</text><text x="${setter.x}" y="${setter.y+(team==='our'?30:-19)}" text-anchor="middle" class="court-an-who">세터</text>`;
+      });
+      table = rows.length ? `<table class="court-an-table"><thead><tr><th></th><th>보낸 곳 · 대형</th><th>횟수</th><th>순서</th><th>끝 토스 득점률</th></tr></thead><tbody>${rows.join('')}</tbody></table>
+        <div class="field-note" style="margin-top:4px;">선이 굵을수록 많이 올린 곳이에요. 네모 S는 세터 자리, 동그라미 번호는 랠리에서 주로 몇 번째 토스였는지(옆 글자는 보낸 곳), 선 가운데 숫자는 횟수예요. 끝 토스 득점률은 그 팀의 마지막 토스가 그곳으로 갔을 때 그 팀이 점수를 낸 비율이에요.</div>` : '';
+    } else {
+      const pts = [];
+      // 그 자리에 선 선수: 이름이 있으면 이름, 없으면 번호와 포지션
+      const who = (r, team) => {
+        const p = team==='our' ? r.player : r.oppPlayer; if(!p || !p.id) return null;
+        const e = (team==='our' ? videoRoster : oppRoster)[p.id] || {};
+        const pos = e.position ? POS_SHORT(e.position) : '';
+        return {key:p.id, name:e.name || '', pos, text: e.name ? e.name : `${p.id}번${pos?' '+pos:''}`};
+      };
+      recs.forEach(r=>{
+        const e = (r.entries||[])[0]; const n = e ? normEntry(e) : null; if(!n || (n.team!=='our' && n.team!=='opp')) return;
+        const sp = recordSpots(r) || {};
+        const other = n.team==='our' ? 'opp' : 'our';
+        const actorSpot = sp[n.team] || grid9Spot(r.grid9, n.team);
+        if(courtMetric==='score' && n.outcome==='score' && actorSpot) pts.push({team:n.team, s:actorSpot, ok:true, w:who(r, n.team)});
+        if(courtMetric==='fault' && n.outcome==='fault' && actorSpot) pts.push({team:n.team, s:actorSpot, ok:false, w:who(r, n.team)});
+        if(courtMetric==='block' && n.main===BLOCK_LOCATION_OPTION_NAME && actorSpot) pts.push({team:n.team, s:actorSpot, ok:n.outcome==='score', w:who(r, n.team)});
+        if(courtMetric==='lost'){
+          if(n.outcome==='score' && sp[other]) pts.push({team:other, s:sp[other], ok:false, w:who(r, other)});
+          if(n.outcome==='fault' && actorSpot) pts.push({team:n.team, s:actorSpot, ok:false, w:who(r, n.team)});
+        }
+      });
+      if(!pts.length) empty = `${scopeLabel()}에 ${COURT_METRICS.find(m=>m[0]===courtMetric)[1]} 자리를 정할 수 있는 기록이 아직 없어요. 기록할 때 "자세히 기록"에서 🔵 우리·🔴 상대 선수를 고르고, 📋 경기 정보 명단에 포지션을 적어 두면 여기에 모여요.`;
+      const cl = {};
+      pts.forEach(p=>{ const k = `${p.team}|${Math.round(p.s.x/20)}|${Math.round(p.s.y/20)}`; const c = cl[k] = cl[k] || {team:p.team, x:0, y:0, n:0, ok:0, who:{}, pos:p.s.pos}; c.x += p.s.x; c.y += p.s.y; c.n++; if(p.ok) c.ok++;
+        if(p.w){ const w = c.who[p.w.key] = c.who[p.w.key] || {...p.w, n:0}; w.n++; } });
+      const cs = Object.values(cl).map(c=>({...c, x:c.x/c.n, y:c.y/c.n}));
+      const max = Math.max(1, ...cs.map(c=>c.n));
+      cs.sort((a,b)=>b.n-a.n).forEach(c=>{
+        const r = 12 + 20*Math.sqrt(c.n/max), op = 0.22 + 0.6*c.n/max;
+        const ws = Object.values(c.who).sort((a,b)=>b.n-a.n);
+        const whoTxt = ws.length ? ws[0].text + (ws.length>1 ? ` 외 ${ws.length-1}` : '') : (c.pos ? POS_SHORT(c.pos) : '');
+        const tip = (courtMetric==='block' ? `블로킹 득점 ${c.ok} · 범실 ${c.n-c.ok}` : `${c.n}회`) + (ws.length ? '\n' + ws.map(w=>`${w.name?w.name+' · ':''}${w.key}번${w.pos?' '+w.pos:''} ${w.n}회`).join('\n') : '');
+        svgInner += `<g><title>${tip}</title><circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${r.toFixed(1)}" fill="${col(c.team)}" fill-opacity="${op.toFixed(2)}" stroke="${col(c.team)}" stroke-width="1.5"/>`
+          + (courtMetric==='block' && c.n-c.ok ? `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${(r+4).toFixed(1)}" fill="none" stroke="var(--warn)" stroke-width="2" stroke-dasharray="${Math.max(2, 18*(c.n-c.ok)/c.n)} 4"/>` : '')
+          + `<text x="${c.x.toFixed(1)}" y="${(c.y+5).toFixed(1)}" text-anchor="middle" class="court-an-num">${courtMetric==='block' ? `${c.ok}/${c.n-c.ok}` : c.n}</text>`
+          + (whoTxt ? `<text x="${c.x.toFixed(1)}" y="${(c.team==='our' ? c.y+r+17 : c.y-r-8).toFixed(1)}" text-anchor="middle" class="court-an-who">${dEsc(whoTxt.length>9 ? whoTxt.slice(0,9)+'…' : whoTxt)}</text>` : '') + `</g>`;
+      });
+      // 대형별 표: 어떤 대형 기준으로 놓였는지
+      const byForm = {};
+      pts.forEach(p=>{ const k = `${p.team}|${p.s.folder}${p.s.scenLabel?' · '+p.s.scenLabel:''}`; const d = byForm[k] = byForm[k] || {team:p.team, label:k.split('|')[1], n:0, ok:0}; d.n++; if(p.ok) d.ok++; });
+      const fr = Object.values(byForm).sort((a,b)=>b.n-a.n);
+      table = fr.length ? `<table class="court-an-table"><thead><tr><th></th><th>대형</th><th>${courtMetric==='block'?'득점 / 범실':'횟수'}</th></tr></thead><tbody>${fr.map(d=>`<tr><td style="color:${col(d.team)};">${d.team==='our'?'🔵':'🔴'}</td><td>${dEsc(d.label)}</td><td>${courtMetric==='block'?`${d.ok} / ${d.n-d.ok}`:d.n}</td></tr>`).join('')}</tbody></table>
+        <div class="field-note" style="margin-top:4px;">원이 크고 진할수록 많이 일어난 자리예요. 원 옆 글자는 그 자리에서 가장 많이 나온 선수(이름이 없으면 번호·포지션)예요.${courtMetric==='block'?' 숫자는 "득점/범실"이고, 주황 점선 테두리는 블로킹 범실이 있었던 자리예요.':''} 표는 선수 자리를 어떤 대형으로 정했는지 대형별로 나눠 보여줘요.</div>` : '';
+    }
+    return `${seg}<div class="court-an">${court(svgInner)}<div class="court-an-side">${empty ? DETAIL_EMPTY(empty) : table}</div></div>`;
   }
   function spikeGroup(d){
     if(!d) return null;
