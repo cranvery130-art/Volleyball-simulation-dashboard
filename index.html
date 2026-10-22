@@ -2717,7 +2717,7 @@
                 <div class="toss-pad our" data-tteam="our"><div class="toss-pad-h" id="tossPadOurName">🔵 우리팀 토스</div><div class="toss-targets" data-tteam="our"></div></div>
                 <div class="toss-pad opp" data-tteam="opp"><div class="toss-pad-h" id="tossPadOppName">🔴 상대팀 토스</div><div class="toss-targets" data-tteam="opp"></div></div>
               </div>
-              <div class="field-note" style="margin-top:6px;">토스가 올라가면 <b>그 팀 칸</b>에서 보낸 곳을 바로 눌러요. 다음 차례 팀 칸이 밝아져요. 2단 토스는 <b>↪ 2단</b>을 누르고 고르거나 넣은 칩을 눌러 바꿔요. <b>기록하기</b>를 누르면 그 점수에 함께 저장되고 비워져요.</div>
+              <div class="field-note" style="margin-top:6px;">토스가 올라가면 <b>그 팀 칸</b>에서 보낸 곳을 바로 눌러요. 다음 차례 팀 칸이 밝아져요. 2단 토스는 <b>↪ 2단</b>을 누르고 고르거나 넣은 칩을 눌러 바꿔요. 공격을 만들지 못하고 세 번째 터치로 넘긴 공은 <b>3구처리</b>를 눌러요. <b>기록하기</b>를 누르면 그 점수에 함께 저장되고 비워져요.</div>
             </div>
             <label class="field-label">결과</label>
             <div class="qr-bucket-grid" id="qrBucketGrid">
@@ -6911,7 +6911,8 @@
     e.preventDefault(); undoLast();
   });
   // ---------- 세터 토스 순서: 한 점이 나기까지 양 팀 세터가 어디로 올렸는지 순서대로 남겨요 ----------
-  const TOSS_TARGETS = ['레프트','라이트','A','B','백A','앞차','백차','중앙 후위(파이프)','세터 2구'];
+  // 파이프 버튼은 3구 처리로 바꿨어요. 예전에 남긴 파이프 토스는 기록·분석에 그대로 보여요.
+  const TOSS_TARGETS = ['레프트','라이트','A','B','백A','앞차','백차','3구처리','세터 2구'];
   let tossSeq = []; // [{team:'our'|'opp', to:'레프트', kind?:'2nd'}]
   let toss2ndArmed = false;
   function tossTeamName(t){ return t==='our' ? ourTeamName : oppTeamName; }
@@ -7634,7 +7635,7 @@
       + (ftype.length ? butterflyHTML('블로킹 범실 유형', ftype.map(r=>({label:r.label, our:{s:r.our.f,f:0}, opp:{s:r.opp.f,f:0}})), {single:true}) : '')
       + (cnt.length ? butterflyHTML('블로킹 득점 인원', cnt.map(r=>({label:r.label, our:{s:r.our.s,f:0}, opp:{s:r.opp.s,f:0}})), {single:true}) : '');
   }
-  const TOSS_ABBR = {'레프트':'레','라이트':'라','A':'A','B':'B','백A':'bA','앞차':'앞','백차':'백','중앙 후위(파이프)':'파','세터 2구':'2구'};
+  const TOSS_ABBR = {'레프트':'레','라이트':'라','A':'A','B':'B','백A':'bA','앞차':'앞','백차':'백','중앙 후위(파이프)':'파','3구처리':'3구','세터 2구':'2구'};
   function tossDetailHTML(){
     const scope = recordsInScope().slice().sort((a,b)=>((a.set||1)-(b.set||1)) || (a.time-b.time));
     const withT = scope.filter(r=>r.tosses && r.tosses.length);
@@ -7642,6 +7643,7 @@
     // 1) 토스 방향 비교(양 팀)
     const freq = {}; withT.forEach(r=>r.tosses.forEach(t=>{ const k=TOSS_SHORT[t.to]||t.to; freq[k]=freq[k]||{our:{s:0,f:0},opp:{s:0,f:0}}; freq[k][t.team].s++; }));
     const order = TOSS_TARGETS.map(t=>TOSS_SHORT[t]||t);
+    Object.keys(freq).forEach(k=>{ if(!order.includes(k)) order.push(k); }); // 예전 파이프 토스도 빠지지 않게
     const fRows = order.filter(k=>freq[k]).map(k=>({label:k, our:freq[k].our, opp:freq[k].opp}));
     // 2) 점수판 × 1포인트당 토스: 경기 기록지처럼 점수를 낸 팀 줄에 그 팀의 새 점수를 적고, 그 아래에 그 랠리의 토스를 1번째부터 아래로 적어요.
     const cols = []; const run = {};
