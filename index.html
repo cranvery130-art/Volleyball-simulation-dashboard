@@ -164,6 +164,8 @@
   .field-label::before{ content:''; flex:none; width:3px; height:13px; border-radius:2px; background:var(--accent); }
   .field-label .field-note{ font-weight:400; font-size:11.5px; }
   select{ width:100%; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); font-size:13.5px; font-family:inherit; cursor:pointer; }
+  .preset-load-actions{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; margin-top:6px; }
+  .preset-load-actions .btn{ width:100%; padding:8px 4px; font-size:12.5px; white-space:nowrap; }
   select:focus, button:focus-visible, input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
   optgroup{ color:var(--text-dim); font-style:normal; }
   .field-note{ font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.5; }
@@ -2372,20 +2374,16 @@
       </div>
       <div class="fgroup" id="grpPresetLoad">
       <div class="fgroup-head"><span class="fg-ic">📂</span><span class="fg-title">저장된 대형 불러오기</span><span class="fg-sub">고르면 바로 코트에 불러와요</span></div>
-      <div style="display:flex; align-items:flex-end; gap:8px; margin-top:0;">
-        <div style="flex:1;">
-          <div style="display:flex; align-items:center; gap:6px;">
-            <select id="presetLoadSelect" style="flex:1;">
-              <option value="">불러올 대형 선택...</option>
-            </select>
-            <button class="btn" id="btnPresetRename" title="선택한 대형 이름 바꾸기" style="flex:none; padding:9px 10px;">✏️</button>
-            <button class="btn" id="btnPresetDeleteFromLoad" title="선택한 대형 삭제" style="flex:none; padding:9px 10px;">🗑️</button>
-            <button class="btn" id="btnPresetCopyFolder" title="선택한 대형이 든 폴더를 통째로 복사" style="flex:none; padding:9px 10px;">📁</button>
-          </div>
-        </div>
-        <button class="btn" id="btnPresetSearchToggle" title="폴더 검색" style="flex:none;">🔍 찾기</button>
+      <select id="presetLoadSelect" style="width:100%; margin-top:0;">
+        <option value="">불러올 대형 선택...</option>
+      </select>
+      <div class="preset-load-actions">
+        <button class="btn" id="btnPresetRename" title="선택한 대형 이름 바꾸기">✏️ 수정</button>
+        <button class="btn" id="btnPresetDeleteFromLoad" title="선택한 대형 삭제">🗑️ 삭제</button>
+        <button class="btn" id="btnPresetCopyFolder" title="선택한 대형이 든 폴더를 통째로 복사">📁 폴더 복사</button>
+        <button class="btn" id="btnPresetSearchToggle" title="폴더 검색">🔍 찾기</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">목록에서 대형을 고르면 바로 불러와요. 방금 고른 대형은 ✏️로 이름을 바꾸거나 🗑️로 삭제하고, 📁로 그 대형이 든 폴더를 통째로 복사해요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때 좋아요). 🔍 찾기의 폴더 이름 옆 📄로도 복사할 수 있어요.</div>
+      <div class="field-note" style="margin-top:4px;">목록에서 대형을 고르면 바로 불러와요. 방금 고른 대형은 아래 <b>✏️ 수정</b>으로 이름을 바꾸거나 <b>🗑️ 삭제</b>로 지우고, <b>📁 폴더 복사</b>로 그 대형이 든 폴더를 통째로 복사해요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때 좋아요). 🔍 찾기의 폴더 이름 옆 📄로도 복사할 수 있어요.</div>
       <div id="presetSearchBox" style="display:none; margin-top:8px;">
         <input type="text" id="presetSearchInput" class="login-input" placeholder="폴더 이름으로 검색 (예: 위드나인)" style="margin-top:0;">
         <div class="preset-list" id="presetList" style="margin-top:10px;"></div>
@@ -5686,7 +5684,7 @@
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'불러와서 고쳐요',
-        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(📁로 그 폴더를 통째로 복사해 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
+        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(목록 아래 <b>📁 폴더 복사</b>로 그 폴더를 통째로 복사해 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
         scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
