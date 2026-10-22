@@ -2664,7 +2664,7 @@
               <dl>
                 <dt>⚔️ 공격</dt><dd>공격 위치(레프트·A·백A …)별 득점·범실, 공격 방식별 득점·범실, 그리고 <b>강타·빈 곳 / 가볍게 볼처리 / 강타·사람 쪽</b> 점수의 팀별 비율이에요. 상대의 빈 곳 강타·가볍게 볼처리 점수가 많으면 수비 빈자리를, 사람 쪽 강타 점수가 많으면 수비 자세·위치를 먼저 점검해요. 강타를 둘로 나누기 전에 남긴 기록은 "강타 (구분 전 기록)"으로 따로 모여요.</dd>
                 <dt>🧱 블로킹</dt><dd>블로킹 위치별 득점·범실, 공이 손에 맞은 관련 선수별 득점·범실, 블로킹 범실 유형, 블로킹 득점 인원이에요.</dd>
-                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. 원이 크고 진할수록 많이 일어난 곳이고 숫자가 횟수예요. 원 옆에는 그 자리에서 가장 많이 나온 선수 이름(이름이 없으면 번호와 포지션)을 적고, 여러 명이면 "외 N"을 붙여요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 아래 표는 어떤 대형 기준으로 놓였는지 대형별로 나눠 보여줘요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
+                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. 원이 크고 진할수록 많이 일어난 곳이고 숫자가 횟수예요. 원 옆에는 그 자리에서 가장 많이 나온 선수 이름(이름이 없으면 번호와 포지션)을 적고, 여러 명이면 "외 N"을 붙여요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 세터가 토스 없이 바로 넘긴 <b>세터 2구</b>는 세터 자리(S)와 겹치지 않게 S 옆 네트 쪽에 짧은 점선으로 그려요. 아래 표는 어떤 대형 기준으로 놓였는지 대형별로 나눠 보여줘요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
                 <dt>🏐 토스</dt><dd>양 팀이 어디로 올렸는지(토스 방향)와 <b>점수판 × 1포인트당 토스 배분</b>이에요. 세로 한 줄이 1점이고, 윗부분 점수판에는 점수를 낸 팀 줄에 색이 채워지며 그 팀의 새 점수가 적혀요(경기 기록지와 같아요). 아랫부분에는 그 랠리에서 올라간 토스를 1번째부터 아래로 팀 색 칸에 적어요(2단은 점선 테두리). 연속 득점·실점 구간에서 어떤 토스가 이어졌는지 따라가 볼 수 있어요.</dd>
               </dl>
             </div>
@@ -7926,24 +7926,33 @@
         items.sort((a,b)=>b[1].n-a[1].n).forEach(([k, d])=>{
           const ordTop = Object.entries(d.ord).sort((a,b)=>b[1]-a[1])[0];
           const pos = TOSS_POS[d.raw];
-          const sp = pos ? formationSpot(team, pos, d.raw, team) : null;
+          let sp = pos ? formationSpot(team, pos, d.raw, team) : null;
+          // 세터 2구는 세터 자리와 같은 곳이라, S 옆 네트 쪽으로 조금 비켜 그려요
+          if(sp && pos==='SETTER'){
+            let dx = team==='our' ? 60 : -60; if(sp.x+dx > W-24 || sp.x+dx < 24) dx = -dx;
+            const y = team==='our' ? Math.max(398, sp.y-36) : Math.min(362, sp.y+36);
+            sp = {...sp, x:sp.x+dx, y};
+          }
           const share = Math.round(d.n/tot*100);
           rows.push(`<tr><td style="color:${col(team)};">${team==='our'?'🔵':'🔴'}</td><td><b>${dEsc(k)}</b>${sp?`<small>${dEsc(sp.folder)}${sp.scenLabel?' · '+dEsc(sp.scenLabel):''}</small>`:'<small>코트 자리 없음</small>'}</td><td>${d.n}회 (${share}%)</td><td>주로 ${ordTop[0]}번째</td><td>${d.last ? `${Math.round(d.lastWin/d.last*100)}% <small>(${d.lastWin}/${d.last})</small>` : '—'}</td></tr>`);
           if(!sp || !setter) return;
           const w = 2 + 9*d.n/max, op = 0.35 + 0.55*d.n/max;
           const mx = (setter.x+sp.x)/2 + (team==='our'?-1:1)*(sp.y===setter.y?0:18), my = (setter.y+sp.y)/2 + (team==='our'?28:-28);
           if(pos==='SETTER'){
-            svgInner += `<circle cx="${sp.x}" cy="${sp.y}" r="${16+8*d.n/max}" fill="none" stroke="${col(team)}" stroke-width="${w/2}" stroke-dasharray="4 3" opacity="${op}"/>`;
+            // 짧은 점선 = 토스 없이 세터가 바로 넘긴 공, 횟수는 동그라미 바깥쪽에 적어요
+            const side = sp.x > setter.x ? 1 : -1;
+            svgInner += `<line x1="${setter.x}" y1="${setter.y}" x2="${sp.x}" y2="${sp.y}" stroke="${col(team)}" stroke-width="${w.toFixed(1)}" stroke-dasharray="5 4" stroke-linecap="round" opacity="${op.toFixed(2)}"><title>${dEsc(k)} ${d.n}회 · 주로 ${ordTop[0]}번째</title></line>`;
+            svgInner += `<text x="${sp.x+side*20}" y="${sp.y+5}" text-anchor="${side>0?'start':'end'}" class="court-an-lbl" fill="${col(team)}">${d.n}</text>`;
           } else {
             svgInner += `<path d="M${setter.x},${setter.y} Q${mx},${my} ${sp.x},${sp.y}" fill="none" stroke="${col(team)}" stroke-width="${w.toFixed(1)}" stroke-linecap="round" opacity="${op.toFixed(2)}"><title>${dEsc(k)} ${d.n}회 · 주로 ${ordTop[0]}번째</title></path>`;
+            svgInner += `<text x="${mx}" y="${my+4}" text-anchor="middle" class="court-an-lbl" fill="${col(team)}">${d.n}</text>`;
           }
           svgInner += `<circle cx="${sp.x}" cy="${sp.y}" r="13" fill="var(--panel)" stroke="${col(team)}" stroke-width="2.5"/><text x="${sp.x}" y="${sp.y+4.5}" text-anchor="middle" class="court-an-num">${ordTop[0]}</text><text x="${sp.x}" y="${sp.y+(team==='our'?32:-21)}" text-anchor="middle" class="court-an-who">${dEsc(k)}</text>`;
-          svgInner += `<text x="${mx}" y="${my+4}" text-anchor="middle" class="court-an-lbl" fill="${col(team)}">${d.n}</text>`;
         });
         if(setter) svgInner += `<rect x="${setter.x-11}" y="${setter.y-11}" width="22" height="22" rx="5" fill="${col(team)}"/><text x="${setter.x}" y="${setter.y+4.5}" text-anchor="middle" class="court-an-num" fill="#fff">S</text><text x="${setter.x}" y="${setter.y+(team==='our'?30:-19)}" text-anchor="middle" class="court-an-who">세터</text>`;
       });
       table = rows.length ? `<table class="court-an-table"><thead><tr><th></th><th>보낸 곳 · 대형</th><th>횟수</th><th>순서</th><th>끝 토스 득점률</th></tr></thead><tbody>${rows.join('')}</tbody></table>
-        <div class="field-note" style="margin-top:4px;">선이 굵을수록 많이 올린 곳이에요. 네모 S는 세터 자리, 동그라미 번호는 랠리에서 주로 몇 번째 토스였는지(옆 글자는 보낸 곳), 선 가운데 숫자는 횟수예요. 끝 토스 득점률은 그 팀의 마지막 토스가 그곳으로 갔을 때 그 팀이 점수를 낸 비율이에요.</div>` : '';
+        <div class="field-note" style="margin-top:4px;">선이 굵을수록 많이 올린 곳이에요. 네모 S는 세터 자리, 동그라미 번호는 랠리에서 주로 몇 번째 토스였는지(옆 글자는 보낸 곳), 선 가운데 숫자는 횟수예요. 세터 2구는 S 바로 옆 네트 쪽에 짧은 점선으로 따로 그려요. 끝 토스 득점률은 그 팀의 마지막 토스가 그곳으로 갔을 때 그 팀이 점수를 낸 비율이에요.</div>` : '';
     } else {
       const pts = [];
       // 그 자리에 선 선수: 이름이 있으면 이름, 없으면 번호와 포지션
