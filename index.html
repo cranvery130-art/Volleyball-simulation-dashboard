@@ -775,6 +775,7 @@
   .active-folder-text{ flex:1 1 200px; font-size:12.5px; color:var(--text-dim); line-height:1.5; }
   .active-folder-text b{ color:var(--text); }
   .active-folder-text small{ font-size:11.5px; color:var(--muted); }
+  .active-folder-text .save-warn{ margin-top:4px; font-size:12px; color:#b4471f; font-weight:600; }
   .active-folder-bar .btn{ flex:none; white-space:nowrap; }
   .qr-optional{ padding:8px 10px; border:1px dashed var(--border-2); border-radius:10px; }
   .qr-opt-tag{ font-size:10.5px; font-weight:700; color:var(--muted); border:1px solid var(--border-2); border-radius:999px; padding:0 6px; margin-left:2px; }
@@ -2529,7 +2530,7 @@
         <div class="orphan-text" id="orphanText"></div>
         <button class="btn primary" id="btnSaveOrphan" type="button">📁 폴더에 저장</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·경기 정보(부·팀 이름·명단)·그래프·코치 의견으로 화면이 바뀌고(부를 안 정한 예전 폴더는 📋 경기 정보가 펼쳐져서 바로 고를 수 있어요), 이후 기록은 그 폴더에 자동 저장돼요. ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 링크(받는 사람은 비밀번호 없이 바로 열어 보지만, 경기 분석만 보이고 방에는 들어갈 수 없어요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 🔄 새 링크로 바꾸기·🚫 링크 끄기를 하면 모든 폴더의 예전 링크가 함께 끊겨요(개설자·수정 권한 구성원만 할 수 있어요).</div>
+      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·경기 정보(부·팀 이름·명단)·그래프·코치 의견으로 화면이 바뀌고(부를 안 정한 예전 폴더는 📋 경기 정보가 펼쳐져서 바로 고를 수 있어요), 이후 기록은 그 폴더에 자동 저장돼요. 고를 때마다 서버의 최신 내용을 받아 와서, 휴대폰·PC를 함께 써도 다른 기기에서 저장한 폴더와 기록이 그대로 불러와져요(명단이 없는 예전 폴더는 명단이 비어 있어요). ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 링크(받는 사람은 비밀번호 없이 바로 열어 보지만, 경기 분석만 보이고 방에는 들어갈 수 없어요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 🔄 새 링크로 바꾸기·🚫 링크 끄기를 하면 모든 폴더의 예전 링크가 함께 끊겨요(개설자·수정 권한 구성원만 할 수 있어요).</div>
       <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
         <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
         <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
@@ -5209,6 +5210,12 @@
   async function fetchRoomData(){
     return (await Store.readData(roomCode)) || {};
   }
+  // 경기 영상 분석에서 폴더를 고를 때 서버의 최신 폴더를 받아 와요(다른 기기에서 고친 내용이 있으면 그걸 불러와요).
+  window.fetchServerVideoState = async function(){
+    if(!roomCode || window.__guestShareView) return null;
+    const d = await fetchRoomData();
+    return (d.state && d.state.videoAnalysis) || null;
+  };
 
   // ---------- auto-save: any meaningful edit to room data gets persisted automatically ----------
   // Without this, "저장" on a preset (or any other edit) only changed things in this tab's memory —
@@ -5230,13 +5237,17 @@
     pendingActionDescription = '대형을 수정했어요'; // reset to the generic default for the next unlabeled save
     try{
       const data = await fetchRoomData();
+      // 다른 기기(휴대폰·PC)에서 그사이 저장한 경기 폴더를 먼저 합쳐요. 안 그러면 이 화면의 오래된 폴더 목록이 서버를 덮어써서 그 폴더가 사라지거나 옛 내용으로 돌아가요.
+      if(window.mergeServerVideoFolders && data.state) window.mergeServerVideoFolders(data.state.videoAnalysis);
       data.state = serializeRoomState();
       await Store.writeData(roomCode, data);
       syncFolderShare();
       if(statusEl) statusEl.textContent = '✓ 자동 저장됨 (' + new Date().toLocaleTimeString('ko-KR') + ')';
+      if(window.onRoomSaveResult) window.onRoomSaveResult(true);
       logActivity(actionForThisSave);
     }catch(err){
       if(statusEl) statusEl.textContent = '자동 저장 실패: ' + errText(err);
+      if(window.onRoomSaveResult) window.onRoomSaveResult(false, errText(err));
     }
   }
 
@@ -8265,6 +8276,50 @@
   let lastPickedMatchFolder = null;
   let lastPickedMatchFolderIdx = null;
   let readOnlyFolderView = false;
+  // 지우거나 이름을 바꾼 폴더 이름을 남겨 둬요. 다른 기기의 오래된 화면이 자동 저장할 때 그 폴더를 되살리지 않게 해요.
+  let deletedFolders = []; // [{name, at}]
+  function markFolderGone(name){
+    if(!name) return;
+    deletedFolders = deletedFolders.filter(d=>d.name!==name).concat({name, at:new Date().toISOString()}).slice(-100);
+  }
+  // 서버에 저장된 폴더를 이 화면의 폴더 목록에 합쳐요. 이 기기에 없는 폴더는 더하고, 다른 기기에서 더 나중에 고친 폴더는 그 내용으로 바꿔요.
+  // 지금 화면에 열어 둔 폴더는 이 기기에서 고치는 중이라 그대로 둬요.
+  function mergeServerFolders(svs){
+    if(!svs || !Array.isArray(svs.matchFolders) || readOnlyFolderView) return false;
+    let changed = false;
+    (Array.isArray(svs.deletedFolders) ? svs.deletedFolders : []).forEach(d=>{
+      if(!d || !d.name) return;
+      const cur = deletedFolders.find(x=>x.name===d.name);
+      if(!cur) deletedFolders.push({name:d.name, at:d.at||''}); else if((d.at||'') > cur.at) cur.at = d.at;
+    });
+    const active = (lastPickedMatchFolderIdx!==null && matchFolders[lastPickedMatchFolderIdx]) || null;
+    const goneAt = name => { const d = deletedFolders.find(x=>x.name===name); return d ? d.at : ''; };
+    for(let i=matchFolders.length-1; i>=0; i--){
+      const f = matchFolders[i], at = goneAt(f.name);
+      if(f!==active && at && (f.savedAt||'') < at){ matchFolders.splice(i,1); changed = true; }
+    }
+    svs.matchFolders.forEach(sf=>{
+      if(!sf || !sf.name) return;
+      const at = goneAt(sf.name);
+      if(at && (sf.savedAt||'') < at) return;
+      const i = matchFolders.findIndex(f=>f.name===sf.name);
+      if(i===-1){ matchFolders.push(sf); changed = true; return; }
+      if(matchFolders[i]===active) return;
+      if((sf.savedAt||'') > (matchFolders[i].savedAt||'')){ matchFolders[i] = sf; changed = true; }
+    });
+    if(changed){
+      if(active){ lastPickedMatchFolderIdx = matchFolders.indexOf(active); lastPickedMatchFolder = active; }
+      renderMatchFolderSelect();
+    }
+    return changed;
+  }
+  window.mergeServerVideoFolders = mergeServerFolders;
+  // 자동 저장이 실패하면 경기 영상 분석 화면에도 알려요(대형 카드의 저장 표시만으로는 놓치기 쉬워요).
+  let saveWarn = '';
+  window.onRoomSaveResult = function(ok, msg){
+    saveWarn = ok ? '' : (msg || '알 수 없는 문제');
+    if(typeof updateOverwriteButton==='function') updateOverwriteButton();
+  };
   // 새 폴더를 만들거나 불러오면 그 폴더가 "활성 폴더"가 되고, 이후의 모든 기록은
   // 수동으로 "현재 폴더에 덮어쓰기"를 누르지 않아도 그 폴더에 자동으로 함께 저장돼요.
   function syncActiveFolderRecords(){
@@ -8352,6 +8407,11 @@
       hint.innerHTML = '📂 지금 화면: <b></b> 폴더 · 기록 <span></span>줄<br><small>새로 남기는 기록은 이 폴더에 자동으로 저장돼요.</small>';
       hint.querySelector('b').textContent = f.name;
       hint.querySelector('span').textContent = (f.records||[]).length;
+      if(saveWarn){
+        const w = document.createElement('div'); w.className = 'save-warn';
+        w.textContent = `⚠️ 서버에 자동 저장하지 못했어요(${saveWarn}). 이 기기 화면에는 남아 있지만 다른 기기나 다시 열 때는 안 보일 수 있어요. 인터넷 연결을 확인해 주세요.`;
+        hint.appendChild(w);
+      }
     }
   }
   function loadMatchFolder(f, idx){
@@ -8365,7 +8425,8 @@
     applyTeamNames(f.oppTeamName, f.ourTeamName);
     applyDivision(f.division||'');
     applyMatchDate(f.date||'');
-    if(f.videoRoster || f.oppRoster) applyFolderRoster(f.videoRoster, f.oppRoster);
+    // 명단도 그 폴더 것으로 바꿔요. 명단이 없는 폴더면 비워요(앞 경기 명단이 남으면 이 폴더에 잘못 저장돼요).
+    applyFolderRoster(f.videoRoster || {}, f.oppRoster || {});
     applyFormChoice(f.formOur, f.formOpp);
     // 부나 날짜를 아직 안 정한 폴더면 경기 정보를 펼쳐서 바로 정할 수 있게 해요.
     const mib = document.getElementById('matchInfoBox');
@@ -8802,11 +8863,22 @@
   document.getElementById('matchFolderSelect').addEventListener('change', e=>{
     const idx = e.target.value;
     if(idx===''){ lastPickedMatchFolderIdx=null; lastPickedMatchFolder=null; updateOverwriteButton(); return; }
-    const f = matchFolders[Number(idx)];
-    if(f){
-      loadMatchFolder(f, Number(idx));
+    const picked = matchFolders[Number(idx)];
+    if(!picked) return;
+    const sel = e.target;
+    const finish = ()=>{
+      // 서버 내용을 합치는 동안 목록 순서가 바뀔 수 있어서 이름으로 다시 찾아요.
+      const i = matchFolders.findIndex(f=>f.name===picked.name);
+      if(i===-1){ alert(`"${picked.name}" 폴더는 다른 기기에서 지워졌거나 이름이 바뀌었어요. 목록을 다시 확인해 주세요.`); renderMatchFolderSelect(); return; }
+      loadMatchFolder(matchFolders[i], i);
+      sel.value = String(i);
       if(window.scheduleAutoSave) window.scheduleAutoSave();
-    }
+    };
+    if(readOnlyFolderView || !window.fetchServerVideoState){ finish(); return; }
+    // 다른 기기에서 그사이 고친 내용이 있으면 그 최신 내용으로 불러와요(못 받아 오면 이 기기에 있는 내용으로 불러와요).
+    sel.disabled = true;
+    window.fetchServerVideoState().then(svs=>{ if(svs) mergeServerFolders(svs); }).catch(err=>console.warn('최신 폴더 확인 실패', err))
+      .finally(()=>{ sel.disabled = false; finish(); });
   });
   document.getElementById('btnCopyMatchFolder').addEventListener('click', ()=>{
     const i = matchFolders.indexOf(lastPickedMatchFolder);
@@ -8833,7 +8905,9 @@
     const newName = (prompt('폴더의 새 이름을 입력해주세요.', oldName) || '').trim().slice(0,40);
     if(!newName || newName===oldName) return;
     if(matchFolders.some((f,k)=>k!==i && f.name===newName)){ alert(`"${newName}" 폴더가 이미 있어요. 다른 이름을 써주세요.`); return; }
+    markFolderGone(oldName);
     lastPickedMatchFolder.name = newName;
+    lastPickedMatchFolder.savedAt = new Date().toISOString();
     renderMatchFolderSelect();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
@@ -8846,6 +8920,7 @@
     if(!confirm(`"${lastPickedMatchFolder.name}" 폴더를 삭제할까요?\n이 폴더의 기록·그래프·종합분석·코치 의견이 모두 함께 지워져요.`)) return;
     const deletedName = lastPickedMatchFolder.name;
     matchFolders.splice(i,1);
+    markFolderGone(deletedName);
     lastPickedMatchFolder = null;
     lastPickedMatchFolderIdx = null;
     // the screen was showing this folder's records — clear them too so nothing of it lingers
@@ -9087,6 +9162,7 @@
     currentVideoName,
     coachNotes: document.getElementById('coachNotes').value,
     matchFolders,
+    deletedFolders,
     videoRoster,
     oppRoster,
     formOur, formOpp,
@@ -9102,6 +9178,7 @@
     currentVideoName = vs.currentVideoName || '';
     document.getElementById('coachNotes').value = vs.coachNotes || '';
     matchFolders = vs.matchFolders || [];
+    deletedFolders = Array.isArray(vs.deletedFolders) ? vs.deletedFolders.filter(d=>d && d.name) : [];
     // 이전 화면(다른 코드 등)의 폴더 번호가 남아 있으면 엉뚱한 폴더에 기록이 덮어써질 수 있어서, 저장된 활성 폴더 이름으로 다시 찾아요
     lastPickedMatchFolderIdx = null; lastPickedMatchFolder = null;
     const activeIdx = vs.activeFolderName ? matchFolders.findIndex(f=>f.name===vs.activeFolderName) : -1;
@@ -9112,15 +9189,13 @@
       currentVideoName = matchFolders[activeIdx].videoName||'';
       const af = matchFolders[activeIdx];
       vs = Object.assign({}, vs, {oppTeamName: af.oppTeamName||'', ourTeamName: af.ourTeamName||'', division: af.division||'', date: af.date||''});
-      if(af.videoRoster) vs.videoRoster = af.videoRoster;
-      if(af.oppRoster) vs.oppRoster = af.oppRoster;
+      vs.videoRoster = af.videoRoster || {};
+      vs.oppRoster = af.oppRoster || {};
       vs = Object.assign({}, vs, {formOur: af.formOur||'', formOpp: af.formOpp||''});
     }
     fixNoVideoOrder();
     renderMatchFolderSelect();
-    if(vs.videoRoster){
-      for(let i=1;i<=9;i++){ if(vs.videoRoster[i]) videoRoster[i] = {position: vs.videoRoster[i].position||'', name: vs.videoRoster[i].name||''}; }
-    }
+    if(vs.videoRoster) videoRoster = copyRosterOf(vs.videoRoster);
     if(vs.oppRoster) oppRoster = copyRosterOf(vs.oppRoster);
     applyFormChoice(vs.formOur, vs.formOpp);
     oppTeamName = vs.oppTeamName || '상대팀';
