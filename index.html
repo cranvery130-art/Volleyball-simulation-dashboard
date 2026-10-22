@@ -2051,7 +2051,7 @@
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
-          <li>득실 위치는 "자세히 기록" 안의 <b>📍 득실 위치</b>를 펼쳐서 플레이한 팀 코트(아래)와 네트 건너편 상대 코트(위) 중에서 고를 수 있어요. 상대 코트를 고르면 기록에 "상대 코트 · 왼쪽 앞"처럼 남아요.</li>
+          <li>득실 위치는 따로 고르지 않아요. "자세히 기록"에서 <b>🔵 우리팀 선수·🔴 상대팀 선수</b>를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요. 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
           <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기 정보(남자부·여자부, 우리팀·상대팀 이름, 포지션 명단)로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 새 경기 카드에 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 눌러요. 폴더 목록과 📊 팀 누적 분석은 경기 날짜 순서로 놓여요. 폴더 없이 남긴 기록이 있으면 새 폴더에 담을지 물어봐요.</li>
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
@@ -2553,6 +2553,14 @@
                 <input type="text" id="ourTeamNameInput" class="login-input" style="margin-top:0; flex:1;" placeholder="우리팀">
               </div>
             </div>
+            <div class="quick-record-row">
+              <div class="qr-label">위치 판단 대형</div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <label style="flex:1; min-width:150px;"><span class="field-note" style="margin:0 0 3px; display:block;">🔵 우리팀</span><select id="formOurSelect" style="width:100%;"></select></label>
+                <label style="flex:1; min-width:150px;"><span class="field-note" style="margin:0 0 3px; display:block;">🔴 상대팀</span><select id="formOppSelect" style="width:100%;"></select></label>
+              </div>
+              <div class="field-note" style="margin-top:4px;">기록에서 고른 선수가 코트 어디에 있었는지는 전술 시뮬레이션에 저장된 대형으로 정해요. <b>자동</b>이면 팀 이름이 들어간 대형 폴더(예: "상대팀 · 한빛")를 찾아 상황(레프트·A·백차 등)에 맞는 공격 상황 대형을 써요. 그 팀 대형이 없으면 비슷한 팀의 폴더를 골라 기준으로 삼거나 <b>기본 대형</b>을 골라요. "상대팀 ·"으로 시작하는 폴더는 위쪽 코트 팀의 대형으로 읽어요.</div>
+            </div>
         <details class="roster-fold" id="rosterFold">
         <summary><span class="field-label" style="margin:0;">🔵 우리팀 포지션 명단</span><span class="rf-count" id="rosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
         <div class="field-note" style="margin-top:6px; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 "자세히 기록"의 <b>🔵 우리팀 선수</b>에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 경기 폴더마다 따로 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
@@ -2883,7 +2891,7 @@
               </div>
               </details>
             </div>
-            <div id="noZoneNote" class="field-note" style="margin-top:0; display:none;">이 상황은 위치를 고르지 않아도 돼요. 위치 칸은 공격(양 코트 3×3)과 블로킹(위치 버튼)을 고를 때만 나타나요.</div>
+            <div id="noZoneNote" class="field-note auto-spot-note" style="margin-top:0;">📍 위치는 따로 고르지 않아요. 고른 선수의 포지션과 대형으로 자동으로 정해요.</div>
               </div>
             </details>
             <div style="display:flex; gap:8px;">
@@ -5745,20 +5753,20 @@
           <div class="mk-toast k-toast">🎁 상대 범실 → 우리 +1</div>`,
         script:[{click:'.k-b1', then:el=>el.classList.add('on')}, {wait:500}, {click:'.k-b2', then:(el,sc)=>{ sc.querySelector('.k-b1').classList.remove('on'); el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1600} ] },
       { title:'상황 버튼을 누르고, 필요하면 자세히',
-        text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·관련 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러, 양 코트 위치는 그 안의 <b>📍 득실 위치</b>를 펼쳐서 선택으로 남겨요.',
+        text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·우리·상대 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러 남겨요. 코트 위치는 고른 선수의 포지션과 저장된 대형으로 자동으로 정해져요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:34px;">공격</span><span class="mk-btn k-l">레프트</span><span class="mk-btn">라이트</span><span class="mk-btn">A</span><span class="mk-btn">B</span><span class="mk-btn">백A</span><span class="mk-btn">세터 2구</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:34px;">서브</span><span class="mk-btn">서브</span><span class="mk-btn">리시브</span><span class="mk-btn">블로킹</span><span class="mk-btn">파울</span></div>
-          <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">공격 방식·양 코트 위치·우리·상대 선수 (선택)</span></div>
+          <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">공격 방식·우리·상대 선수 (선택)</span></div>
           <div class="mk-row k-detail" style="display:none;"><span class="mk-lbl" style="width:34px;">방식</span><span class="mk-btn">강타·빈 곳</span><span class="mk-btn">강타·사람 쪽</span><span class="mk-btn">가볍게 볼처리</span><span class="mk-btn k-feint">페인트</span><span class="mk-btn">터치아웃</span><span class="mk-btn">네트인</span><span class="mk-btn">네트싸움</span><span class="mk-btn">삑사리</span></div></div>`,
         script:[{click:'.k-l', then:el=>el.classList.add('on')}, {click:'.k-more', then:(el,sc)=>{ sc.querySelector('.k-detail').style.display='flex'; }}, {click:'.k-feint', then:el=>el.classList.add('on')}, {wait:1500} ] },
       { title:'블로킹을 기록해요',
-        text:'상황 버튼에서 <b>블로킹</b>을 누르고 <b>➕ 자세히 기록</b>을 열면 버튼으로 바로 골라요: 범실이면 <b>빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지(득점이면 1인~4인 중 몇 명이 막았는지), 공이 손에 맞은 <b>관련 선수</b>(우리팀·상대팀 칸이 따로 있어요), 블로킹 위치. 블로킹 분석에 누구 손에서 났는지 위치별로 모여요.',
+        text:'상황 버튼에서 <b>블로킹</b>을 누르고 <b>➕ 자세히 기록</b>을 열면 버튼으로 바로 골라요: 범실이면 <b>빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지(득점이면 1인~4인 중 몇 명이 막았는지), 공이 손에 맞은 <b>관련 선수</b>(우리팀·상대팀 칸이 따로 있어요). 블로킹 위치는 고른 선수의 포지션과 대형으로 자동으로 정해져서 블로킹 분석에 누구 손에서 났는지 모여요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:64px;">결과</span><span class="mk-btn">득점</span><span class="mk-btn k-fault">범실</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">세부 상황</span><span class="mk-btn on">블로킹 ▾</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">범실 유형</span><span class="mk-btn k-type">빈틈</span><span class="mk-btn">자리잡기</span><span class="mk-btn">네트터치</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">🔵 우리 선수</span><span class="mk-btn">1번</span><span class="mk-btn k-pl">3번</span><span class="mk-btn">4번</span></div>
-          <div class="mk-row"><span class="mk-lbl" style="width:64px;">블로킹 위치</span><span class="mk-btn k-zone">레프트 앞</span><span class="mk-btn">A 앞</span><span class="mk-btn">라이트 앞</span></div></div>
-          <div class="mk-toast k-toast">우리팀 · 범실 · 블로킹(빈틈) · 3번 · 레프트 앞</div>`,
+          <div class="mk-row"><span class="mk-lbl" style="width:64px;">🔴 상대 선수</span><span class="mk-btn">1번</span><span class="mk-btn k-zone">5번</span><span class="mk-btn">7번</span></div></div>
+          <div class="mk-toast k-toast">우리팀 · 범실 · 블로킹(빈틈) · 3번 · 📍 대형 위치 자동</div>`,
         script:[ {click:'.k-fault', then:el=>el.classList.add('on')}, {click:'.k-type', then:el=>el.classList.add('on')},
                  {click:'.k-pl', then:el=>el.classList.add('on')},
                  {click:'.k-zone', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1700} ] },
@@ -6129,6 +6137,13 @@
     }
   })();
 
+  // 경기 영상 분석(아래 스크립트)이 저장된 대형으로 선수 위치를 정할 수 있게 대형 자료를 열어 둬요.
+  window.__tacticsFormations = {
+    presets: () => presets, scenLabel: SCEN_LABEL,
+    base: ORIGINAL_BASE, oppBase: ORIGINAL_OPP_BASE,
+    pos: DEFAULT_POSITIONS, oppPos: DEFAULT_OPP_POSITIONS
+  };
+
 })();
 </script>
 
@@ -6307,6 +6322,110 @@
   const playerSnap = () => selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null;
   const oppPlayerSnap = () => selectedOppPlayer ? {id:selectedOppPlayer, label:oppRosterLabel(selectedOppPlayer)} : null;
 
+  // ---------- 대형으로 선수 위치 정하기 ----------
+  // 팀 이름이 들어간 전술 시뮬레이션 대형 폴더를 찾고(또는 경기 정보에서 고른 폴더), 기록 상황에 맞는 공격 상황 대형에서
+  // 그 선수 포지션의 자리를 꺼내요. 분석 코트는 아래가 우리팀, 위가 상대팀이에요(가로 0~400, 세로 0~760, 네트 380).
+  const OPT_SCEN = {'레프트':'L','라이트':'R','A':'C','B':'C','백A':'BACKA','앞차':'TIMEDIFF','백차':'BACKSLIDE'};
+  const FORM_DEFAULT = '__default';
+  let formOur = '', formOpp = ''; // '' 자동 · FORM_DEFAULT 기본 대형 · 그 밖은 대형 폴더 이름
+  const formNorm = t => String(t||'').replace(/\s+/g,'').toLowerCase();
+  function formFolders(){
+    const T = window.__tacticsFormations; if(!T) return [];
+    return [...new Set(T.presets().map(p=>p.folder||'').filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+  }
+  function autoFormFolder(teamName, isDefaultName){
+    const k = formNorm(teamName); if(!k || isDefaultName) return null;
+    return formFolders().find(f=>formNorm(f).includes(k)) || null;
+  }
+  // side: 'our'|'opp' → 쓸 대형 폴더(null이면 기본 대형)
+  function formFolderFor(side, ctx){
+    ctx = ctx || {};
+    const pick = side==='our' ? (ctx.formOur ?? formOur) : (ctx.formOpp ?? formOpp);
+    if(pick===FORM_DEFAULT) return null;
+    if(pick && formFolders().includes(pick)) return pick;
+    const name = side==='our' ? (ctx.ourTeamName ?? ourTeamName) : (ctx.oppTeamName ?? oppTeamName);
+    return autoFormFolder(name, name===(side==='our'?'우리팀':'상대팀') || !String(name||'').trim());
+  }
+  // 선수 자리: side 팀의 posCode 선수가, attackTeam 팀이 option으로 공격한 장면에서 서 있던 곳
+  function formationSpot(side, posCode, option, attackTeam, ctx){
+    const T = window.__tacticsFormations; if(!T || !posCode) return null;
+    const folder = formFolderFor(side, ctx);
+    const top = !!folder && /^\s*상대팀/.test(folder); // "상대팀 ·" 폴더는 위쪽(oppBase) 팀 대형이에요
+    const k = OPT_SCEN[option];
+    let scen = null, preset = null, exact = false;
+    if(folder){
+      const list = T.presets().filter(p=>(p.folder||'')===folder);
+      if(k){
+        const teamAttacks = attackTeam===side;
+        scen = (teamAttacks === !top) ? 'OUR_'+k : k; // 시뮬레이터에서 아래 팀이 공격하면 OUR_ 상황이에요
+        preset = list.find(p=>p.scenario===scen);
+      }
+      if(preset) exact = true;
+      else preset = list[0] || null; // 같은 상황 대형이 없으면 그 폴더의 첫 대형을 써요
+      if(preset && preset.scenario!==scen) scen = preset.scenario || null;
+    }
+    const dots = preset ? (top ? preset.oppBase : preset.base) : null;
+    const posMap = top ? T.oppPos : T.pos;
+    const id = Object.keys(posMap).find(i=>posMap[i]===posCode);
+    const raw = (dots && dots[id]) || (top ? T.oppBase : T.base)[id];
+    if(!raw) return null;
+    let [x, y] = raw;
+    const wantTop = side==='opp';
+    if(wantTop!==top){ x = 400 - x; y = 760 - y; } // 반대쪽 코트 대형이면 뒤집어서 맞춰요
+    return {x, y, folder: folder||'기본 대형', scen, exact, scenLabel: scen ? (T.scenLabel[scen]||'') : '', pos: posCode};
+  }
+  // 한 기록에 붙은 우리·상대 선수의 자리(팀 명단은 ctx로 바꿔 쓸 수 있어요: 저장된 다른 경기 폴더 분석용)
+  function recordSpots(rec, ctx){
+    ctx = ctx || {};
+    const e = (rec.entries||[])[0]; const n = e ? normEntry(e) : null; if(!n) return null;
+    const ro = ctx.videoRoster || videoRoster, oro = ctx.oppRoster || oppRoster;
+    const out = {main:n.main, team:n.team};
+    if(rec.player && ro[rec.player.id] && ro[rec.player.id].position) out.our = formationSpot('our', ro[rec.player.id].position, n.main, n.team, ctx);
+    if(rec.oppPlayer && oro[rec.oppPlayer.id] && oro[rec.oppPlayer.id].position) out.opp = formationSpot('opp', oro[rec.oppPlayer.id].position, n.main, n.team, ctx);
+    return (out.our || out.opp) ? out : null;
+  }
+  window.__recordSpots = recordSpots;
+  function formOptionsHTML(cur, side){
+    const name = side==='our' ? ourTeamName : oppTeamName;
+    const auto = autoFormFolder(name, name===(side==='our'?'우리팀':'상대팀'));
+    const fs = formFolders();
+    const opts = [['', `자동 — ${auto ? auto : '같은 이름 폴더 없음(기본 대형)'}`], ...fs.map(f=>[f, '📁 '+f]), [FORM_DEFAULT, '기본 대형']];
+    if(cur && cur!==FORM_DEFAULT && !fs.includes(cur)) opts.splice(1, 0, [cur, `📁 ${cur} (지금은 없음)`]);
+    return opts.map(([v,l])=>`<option value="${escChip(v)}"${v===cur?' selected':''}>${escChip(l)}</option>`).join('');
+  }
+  function renderFormSelects(){
+    const a = document.getElementById('formOurSelect'), b = document.getElementById('formOppSelect');
+    if(a) a.innerHTML = formOptionsHTML(formOur, 'our');
+    if(b) b.innerHTML = formOptionsHTML(formOpp, 'opp');
+  }
+  function applyFormChoice(our, opp){ formOur = our||''; formOpp = opp||''; renderFormSelects(); updateAutoSpotNote(); }
+  [['formOurSelect','our'],['formOppSelect','opp']].forEach(([id, side])=>{
+    const el = document.getElementById(id);
+    el.addEventListener('focus', renderFormSelects);
+    el.addEventListener('change', ()=>{
+      if(readOnlyFolderView) return;
+      if(side==='our') formOur = el.value; else formOpp = el.value;
+      updateAutoSpotNote();
+      if(window.scheduleAutoSave) window.scheduleAutoSave();
+    });
+  });
+  document.getElementById('matchInfoBox').addEventListener('toggle', renderFormSelects);
+  const POS_SHORT = c => (window.POS_LABEL[c]||c||'').replace(/\(.*\)/,'');
+  function updateAutoSpotNote(){
+    const el = document.getElementById('noZoneNote'); if(!el) return;
+    const opt = document.getElementById('qrOptionSelect').value;
+    let team = 'our'; try{ team = qrTeam; }catch(err){}
+    const parts = [];
+    [['our', selectedPlayer, videoRoster, '🔵'], ['opp', selectedOppPlayer, oppRoster, '🔴']].forEach(([side, id, ro, ic])=>{
+      if(!id) return;
+      const e = ro[id]; if(!e || !e.position){ parts.push(`${ic} ${id}번은 명단에 포지션이 없어서 위치를 정할 수 없어요`); return; }
+      const sp = formationSpot(side, e.position, opt, team);
+      parts.push(`${ic} ${escChip(e.name||id+'번')}(${POS_SHORT(e.position)}) — <b>${escChip(sp.folder)}</b>${sp.scenLabel?` · ${escChip(sp.scenLabel)}`:''}${sp.folder!=='기본 대형' && !sp.exact ? ' (같은 상황 대형이 없어 이 폴더의 첫 대형)' : ''}`);
+    });
+    el.innerHTML = parts.length ? `📍 위치는 대형으로 자동으로 정해요: ${parts.join(' / ')}` : '📍 위치는 따로 고르지 않아요. 우리·상대 선수를 고르면 그 선수의 포지션과 대형으로 자동으로 정해요.';
+  }
+  ['videoPlayerSelect','videoOppPlayerSelect'].forEach(id=>document.getElementById(id).addEventListener('change', ()=>updateAutoSpotNote()));
+
   let selectedSet = 1; // 1/2/3 — which set new records are tagged with
   document.querySelectorAll('#setSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -6419,7 +6538,7 @@
       const extras = [];
       if(typeof detailOptionsFor==='function' && detailOptionsFor(v, qrOutcome)) extras.push(v==='블로킹' ? (qrOutcome==='fault'?'범실 유형':'블로킹 인원') : v===FOUL_MAIN ? '파울 종류' : '공격 방식');
       extras.push('우리·상대 선수');
-      if(v==='블로킹') extras.push('블로킹 위치'); else if(NET_POSITION_OPTIONS.has(v)) extras.push('양 코트 위치');
+      extras.push('위치 자동');
       hint.textContent = extras.join('·') + ' (선택)';
     }
   }
@@ -6428,12 +6547,11 @@
     const zoneWrap = document.getElementById('zonePickerWrap');
     const nineWrap = document.getElementById('nineZoneWrap');
     const noteEl = document.getElementById('noZoneNote');
+    // 득실 위치는 직접 고르지 않고, 고른 선수의 포지션과 대형으로 자동으로 정해요(예전에 고른 위치는 기록에 그대로 남아요).
     zoneWrap.style.display = 'none';
     nineWrap.style.display = 'none';
-    noteEl.style.display = 'none';
-    if(opt===BLOCK_LOCATION_OPTION){ zoneWrap.style.display='block'; }
-    else if(NET_POSITION_OPTIONS.has(opt)){ nineWrap.style.display='block'; }
-    else { noteEl.style.display='block'; }
+    noteEl.style.display = 'block';
+    if(typeof updateAutoSpotNote==='function') updateAutoSpotNote();
   }
 
   // ---------- timestamped records ----------
@@ -6874,6 +6992,7 @@
   });
   // 결과 4버튼: 팀·결과 두 단계를 한 번에 골라요(내부적으로는 예전 팀/결과 값을 그대로 써요).
   function syncBucketGrid(){
+    if(typeof updateAutoSpotNote==='function') updateAutoSpotNote();
     document.querySelectorAll('#qrBucketGrid button').forEach(b=>b.classList.toggle('active', qrBucketPicked && b.dataset.team===qrTeam && b.dataset.outcome===qrOutcome));
     updateRecordReady();
   }
@@ -8026,6 +8145,7 @@
     f.date = matchDate;
     f.videoRoster = rosterCopy();
     f.oppRoster = oppRosterCopy();
+    f.formOur = formOur; f.formOpp = formOpp;
     f.savedAt = new Date().toISOString();
   }
   const _coreScheduleAutoSave = window.scheduleAutoSave;
@@ -8080,7 +8200,7 @@
       f.savedAt = new Date().toISOString();
       loadMatchFolder(f, idx);
     } else {
-      const nf = {name, savedAt:new Date().toISOString(), videoName:currentVideoName, records:copy, coachNotes:document.getElementById('coachNotes').value, oppTeamName, ourTeamName, division:matchDivision, date:matchDate||todayStr(), videoRoster:rosterCopy(), oppRoster:oppRosterCopy()};
+      const nf = {name, savedAt:new Date().toISOString(), videoName:currentVideoName, records:copy, coachNotes:document.getElementById('coachNotes').value, oppTeamName, ourTeamName, division:matchDivision, date:matchDate||todayStr(), videoRoster:rosterCopy(), oppRoster:oppRosterCopy(), formOur, formOpp};
       matchFolders.push(nf);
       loadMatchFolder(nf, matchFolders.length-1);
     }
@@ -8113,6 +8233,7 @@
     applyDivision(f.division||'');
     applyMatchDate(f.date||'');
     if(f.videoRoster || f.oppRoster) applyFolderRoster(f.videoRoster, f.oppRoster);
+    applyFormChoice(f.formOur, f.formOpp);
     // 부나 날짜를 아직 안 정한 폴더면 경기 정보를 펼쳐서 바로 정할 수 있게 해요.
     const mib = document.getElementById('matchInfoBox');
     if(mib && (!matchDivision || !matchDate) && !readOnlyFolderView) mib.open = true;
@@ -8422,7 +8543,7 @@
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
     ['qrRecordBtn','btnToss2nd','btnRecordMoment','momentMemo','btnImportCsv','btnSaveOrphan','btnQrMode','btnClearZone','btnClearNineZone',
      'videoPlayerSelect','videoOppPlayerSelect','qrOptionSelect','qrDetailSelect','qrUndoBtn','coachNotes','blockZoneSelect','btnTossUndo','btnTossClear',
-     'btnNewMatchFolder','matchSaveName','matchSaveDate','newOppNameInput','newOurNameInput','matchDateInput','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
+     'btnNewMatchFolder','formOurSelect','formOppSelect','matchSaveName','matchSaveDate','newOppNameInput','newOurNameInput','matchDateInput','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
     document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input, #oppRosterGrid select, #oppRosterGrid input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#recordList select, #recordList input').forEach(el=>el.disabled=on);
@@ -8489,7 +8610,7 @@
     applyTeamNames(document.getElementById('newOppNameInput').value, document.getElementById('newOurNameInput').value);
 
     const newFolder = {name, savedAt: new Date().toISOString(), videoName: adopt ? currentVideoName : '', records: adopt ? JSON.parse(JSON.stringify(records)) : [],
-      coachNotes: adopt ? document.getElementById('coachNotes').value : '', oppTeamName, ourTeamName, division:matchDivision, date:matchDate, videoRoster:rosterCopy(), oppRoster:oppRosterCopy()};
+      coachNotes: adopt ? document.getElementById('coachNotes').value : '', oppTeamName, ourTeamName, division:matchDivision, date:matchDate, videoRoster:rosterCopy(), oppRoster:oppRosterCopy(), formOur, formOpp};
     matchFolders.push(newFolder);
     lastPickedMatchFolder = newFolder;
     lastPickedMatchFolderIdx = matchFolders.length-1;
@@ -8835,6 +8956,7 @@
     matchFolders,
     videoRoster,
     oppRoster,
+    formOur, formOpp,
     oppTeamName,
     ourTeamName,
     division: matchDivision,
@@ -8859,6 +8981,7 @@
       vs = Object.assign({}, vs, {oppTeamName: af.oppTeamName||'', ourTeamName: af.ourTeamName||'', division: af.division||'', date: af.date||''});
       if(af.videoRoster) vs.videoRoster = af.videoRoster;
       if(af.oppRoster) vs.oppRoster = af.oppRoster;
+      vs = Object.assign({}, vs, {formOur: af.formOur||'', formOpp: af.formOpp||''});
     }
     fixNoVideoOrder();
     renderMatchFolderSelect();
@@ -8866,6 +8989,7 @@
       for(let i=1;i<=9;i++){ if(vs.videoRoster[i]) videoRoster[i] = {position: vs.videoRoster[i].position||'', name: vs.videoRoster[i].name||''}; }
     }
     if(vs.oppRoster) oppRoster = copyRosterOf(vs.oppRoster);
+    applyFormChoice(vs.formOur, vs.formOpp);
     oppTeamName = vs.oppTeamName || '상대팀';
     ourTeamName = vs.ourTeamName || '우리팀';
     applyDivision(vs.division||'');
