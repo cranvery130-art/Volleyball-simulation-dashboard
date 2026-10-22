@@ -229,10 +229,10 @@
   .pos-grid{ display:flex; flex-wrap:wrap; gap:6px; }
   .pos-item{ display:flex; align-items:center; gap:5px; background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:4px 6px; }
   .pos-item .num{ width:18px; height:18px; border-radius:50%; background:var(--own); color:var(--on-accent); font-family:var(--display); font-weight:800; font-size:11px; display:flex; align-items:center; justify-content:center; flex:none; }
-  #videoRosterGrid .pos-item{ flex-direction:column; align-items:stretch; gap:4px; width:120px; }
-  #videoRosterGrid .pos-item .row1{ display:flex; align-items:center; gap:5px; }
-  #videoRosterGrid .pos-item select{ flex:1; min-width:0; width:auto; font-size:10.5px; padding:4px 3px; }
-  #videoRosterGrid .pos-item input{ font-size:11px; padding:3px 5px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-family:inherit; width:100%; }
+  #videoRosterGrid .pos-item, #oppRosterGrid .pos-item{ flex-direction:column; align-items:stretch; gap:4px; width:120px; }
+  #videoRosterGrid .pos-item .row1, #oppRosterGrid .pos-item .row1{ display:flex; align-items:center; gap:5px; }
+  #videoRosterGrid .pos-item select, #oppRosterGrid .pos-item select{ flex:1; min-width:0; width:auto; font-size:10.5px; padding:4px 3px; }
+  #videoRosterGrid .pos-item input, #oppRosterGrid .pos-item input{ font-size:11px; padding:3px 5px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-family:inherit; width:100%; }
   .pos-item.opp .num{ background:var(--opp); }
   #posGrid .pos-item, #oppPosGrid .pos-item{ flex-direction:column; align-items:stretch; gap:4px; width:118px; }
   #posGrid .pos-item .row1, #oppPosGrid .pos-item .row1{ display:flex; align-items:center; gap:5px; }
@@ -695,9 +695,9 @@
     #themeSeg{ grid-row:3; grid-column:1 / -1; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
     #themeSeg button{ padding:9px 4px; font-size:12px; }
     /* 포지션 칸: 화면 폭을 3칸으로 고르게 */
-    #posGrid, #oppPosGrid, #videoRosterGrid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
-    #posGrid .pos-item, #oppPosGrid .pos-item, #videoRosterGrid .pos-item{ width:auto; min-width:0; padding:5px; }
-    #posGrid .pos-item select, #oppPosGrid .pos-item select, #videoRosterGrid .pos-item select{ min-width:0; width:100%; flex:1; padding:4px 2px; font-size:11px; }
+    #posGrid, #oppPosGrid, #videoRosterGrid, #oppRosterGrid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+    #posGrid .pos-item, #oppPosGrid .pos-item, #videoRosterGrid .pos-item, #oppRosterGrid .pos-item{ width:auto; min-width:0; padding:5px; }
+    #posGrid .pos-item select, #oppPosGrid .pos-item select, #videoRosterGrid .pos-item select, #oppRosterGrid .pos-item select{ min-width:0; width:100%; flex:1; padding:4px 2px; font-size:11px; }
     .pos-cols{ gap:12px; }
     /* 세그먼트 버튼: 글자가 두 줄로 꺾이지 않게 */
     .seg button{ white-space:nowrap; min-width:0; padding:10px 4px; font-size:12px; }
@@ -734,7 +734,7 @@
     .stage-legend{ font-size:11px; gap:6px 10px; }
   }
   @media (max-width:359px){
-    #posGrid, #oppPosGrid, #videoRosterGrid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    #posGrid, #oppPosGrid, #videoRosterGrid, #oppRosterGrid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
     #appModeSeg button{ font-size:11.5px; }
   }
 
@@ -1195,10 +1195,10 @@
     #quickRecordCard .moment-row{ margin-top:6px; }
     #quickRecordCard #zonePickerWrap > div:last-child{ display:none !important; }
     #quickRecordCard .qr-more-sub{ display:none; }
-    #quickRecordCard #videoPlayerSelectChips{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; }
+    #quickRecordCard #videoPlayerSelectChips, #quickRecordCard #videoOppPlayerSelectChips{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; }
     #quickRecordCard #blockZoneSelectChips{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; }
     #quickRecordCard #qrDetailSelectChips{ gap:4px; }
-    #quickRecordCard #videoPlayerSelectChips .chip-btn, #quickRecordCard #blockZoneSelectChips .chip-btn{ justify-content:center; align-items:center; text-align:center; padding:5px 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #quickRecordCard #videoPlayerSelectChips .chip-btn, #quickRecordCard #videoOppPlayerSelectChips .chip-btn, #quickRecordCard #blockZoneSelectChips .chip-btn{ justify-content:center; align-items:center; text-align:center; padding:5px 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     #quickRecordCard .chip-btn small{ display:none; }
     #quickRecordCard .qr-more-body .field-label{ margin:0 0 3px; font-size:12px; }
     #quickRecordCard .qr-more-body .qr-label{ font-size:12px; margin-bottom:3px; }
@@ -1245,7 +1245,7 @@
     #quickRecordCard .quick-record-row{ margin-bottom:4px; }
     #quickRecordCard .qr-optional{ padding:4px 6px; border-radius:8px; }
     #quickRecordCard .chip-btn{ padding:3px 7px; min-height:26px; font-size:11.5px; border-radius:7px; }
-    #quickRecordCard #videoPlayerSelectChips{ grid-template-columns:repeat(10,minmax(0,1fr)); gap:3px; }
+    #quickRecordCard #videoPlayerSelectChips, #quickRecordCard #videoOppPlayerSelectChips{ grid-template-columns:repeat(10,minmax(0,1fr)); gap:3px; }
     #quickRecordCard #blockZoneSelectChips{ grid-template-columns:repeat(6,minmax(0,1fr)); gap:3px; }
     #quickRecordCard #qrRecordBtn, #quickRecordCard #qrUndoBtn{ padding:7px 12px !important; font-size:13.5px !important; }
     #quickRecordCard #qrUndoNote:empty{ display:none; }
@@ -1297,10 +1297,10 @@
     body.qr-mode #quickRecordCard .moment-row{ margin-top:6px; }
     body.qr-mode #quickRecordCard #zonePickerWrap > div:last-child{ display:none !important; }
     body.qr-mode #quickRecordCard .qr-more-sub{ display:none; }
-    body.qr-mode #quickRecordCard #videoPlayerSelectChips{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; }
+    body.qr-mode #quickRecordCard #videoPlayerSelectChips, body.qr-mode #quickRecordCard #videoOppPlayerSelectChips{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; }
     body.qr-mode #quickRecordCard #blockZoneSelectChips{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; }
     body.qr-mode #quickRecordCard #qrDetailSelectChips{ gap:4px; }
-    body.qr-mode #quickRecordCard #videoPlayerSelectChips .chip-btn, body.qr-mode #quickRecordCard #blockZoneSelectChips .chip-btn{ justify-content:center; align-items:center; text-align:center; padding:5px 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    body.qr-mode #quickRecordCard #videoPlayerSelectChips .chip-btn, body.qr-mode #quickRecordCard #videoOppPlayerSelectChips .chip-btn, body.qr-mode #quickRecordCard #blockZoneSelectChips .chip-btn{ justify-content:center; align-items:center; text-align:center; padding:5px 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     body.qr-mode #quickRecordCard .chip-btn small{ display:none; }
     body.qr-mode #quickRecordCard .qr-more-body .field-label{ margin:0 0 3px; font-size:12px; }
     body.qr-mode #quickRecordCard .qr-more-body .qr-label{ font-size:12px; margin-bottom:3px; }
@@ -1346,7 +1346,7 @@
     body.qr-mode #quickRecordCard .quick-record-row{ margin-bottom:4px; }
     body.qr-mode #quickRecordCard .qr-optional{ padding:4px 6px; border-radius:8px; }
     body.qr-mode #quickRecordCard .chip-btn{ padding:3px 7px; min-height:26px; font-size:11.5px; border-radius:7px; }
-    body.qr-mode #quickRecordCard #videoPlayerSelectChips{ grid-template-columns:repeat(10,minmax(0,1fr)); gap:3px; }
+    body.qr-mode #quickRecordCard #videoPlayerSelectChips, body.qr-mode #quickRecordCard #videoOppPlayerSelectChips{ grid-template-columns:repeat(10,minmax(0,1fr)); gap:3px; }
     body.qr-mode #quickRecordCard #blockZoneSelectChips{ grid-template-columns:repeat(6,minmax(0,1fr)); gap:3px; }
     body.qr-mode #quickRecordCard #qrRecordBtn, body.qr-mode #quickRecordCard #qrUndoBtn{ padding:7px 12px !important; font-size:13.5px !important; }
     body.qr-mode #quickRecordCard #qrUndoNote:empty{ display:none; }
@@ -1363,7 +1363,7 @@
     body.qr-mode #quickRecordCard .qr-opt-group{ flex:1 1 100%; }
     body.qr-mode #quickRecordCard .qr-opt-group:nth-child(n+3){ flex:0 0 auto; }
     body.qr-mode #quickRecordCard .toss-pads .toss-targets{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-    body.qr-mode #quickRecordCard #videoPlayerSelectChips{ grid-template-columns:repeat(5,minmax(0,1fr)); }
+    body.qr-mode #quickRecordCard #videoPlayerSelectChips, body.qr-mode #quickRecordCard #videoOppPlayerSelectChips{ grid-template-columns:repeat(5,minmax(0,1fr)); }
     body.qr-mode #quickRecordCard #blockZoneSelectChips{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   }
 
@@ -2367,11 +2367,12 @@
             </select>
             <button class="btn" id="btnPresetRename" title="선택한 대형 이름 바꾸기" style="flex:none; padding:9px 10px;">✏️</button>
             <button class="btn" id="btnPresetDeleteFromLoad" title="선택한 대형 삭제" style="flex:none; padding:9px 10px;">🗑️</button>
+            <button class="btn" id="btnPresetCopyFolder" title="선택한 대형이 든 폴더를 통째로 복사" style="flex:none; padding:9px 10px;">📁</button>
           </div>
         </div>
         <button class="btn" id="btnPresetSearchToggle" title="폴더 검색" style="flex:none;">🔍 찾기</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">목록에서 대형을 고르면 바로 불러와요. 방금 고른 대형은 ✏️로 이름을 바꾸거나 🗑️로 삭제할 수 있어요.</div>
+      <div class="field-note" style="margin-top:4px;">목록에서 대형을 고르면 바로 불러와요. 방금 고른 대형은 ✏️로 이름을 바꾸거나 🗑️로 삭제하고, 📁로 그 대형이 든 폴더를 통째로 복사해요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때 좋아요). 🔍 찾기의 폴더 이름 옆 📄로도 복사할 수 있어요.</div>
       <div id="presetSearchBox" style="display:none; margin-top:8px;">
         <input type="text" id="presetSearchInput" class="login-input" placeholder="폴더 이름으로 검색 (예: 위드나인)" style="margin-top:0;">
         <div class="preset-list" id="presetList" style="margin-top:10px;"></div>
@@ -2553,9 +2554,14 @@
               </div>
             </div>
         <details class="roster-fold" id="rosterFold">
-        <summary><span class="field-label" style="margin:0;">포지션 배정 명단</span><span class="rf-count" id="rosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
-        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 "기록 입력"의 <b>관련 선수</b>에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 경기 폴더마다 따로 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
+        <summary><span class="field-label" style="margin:0;">🔵 우리팀 포지션 명단</span><span class="rf-count" id="rosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
+        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 "자세히 기록"의 <b>🔵 우리팀 선수</b>에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 경기 폴더마다 따로 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
+        </details>
+        <details class="roster-fold" id="oppRosterFold">
+        <summary><span class="field-label" style="margin:0;">🔴 상대팀 포지션 명단</span><span class="rf-count" id="oppRosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
+        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">상대 선수의 포지션과 이름(선택)을 적어두면 "자세히 기록"의 <b>🔴 상대팀 선수</b>에서 골라 기록에 남길 수 있어요. 우리팀 명단처럼 경기 폴더마다 따로 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 등번호를 적어주세요.</div>
+        <div class="pos-grid" id="oppRosterGrid"></div>
         </details>
     </details>
     <button class="btn qr-mode-btn" id="btnQrMode" type="button" title="한 화면에 기록 입력만 크게 띄우고, 오른쪽 📋 점수 기록에서 1점씩 고치거나 끼워 넣어요(Esc로 종료)"><span class="ic">🎯</span><span><b>빠른 기록 모드</b><small>한 화면에 기록 입력만 · 세트 점수 함께</small></span></button>
@@ -2797,7 +2803,7 @@
               </div>
             </div>
             <details class="qr-more" id="qrMore">
-              <summary><span class="qr-more-title">➕ 자세히 기록</span><span class="qr-more-sub" id="qrMoreHint">방식·관련 선수·위치 (선택)</span></summary>
+              <summary><span class="qr-more-title">➕ 자세히 기록</span><span class="qr-more-sub" id="qrMoreHint">방식·우리·상대 선수·위치 (선택)</span></summary>
               <div class="qr-more-body">
             <div class="quick-record-row" id="qrDetailRow" style="display:none;">
               <div class="qr-label" id="qrDetailLabel">공격 방식</div>
@@ -2808,13 +2814,19 @@
               <div class="foul-desc" id="qrFoulDesc" style="display:none;"></div>
             </div>
             <div class="quick-record-row qr-optional">
-              <div class="qr-label">관련 선수 <span class="qr-opt-tag">선택</span></div>
+              <div class="qr-label">🔵 우리팀 선수 <span class="qr-opt-tag">선택</span></div>
               <div class="qr-controls">
                 <select id="videoPlayerSelect" style="flex:1;">
                   <option value="">선택 안 함</option>
                 </select>
               </div>
-              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 눌러 고르면 기록에 함께 남아요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
+              <div class="qr-label" style="margin-top:6px;">🔴 상대팀 선수 <span class="qr-opt-tag">선택</span></div>
+              <div class="qr-controls">
+                <select id="videoOppPlayerSelect" style="flex:1;">
+                  <option value="">선택 안 함</option>
+                </select>
+              </div>
+              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 팀별로 눌러 고르면 기록에 함께 남아요(예: 우리 공격이 막혔으면 우리 공격수와 상대 블로커). 명단은 📋 경기 정보에서 팀별로 적어요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
             </div>
             <div id="zonePickerWrap" style="display:none;">
               <label class="field-label" style="margin-top:0;">블로킹 위치 (선택)</label>
@@ -4492,6 +4504,20 @@
 
   setTimeout(openSharedFormationIfAny, 0);
 
+  // 폴더를 통째로 복사해요(예: 다른 팀 대형을 바탕으로 새 팀 폴더 만들기). ⭐ 최종 대형을 복사하면 일반 대형이 돼요.
+  function copyPresetFolder(folderKey){
+    const src = presets.filter(p=>(p.folder||'')===folderKey);
+    if(!src.length){ alert('복사할 대형이 없어요.'); return; }
+    const label = folderKey || '(폴더 없음)';
+    const newName = (prompt(`'${label}' 폴더의 대형 ${src.length}개를 복사해요. 새 폴더 이름을 입력하세요:`, (folderKey ? folderKey+' (복사본)' : '복사본')) || '').trim().slice(0,40);
+    if(!newName) return;
+    if(newName===FINAL_FOLDER){ alert('⭐ 최종 대형 폴더로는 복사할 수 없어요.'); return; }
+    if(presets.some(p=>(p.folder||'')===newName)){ alert(`'${newName}' 폴더가 이미 있어요. 다른 이름을 써주세요.`); return; }
+    src.forEach(p=>{ const c = JSON.parse(JSON.stringify(p)); c.folder = newName; delete c.final; delete c.basedOn; presets.push(c); });
+    pendingActionDescription = `'${label}' 폴더를 '${newName}'(으)로 복사했어요`;
+    renderPresets(); updateTexts(); scheduleAutoSave();
+    alert(`'${newName}' 폴더로 대형 ${src.length}개를 복사했어요.`);
+  }
   function renderPresetSearchResults(){
     const list=document.getElementById('presetList');
     list.innerHTML='';
@@ -4539,7 +4565,9 @@
           updateTexts();
           scheduleAutoSave();
         });
-        labelRow.appendChild(renameBtn); labelRow.appendChild(delBtn);
+        const copyBtn=document.createElement('span'); copyBtn.className='folder-action'; copyBtn.title='폴더 통째로 복사'; copyBtn.textContent='📄';
+        copyBtn.addEventListener('click', e=>{ e.stopPropagation(); copyPresetFolder(folderKey); });
+        labelRow.appendChild(renameBtn); labelRow.appendChild(copyBtn); labelRow.appendChild(delBtn);
         group.appendChild(labelRow);
       }
       const row=document.createElement('div'); row.className='preset-chip-row';
@@ -4796,6 +4824,10 @@
     lastPickedPreset.name = newName.slice(0,40);
     renderPresets();
     scheduleAutoSave();
+  });
+  document.getElementById('btnPresetCopyFolder').addEventListener('click', ()=>{
+    if(!lastPickedPreset || !presets.includes(lastPickedPreset)){ alert('먼저 위 목록에서 복사할 폴더의 대형을 하나 선택해주세요.'); return; }
+    copyPresetFolder(lastPickedPreset.folder||'');
   });
   document.getElementById('btnPresetDeleteFromLoad').addEventListener('click', ()=>{
     const i = presets.indexOf(lastPickedPreset);
@@ -5631,7 +5663,7 @@
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'불러와서 고쳐요',
-        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고, 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
+        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(📁로 그 폴더를 통째로 복사해 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
         scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
@@ -5716,15 +5748,15 @@
         text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·관련 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러, 양 코트 위치는 그 안의 <b>📍 득실 위치</b>를 펼쳐서 선택으로 남겨요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:34px;">공격</span><span class="mk-btn k-l">레프트</span><span class="mk-btn">라이트</span><span class="mk-btn">A</span><span class="mk-btn">B</span><span class="mk-btn">백A</span><span class="mk-btn">세터 2구</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:34px;">서브</span><span class="mk-btn">서브</span><span class="mk-btn">리시브</span><span class="mk-btn">블로킹</span><span class="mk-btn">파울</span></div>
-          <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">공격 방식·양 코트 위치·관련 선수 (선택)</span></div>
+          <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">공격 방식·양 코트 위치·우리·상대 선수 (선택)</span></div>
           <div class="mk-row k-detail" style="display:none;"><span class="mk-lbl" style="width:34px;">방식</span><span class="mk-btn">강타·빈 곳</span><span class="mk-btn">강타·사람 쪽</span><span class="mk-btn">가볍게 볼처리</span><span class="mk-btn k-feint">페인트</span><span class="mk-btn">터치아웃</span><span class="mk-btn">네트인</span><span class="mk-btn">네트싸움</span><span class="mk-btn">삑사리</span></div></div>`,
         script:[{click:'.k-l', then:el=>el.classList.add('on')}, {click:'.k-more', then:(el,sc)=>{ sc.querySelector('.k-detail').style.display='flex'; }}, {click:'.k-feint', then:el=>el.classList.add('on')}, {wait:1500} ] },
       { title:'블로킹을 기록해요',
-        text:'상황 버튼에서 <b>블로킹</b>을 누르고 <b>➕ 자세히 기록</b>을 열면 버튼으로 바로 골라요: 범실이면 <b>빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지(득점이면 1인~4인 중 몇 명이 막았는지), 공이 손에 맞은 <b>관련 선수</b>, 블로킹 위치. 블로킹 분석에 누구 손에서 났는지 위치별로 모여요.',
+        text:'상황 버튼에서 <b>블로킹</b>을 누르고 <b>➕ 자세히 기록</b>을 열면 버튼으로 바로 골라요: 범실이면 <b>빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치</b> 중 왜 뚫렸는지(득점이면 1인~4인 중 몇 명이 막았는지), 공이 손에 맞은 <b>관련 선수</b>(우리팀·상대팀 칸이 따로 있어요), 블로킹 위치. 블로킹 분석에 누구 손에서 났는지 위치별로 모여요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:64px;">결과</span><span class="mk-btn">득점</span><span class="mk-btn k-fault">범실</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">세부 상황</span><span class="mk-btn on">블로킹 ▾</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">범실 유형</span><span class="mk-btn k-type">빈틈</span><span class="mk-btn">자리잡기</span><span class="mk-btn">네트터치</span></div>
-          <div class="mk-row"><span class="mk-lbl" style="width:64px;">관련 선수</span><span class="mk-btn">1번</span><span class="mk-btn k-pl">3번</span><span class="mk-btn">4번</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:64px;">🔵 우리 선수</span><span class="mk-btn">1번</span><span class="mk-btn k-pl">3번</span><span class="mk-btn">4번</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:64px;">블로킹 위치</span><span class="mk-btn k-zone">레프트 앞</span><span class="mk-btn">A 앞</span><span class="mk-btn">라이트 앞</span></div></div>
           <div class="mk-toast k-toast">우리팀 · 범실 · 블로킹(빈틈) · 3번 · 레프트 앞</div>`,
         script:[ {click:'.k-fault', then:el=>el.classList.add('on')}, {click:'.k-type', then:el=>el.classList.add('on')},
@@ -6029,7 +6061,7 @@
   function buildShareViewData(){
     const vs = window.getVideoAnalysisState ? window.getVideoAnalysisState() : {};
     return {v:1, videoAnalysis:{
-      matchFolders: vs.matchFolders || [], videoRoster: vs.videoRoster || {},
+      matchFolders: vs.matchFolders || [], videoRoster: vs.videoRoster || {}, oppRoster: vs.oppRoster || {},
       ourTeamName: vs.ourTeamName, oppTeamName: vs.oppTeamName, activeFolderName: ''
     }};
   }
@@ -6173,20 +6205,30 @@
   let videoRoster = {}; // {1:{position:'',name:''}, ..., 9:{...}}
   for(let i=1;i<=9;i++) videoRoster[i] = {position:'', name:''};
   // 명단은 경기 폴더마다 함께 저장돼요(명단이 없는 예전 폴더를 불러오면 지금 명단을 그대로 둬요).
-  function rosterCopy(){
-    const r = {}; for(let i=1;i<=9;i++) r[i] = {position: videoRoster[i].position||'', name: videoRoster[i].name||''};
+  // 상대팀 명단도 같은 모양으로 따로 둬요(자세히 기록의 🔴 상대팀 선수).
+  let oppRoster = {};
+  for(let i=1;i<=9;i++) oppRoster[i] = {position:'', name:''};
+  function copyRosterOf(src){
+    const r = {}; for(let i=1;i<=9;i++){ const e = (src&&src[i])||{}; r[i] = {position: e.position||'', name: e.name||''}; }
     return r;
   }
-  function applyFolderRoster(src){
-    for(let i=1;i<=9;i++){ const e = src[i]||{}; videoRoster[i] = {position: e.position||'', name: e.name||''}; }
+  const rosterCopy = () => copyRosterOf(videoRoster);
+  const oppRosterCopy = () => copyRosterOf(oppRoster);
+  function applyFolderRoster(src, oppSrc){
+    if(src) videoRoster = copyRosterOf(src);
+    if(oppSrc) oppRoster = copyRosterOf(oppSrc);
     renderVideoRosterGrid(); renderVideoPlayerSelect();
     try{ updateMatchInfoState(); }catch(err){}
   }
   function renderVideoRosterGrid(){
-    const grid = document.getElementById('videoRosterGrid');
+    renderRosterGrid('videoRosterGrid', videoRoster);
+    renderRosterGrid('oppRosterGrid', oppRoster);
+  }
+  function renderRosterGrid(gridId, roster){
+    const grid = document.getElementById(gridId);
     grid.innerHTML = '';
     for(let i=1;i<=9;i++){
-      const entry = videoRoster[i];
+      const entry = roster[i];
       const item = document.createElement('div'); item.className='pos-item';
       const row1 = document.createElement('div'); row1.className='row1';
       const num = document.createElement('span'); num.className='num'; num.textContent=i;
@@ -6208,8 +6250,9 @@
       grid.appendChild(item);
     }
   }
-  function rosterLabel(i){
-    const entry = videoRoster[i];
+  const oppRosterLabel = i => rosterLabel(i, oppRoster);
+  function rosterLabel(i, roster){
+    const entry = (roster||videoRoster)[i];
     const posText = entry.position && window.POS_LABEL[entry.position] ? window.POS_LABEL[entry.position] : '';
     const parts = [i+'번'];
     if(posText) parts.push(posText);
@@ -6231,27 +6274,38 @@
     }
     box.innerHTML = Array.from(sel.options).map(o=>{
       const m = o.textContent.match(/^(.*?)\((.*)\)$/);
-      const label = m ? `${escChip(m[1])}<small>${escChip(m[2])}</small>` : escChip(o.textContent);
-      return `<button type="button" class="chip-btn${o.value===sel.value?' on':''}${o.value===''?' none':''}" data-v="${escChip(o.value)}"${sel.disabled?' disabled':''}>${label}</button>`;
+      const label = o.dataset.short ? escChip(o.dataset.short) : m ? `${escChip(m[1])}<small>${escChip(m[2])}</small>` : escChip(o.textContent);
+      return `<button type="button" class="chip-btn${o.value===sel.value?' on':''}${o.value===''?' none':''}" data-v="${escChip(o.value)}" title="${escChip(o.textContent)}"${sel.disabled?' disabled':''}>${label}</button>`;
     }).join('');
   }
-  function refreshAllChips(){ ['qrDetailSelect','videoPlayerSelect','blockZoneSelect'].forEach(refreshChips); }
+  function refreshAllChips(){ ['qrDetailSelect','videoPlayerSelect','videoOppPlayerSelect','blockZoneSelect'].forEach(refreshChips); }
   function renderVideoPlayerSelect(){
-    const sel = document.getElementById('videoPlayerSelect');
-    const prevValue = sel.value;
-    sel.innerHTML = '<option value="">선택 안 함</option>';
-    for(let i=1;i<=9;i++){
-      const opt = document.createElement('option'); opt.value=i; opt.textContent = rosterLabel(i);
-      sel.appendChild(opt);
-    }
-    sel.value = prevValue;
-    refreshChips('videoPlayerSelect');
+    [['videoPlayerSelect', videoRoster], ['videoOppPlayerSelect', oppRoster]].forEach(([id, roster])=>{
+      const sel = document.getElementById(id);
+      const prevValue = sel.value;
+      sel.innerHTML = '<option value="">선택 안 함</option>';
+      for(let i=1;i<=9;i++){
+        const opt = document.createElement('option'); opt.value=i; opt.textContent = rosterLabel(i, roster);
+        // 버튼에는 번호와 이름(없으면 포지션)만 짧게 보여요.
+        const e = roster[i]; opt.dataset.short = i + (e.name ? ' '+e.name : e.position && window.POS_LABEL[e.position] ? ' '+window.POS_LABEL[e.position].replace(/\(.*\)/,'') : '번');
+        opt.title = opt.textContent;
+        sel.appendChild(opt);
+      }
+      sel.value = prevValue;
+      refreshChips(id);
+    });
     try{ updateMatchInfoState(); }catch(err){}
   }
-  let selectedPlayer = null; // roster id (1-9) or null
+  let selectedPlayer = null; // 우리팀 명단 번호(1-9) or null
+  let selectedOppPlayer = null; // 상대팀 명단 번호(1-9) or null
   document.getElementById('videoPlayerSelect').addEventListener('change', e=>{
     selectedPlayer = e.target.value ? Number(e.target.value) : null;
   });
+  document.getElementById('videoOppPlayerSelect').addEventListener('change', e=>{
+    selectedOppPlayer = e.target.value ? Number(e.target.value) : null;
+  });
+  const playerSnap = () => selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null;
+  const oppPlayerSnap = () => selectedOppPlayer ? {id:selectedOppPlayer, label:oppRosterLabel(selectedOppPlayer)} : null;
 
   let selectedSet = 1; // 1/2/3 — which set new records are tagged with
   document.querySelectorAll('#setSeg button').forEach(btn=>{
@@ -6364,7 +6418,7 @@
     if(hint){
       const extras = [];
       if(typeof detailOptionsFor==='function' && detailOptionsFor(v, qrOutcome)) extras.push(v==='블로킹' ? (qrOutcome==='fault'?'범실 유형':'블로킹 인원') : v===FOUL_MAIN ? '파울 종류' : '공격 방식');
-      extras.push('관련 선수');
+      extras.push('우리·상대 선수');
       if(v==='블로킹') extras.push('블로킹 위치'); else if(NET_POSITION_OPTIONS.has(v)) extras.push('양 코트 위치');
       hint.textContent = extras.join('·') + ' (선택)';
     }
@@ -6439,7 +6493,7 @@
     const parts = rec.entries.map(e=>({
       time: rec.time, entries:[e], label: entryRecordLabel(e),
       category: e.category, optionLabel: e.optionLabel, videoName: rec.videoName,
-      zone: rec.zone||null, grid9: rec.grid9||null, player: rec.player||null, tosses: rec.tosses, set: rec.set||1
+      zone: rec.zone||null, grid9: rec.grid9||null, player: rec.player||null, oppPlayer: rec.oppPlayer||null, tosses: rec.tosses, set: rec.set||1
     }));
     records.splice(idx, 1, ...parts);
   }
@@ -6506,10 +6560,10 @@
         row.appendChild(g9Tag);
       }
       const playerSel = document.createElement('select'); playerSel.style.fontSize='11px'; playerSel.title='관련 선수 수정';
-      const blankPlayerOpt = document.createElement('option'); blankPlayerOpt.value=''; blankPlayerOpt.textContent='👤 선수 지정';
+      const blankPlayerOpt = document.createElement('option'); blankPlayerOpt.value=''; blankPlayerOpt.textContent='🔵 우리 선수 지정';
       playerSel.appendChild(blankPlayerOpt);
       for(let i=1;i<=9;i++){
-        const opt = document.createElement('option'); opt.value=i; opt.textContent='👤 '+rosterLabel(i);
+        const opt = document.createElement('option'); opt.value=i; opt.textContent='🔵 '+rosterLabel(i);
         if(rec.player && rec.player.id===i) opt.selected=true;
         playerSel.appendChild(opt);
       }
@@ -6521,6 +6575,21 @@
       });
       playerSel.disabled = readOnlyFolderView;
       row.appendChild(playerSel);
+      const oppSel = document.createElement('select'); oppSel.style.fontSize='11px'; oppSel.title='상대팀 관련 선수 수정';
+      oppSel.innerHTML = '<option value="">🔴 상대 선수 지정</option>';
+      for(let i=1;i<=9;i++){
+        const opt = document.createElement('option'); opt.value=i; opt.textContent='🔴 '+oppRosterLabel(i);
+        if(rec.oppPlayer && rec.oppPlayer.id===i) opt.selected=true;
+        oppSel.appendChild(opt);
+      }
+      oppSel.addEventListener('change', ()=>{
+        const v = oppSel.value;
+        rec.oppPlayer = v ? {id:Number(v), label:oppRosterLabel(Number(v))} : null;
+        renderAllGraphs();
+        if(window.scheduleAutoSave) window.scheduleAutoSave();
+      });
+      oppSel.disabled = readOnlyFolderView;
+      row.appendChild(oppSel);
       if(rec.entries && rec.entries.length>1 && !readOnlyFolderView){
         const splitBtn = document.createElement('button'); splitBtn.className='btn'; splitBtn.style.fontSize='11px';
         splitBtn.textContent = `✂️ ${rec.entries.length}점 나누기`;
@@ -6547,7 +6616,7 @@
       time: recTime(), label: momentMemoEl.value.trim(), customLabel: !!momentMemoEl.value.trim(), category:null, optionLabel:null, videoName: currentVideoName,
       zone: zoneVisible ? selectedZone : null,
       grid9: nineVisible ? selectedNineZone : null,
-      player: selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null, set: selectedSet
+      player: playerSnap(), oppPlayer: oppPlayerSnap(), set: selectedSet
     });
     momentMemoEl.value = '';
     flashBtn(document.getElementById('btnRecordMoment'));
@@ -6764,10 +6833,12 @@
   }));
   function updateMatchInfoState(){
     const el = document.getElementById('matchInfoState'); if(!el) return;
-    let filled = 0; for(let i=1;i<=9;i++){ const r = videoRoster[i]; if(r && (r.position || r.name)) filled++; }
+    const cntRoster = ro => { let n = 0; for(let i=1;i<=9;i++){ const r = ro[i]; if(r && (r.position || r.name)) n++; } return n; };
+    const filled = cntRoster(videoRoster), oppFilled = cntRoster(oppRoster);
     const named = ourTeamName!=='우리팀' || oppTeamName!=='상대팀';
-    el.innerHTML = `<span class="mi-chip${matchDate?' on':''}">📅 ${matchDate ? fmtMatchDate(matchDate) : '날짜'}</span><span class="mi-chip${matchDivision?' on':''}">🏐 ${matchDivision ? DIV_LABEL[matchDivision] : '부 선택'}</span><span class="mi-chip${named?' on':''}">🏷️ ${escChip(ourTeamName)} vs ${escChip(oppTeamName)}</span><span class="mi-chip${filled?' on':''}">👥 명단 ${filled}/9</span>`;
+    el.innerHTML = `<span class="mi-chip${matchDate?' on':''}">📅 ${matchDate ? fmtMatchDate(matchDate) : '날짜'}</span><span class="mi-chip${matchDivision?' on':''}">🏐 ${matchDivision ? DIV_LABEL[matchDivision] : '부 선택'}</span><span class="mi-chip${named?' on':''}">🏷️ ${escChip(ourTeamName)} vs ${escChip(oppTeamName)}</span><span class="mi-chip${filled||oppFilled?' on':''}">👥 명단 ${filled} · ${oppFilled}</span>`;
     const rfc = document.getElementById('rosterFoldCount'); if(rfc) rfc.textContent = `${filled}/9명`;
+    const orfc = document.getElementById('oppRosterFoldCount'); if(orfc) orfc.textContent = `${oppFilled}/9명`;
   }
   function applyTeamNames(opp, our){
     oppTeamName = (opp||'').trim() || '상대팀';
@@ -6917,7 +6988,7 @@
     opts = opts || {};
     const now = recTime();
     const label = entry.optionLabel;
-    const playerSnapshot = selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null;
+    const playerSnapshot = playerSnap(), oppPlayerSnapshot = oppPlayerSnap();
     const zoneToAttach = (label===BLOCK_LOCATION_OPTION) ? selectedZone : null;
     const grid9ToAttach = NET_POSITION_OPTIONS.has(label) ? selectedNineZone : null;
     // 기록 버튼 한 번 = 점수 1점 = 기록 1줄이에요. 예전에는 영상이 멈춘 채로 여러 번 누르면 한 줄로 합쳐졌는데,
@@ -6931,6 +7002,7 @@
       zone: zoneToAttach,
       grid9: grid9ToAttach,
       player: playerSnapshot,
+      oppPlayer: oppPlayerSnapshot,
       tosses: tossSeq.length ? tossSeq.slice() : undefined,
       set: selectedSet
     };
@@ -7044,8 +7116,9 @@
     document.querySelectorAll('.qr-nine-grid button').forEach(b=>b.classList.remove('active'));
     updateNineZoneStatus();
     const nf = document.getElementById('nineZoneFold'); if(nf) nf.open = false;
-    selectedPlayer = null;
+    selectedPlayer = null; selectedOppPlayer = null;
     document.getElementById('videoPlayerSelect').value = '';
+    document.getElementById('videoOppPlayerSelect').value = '';
     tossSeq = []; toss2ndArmed = false; renderTossUI();
     refreshAllChips();
   }
@@ -7064,7 +7137,7 @@
       entries.forEach(e=>{
         const n = normEntry(e);
         if(!n.bucket) return;
-        out.push({...e, ...n, zone:r.zone, grid9:r.grid9, player:r.player, time:r.time, set:r.set||1});
+        out.push({...e, ...n, zone:r.zone, grid9:r.grid9, player:r.player, oppPlayer:r.oppPlayer, time:r.time, set:r.set||1});
       });
     });
     return out;
@@ -7181,6 +7254,7 @@
     const ob = document.querySelector(`#qrOptionBoard .qr-opt-btn[data-value="${CSS.escape(n.main)}"]`); if(ob) ob.click();
     const ds = document.getElementById('qrDetailSelect'); if(n.detail && ds){ ds.value = n.detail; refreshChips('qrDetailSelect'); }
     const ps = document.getElementById('videoPlayerSelect'); ps.value = rec.player ? String(rec.player.id) : ''; ps.dispatchEvent(new Event('change')); refreshChips('videoPlayerSelect');
+    const ops = document.getElementById('videoOppPlayerSelect'); ops.value = rec.oppPlayer ? String(rec.oppPlayer.id) : ''; ops.dispatchEvent(new Event('change')); refreshChips('videoOppPlayerSelect');
     selectedZone = rec.zone || null; renderZonePicker(); updateZoneStatus();
     selectedNineZone = rec.grid9 || null;
     document.querySelectorAll('.qr-nine-grid button').forEach(b=>b.classList.toggle('active', !!(rec.grid9 && b.dataset.col==String(rec.grid9.col) && b.dataset.row==String(rec.grid9.row) && (b.dataset.side==='opp')===(rec.grid9.side==='opp'))));
@@ -7951,6 +8025,7 @@
     f.division = matchDivision;
     f.date = matchDate;
     f.videoRoster = rosterCopy();
+    f.oppRoster = oppRosterCopy();
     f.savedAt = new Date().toISOString();
   }
   const _coreScheduleAutoSave = window.scheduleAutoSave;
@@ -8005,7 +8080,7 @@
       f.savedAt = new Date().toISOString();
       loadMatchFolder(f, idx);
     } else {
-      const nf = {name, savedAt:new Date().toISOString(), videoName:currentVideoName, records:copy, coachNotes:document.getElementById('coachNotes').value, oppTeamName, ourTeamName, division:matchDivision, date:matchDate||todayStr(), videoRoster:rosterCopy()};
+      const nf = {name, savedAt:new Date().toISOString(), videoName:currentVideoName, records:copy, coachNotes:document.getElementById('coachNotes').value, oppTeamName, ourTeamName, division:matchDivision, date:matchDate||todayStr(), videoRoster:rosterCopy(), oppRoster:oppRosterCopy()};
       matchFolders.push(nf);
       loadMatchFolder(nf, matchFolders.length-1);
     }
@@ -8037,7 +8112,7 @@
     applyTeamNames(f.oppTeamName, f.ourTeamName);
     applyDivision(f.division||'');
     applyMatchDate(f.date||'');
-    if(f.videoRoster) applyFolderRoster(f.videoRoster);
+    if(f.videoRoster || f.oppRoster) applyFolderRoster(f.videoRoster, f.oppRoster);
     // 부나 날짜를 아직 안 정한 폴더면 경기 정보를 펼쳐서 바로 정할 수 있게 해요.
     const mib = document.getElementById('matchInfoBox');
     if(mib && (!matchDivision || !matchDate) && !readOnlyFolderView) mib.open = true;
@@ -8346,10 +8421,10 @@
     if(typeof updateUndoButton==='function') setTimeout(updateUndoButton,0);
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
     ['qrRecordBtn','btnToss2nd','btnRecordMoment','momentMemo','btnImportCsv','btnSaveOrphan','btnQrMode','btnClearZone','btnClearNineZone',
-     'videoPlayerSelect','qrOptionSelect','qrDetailSelect','qrUndoBtn','coachNotes','blockZoneSelect','btnTossUndo','btnTossClear',
+     'videoPlayerSelect','videoOppPlayerSelect','qrOptionSelect','qrDetailSelect','qrUndoBtn','coachNotes','blockZoneSelect','btnTossUndo','btnTossClear',
      'btnNewMatchFolder','matchSaveName','matchSaveDate','newOppNameInput','newOurNameInput','matchDateInput','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
-    document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input').forEach(el=>el.disabled=on);
+    document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input, #oppRosterGrid select, #oppRosterGrid input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#recordList select, #recordList input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#setSeg button, #divisionSeg button, #newDivSeg button').forEach(el=>el.disabled=on);
     document.querySelectorAll('#qrTeamSeg button').forEach(el=>el.disabled=on);
@@ -8379,8 +8454,9 @@
     selectedNineZone = null;
     document.querySelectorAll('.qr-nine-grid button').forEach(b=>b.classList.remove('active'));
     updateNineZoneStatus();
-    selectedPlayer = null;
+    selectedPlayer = null; selectedOppPlayer = null;
     document.getElementById('videoPlayerSelect').value = '';
+    document.getElementById('videoOppPlayerSelect').value = '';
     selectedSet = 1;
     document.querySelectorAll('#setSeg button').forEach(b=>b.classList.remove('active'));
     const defaultSetBtn = document.querySelector('#setSeg button[data-set="1"]');
@@ -8413,7 +8489,7 @@
     applyTeamNames(document.getElementById('newOppNameInput').value, document.getElementById('newOurNameInput').value);
 
     const newFolder = {name, savedAt: new Date().toISOString(), videoName: adopt ? currentVideoName : '', records: adopt ? JSON.parse(JSON.stringify(records)) : [],
-      coachNotes: adopt ? document.getElementById('coachNotes').value : '', oppTeamName, ourTeamName, division:matchDivision, date:matchDate, videoRoster:rosterCopy()};
+      coachNotes: adopt ? document.getElementById('coachNotes').value : '', oppTeamName, ourTeamName, division:matchDivision, date:matchDate, videoRoster:rosterCopy(), oppRoster:oppRosterCopy()};
     matchFolders.push(newFolder);
     lastPickedMatchFolder = newFolder;
     lastPickedMatchFolderIdx = matchFolders.length-1;
@@ -8758,6 +8834,7 @@
     coachNotes: document.getElementById('coachNotes').value,
     matchFolders,
     videoRoster,
+    oppRoster,
     oppTeamName,
     ourTeamName,
     division: matchDivision,
@@ -8781,12 +8858,14 @@
       const af = matchFolders[activeIdx];
       vs = Object.assign({}, vs, {oppTeamName: af.oppTeamName||'', ourTeamName: af.ourTeamName||'', division: af.division||'', date: af.date||''});
       if(af.videoRoster) vs.videoRoster = af.videoRoster;
+      if(af.oppRoster) vs.oppRoster = af.oppRoster;
     }
     fixNoVideoOrder();
     renderMatchFolderSelect();
     if(vs.videoRoster){
       for(let i=1;i<=9;i++){ if(vs.videoRoster[i]) videoRoster[i] = {position: vs.videoRoster[i].position||'', name: vs.videoRoster[i].name||''}; }
     }
+    if(vs.oppRoster) oppRoster = copyRosterOf(vs.oppRoster);
     oppTeamName = vs.oppTeamName || '상대팀';
     ourTeamName = vs.ourTeamName || '우리팀';
     applyDivision(vs.division||'');
