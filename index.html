@@ -2052,7 +2052,7 @@
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
           <li>득실 위치는 "자세히 기록" 안의 <b>📍 득실 위치</b>를 펼쳐서 플레이한 팀 코트(아래)와 네트 건너편 상대 코트(위) 중에서 고를 수 있어요. 상대 코트를 고르면 기록에 "상대 코트 · 왼쪽 앞"처럼 남아요.</li>
-          <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기 정보(남자부·여자부, 우리팀·상대팀 이름, 포지션 명단)로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 <b>🆕 새 경기 시작</b>을 눌러요. 폴더 없이 남긴 기록이 있으면 새 폴더에 담을지 물어봐요.</li>
+          <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기 정보(남자부·여자부, 우리팀·상대팀 이름, 포지션 명단)로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 새 경기 카드에 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 눌러요. 폴더 목록과 📊 팀 누적 분석은 경기 날짜 순서로 놓여요. 폴더 없이 남긴 기록이 있으면 새 폴더에 담을지 물어봐요.</li>
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
@@ -2475,15 +2475,29 @@
     <div id="readOnlyFolderBanner" class="note-box" style="display:none;">지금은 저장된 폴더를 조회 전용으로 보고 있어요. 이 화면에서는 기록을 새로 남기거나 수정할 수 없어요.</div>
     <div class="fgroup-row">
     <div class="fgroup fgroup-save" id="grpNewMatch">
-    <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">새 경기</span><span class="fg-sub">경기 이름을 적고 시작하면 기록이 자동 저장돼요</span></div>
+    <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">새 경기</span><span class="fg-sub">경기 정보를 적고 시작하면 기록이 자동 저장돼요</span></div>
     <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
       <div style="flex:1; min-width:180px;">
         <label class="field-label" style="margin-top:0;">저장할 이름</label>
         <input type="text" id="matchSaveName" class="login-input" style="margin-top:0;" placeholder="예: 9/26 vs 위드나인전">
       </div>
-      <button class="btn primary" id="btnNewMatchFolder" title="이 이름의 경기 폴더를 만들고, 이후 기록을 그 폴더에 자동 저장해요">🆕 새 경기 시작</button>
+      <div style="flex:none; width:150px;">
+        <label class="field-label" style="margin-top:0;" for="matchSaveDate">경기 날짜</label>
+        <input type="date" id="matchSaveDate" class="login-input" style="margin-top:0;">
+      </div>
     </div>
-    <div class="field-note" style="margin-top:4px;">새 경기를 시작하면 화면이 비워지고, 이후 기록·팀 이름·코치 의견이 그 폴더에 자동으로 저장돼요(따로 저장 버튼을 누를 필요 없어요). 폴더 없이 남긴 기록이 화면에 있으면 그 기록을 새 폴더에 담을지 먼저 물어봐요.</div>
+    <label class="field-label">생활체육 부</label>
+    <div class="seg div-seg" id="newDivSeg">
+      <button type="button" data-div="men">남자부</button>
+      <button type="button" data-div="women">여자부</button>
+    </div>
+    <label class="field-label">팀 이름 (선택)</label>
+    <div style="display:flex; gap:6px;">
+      <input type="text" id="newOppNameInput" class="login-input" style="margin-top:0; flex:1; min-width:0;" placeholder="상대팀">
+      <input type="text" id="newOurNameInput" class="login-input" style="margin-top:0; flex:1; min-width:0;" placeholder="우리팀">
+    </div>
+    <button class="btn primary" id="btnNewMatchFolder" style="width:100%; margin-top:10px;" title="적은 경기 정보로 경기 폴더를 만들고, 이후 기록을 그 폴더에 자동 저장해요">🆕 새 경기 시작</button>
+    <div class="field-note" style="margin-top:6px;">경기 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 누르면 화면이 비워지고, 이후 기록이 그 폴더에 자동으로 저장돼요(따로 저장 버튼을 누를 필요 없어요). 부와 우리팀 이름은 지금 경기 것이 미리 들어가 있어요. 포지션 명단과 시작 뒤 고칠 내용은 아래 📋 경기 정보에서 바꿔요. 폴더 없이 남긴 기록이 화면에 있으면 그 기록을 새 폴더에 담을지 먼저 물어봐요.</div>
     </div>
     <div class="fgroup">
       <div class="fgroup-head"><span class="fg-ic">📂</span><span class="fg-title">저장된 폴더 불러오기</span><span class="fg-sub">다시 보거나 조회 링크로 공유해요</span></div>
@@ -2517,7 +2531,12 @@
     </div>
     <div class="info-mode-row">
     <details class="fgroup match-info" id="matchInfoBox">
-      <summary class="fgroup-head mi-sum"><span class="fg-ic">📋</span><span class="mi-texts"><span class="fg-title">경기 정보</span><span class="mi-cta">✏️ 남자부·여자부 · 팀 이름 · 포지션 명단 입력</span></span><span class="mi-state" id="matchInfoState"></span></summary>
+      <summary class="fgroup-head mi-sum"><span class="fg-ic">📋</span><span class="mi-texts"><span class="fg-title">경기 정보</span><span class="mi-cta">✏️ 경기 날짜 · 남자부·여자부 · 팀 이름 · 포지션 명단 입력</span></span><span class="mi-state" id="matchInfoState"></span></summary>
+            <div class="quick-record-row">
+              <div class="qr-label">경기 날짜</div>
+              <input type="date" id="matchDateInput" class="login-input" style="margin-top:0; max-width:200px;">
+              <div class="field-note" style="margin-top:4px;">이 경기를 한 날이에요. 저장된 폴더 목록이 날짜 순서로 놓이고, 📊 팀 누적 분석의 경기별 흐름·최근 경기 비교도 날짜 순서로 계산돼서 성장 과정을 볼 수 있어요.</div>
+            </div>
             <div class="quick-record-row">
               <div class="qr-label">생활체육 부</div>
               <div class="seg div-seg" id="divisionSeg">
@@ -5650,11 +5669,12 @@
     ],
     video: [
       { title:'새 경기를 시작하고 영상을 열어요',
-        text:'"매치 분석 저장"에서 경기 이름을 적고 <b>🆕 새 경기 시작</b>을 누르면 이후 기록이 그 폴더에 <b>자동 저장</b>돼요. 저장 버튼을 따로 누를 필요 없어요. PC에서 영상을 보며 기록하려면 접혀 있는 <b>경기 영상</b> 칸 제목을 눌러 펼치고 영상을 올려요(휴대폰·태블릿은 영상 칸 없이 바로 기록해요). 기록은 모두 <b>🎯 빠른 기록 모드</b>에서 해요.',
-        scene:`<div class="mk-card"><div class="mk-h">매치 분석 저장</div><div class="mk-row"><div class="mk-input k-name" data-ph="경기 이름"></div><span class="mk-btn big k-add">🆕 새 경기 시작</span></div><div class="mk-row k-chips"></div></div>
+        text:'"매치 분석 저장"의 새 경기 카드에 경기 이름·<b>날짜</b>·<b>남자부·여자부</b>·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 누르면 이후 기록이 그 폴더에 <b>자동 저장</b>돼요. 저장 버튼을 따로 누를 필요 없어요. PC에서 영상을 보며 기록하려면 접혀 있는 <b>경기 영상</b> 칸 제목을 눌러 펼치고 영상을 올려요(휴대폰·태블릿은 영상 칸 없이 바로 기록해요). 기록은 모두 <b>🎯 빠른 기록 모드</b>에서 해요.',
+        scene:`<div class="mk-card"><div class="mk-h">매치 분석 저장</div><div class="mk-row"><div class="mk-input k-name" data-ph="경기 이름"></div><span class="mk-btn">📅 9/7</span></div><div class="mk-row"><span class="mk-btn k-div">남자부</span><span class="mk-btn">여자부</span><span class="mk-btn big k-add">🆕 새 경기 시작</span></div><div class="mk-row k-chips"></div></div>
           <div class="mk-video k-video"><span class="k-icon">▶</span><div class="bar"><i></i></div></div>`,
-        script:[ {type:'.k-name', text:'vs 한빛 0907'},
-                 {click:'.k-add', then:(el,sc)=>{ sc.querySelector('.k-chips').innerHTML='<span class="mk-btn on mk-item new">📁 vs 한빛 0907</span>'; }},
+        script:[ {type:'.k-name', text:'vs 한빛'},
+                 {click:'.k-div', then:el=>el.classList.add('on')},
+                 {click:'.k-add', then:(el,sc)=>{ sc.querySelector('.k-chips').innerHTML='<span class="mk-btn on mk-item new">📁 9/7 · vs 한빛</span>'; }},
                  {click:'.k-video', then:(el,sc)=>{ el.classList.add('playing'); sc.querySelector('.k-icon').textContent='❚❚'; }}, {wait:1800} ] },
       { title:'경기 정보와 세트를 정해요',
         text:'<b>📋 경기 정보</b>를 펼쳐 생활체육 <b>남자부·여자부</b>를 고르고 팀 이름을 적어요. <b>포지션 배정 명단</b>은 접혀 있으니 제목 줄(채운 수가 보여요)을 눌러 펼쳐 적어요(폴더에 함께 저장돼요. 부를 정해 두면 폴더 목록과 팀 누적 분석이 부별로 나뉘어요). 세트는 기록 입력 맨 위에서 골라요. 세트가 바뀌면 기록 전에 세트부터 바꿔주세요.',
@@ -6692,6 +6712,45 @@
   // 생활체육 남자부·여자부: 경기(폴더)마다 정하고, 폴더 목록·팀 누적 분석을 부별로 나눠요. ''는 아직 안 정한 예전 폴더예요.
   const DIV_LABEL = {men:'남자부', women:'여자부'};
   let matchDivision = '';
+  // 경기 날짜(YYYY-MM-DD): 폴더 목록과 팀 누적 분석을 날짜 순서로 놓아요. ''는 날짜를 안 넣은 예전 폴더예요.
+  let matchDate = '';
+  const isDateStr = d => /^\d{4}-\d{2}-\d{2}$/.test(d||'');
+  function todayStr(){ const t = new Date(); return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`; }
+  function fmtMatchDate(d){
+    if(!isDateStr(d)) return '';
+    const [y,m,dd] = d.split('-').map(Number);
+    return (y===new Date().getFullYear() ? '' : y+'/') + m + '/' + dd;
+  }
+  // 날짜 있는 폴더는 오래된 경기부터, 날짜 없는 폴더는 맨 뒤(저장된 순서 그대로)에 놓아요.
+  const byMatchDate = (a, b) => (isDateStr(a.f.date) ? a.f.date : '\uffff').localeCompare(isDateStr(b.f.date) ? b.f.date : '\uffff') || a.idx - b.idx;
+  function applyMatchDate(d){
+    matchDate = isDateStr(d) ? d : '';
+    const el = document.getElementById('matchDateInput'); if(el) el.value = matchDate;
+    try{ updateMatchInfoState(); }catch(err){}
+  }
+  document.getElementById('matchDateInput').addEventListener('change', e=>{
+    if(readOnlyFolderView) return;
+    applyMatchDate(e.target.value);
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+    if(typeof renderMatchFolderSelect==='function') renderMatchFolderSelect();
+  });
+  // 새 경기 카드: 날짜·부·팀 이름을 미리 적고 시작해요. 부와 우리팀 이름은 지금 경기 것을 미리 채워 둬요.
+  let newDivision = '', newFormTouched = false;
+  function renderNewDivSeg(){ document.querySelectorAll('#newDivSeg button').forEach(b=>b.classList.toggle('active', b.dataset.div===newDivision)); }
+  function resetNewMatchForm(force){
+    if(newFormTouched && !force) return;
+    newFormTouched = false;
+    newDivision = matchDivision; renderNewDivSeg();
+    document.getElementById('matchSaveDate').value = todayStr();
+    document.getElementById('newOppNameInput').value = '';
+    document.getElementById('newOurNameInput').value = (typeof ourTeamName==='string' && ourTeamName!=='우리팀') ? ourTeamName : '';
+  }
+  document.querySelectorAll('#newDivSeg button').forEach(b=>b.addEventListener('click', ()=>{
+    if(readOnlyFolderView) return;
+    newDivision = newDivision===b.dataset.div ? '' : b.dataset.div; newFormTouched = true; renderNewDivSeg();
+  }));
+  ['matchSaveName','matchSaveDate','newOppNameInput','newOurNameInput'].forEach(id=>document.getElementById(id).addEventListener('input', ()=>{ newFormTouched = true; }));
+  resetNewMatchForm(true);
   function applyDivision(d){
     matchDivision = DIV_LABEL[d] ? d : '';
     document.querySelectorAll('#divisionSeg button').forEach(b=>b.classList.toggle('active', b.dataset.div===matchDivision));
@@ -6707,7 +6766,7 @@
     const el = document.getElementById('matchInfoState'); if(!el) return;
     let filled = 0; for(let i=1;i<=9;i++){ const r = videoRoster[i]; if(r && (r.position || r.name)) filled++; }
     const named = ourTeamName!=='우리팀' || oppTeamName!=='상대팀';
-    el.innerHTML = `<span class="mi-chip${matchDivision?' on':''}">🏐 ${matchDivision ? DIV_LABEL[matchDivision] : '부 선택'}</span><span class="mi-chip${named?' on':''}">🏷️ ${escChip(ourTeamName)} vs ${escChip(oppTeamName)}</span><span class="mi-chip${filled?' on':''}">👥 명단 ${filled}/9</span>`;
+    el.innerHTML = `<span class="mi-chip${matchDate?' on':''}">📅 ${matchDate ? fmtMatchDate(matchDate) : '날짜'}</span><span class="mi-chip${matchDivision?' on':''}">🏐 ${matchDivision ? DIV_LABEL[matchDivision] : '부 선택'}</span><span class="mi-chip${named?' on':''}">🏷️ ${escChip(ourTeamName)} vs ${escChip(oppTeamName)}</span><span class="mi-chip${filled?' on':''}">👥 명단 ${filled}/9</span>`;
     const rfc = document.getElementById('rosterFoldCount'); if(rfc) rfc.textContent = `${filled}/9명`;
   }
   function applyTeamNames(opp, our){
@@ -7890,6 +7949,7 @@
     f.coachNotes = document.getElementById('coachNotes').value;
     f.oppTeamName = oppTeamName; f.ourTeamName = ourTeamName;
     f.division = matchDivision;
+    f.date = matchDate;
     f.videoRoster = rosterCopy();
     f.savedAt = new Date().toISOString();
   }
@@ -7905,9 +7965,9 @@
     // 남자부·여자부를 정한 폴더가 있으면 부별로 묶어 보여줘요(안 정한 예전 폴더는 "부 미지정"으로).
     const grouped = matchFolders.some(f=>DIV_LABEL[f.division]);
     const groups = grouped ? [['men','남자부'],['women','여자부'],['','부 미지정 (경기 정보에서 정해 주세요)']].map(([d,l])=>{ const g = document.createElement('optgroup'); g.label = l; g.dataset.div = d; return g; }) : null;
-    matchFolders.forEach((f,idx)=>{
+    matchFolders.map((f,idx)=>({f, idx})).sort(byMatchDate).forEach(({f, idx})=>{
       const opt = document.createElement('option'); opt.value = idx;
-      opt.textContent = `${f.name}${f.videoName ? ' — '+f.videoName : ''}`;
+      opt.textContent = `${isDateStr(f.date) ? fmtMatchDate(f.date)+' · ' : ''}${f.name}${f.videoName ? ' — '+f.videoName : ''}`;
       if(grouped) groups.find(g=>g.dataset.div===(DIV_LABEL[f.division]?f.division:'')).appendChild(opt);
       else sel.appendChild(opt);
     });
@@ -7945,7 +8005,7 @@
       f.savedAt = new Date().toISOString();
       loadMatchFolder(f, idx);
     } else {
-      const nf = {name, savedAt:new Date().toISOString(), videoName:currentVideoName, records:copy, coachNotes:document.getElementById('coachNotes').value, oppTeamName, ourTeamName, division:matchDivision, videoRoster:rosterCopy()};
+      const nf = {name, savedAt:new Date().toISOString(), videoName:currentVideoName, records:copy, coachNotes:document.getElementById('coachNotes').value, oppTeamName, ourTeamName, division:matchDivision, date:matchDate||todayStr(), videoRoster:rosterCopy()};
       matchFolders.push(nf);
       loadMatchFolder(nf, matchFolders.length-1);
     }
@@ -7976,10 +8036,11 @@
     // (앞 경기의 이름이 남으면 자동 저장 때 이 폴더에 잘못 덮어써지고, 팀 누적 분석에도 섞여요).
     applyTeamNames(f.oppTeamName, f.ourTeamName);
     applyDivision(f.division||'');
+    applyMatchDate(f.date||'');
     if(f.videoRoster) applyFolderRoster(f.videoRoster);
-    // 부를 아직 안 정한 폴더면 경기 정보를 펼쳐서 바로 남자부·여자부를 고를 수 있게 해요.
+    // 부나 날짜를 아직 안 정한 폴더면 경기 정보를 펼쳐서 바로 정할 수 있게 해요.
     const mib = document.getElementById('matchInfoBox');
-    if(mib && !matchDivision && !readOnlyFolderView) mib.open = true;
+    if(mib && (!matchDivision || !matchDate) && !readOnlyFolderView) mib.open = true;
     const hint = document.getElementById('lastVideoHint');
     if(currentVideoName){
       hint.textContent = `"${f.name}" 폴더의 영상: ${currentVideoName} — 같은 파일을 다시 첨부하면 이어서 볼 수 있어요.`;
@@ -8104,7 +8165,7 @@
   };
   // 경기별 득점률 흐름: 50% 기준선 위는 우세, 아래는 열세. 점 색은 승(파랑)·패(빨강)
   function taTrendSVG(ms, width){
-    const W = Math.max(300, Math.round(width||640)), H = 170, pl = 34, pr = 14, pt = 14, pb = 30;
+    const W = Math.max(300, Math.round(width||640)), H = 182, pl = 34, pr = 14, pt = 14, pb = 42;
     const vals = ms.map(m=>m.M.rate||0);
     const lo = Math.min(30, ...vals.map(v=>Math.floor(v/10)*10)), hi = Math.max(70, ...vals.map(v=>Math.ceil(v/10)*10));
     const x = i => ms.length===1 ? (pl+W-pr)/2 : pl + i*(W-pl-pr)/(ms.length-1);
@@ -8113,9 +8174,9 @@
     const path = ms.map((m,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(vals[i]).toFixed(1)}`).join(' ');
     const dots = ms.map((m,i)=>{
       const c = m.result==='W' ? 'var(--own)' : m.result==='L' ? 'var(--opp)' : 'var(--muted)';
-      const tip = `${m.name} · vs ${m.opp==='상대팀'?'이름 없는 상대':m.opp} · ${m.M.a.pts}:${m.M.a.lost} · 득점률 ${taP(m.M.rate)}`;
+      const tip = `${isDateStr(m.f.date)?fmtMatchDate(m.f.date)+' · ':''}${m.name} · vs ${m.opp==='상대팀'?'이름 없는 상대':m.opp} · ${m.M.a.pts}:${m.M.a.lost} · 득점률 ${taP(m.M.rate)}`;
       const lab = (m.opp==='상대팀'?'이름없음':m.opp).slice(0,5);
-      return `<g class="ta-dot"><title>${escChip(tip)}</title><circle cx="${x(i)}" cy="${y(vals[i])}" r="14" fill="transparent"/><circle cx="${x(i)}" cy="${y(vals[i])}" r="6" fill="${c}" stroke="var(--panel)" stroke-width="2"/><text x="${x(i)}" y="${y(vals[i])-11}" text-anchor="middle" class="ta-dv">${Math.round(vals[i])}</text><text x="${x(i)}" y="${H-10}" text-anchor="middle" class="ta-ax">${escChip(lab)}</text></g>`;
+      return `<g class="ta-dot"><title>${escChip(tip)}</title><circle cx="${x(i)}" cy="${y(vals[i])}" r="14" fill="transparent"/><circle cx="${x(i)}" cy="${y(vals[i])}" r="6" fill="${c}" stroke="var(--panel)" stroke-width="2"/><text x="${x(i)}" y="${y(vals[i])-11}" text-anchor="middle" class="ta-dv">${Math.round(vals[i])}</text><text x="${x(i)}" y="${H-22}" text-anchor="middle" class="ta-ax">${escChip(lab)}</text><text x="${x(i)}" y="${H-8}" text-anchor="middle" class="ta-ax">${fmtMatchDate(m.f.date)||'–'}</text></g>`;
     }).join('');
     return `<svg class="ta-trend" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="경기별 득점률 흐름">${grid}<path d="${path}" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linejoin="round"/>${dots}</svg>`;
   }
@@ -8127,7 +8188,8 @@
     const key = taNorm(raw);
     if(!key){ out.innerHTML = ''; return; }
     const dv = taDiv();
-    const ms = matchFolders.map((f,i)=>taDivOf(f)===dv ? taMatch(f, i, key) : null).filter(Boolean);
+    // 경기 날짜 순서로 놓아야 경기별 흐름·최근 경기 비교가 성장 과정을 보여줘요.
+    const ms = matchFolders.map((f,i)=>taDivOf(f)===dv ? taMatch(f, i, key) : null).filter(Boolean).sort(byMatchDate);
     if(!ms.length){
       const hasTeam = f => { const t = taTeams(f); return taNorm(t.our)===key || taNorm(t.opp)===key; };
       const anyFolder = matchFolders.some(f=>taDivOf(f)===dv && hasTeam(f));
@@ -8211,7 +8273,7 @@
     }
     const rowsHTML = ms.map(m=>{
       const rl = m.result==='W' ? '승' : m.result==='L' ? '패' : '무';
-      return `<div class="ta-match ${m.result}"><span class="ta-res">${rl}</span><span class="ta-mname"><b>${escChip(m.name)}</b><small>vs ${escChip(m.opp==='상대팀'?'이름 없는 상대':m.opp)}${m.setRows.length>1?` · 세트 ${m.sw}:${m.sl}`:''} · 공격 ${taP(m.M.atk)} · 범실 ${m.M.a.errs}</small></span><span class="ta-mscore"><b>${m.M.a.pts}:${m.M.a.lost}</b><span class="ta-split"><i style="flex:${m.M.a.pts||0.001}; background:var(--own)"></i><i style="flex:${m.M.a.lost||0.001}; background:var(--opp)"></i></span></span></div>`;
+      return `<div class="ta-match ${m.result}"><span class="ta-res">${rl}</span><span class="ta-mname"><b>${escChip(m.name)}</b><small>${isDateStr(m.f.date)?fmtMatchDate(m.f.date)+' · ':''}vs ${escChip(m.opp==='상대팀'?'이름 없는 상대':m.opp)}${m.setRows.length>1?` · 세트 ${m.sw}:${m.sl}`:''} · 공격 ${taP(m.M.atk)} · 범실 ${m.M.a.errs}</small></span><span class="ta-mscore"><b>${m.M.a.pts}:${m.M.a.lost}</b><span class="ta-split"><i style="flex:${m.M.a.pts||0.001}; background:var(--own)"></i><i style="flex:${m.M.a.lost||0.001}; background:var(--opp)"></i></span></span></div>`;
     }).join('');
     html.push(sec('🏟️', '경기별 흐름', '점 = 그 경기 득점률(파랑 승 · 빨강 패), 가운데 점선 = 50%', `${ms.length>=2?taTrendSVG(ms, out.clientWidth-30):''}${matchNote}<details class="ta-fold"><summary>경기별 기록 ${ms.length}개 보기</summary><div class="ta-matches">${rowsHTML}</div></details>`));
     // 5) 상대팀별: 50% 기준 좌우 막대 + 강점·약점 꼬리표
@@ -8285,11 +8347,11 @@
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
     ['qrRecordBtn','btnToss2nd','btnRecordMoment','momentMemo','btnImportCsv','btnSaveOrphan','btnQrMode','btnClearZone','btnClearNineZone',
      'videoPlayerSelect','qrOptionSelect','qrDetailSelect','qrUndoBtn','coachNotes','blockZoneSelect','btnTossUndo','btnTossClear',
-     'btnNewMatchFolder','matchSaveName','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
+     'btnNewMatchFolder','matchSaveName','matchSaveDate','newOppNameInput','newOurNameInput','matchDateInput','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
     document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#recordList select, #recordList input').forEach(el=>el.disabled=on);
-    document.querySelectorAll('#setSeg button, #divisionSeg button').forEach(el=>el.disabled=on);
+    document.querySelectorAll('#setSeg button, #divisionSeg button, #newDivSeg button').forEach(el=>el.disabled=on);
     document.querySelectorAll('#qrTeamSeg button').forEach(el=>el.disabled=on);
     document.querySelectorAll('#qrOutcomeSeg button').forEach(el=>el.disabled=on);
     document.querySelectorAll('#qrBucketGrid button, #qrOptionBoard button').forEach(el=>el.disabled=on);
@@ -8345,14 +8407,18 @@
       adopt = confirm(`지금 화면에 폴더 없이 남긴 기록 ${records.length}줄이 있어요.\n\n확인: 이 기록을 "${name}" 폴더에 담아요.\n취소: 화면을 비우고 새로 시작해요.`);
     }
     if(!adopt) resetVideoAnalysisScreen();
+    const dateInput = document.getElementById('matchSaveDate');
+    applyMatchDate(isDateStr(dateInput.value) ? dateInput.value : todayStr());
+    applyDivision(newDivision);
+    applyTeamNames(document.getElementById('newOppNameInput').value, document.getElementById('newOurNameInput').value);
 
     const newFolder = {name, savedAt: new Date().toISOString(), videoName: adopt ? currentVideoName : '', records: adopt ? JSON.parse(JSON.stringify(records)) : [],
-      coachNotes: adopt ? document.getElementById('coachNotes').value : '', oppTeamName, ourTeamName, division:matchDivision, videoRoster:rosterCopy()};
+      coachNotes: adopt ? document.getElementById('coachNotes').value : '', oppTeamName, ourTeamName, division:matchDivision, date:matchDate, videoRoster:rosterCopy()};
     matchFolders.push(newFolder);
     lastPickedMatchFolder = newFolder;
     lastPickedMatchFolderIdx = matchFolders.length-1;
 
-    nameInput.value = '';
+    nameInput.value = ''; resetNewMatchForm(true);
     renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
     renderMatchFolderSelect();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
@@ -8694,7 +8760,8 @@
     videoRoster,
     oppTeamName,
     ourTeamName,
-    division: matchDivision
+    division: matchDivision,
+    date: matchDate
   });
   window.applyVideoAnalysisState = (vs) => {
     clearUndo(); // 다른 경기·화면으로 바뀌면 이전 화면의 되돌리기 기록은 지워요
@@ -8712,7 +8779,7 @@
       document.getElementById('coachNotes').value = matchFolders[activeIdx].coachNotes||'';
       currentVideoName = matchFolders[activeIdx].videoName||'';
       const af = matchFolders[activeIdx];
-      vs = Object.assign({}, vs, {oppTeamName: af.oppTeamName||'', ourTeamName: af.ourTeamName||'', division: af.division||''});
+      vs = Object.assign({}, vs, {oppTeamName: af.oppTeamName||'', ourTeamName: af.ourTeamName||'', division: af.division||'', date: af.date||''});
       if(af.videoRoster) vs.videoRoster = af.videoRoster;
     }
     fixNoVideoOrder();
@@ -8723,6 +8790,8 @@
     oppTeamName = vs.oppTeamName || '상대팀';
     ourTeamName = vs.ourTeamName || '우리팀';
     applyDivision(vs.division||'');
+    applyMatchDate(vs.date||'');
+    resetNewMatchForm();
     document.getElementById('oppTeamNameInput').value = (vs.oppTeamName && vs.oppTeamName!=='상대팀') ? vs.oppTeamName : '';
     document.getElementById('ourTeamNameInput').value = (vs.ourTeamName && vs.ourTeamName!=='우리팀') ? vs.ourTeamName : '';
     updateTeamSegLabels();
