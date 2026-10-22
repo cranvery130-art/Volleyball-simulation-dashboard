@@ -1051,6 +1051,13 @@
   .ta-bwc{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; padding:9px 11px; border-radius:10px; background:var(--panel); border:1px solid var(--border); border-top:3px solid var(--own); min-width:0; }
   .ta-bwc.worst{ border-top-color:var(--opp); }
   .ta-bwc small{ font-size:11px; color:var(--text-dim); font-weight:700; } .ta-bwc > b{ font-size:13.5px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .ta-bwc > span{ font-size:12px; color:var(--text-dim); }
+  /* 경기 정보 안 포지션 배정 명단: 처음엔 접혀 있고 제목 줄에 채운 수가 보여요 */
+  .roster-fold > summary{ list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:6px 0; }
+  .roster-fold > summary::-webkit-details-marker{ display:none; }
+  .roster-fold .rf-count{ font-size:12px; font-weight:700; color:var(--text-dim); }
+  .roster-fold .rf-arrow{ margin-left:auto; font-size:12px; font-weight:700; color:var(--text-dim); }
+  .roster-fold .rf-arrow::after{ content:' ▾'; }
+  .roster-fold[open] .rf-arrow{ font-size:0; } .roster-fold[open] .rf-arrow::after{ content:'접기 ▴'; font-size:12px; }
   .ta-fold{ margin-top:10px; } .ta-fold > summary{ cursor:pointer; font-size:12.5px; font-weight:700; color:var(--text-dim); }
   .ta-fold[open] > summary{ margin-bottom:6px; }
   .ta-matches{ display:flex; flex-direction:column; gap:4px; }
@@ -2526,9 +2533,11 @@
                 <input type="text" id="ourTeamNameInput" class="login-input" style="margin-top:0; flex:1;" placeholder="우리팀">
               </div>
             </div>
-        <label class="field-label" style="margin-top:0;">포지션 배정 명단</label>
-        <div class="field-note" style="margin-top:0; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 "기록 입력"의 <b>관련 선수</b>에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
+        <details class="roster-fold" id="rosterFold">
+        <summary><span class="field-label" style="margin:0;">포지션 배정 명단</span><span class="rf-count" id="rosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
+        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">포지션과 이름(선택)을 적어두면 "기록 입력"의 <b>관련 선수</b>에서 골라 기록에 함께 남길 수 있어요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
+        </details>
     </details>
     <button class="btn qr-mode-btn" id="btnQrMode" type="button" title="한 화면에 기록 입력만 크게 띄우고, 오른쪽 📋 점수 기록에서 1점씩 고치거나 끼워 넣어요(Esc로 종료)"><span class="ic">🎯</span><span><b>빠른 기록 모드</b><small>한 화면에 기록 입력만 · 세트 점수 함께</small></span></button>
     </div>
@@ -5648,7 +5657,7 @@
                  {click:'.k-add', then:(el,sc)=>{ sc.querySelector('.k-chips').innerHTML='<span class="mk-btn on mk-item new">📁 vs 한빛 0907</span>'; }},
                  {click:'.k-video', then:(el,sc)=>{ el.classList.add('playing'); sc.querySelector('.k-icon').textContent='❚❚'; }}, {wait:1800} ] },
       { title:'경기 정보와 세트를 정해요',
-        text:'<b>📋 경기 정보</b>를 펼쳐 생활체육 <b>남자부·여자부</b>를 고르고 팀 이름과 포지션 명단을 적어요(폴더에 함께 저장돼요. 부를 정해 두면 폴더 목록과 팀 누적 분석이 부별로 나뉘어요). 세트는 기록 입력 맨 위에서 골라요. 세트가 바뀌면 기록 전에 세트부터 바꿔주세요.',
+        text:'<b>📋 경기 정보</b>를 펼쳐 생활체육 <b>남자부·여자부</b>를 고르고 팀 이름을 적어요. <b>포지션 배정 명단</b>은 접혀 있으니 제목 줄(채운 수가 보여요)을 눌러 펼쳐 적어요(폴더에 함께 저장돼요. 부를 정해 두면 폴더 목록과 팀 누적 분석이 부별로 나뉘어요). 세트는 기록 입력 맨 위에서 골라요. 세트가 바뀌면 기록 전에 세트부터 바꿔주세요.',
         scene:`<div class="mk-card"><div class="mk-row k-sum" style="justify-content:space-between;"><span class="mk-h">📋 경기 정보 <span class="mk-lbl">✏️ 남자부·여자부 · 팀 이름 · 포지션 명단 입력</span></span><span class="mk-lbl k-arrow">▸</span></div>
           <div class="mk-col k-body" style="display:none;"><div class="mk-row"><div class="mk-input k-opp" data-ph="상대팀"></div><div class="mk-input k-our" data-ph="우리팀"></div></div>
           <div class="mk-row"><span class="mk-lbl">포지션 배정 명단</span><span class="mk-btn">레프트 · ㄱㅁ</span><span class="mk-btn">세터 · ㅇㅈ</span></div></div></div>
@@ -6689,6 +6698,7 @@
     let filled = 0; for(let i=1;i<=9;i++){ const r = videoRoster[i]; if(r && (r.position || r.name)) filled++; }
     const named = ourTeamName!=='우리팀' || oppTeamName!=='상대팀';
     el.innerHTML = `<span class="mi-chip${matchDivision?' on':''}">🏐 ${matchDivision ? DIV_LABEL[matchDivision] : '부 선택'}</span><span class="mi-chip${named?' on':''}">🏷️ ${escChip(ourTeamName)} vs ${escChip(oppTeamName)}</span><span class="mi-chip${filled?' on':''}">👥 명단 ${filled}/9</span>`;
+    const rfc = document.getElementById('rosterFoldCount'); if(rfc) rfc.textContent = `${filled}/9명`;
   }
   function applyTeamNames(opp, our){
     oppTeamName = (opp||'').trim() || '상대팀';
