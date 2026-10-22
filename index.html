@@ -977,20 +977,15 @@
   .gv-fold > h2 .fold-hint{ font-family:inherit; font-size:12px; font-weight:600; color:var(--muted); }
   .gv-fold:not(.collapsed) > h2 .fold-hint{ display:none; }
   body.guest-view #recordsCard{ max-height:none; }
-  /* 팀 누적 분석: 접혀 있어도 눈에 띄는 띠(주황 손잡이) + 결과는 막대·띠·점 그래프 */
-  .team-analysis{ margin-top:12px; }
-  .team-analysis > summary.ta-sum{ list-style:none; cursor:pointer; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:12px; border:1.5px solid color-mix(in srgb, var(--accent) 55%, var(--border)); background:color-mix(in srgb, var(--accent) 9%, var(--panel)); transition:background .2s ease-out, border-color .2s ease-out; }
-  .team-analysis > summary.ta-sum::-webkit-details-marker{ display:none; }
-  .team-analysis > summary.ta-sum:hover{ background:color-mix(in srgb, var(--accent) 15%, var(--panel)); }
-  .team-analysis[open] > summary.ta-sum{ margin-bottom:12px; }
-  .ta-sum-ic{ flex:none; width:46px; height:46px; display:grid; place-items:center; border-radius:12px; background:var(--accent); }
-  .ta-sum-ic svg{ width:30px; height:30px; }
-  .ta-sum-t{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
-  .ta-sum-t b{ font-family:var(--head); font-weight:400; font-size:18px; color:var(--text); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .ta-sum-t b em{ font-style:normal; font-family:var(--body); font-size:10.5px; font-weight:800; letter-spacing:.06em; padding:2px 7px; border-radius:999px; background:var(--accent); color:#fff; }
-  .ta-sum-t small{ font-size:12.5px; color:var(--text-dim); line-height:1.45; }
-  .ta-sum-go{ flex:none; font-size:12.5px; font-weight:800; color:var(--accent-text); white-space:nowrap; }
-  .team-analysis[open] .ta-sum-go::after{ content:' ▴'; } .team-analysis:not([open]) .ta-sum-go::after{ content:' ▾'; }
+  /* 경기 영상 분석 맨 위 탭: 🎬 매치 분석(한 경기) / 📊 팀 누적 분석(저장 경기 모음) — 고른 탭의 카드만 보여요 */
+  .va-tabs{ margin:0 0 14px; border-radius:14px; padding:4px; gap:4px; flex-wrap:nowrap; }
+  .va-tabs button{ border-radius:11px; padding:10px 8px; display:flex; flex-direction:column; align-items:center; gap:2px; transition:background .2s ease-out, color .2s ease-out; }
+  .va-tabs button b{ font-size:15px; font-weight:800; }
+  .va-tabs button small{ font-size:11.5px; font-weight:600; opacity:.8; white-space:normal; line-height:1.3; }
+  #videoCol.va-team > #matchSaveCard, #videoCol.va-team > .video-grid{ display:none !important; }
+  #videoCol:not(.va-team) > #teamAnalysisBox{ display:none; }
+  .team-analysis{ margin-bottom:16px; }
+  /* 팀 누적 분석 결과는 막대·띠·점 그래프 */
   .ta-div-row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
   .ta-div-lab{ flex:none; font-size:12.5px; font-weight:800; color:var(--text); }
   .ta-div-seg{ flex:1; max-width:420px; }
@@ -1103,7 +1098,6 @@
     .ta-hero{ grid-template-columns:1fr 1fr; } .ta-hero-name, .ta-tile-ring{ grid-column:1 / -1; }
     .ta-two, .ta-bw{ grid-template-columns:1fr; }
     .ta-key{ grid-template-columns:1fr; gap:4px; }
-    .ta-sum-t small{ font-size:11.5px; }
   }
   #autoAnalysis .analysis-list{ margin:2px 0 4px; padding-left:18px; } #autoAnalysis .analysis-list li{ margin-bottom:4px; line-height:1.6; }
   #autoAnalysis .aa-topic{ margin:10px 0; padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:var(--panel-2); }
@@ -1279,8 +1273,8 @@
     #quickRecordCard .qr-opt-group{ flex:1 1 100%; }
     #quickRecordCard .qr-opt-group:nth-child(n+3){ flex:0 0 auto; }
   }
-  /* 휴대폰에서도 빠른 기록 모드에서는 같은 촘촘한 배치로 */
-  @media (max-width:699px){
+  /* 휴대폰에서도 빠른 기록 모드에서는 같은 촘촘한 배치로(휴대폰 가로 — 화면 높이 500px 미만 — 도 같이) */
+  @media (max-width:699px), (max-height:499px) and (orientation:landscape){
     body.qr-mode #quickRecordCard{ padding:10px 12px; }
     body.qr-mode #quickRecordCard > h2{ font-size:15px; margin-bottom:4px; padding-bottom:6px; }
     body.qr-mode #quickRecordCard .qr-card-note, #tossRow > .field-note, body.qr-mode #quickRecordCard .fgroup-head .fg-sub{ display:none; }
@@ -1479,20 +1473,68 @@
   .qs-acts button{ min-height:46px; border-radius:9px; border:1px solid var(--border-2); background:var(--panel); color:var(--text); font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; padding:2px; }
   .qs-acts button:disabled{ opacity:.4; cursor:default; }
   .qs-acts button:not(:disabled):active{ background:color-mix(in srgb, var(--accent) 20%, var(--panel)); }
-  /* 태블릿·PC(700px 이상): 오른쪽에 항상 붙어 있는 칸 */
-  @media (min-width:700px){
+  /* 태블릿·PC(700px 이상): 오른쪽에 항상 붙어 있는 칸(휴대폰 가로처럼 낮은 화면은 휴대폰처럼 📋 기록 버튼으로 열어요) */
+  @media (min-width:700px) and (min-height:500px){
     body.qr-mode #quickRecordCard{ display:grid !important; grid-template-columns:minmax(0,1fr) 300px; column-gap:12px; align-content:start; padding-right:0 !important; }
     body.qr-mode #quickRecordCard > *{ grid-column:1; max-width:none !important; }
     body.qr-mode #quickRecordCard > .qm-side{ display:flex; grid-column:2; grid-row:1 / span 40; position:sticky; top:0; height:100vh; height:100dvh; }
+    /* 오른쪽 칸이 화면 높이 그대로라, 카드 아래 여백이 있으면 그만큼 스크롤이 생겨요 → 여백은 왼쪽 맨 아래 줄에만 */
+    body.qr-mode #quickRecordCard{ padding-bottom:0 !important; }
+    body.qr-mode #quickRecordCard .moment-row{ margin-bottom:calc(10px + env(safe-area-inset-bottom)); }
   }
-  @media (min-width:1300px){ body.qr-mode #quickRecordCard{ grid-template-columns:minmax(0,1fr) 340px; } }
-  /* 휴대폰: 위쪽 "📋 기록" 버튼으로 오른쪽에서 열려요 */
-  @media (max-width:699px){
+  @media (min-width:1300px) and (min-height:500px){ body.qr-mode #quickRecordCard{ grid-template-columns:minmax(0,1fr) 340px; } }
+  /* 휴대폰(세로·가로): 위쪽 "📋 기록" 버튼으로 오른쪽에서 열려요 */
+  @media (max-width:699px), (max-height:499px){
     body.qr-mode .qs-toggle{ display:inline-flex; flex:none; min-height:40px; padding:6px 10px; }
     body.qr-mode.qs-open .qm-side{ display:flex; position:fixed; top:0; right:0; bottom:0; width:min(88vw,340px); z-index:320; box-shadow:var(--shadow); }
     body.qr-mode.qs-open .qs-close{ display:block; }
   }
+  /* 휴대폰 가로(낮고 넓은 화면): 기록 입력을 두 칸으로 — 왼쪽 세트·토스·결과, 오른쪽 상황·자세히 기록·기록하기 — 나눠 한 화면에 */
+  @media (max-height:499px) and (min-width:600px) and (orientation:landscape){
+    body.qr-mode #quickRecordCard .fgroup-save{ column-count:2; column-gap:12px; column-fill:balance; }
+    body.qr-mode #quickRecordCard .fgroup-save > *{ break-inside:avoid; }
+    body.qr-mode #quickRecordCard #qrSituationRow{ break-before:column; }
+    body.qr-mode #quickRecordCard .qm-last{ padding:2px 2px 4px; min-height:0; }
+    body.qr-mode .qr-mode-bar{ padding-top:3px; padding-bottom:3px; }
+    body.qr-mode .qr-mode-bar .btn{ min-height:34px; padding-top:5px; padding-bottom:5px; }
+    body.qr-mode .qm-set{ padding-top:2px !important; padding-bottom:2px !important; }
+    body.qr-mode #quickRecordCard .fgroup-save{ padding:4px 8px; }
+    body.qr-mode #quickRecordCard .qr-set-row{ margin-bottom:3px; }
+    body.qr-mode #quickRecordCard .qr-set-row .seg button{ padding:4px; }
+    body.qr-mode #quickRecordCard .toss-tool{ min-height:26px; padding:2px 8px; }
+    body.qr-mode #quickRecordCard .toss-pads .toss-btn{ padding:1px 2px; }
+    body.qr-mode #quickRecordCard .qr-toss-box{ padding:5px 7px; }
+    body.qr-mode #quickRecordCard .qr-bucket-grid button{ padding:3px 8px; min-height:30px; }
+    body.qr-mode #quickRecordCard{ padding-bottom:calc(6px + env(safe-area-inset-bottom)) !important; }
+    /* 자세히 기록을 펼치면 왼쪽 칸(토스·결과는 이미 고른 뒤라) 위에 겹쳐 열려서, 오른쪽 상황·기록하기는 그대로 보여요 */
+    body.qr-mode #quickRecordCard #qrMore[open] > .qr-more-body{ position:fixed; z-index:5; top:46px; bottom:0; left:max(10px, env(safe-area-inset-left)); width:calc(50% - 20px); overflow-y:auto; padding:8px 10px 10px; background:var(--panel); border:1.5px solid var(--accent); border-radius:12px 12px 0 0; box-shadow:var(--shadow); }
+    body.qr-mode .qr-video-slot video{ max-height:28vh !important; }
+  }
+  /* 태블릿 가로·노트북(높이 500~899px): 줄 간격을 조금 더 줄여 자세히 기록을 펼쳐도 한 화면에 */
+  @media (min-width:700px) and (min-height:500px) and (max-height:899px){
+    body.qr-mode .qr-mode-bar{ padding-top:5px; padding-bottom:4px; }
+    body.qr-mode #quickRecordCard .qr-more{ margin:3px 0; }
+    body.qr-mode #quickRecordCard #noZoneNote{ display:none !important; } /* 어느 대형으로 정하는지는 오른쪽 코트 그림 위에 나와요 */
+    body.qr-mode #quickRecordCard .moment-row{ margin-bottom:calc(6px + env(safe-area-inset-bottom)); }
+    body.qr-mode #quickRecordCard .qr-set-row .seg button{ padding:5px 4px; }
+    body.qr-mode #quickRecordCard .toss-pads .toss-btn{ padding:2px; }
+    body.qr-mode #quickRecordCard .toss-tool{ min-height:28px; padding:3px 9px; }
+    body.qr-mode #quickRecordCard .qr-bucket-grid button{ padding:4px 8px; }
+  }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
+  /* 자세히 기록: 양 팀 대형 코트(가로로 눕힘 — 왼쪽 상대, 오른쪽 우리, 가운데 네트). 동그라미를 눌러 선수를 골라요 */
+  .pick-court{ margin:6px 0 0; }
+  .pick-court:empty{ display:none; }
+  .pick-court svg{ width:100%; max-width:460px; display:block; margin:0 auto; }
+  .pick-court .pc-dot{ cursor:pointer; }
+  .pick-court .pc-dot circle{ transition:r .15s ease-out; }
+  .pick-court .pc-dot text{ pointer-events:none; }
+  .pick-court .pc-cap{ display:flex; justify-content:space-between; gap:8px; font-size:11px; color:var(--text-dim); line-height:1.35; margin-bottom:3px; }
+  .pick-court .pc-cap b{ font-weight:800; }
+  .pick-court .pc-cap span:last-child{ text-align:right; }
+  .pick-court .pc-miss{ font-size:11px; color:var(--muted); margin-top:2px; text-align:center; }
+  .qm-side .pick-court.in-side{ flex:none; margin:0; padding:6px 8px 4px; border-top:1px solid var(--border); }
+  .qm-side .pick-court.in-side svg{ max-width:none; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
   .match-info[open] > summary{ margin-bottom:10px; }
@@ -2062,17 +2104,17 @@
           <li>폴더를 만들지 않고 기록했다면 매치 분석 저장 칸에 <b>⚠️ 폴더 없이 남긴 기록</b> 알림과 <b>📁 폴더에 저장</b> 버튼이 나와요. 새 이름을 적으면 새 폴더로, 기존 폴더 이름을 적으면 그 폴더 뒤에 덧붙여 저장해요.</li>
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
-          <li><b>🎯 빠른 기록 모드</b>는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝내요. 기본 화면은 접힌 경기 영상 → 종합 분석·그래프(넓은 화면은 왼쪽 종합 분석·오른쪽 그래프로 반반, 좁은 화면은 위아래) → 접힌 기록 순서로 놓이고, 접힌 칸은 제목을 누르면 펼쳐져요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
-          <li><b>📊 팀 누적 분석</b>: 매치 분석 저장 카드에서 먼저 <b>남자부·여자부</b>를 고르고 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 부에서 그 팀이 나온 저장 폴더만 모아(같은 이름의 팀이어도 다른 부 기록은 섞이지 않아요. 부를 아직 안 정한 예전 폴더는 "부 미지정"으로 따로 모여요) 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 그래프의 상세 분석(⚔️ 공격·🧱 블로킹·📍 코트 위치)을 그 팀이 나온 모든 경기로 합쳐 봐요(🔵 그 팀 / 🔴 상대한 팀들). 위에 이미 있는 공격 위치와 토스 방향(세터 배분)은 빼고, 코트 자리는 경기마다 그 경기 명단·대형으로 정해 그 팀이 늘 아래쪽에 오게 모아요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
+          <li><b>🎯 빠른 기록 모드</b>는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝내요. 휴대폰·태블릿을 <b>가로</b>로 돌려도 한 화면에 맞춰져요: 휴대폰 가로는 왼쪽(세트·토스·결과)·오른쪽(상황·자세히 기록·기록하기) 두 칸으로 나뉘고, 자세히 기록을 펼치면 왼쪽 칸 위에 겹쳐 열려요(점수 기록은 위쪽 📋 기록 버튼). 태블릿 가로·PC는 오른쪽에 점수 기록 칸이 붙고 코트 그림은 그 칸 맨 아래에 나와요. 기본 화면은 접힌 경기 영상 → 종합 분석·그래프(넓은 화면은 왼쪽 종합 분석·오른쪽 그래프로 반반, 좁은 화면은 위아래) → 접힌 기록 순서로 놓이고, 접힌 칸은 제목을 누르면 펼쳐져요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
+          <li><b>📊 팀 누적 분석</b>: 경기 영상 분석 맨 위의 <b>🎬 매치 분석 / 📊 팀 누적 분석</b> 탭 중 팀 누적 분석 탭을 누르면 저장·기록 카드 대신 팀 누적 분석만 크게 보여요(매치 분석 탭에는 팀 누적 분석을 뺀 나머지가 그대로 있어요). 먼저 <b>남자부·여자부</b>를 고르고 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 부에서 그 팀이 나온 저장 폴더만 모아(같은 이름의 팀이어도 다른 부 기록은 섞이지 않아요. 부를 아직 안 정한 예전 폴더는 "부 미지정"으로 따로 모여요) 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 그래프의 상세 분석(⚔️ 공격·🧱 블로킹·📍 코트 위치)을 그 팀이 나온 모든 경기로 합쳐 봐요(🔵 그 팀 / 🔴 상대한 팀들). 위에 이미 있는 공격 위치와 토스 방향(세터 배분)은 빼고, 코트 자리는 경기마다 그 경기 명단·대형으로 정해 그 팀이 늘 아래쪽에 오게 모아요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
-          <li>득실 위치는 따로 고르지 않아요. "자세히 기록"에서 <b>🔵 우리팀 선수·🔴 상대팀 선수</b>를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요. 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
+          <li>득실 위치는 따로 고르지 않아요. "자세히 기록"의 선수 버튼 아래 <b>코트 그림</b>(태블릿·PC 빠른 기록 모드에서는 한 화면에 들어오게 오른쪽 📋 점수 기록 칸 맨 아래)에는 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형으로 명단 선수가 선 자리가 나와요(왼쪽 🔴 상대·오른쪽 🔵 우리, 가운데 네트). 동그라미를 누르거나 아래 버튼으로 <b>🔵 우리팀 선수·🔴 상대팀 선수</b>를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요. 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
           <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기 정보(남자부·여자부, 우리팀·상대팀 이름, 포지션 명단)로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 새 경기 카드에 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 눌러요. 폴더 목록과 📊 팀 누적 분석은 경기 날짜 순서로 놓여요. 폴더 없이 남긴 기록이 있으면 새 폴더에 담을지 물어봐요.</li>
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
           <li>되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
-          <li><b>🧭 바로가기</b>: 화면 오른쪽 가장자리에 붙은 아이콘 줄(PC·태블릿 가로는 항상 보이고, 휴대폰은 오른쪽 가장자리의 <b>🧭 이동</b> 손잡이를 눌러 열어요)에서 아이콘을 눌러 매치 분석 저장·팀 누적 분석·경기 영상·기록·그래프(요약 항목·추세·상세 분석)·종합 분석(주제별)·코치 의견으로 바로 이동해요(휴대폰·태블릿에서는 영상 칸이 빠지고, 빠른 기록 모드 중에는 레일이 숨어요). 지금 보고 있는 곳이 목록에 표시되고, 접힌 칸이나 다른 그래프 탭도 알아서 펼쳐요.</li>
+          <li><b>🧭 바로가기</b>: 화면 오른쪽 가장자리에 붙은 아이콘 줄(PC·태블릿 가로는 항상 보이고, 휴대폰은 오른쪽 가장자리의 <b>🧭 이동</b> 손잡이를 눌러 열어요)에서 아이콘을 눌러 매치 분석 저장·팀 누적 분석(누르면 팀 누적 분석 탭으로 바뀌고, 다른 아이콘은 매치 분석 탭으로 돌아와요)·경기 영상·기록·그래프(요약 항목·추세·상세 분석)·종합 분석(주제별)·코치 의견으로 바로 이동해요(휴대폰·태블릿에서는 영상 칸이 빠지고, 빠른 기록 모드 중에는 레일이 숨어요). 지금 보고 있는 곳이 목록에 표시되고, 접힌 칸이나 다른 그래프 탭도 알아서 펼쳐요.</li>
           <li>"종합 분석"은 AI 평가가 아니라 기록을 집계한 통계예요. <b>🔗 조회 링크</b>를 받은 사람은 코드·비밀번호 없이 링크만 열면 그 경기 폴더의 분석 화면이 바로 열리고(경기 영상·기록 칸은 접혀 있고 종합 분석·그래프가 먼저 크게 보여요. 기록은 맨 아래에 있어요), 조회 링크는 방마다 하나라서 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 조회 링크로 들어온 화면에서는 기록을 남기거나 고칠 수 없고, 전술 시뮬레이션·설정 화면은 보이지 않아요. 링크에는 코드·비밀번호 대신 무작위 번호만 담겨서, 받은 사람은 경기 폴더 분석만 보고 방에는 들어갈 수 없어요. 링크는 개설자나 수정 권한 구성원이 처음 한 번 만들어야 하고, 기록이 자동 저장될 때마다 링크 화면도 최신으로 바뀌어요. 링크가 퍼졌다면 <b>🔄 새 링크로 바꾸기</b>나 <b>🚫 링크 끄기</b>를 눌러요(개설자·수정 권한 구성원만 할 수 있고, 모든 폴더의 예전 링크가 함께 끊겨요). 예전 방식 링크(주소에 코드가 보이던 링크)는 더 이상 열리지 않으니 새로 만들어 보내주세요.</li>
         </ul></div>
         </div>
@@ -2482,6 +2524,22 @@
     <button type="button" class="va-nav-fab" id="vaNavFab" aria-expanded="false" title="바로가기"><span class="ic">🧭</span>이동</button>
     <div class="va-nav-backdrop" id="vaNavBackdrop"></div>
   </nav>
+  <div class="seg va-tabs" id="vaTabSeg" role="tablist" aria-label="경기 영상 분석 보기">
+    <button type="button" role="tab" data-vatab="match" class="active" aria-selected="true"><b>🎬 매치 분석</b><small>경기 기록 · 그래프 · 종합 분석</small></button>
+    <button type="button" role="tab" data-vatab="team" aria-selected="false"><b>📊 팀 누적 분석</b><small>저장 경기를 모아 한 팀 분석</small></button>
+  </div>
+  <div class="card team-analysis" id="teamAnalysisBox">
+    <h2>📊 팀 누적 분석</h2>
+    <div class="field-note" style="margin-top:0;">저장된 경기 폴더를 모아 한 팀을 분석해요. 한 경기 기록·그래프·종합 분석은 <b>🎬 매치 분석</b> 탭에서 봐요.</div>
+      <div class="ta-div-row"><span class="ta-div-lab">부</span><div class="seg ta-div-seg" id="taDivSeg"></div></div>
+      <div class="ta-form">
+        <input type="text" id="teamAnalysisInput" class="login-input" maxlength="40" placeholder="팀 이름 (예: 위드나인)" autocomplete="off">
+        <button class="btn primary" id="btnTeamAnalysis" type="button">📊 분석하기</button>
+      </div>
+      <div class="chip-pick ta-chips" id="teamAnalysisChips"></div>
+      <div class="field-note" style="margin-top:6px;">위에서 고른 부(남자부·여자부)의 저장된 경기 폴더 중 📋 경기 정보에 이 팀 이름(우리팀·상대팀 어느 쪽이든)이 적힌 경기만 모아 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표를 막대·띠·점 그래프로 보여줘요. 아래 팀 이름을 눌러도 바로 분석하고, 그래프에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요.</div>
+      <div id="teamAnalysisResult"></div>
+  </div>
   <div class="card match-save-card" id="matchSaveCard" style="margin-bottom:16px;">
     <h2>매치 분석 저장</h2>
     <div class="field-note" style="margin-top:0;">경기마다 기록·그래프·종합 분석·코치 의견을 폴더 하나로 저장해요. 폴더를 새로 만들거나 불러오면 그 폴더가 "활성 폴더"가 되고, 이후 기록이 자동으로 함께 저장돼요. 영상 파일은 저장되지 않지만 파일 이름이 남아서 어느 경기였는지 알 수 있어요.</div>
@@ -2586,17 +2644,6 @@
     </details>
     <button class="btn qr-mode-btn" id="btnQrMode" type="button" title="한 화면에 기록 입력만 크게 띄우고, 오른쪽 📋 점수 기록에서 1점씩 고치거나 끼워 넣어요(Esc로 종료)"><span class="ic">🎯</span><span><b>빠른 기록 모드</b><small>한 화면에 기록 입력만 · 세트 점수 함께</small></span></button>
     </div>
-    <details class="team-analysis" id="teamAnalysisBox">
-      <summary class="ta-sum"><span class="ta-sum-ic" aria-hidden="true"><svg viewBox="0 0 30 30"><rect x="4" y="15" width="5" height="11" rx="1.5" fill="#fff" opacity=".7"/><rect x="12.5" y="9" width="5" height="17" rx="1.5" fill="#fff"/><rect x="21" y="4" width="5" height="22" rx="1.5" fill="#fff" opacity=".85"/></svg></span><span class="ta-sum-t"><b>팀 누적 분석 <em>NEW</em></b><small>팀 이름만 고르면 저장된 경기를 모아 전적·플레이 체제·강점과 약점을 그래프로 보여줘요 <span id="teamAnalysisState"></span></small></span><span class="ta-sum-go">열기</span></summary>
-      <div class="ta-div-row"><span class="ta-div-lab">부</span><div class="seg ta-div-seg" id="taDivSeg"></div></div>
-      <div class="ta-form">
-        <input type="text" id="teamAnalysisInput" class="login-input" maxlength="40" placeholder="팀 이름 (예: 위드나인)" autocomplete="off">
-        <button class="btn primary" id="btnTeamAnalysis" type="button">📊 분석하기</button>
-      </div>
-      <div class="chip-pick ta-chips" id="teamAnalysisChips"></div>
-      <div class="field-note" style="margin-top:6px;">위에서 고른 부(남자부·여자부)의 저장된 경기 폴더 중 📋 경기 정보에 이 팀 이름(우리팀·상대팀 어느 쪽이든)이 적힌 경기만 모아 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표를 막대·띠·점 그래프로 보여줘요. 아래 팀 이름을 눌러도 바로 분석하고, 그래프에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요.</div>
-      <div id="teamAnalysisResult"></div>
-    </details>
   </div>
   <div class="video-grid">
     <div class="video-grid-col">
@@ -2848,7 +2895,8 @@
                   <option value="">선택 안 함</option>
                 </select>
               </div>
-              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 팀별로 눌러 고르면 기록에 함께 남아요(예: 우리 공격이 막혔으면 우리 공격수와 상대 블로커). 명단은 📋 경기 정보에서 팀별로 적어요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
+              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 팀별로 눌러 고르면 기록에 함께 남아요(예: 우리 공격이 막혔으면 우리 공격수와 상대 블로커). 아래 <b>코트 그림</b>(태블릿·PC 빠른 기록 모드에서는 오른쪽 점수 기록 칸 맨 아래)은 지금 고른 상황에 맞는 양 팀 대형(전술 시뮬레이션에 저장된 대형)으로 선수가 선 자리를 보여줘요. 동그라미를 눌러도 그 선수가 골라져요. 명단은 📋 경기 정보에서 팀별로 적어요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
+              <div id="pickCourtHome" hidden></div><div class="pick-court" id="pickCourt"></div>
             </div>
             <div id="zonePickerWrap" style="display:none;">
               <label class="field-label" style="margin-top:0;">블로킹 위치 (선택)</label>
@@ -5777,7 +5825,7 @@
           <div class="mk-toast k-toast">🎁 상대 범실 → 우리 +1</div>`,
         script:[{click:'.k-b1', then:el=>el.classList.add('on')}, {wait:500}, {click:'.k-b2', then:(el,sc)=>{ sc.querySelector('.k-b1').classList.remove('on'); el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1600} ] },
       { title:'상황 버튼을 누르고, 필요하면 자세히',
-        text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·우리·상대 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러 남겨요. 코트 위치는 고른 선수의 포지션과 저장된 대형으로 자동으로 정해져요.',
+        text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·우리·상대 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러 남겨요. 코트 위치는 고른 선수의 포지션과 저장된 대형으로 자동으로 정해져요. 선수 버튼 아래 <b>코트 그림</b>(태블릿·PC는 오른쪽 점수 기록 칸 맨 아래)에 지금 상황의 양 팀 대형(왼쪽 상대·오른쪽 우리)이 나와서, 선수가 선 자리를 보고 동그라미를 눌러 고를 수 있어요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:34px;">공격</span><span class="mk-btn k-l">레프트</span><span class="mk-btn">라이트</span><span class="mk-btn">A</span><span class="mk-btn">B</span><span class="mk-btn">백A</span><span class="mk-btn">세터 2구</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:34px;">서브</span><span class="mk-btn">서브</span><span class="mk-btn">리시브</span><span class="mk-btn">블로킹</span><span class="mk-btn">파울</span></div>
           <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">공격 방식·우리·상대 선수 (선택)</span></div>
@@ -5822,7 +5870,7 @@
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] },
       { title:'팀 누적 분석으로 한 팀을 모아 봐요',
-        text:'매치 분석 저장 카드의 <b>📊 팀 누적 분석</b>을 펼쳐 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 구성 띠, 경기별 흐름 선, 상대팀별 좌우 막대). 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 방식·블로킹·코트 위치를 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요.',
+        text:'경기 영상 분석 맨 위의 <b>📊 팀 누적 분석</b> 탭을 눌러(한 경기 기록·그래프는 <b>🎬 매치 분석</b> 탭) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 구성 띠, 경기별 흐름 선, 상대팀별 좌우 막대). 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 방식·블로킹·코트 위치를 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요.',
         scene:`<div class="mk-card"><div class="mk-h">📊 팀 누적 분석</div><div class="mk-row"><span class="mk-btn k-t1">위드나인 5경기</span><span class="mk-btn">한빛 2경기</span><span class="mk-btn">다온 1경기</span></div>
           <div class="mk-col k-res" style="display:none;"><div class="mk-lbl"><b>위드나인</b> · 5경기 4승 1패 · 득점률 53%</div><div class="mk-list"><div class="mk-item">승 · 9/12 vs 한빛전 · 75:45</div><div class="mk-item">패 · 9/19 vs 새솔전 · 57:75</div></div><div class="mk-lbl">🔑 승부 열쇠: 서브 효율(이긴 경기 56% · 진 경기 29%)</div></div></div>`,
         script:[ {click:'.k-t1', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-res').style.display='flex'; }}, {wait:2200} ] }
@@ -6316,6 +6364,7 @@
       const label = o.dataset.short ? escChip(o.dataset.short) : m ? `${escChip(m[1])}<small>${escChip(m[2])}</small>` : escChip(o.textContent);
       return `<button type="button" class="chip-btn${o.value===sel.value?' on':''}${o.value===''?' none':''}" data-v="${escChip(o.value)}" title="${escChip(o.textContent)}"${sel.disabled?' disabled':''}>${label}</button>`;
     }).join('');
+    if((id==='videoPlayerSelect' || id==='videoOppPlayerSelect') && typeof renderPickCourt==='function') renderPickCourt();
   }
   function refreshAllChips(){ ['qrDetailSelect','videoPlayerSelect','videoOppPlayerSelect','blockZoneSelect'].forEach(refreshChips); }
   function renderVideoPlayerSelect(){
@@ -6447,8 +6496,66 @@
       parts.push(`${ic} ${escChip(e.name||id+'번')}(${POS_SHORT(e.position)}) — <b>${escChip(sp.folder)}</b>${sp.scenLabel?` · ${escChip(sp.scenLabel)}`:''}${sp.folder!=='기본 대형' && !sp.exact ? ' (같은 상황 대형이 없어 이 폴더의 첫 대형)' : ''}`);
     });
     el.innerHTML = parts.length ? `📍 위치는 대형으로 자동으로 정해요: ${parts.join(' / ')}` : '📍 위치는 따로 고르지 않아요. 우리·상대 선수를 고르면 그 선수의 포지션과 대형으로 자동으로 정해요.';
+    renderPickCourt();
   }
   ['videoPlayerSelect','videoOppPlayerSelect'].forEach(id=>document.getElementById(id).addEventListener('change', ()=>updateAutoSpotNote()));
+  // 자세히 기록의 코트 그림: 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형으로 명단 선수 자리를 보여주고, 눌러서 고르게 해요.
+  // 분석 코트(가로 400·세로 760, 아래 우리)를 왼쪽으로 눕혀 그려요: X = y, Y = 400 - x (오른쪽 우리, 왼쪽 상대).
+  // 빠른 기록 모드의 태블릿·PC(700px 이상)는 왼쪽 기록 칸에 남는 높이가 없어서, 오른쪽 📋 점수 기록 칸 맨 아래로 옮겨 한 화면에 들어오게 해요.
+  function placePickCourt(){
+    const box = document.getElementById('pickCourt'), side = document.getElementById('qsActBar'), home = document.getElementById('pickCourtHome');
+    if(!box || !side || !home) return false;
+    const wide = document.body.classList.contains('qr-mode') && window.innerWidth >= 700 && window.innerHeight >= 500; // 오른쪽 칸이 보이는 크기와 같게
+    if(box.previousElementSibling===home && !wide) return false;
+    if(wide && box.nextElementSibling===side) return false;
+    if(wide) side.before(box); else home.after(box);
+    box.classList.toggle('in-side', wide);
+    return true;
+  }
+  function renderPickCourt(){
+    const box = document.getElementById('pickCourt'); if(!box) return;
+    const moved = placePickCourt(), big = box.classList.contains('in-side');
+    const opt = document.getElementById('qrOptionSelect').value;
+    let team = 'our'; try{ team = qrTeam; }catch(err){}
+    const sides = [['our', videoRoster, 'videoPlayerSelect', 'var(--own)'], ['opp', oppRoster, 'videoOppPlayerSelect', 'var(--opp)']];
+    if(!sides.some(([,ro])=>Object.values(ro||{}).some(e=>e && e.position))){ box.innerHTML = ''; return; }
+    let dots = '', cap = {}, miss = [];
+    sides.forEach(([side, ro, selId, col])=>{
+      const sel = document.getElementById(selId), cur = sel.value, used = {};
+      let info = null;
+      for(let i=1;i<=9;i++){
+        const e = ro[i]; if(!e) continue;
+        if(!e.position){ if(e.name) miss.push(`${side==='our'?'🔵':'🔴'} ${i}번`); continue; }
+        const sp = formationSpot(side, e.position, opt, team); if(!sp) continue;
+        info = info || sp;
+        const k = Math.round(sp.x/30)+'|'+Math.round(sp.y/30), n = used[k] = (used[k]||0)+1; // 같은 포지션이 겹치면 조금씩 비켜요
+        const X = sp.y + (n-1)*26, Y = 400 - sp.x + (n-1)*20, on = String(i)===cur;
+        const cut = big ? 3 : 4, nm = e.name ? (e.name.length>cut ? e.name.slice(0,cut)+'…' : e.name) : POS_SHORT(e.position);
+        // 오른쪽 칸(좁은 폭)에서는 동그라미·글씨를 키워서 누르고 읽기 쉽게 해요
+        const r = big ? (on?38:33) : (on?30:24), fs = big ? 34 : 25, ls = big ? 28 : 21, ly = r + (big ? 30 : 26);
+        dots += `<g class="pc-dot" data-sel="${selId}" data-v="${i}"><title>${escChip(rosterLabel(i, ro))}</title>`
+          + `<circle cx="${X}" cy="${Y}" r="${r}" fill="${on?col:'var(--panel)'}" stroke="${col}" stroke-width="${on?5:3.5}"/>`
+          + `<text x="${X}" y="${Y+fs*0.36}" text-anchor="middle" font-size="${fs}" font-weight="800" fill="${on?'#fff':'var(--text)'}">${i}</text>`
+          + `<text x="${X}" y="${Y+ly}" text-anchor="middle" font-size="${ls}" font-weight="700" fill="var(--text)" paint-order="stroke" stroke="var(--panel-2)" stroke-width="5" stroke-linejoin="round">${escChip(nm)}</text></g>`;
+      }
+      cap[side] = info ? `${escChip(info.folder)}${info.scenLabel?' · '+escChip(info.scenLabel):''}` : '';
+    });
+    const svg = `<svg viewBox="-14 -6 788 432" role="img" aria-label="양 팀 대형 코트 — 눌러서 선수 고르기">
+      <rect x="0" y="0" width="760" height="400" rx="10" fill="var(--panel-2)" stroke="var(--border)" stroke-width="3"/>
+      <line x1="260" x2="260" y1="0" y2="400" stroke="var(--border)" stroke-dasharray="10 9" stroke-width="2"/><line x1="500" x2="500" y1="0" y2="400" stroke="var(--border)" stroke-dasharray="10 9" stroke-width="2"/>
+      <rect x="374" y="-6" width="12" height="412" rx="4" fill="var(--accent)"/>
+      <text x="16" y="26" font-size="20" font-weight="800" fill="var(--opp)">🔴 ${escChip(oppTeamName)}</text>
+      <text x="744" y="26" text-anchor="end" font-size="20" font-weight="800" fill="var(--own)">${escChip(ourTeamName)} 🔵</text>${dots}</svg>`;
+    box.innerHTML = `<div class="pc-cap"><span>🔴 ${cap.opp||'명단 포지션 없음'}</span><span>🔵 ${cap.our||'명단 포지션 없음'}</span></div>${svg}${miss.length?`<div class="pc-miss">포지션이 없어 코트에 없는 선수: ${miss.join(', ')}</div>`:''}`;
+    if(moved && document.body.classList.contains('qr-mode') && typeof fitQsList==='function') requestAnimationFrame(fitQsList);
+  }
+  window.addEventListener('resize', ()=>{ if(document.body.classList.contains('qr-mode')) renderPickCourt(); });
+  document.getElementById('pickCourt').addEventListener('click', e=>{
+    const g = e.target.closest('.pc-dot'); if(!g) return;
+    const sel = document.getElementById(g.dataset.sel); if(!sel || sel.disabled) return;
+    sel.value = sel.value===g.dataset.v ? '' : g.dataset.v; // 고른 선수를 한 번 더 누르면 풀려요
+    sel.dispatchEvent(new Event('change')); refreshChips(sel.id);
+  });
 
   let selectedSet = 1; // 1/2/3 — which set new records are tagged with
   document.querySelectorAll('#setSeg button').forEach(btn=>{
@@ -7308,6 +7415,7 @@
   }
   function setQrMode(on){
     document.body.classList.toggle('qr-mode', on);
+    renderPickCourt(); // 코트 그림 자리: 빠른 기록 모드의 넓은 화면은 오른쪽 칸 맨 아래, 아니면 자세히 기록 안
     // 영상을 올렸으면 빠른 기록 모드 위쪽으로 옮겨 보면서 기록하고, 끝나면 경기 영상 칸으로 돌려놔요(재생은 그대로 이어져요).
     const slot = document.getElementById('qrVideoSlot');
     if(on && currentVideoName && video.getAttribute('src')) slot.appendChild(video);
@@ -7789,6 +7897,7 @@
     list.innerHTML = items.map(it=> it.sep ? '<div class="va-nav-sep"></div>' : `<button type="button" class="va-nav-item${it.sub?' sub':''}" data-target="${it.target}"${it.tab?` data-tab="${it.tab}"`:''} title="${escChip(it.full)}" aria-label="${escChip(it.full)}"><span class="ic">${it.ic}</span><span class="lb">${escChip(it.lb)}</span></button>`).join('');
   }
   function vaNavGo(target, tab){
+    if(window.setVaTab) window.setVaTab(target==='teamAnalysisBox' ? 'team' : 'match');
     if(tab){ const tb = document.querySelector(`#graphTabSeg button[data-tab="${tab}"]`); if(tb && !tb.classList.contains('active')) tb.click(); }
     const el = document.getElementById(target); if(!el) return;
     const fold = el.closest('.gv-fold.collapsed'); if(fold) openFoldCard(fold.id);
@@ -8763,7 +8872,6 @@
       ? list.slice(0,12).map(t=>`<button type="button" class="chip-btn ta-chip${taNorm(t.name)===cur?' active':''}" data-team="${escChip(t.name)}">${escChip(t.name)} <small>${t.n}경기</small></button>`).join('')
       : `<span class="field-note" style="margin:0;">${taDivName(taDiv())}에 팀 이름이 적힌 저장 폴더가 아직 없어요. 경기 폴더의 📋 경기 정보에서 부와 팀 이름을 정해 두면 여기에 나와요.</span>`;
     renderTaDivSeg();
-    const st = document.getElementById('teamAnalysisState'); if(st) st.textContent = matchFolders.length ? `· 남자부·여자부를 나눠 분석해요` : '';
   }
   (function initTeamAnalysis(){
     const box = document.getElementById('teamAnalysisBox'); if(!box) return;
@@ -8775,7 +8883,19 @@
       const b = e.target.closest('.ta-chip'); if(!b) return;
       input.value = b.dataset.team; run();
     });
-    box.addEventListener('toggle', ()=>{ if(box.open){ renderTeamAnalysisChips(); if(input.value.trim()) renderTeamAnalysis(); } });
+    // 맨 위 탭: 팀 누적 분석 탭을 열 때마다 최신 폴더로 다시 그려요
+    window.setVaTab = tab => {
+      const col = document.getElementById('videoCol'); if(!col) return;
+      const team = tab==='team';
+      if(col.classList.contains('va-team')===team) return;
+      col.classList.toggle('va-team', team);
+      document.querySelectorAll('#vaTabSeg [data-vatab]').forEach(b=>{ const on = b.dataset.vatab===tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); });
+      if(team){ renderTeamAnalysisChips(); if(input.value.trim()) renderTeamAnalysis(); }
+      const seg = document.getElementById('vaTabSeg');
+      if(seg && seg.getBoundingClientRect().top < 0) window.scrollTo({top:seg.getBoundingClientRect().top + window.scrollY - 12});
+      if(typeof renderVaNav==='function') renderVaNav();
+    };
+    document.getElementById('vaTabSeg').addEventListener('click', e=>{ const b = e.target.closest('[data-vatab]'); if(b) window.setVaTab(b.dataset.vatab); });
     document.getElementById('taDivSeg').addEventListener('click', e=>{
       const b = e.target.closest('button[data-div]'); if(!b) return;
       taDivision = b.dataset.div; run();
