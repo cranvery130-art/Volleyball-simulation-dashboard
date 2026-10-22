@@ -1488,7 +1488,7 @@
   }
   .qr-more-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:10px; }
   /* 자세히 기록: 양 팀 대형 코트(가로로 눕힘 — 왼쪽 상대, 오른쪽 우리, 가운데 네트). 동그라미를 눌러 선수를 골라요 */
-  .pick-court{ margin:0 0 6px; }
+  .pick-court{ margin:6px 0 0; }
   .pick-court:empty{ display:none; }
   .pick-court svg{ width:100%; max-width:460px; display:block; margin:0 auto; }
   .pick-court .pc-dot{ cursor:pointer; }
@@ -1498,6 +1498,8 @@
   .pick-court .pc-cap b{ font-weight:800; }
   .pick-court .pc-cap span:last-child{ text-align:right; }
   .pick-court .pc-miss{ font-size:11px; color:var(--muted); margin-top:2px; text-align:center; }
+  .qm-side .pick-court.in-side{ flex:none; margin:0; padding:6px 8px 4px; border-top:1px solid var(--border); }
+  .qm-side .pick-court.in-side svg{ max-width:none; }
   .match-info{ margin-top:12px; }
   .match-info > summary{ list-style:none; cursor:pointer; margin-bottom:0; }
   .match-info[open] > summary{ margin-bottom:10px; }
@@ -2072,7 +2074,7 @@
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
-          <li>득실 위치는 따로 고르지 않아요. "자세히 기록" 맨 위 <b>코트 그림</b>에는 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형으로 명단 선수가 선 자리가 나와요(왼쪽 🔴 상대·오른쪽 🔵 우리, 가운데 네트). 동그라미를 누르거나 아래 버튼으로 <b>🔵 우리팀 선수·🔴 상대팀 선수</b>를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요. 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
+          <li>득실 위치는 따로 고르지 않아요. "자세히 기록"의 선수 버튼 아래 <b>코트 그림</b>에는 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형으로 명단 선수가 선 자리가 나와요(왼쪽 🔴 상대·오른쪽 🔵 우리, 가운데 네트). 동그라미를 누르거나 아래 버튼으로 <b>🔵 우리팀 선수·🔴 상대팀 선수</b>를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요. 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
           <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기 정보(남자부·여자부, 우리팀·상대팀 이름, 포지션 명단)로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 새 경기 카드에 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 눌러요. 폴더 목록과 📊 팀 누적 분석은 경기 날짜 순서로 놓여요. 폴더 없이 남긴 기록이 있으면 새 폴더에 담을지 물어봐요.</li>
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
@@ -2846,7 +2848,6 @@
               <div class="foul-desc" id="qrFoulDesc" style="display:none;"></div>
             </div>
             <div class="quick-record-row qr-optional">
-              <div class="pick-court" id="pickCourt"></div>
               <div class="qr-label">🔵 우리팀 선수 <span class="qr-opt-tag">선택</span></div>
               <div class="qr-controls">
                 <select id="videoPlayerSelect" style="flex:1;">
@@ -2859,7 +2860,8 @@
                   <option value="">선택 안 함</option>
                 </select>
               </div>
-              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 팀별로 눌러 고르면 기록에 함께 남아요(예: 우리 공격이 막혔으면 우리 공격수와 상대 블로커). 위 <b>코트 그림</b>은 지금 고른 상황에 맞는 양 팀 대형(전술 시뮬레이션에 저장된 대형)으로 선수가 선 자리를 보여줘요. 동그라미를 눌러도 그 선수가 골라져요. 명단은 📋 경기 정보에서 팀별로 적어요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
+              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 팀별로 눌러 고르면 기록에 함께 남아요(예: 우리 공격이 막혔으면 우리 공격수와 상대 블로커). 아래 <b>코트 그림</b>은 지금 고른 상황에 맞는 양 팀 대형(전술 시뮬레이션에 저장된 대형)으로 선수가 선 자리를 보여줘요. 동그라미를 눌러도 그 선수가 골라져요. 명단은 📋 경기 정보에서 팀별로 적어요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
+              <div id="pickCourtHome" hidden></div><div class="pick-court" id="pickCourt"></div>
             </div>
             <div id="zonePickerWrap" style="display:none;">
               <label class="field-label" style="margin-top:0;">블로킹 위치 (선택)</label>
@@ -5788,7 +5790,7 @@
           <div class="mk-toast k-toast">🎁 상대 범실 → 우리 +1</div>`,
         script:[{click:'.k-b1', then:el=>el.classList.add('on')}, {wait:500}, {click:'.k-b2', then:(el,sc)=>{ sc.querySelector('.k-b1').classList.remove('on'); el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1600} ] },
       { title:'상황 버튼을 누르고, 필요하면 자세히',
-        text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·우리·상대 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러 남겨요. 코트 위치는 고른 선수의 포지션과 저장된 대형으로 자동으로 정해져요. 자세히 기록 맨 위 <b>코트 그림</b>에 지금 상황의 양 팀 대형(왼쪽 상대·오른쪽 우리)이 나와서, 선수가 선 자리를 보고 동그라미를 눌러 고를 수 있어요.',
+        text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·우리·상대 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러 남겨요. 코트 위치는 고른 선수의 포지션과 저장된 대형으로 자동으로 정해져요. 선수 버튼 아래 <b>코트 그림</b>에 지금 상황의 양 팀 대형(왼쪽 상대·오른쪽 우리)이 나와서, 선수가 선 자리를 보고 동그라미를 눌러 고를 수 있어요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:34px;">공격</span><span class="mk-btn k-l">레프트</span><span class="mk-btn">라이트</span><span class="mk-btn">A</span><span class="mk-btn">B</span><span class="mk-btn">백A</span><span class="mk-btn">세터 2구</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:34px;">서브</span><span class="mk-btn">서브</span><span class="mk-btn">리시브</span><span class="mk-btn">블로킹</span><span class="mk-btn">파울</span></div>
           <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">공격 방식·우리·상대 선수 (선택)</span></div>
@@ -6464,8 +6466,20 @@
   ['videoPlayerSelect','videoOppPlayerSelect'].forEach(id=>document.getElementById(id).addEventListener('change', ()=>updateAutoSpotNote()));
   // 자세히 기록의 코트 그림: 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형으로 명단 선수 자리를 보여주고, 눌러서 고르게 해요.
   // 분석 코트(가로 400·세로 760, 아래 우리)를 왼쪽으로 눕혀 그려요: X = y, Y = 400 - x (오른쪽 우리, 왼쪽 상대).
+  // 빠른 기록 모드의 태블릿·PC(700px 이상)는 왼쪽 기록 칸에 남는 높이가 없어서, 오른쪽 📋 점수 기록 칸 맨 아래로 옮겨 한 화면에 들어오게 해요.
+  function placePickCourt(){
+    const box = document.getElementById('pickCourt'), side = document.getElementById('qsActBar'), home = document.getElementById('pickCourtHome');
+    if(!box || !side || !home) return false;
+    const wide = document.body.classList.contains('qr-mode') && window.innerWidth >= 700;
+    if(box.previousElementSibling===home && !wide) return false;
+    if(wide && box.nextElementSibling===side) return false;
+    if(wide) side.before(box); else home.after(box);
+    box.classList.toggle('in-side', wide);
+    return true;
+  }
   function renderPickCourt(){
     const box = document.getElementById('pickCourt'); if(!box) return;
+    const moved = placePickCourt(), big = box.classList.contains('in-side');
     const opt = document.getElementById('qrOptionSelect').value;
     let team = 'our'; try{ team = qrTeam; }catch(err){}
     const sides = [['our', videoRoster, 'videoPlayerSelect', 'var(--own)'], ['opp', oppRoster, 'videoOppPlayerSelect', 'var(--opp)']];
@@ -6481,11 +6495,13 @@
         info = info || sp;
         const k = Math.round(sp.x/30)+'|'+Math.round(sp.y/30), n = used[k] = (used[k]||0)+1; // 같은 포지션이 겹치면 조금씩 비켜요
         const X = sp.y + (n-1)*26, Y = 400 - sp.x + (n-1)*20, on = String(i)===cur;
-        const nm = e.name ? (e.name.length>4 ? e.name.slice(0,4)+'…' : e.name) : POS_SHORT(e.position);
+        const cut = big ? 3 : 4, nm = e.name ? (e.name.length>cut ? e.name.slice(0,cut)+'…' : e.name) : POS_SHORT(e.position);
+        // 오른쪽 칸(좁은 폭)에서는 동그라미·글씨를 키워서 누르고 읽기 쉽게 해요
+        const r = big ? (on?38:33) : (on?30:24), fs = big ? 34 : 25, ls = big ? 28 : 21, ly = r + (big ? 30 : 26);
         dots += `<g class="pc-dot" data-sel="${selId}" data-v="${i}"><title>${escChip(rosterLabel(i, ro))}</title>`
-          + `<circle cx="${X}" cy="${Y}" r="${on?30:24}" fill="${on?col:'var(--panel)'}" stroke="${col}" stroke-width="${on?5:3.5}"/>`
-          + `<text x="${X}" y="${Y+9}" text-anchor="middle" font-size="25" font-weight="800" fill="${on?'#fff':'var(--text)'}">${i}</text>`
-          + `<text x="${X}" y="${Y+(on?56:50)}" text-anchor="middle" font-size="21" font-weight="700" fill="var(--text)" paint-order="stroke" stroke="var(--panel-2)" stroke-width="5" stroke-linejoin="round">${escChip(nm)}</text></g>`;
+          + `<circle cx="${X}" cy="${Y}" r="${r}" fill="${on?col:'var(--panel)'}" stroke="${col}" stroke-width="${on?5:3.5}"/>`
+          + `<text x="${X}" y="${Y+fs*0.36}" text-anchor="middle" font-size="${fs}" font-weight="800" fill="${on?'#fff':'var(--text)'}">${i}</text>`
+          + `<text x="${X}" y="${Y+ly}" text-anchor="middle" font-size="${ls}" font-weight="700" fill="var(--text)" paint-order="stroke" stroke="var(--panel-2)" stroke-width="5" stroke-linejoin="round">${escChip(nm)}</text></g>`;
       }
       cap[side] = info ? `${escChip(info.folder)}${info.scenLabel?' · '+escChip(info.scenLabel):''}` : '';
     });
@@ -6496,7 +6512,9 @@
       <text x="16" y="26" font-size="20" font-weight="800" fill="var(--opp)">🔴 ${escChip(oppTeamName)}</text>
       <text x="744" y="26" text-anchor="end" font-size="20" font-weight="800" fill="var(--own)">${escChip(ourTeamName)} 🔵</text>${dots}</svg>`;
     box.innerHTML = `<div class="pc-cap"><span>🔴 ${cap.opp||'명단 포지션 없음'}</span><span>🔵 ${cap.our||'명단 포지션 없음'}</span></div>${svg}${miss.length?`<div class="pc-miss">포지션이 없어 코트에 없는 선수: ${miss.join(', ')}</div>`:''}`;
+    if(moved && document.body.classList.contains('qr-mode') && typeof fitQsList==='function') requestAnimationFrame(fitQsList);
   }
+  window.addEventListener('resize', ()=>{ if(document.body.classList.contains('qr-mode')) renderPickCourt(); });
   document.getElementById('pickCourt').addEventListener('click', e=>{
     const g = e.target.closest('.pc-dot'); if(!g) return;
     const sel = document.getElementById(g.dataset.sel); if(!sel || sel.disabled) return;
@@ -7362,6 +7380,7 @@
   }
   function setQrMode(on){
     document.body.classList.toggle('qr-mode', on);
+    renderPickCourt(); // 코트 그림 자리: 빠른 기록 모드의 넓은 화면은 오른쪽 칸 맨 아래, 아니면 자세히 기록 안
     // 영상을 올렸으면 빠른 기록 모드 위쪽으로 옮겨 보면서 기록하고, 끝나면 경기 영상 칸으로 돌려놔요(재생은 그대로 이어져요).
     const slot = document.getElementById('qrVideoSlot');
     if(on && currentVideoName && video.getAttribute('src')) slot.appendChild(video);
