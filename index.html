@@ -952,7 +952,7 @@
   .court-an-main{ min-width:0; }
   .cw-legend{ display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin:0 0 6px; }
   .cw-chip{ display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:999px; border:1px solid var(--border-2); background:var(--panel); color:var(--text); font:inherit; font-size:11.5px; font-weight:700; cursor:pointer; }
-  .cw-chip svg{ width:26px; height:10px; flex:none; }
+  .cw-chip svg{ width:30px; height:12px; flex:none; }
   .cw-chip.active{ border-color:var(--text); box-shadow:inset 0 0 0 1px var(--text); }
   .cw-chip.cw-reset{ color:var(--text-dim); }
   .cw-title{ font-size:12.5px; font-weight:800; margin:0 0 4px; }
@@ -963,6 +963,22 @@
   .cw-bar i{ display:block; min-width:3px; }
   .cw-forms{ margin-top:8px; font-size:12px; }
   .court-an-table td small.cw-zone{ color:var(--text-dim); font-weight:700; }
+  .qr-ball-pick{ display:flex; flex-direction:column; gap:4px; }
+  .qr-ball-pick .qbp-row{ display:grid; grid-template-columns:34px repeat(3, minmax(0,1fr)); gap:4px; align-items:center; }
+  .qr-ball-pick .qbp-lbl{ font-size:11px; font-weight:700; color:var(--muted); text-align:right; padding-right:2px; }
+  .qr-ball-pick .chip-btn, #quickRecordCard .qr-ball-pick .chip-btn{ width:100%; justify-content:center; align-items:center; text-align:center; padding-left:2px; padding-right:2px; white-space:nowrap; }
+  .qr-ball-state{ font-size:11px; font-weight:600; color:var(--muted); }
+  /* 넓은 화면은 앞·중간·뒤 세 묶음을 한 줄로 놓아서 한 화면에 들어가게 해요 */
+  #qrBallRow.in-side{ padding:4px 10px 0; margin:0; }
+  #qrBallRow.in-side .qr-label{ font-size:12px; margin-bottom:3px; }
+  #qrBallRow.in-side .field-note{ display:none; }
+  #qrBallRow.in-side .qr-ball-pick{ flex-direction:column !important; gap:3px !important; }
+  #qrBallRow.in-side .qbp-row{ grid-template-columns:30px repeat(3, minmax(0,1fr)) !important; }
+  #qrBallRow.in-side .chip-btn{ min-height:26px; padding-top:2px; padding-bottom:2px; font-size:11.5px; }
+  @media (min-width:700px){
+    .qr-ball-pick{ flex-direction:row; gap:10px; }
+    .qr-ball-pick .qbp-row{ flex:1; grid-template-columns:auto repeat(3, minmax(0,1fr)); gap:3px; }
+  }
   .pc-ball-cap{ font-size:11.5px; line-height:1.35; color:var(--text-dim); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .pc-ball-cap.on{ color:var(--text); }
   .pc-ball-cap small{ font-size:10.5px; color:var(--muted); }
@@ -2029,7 +2045,7 @@
         <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지, 우리 팀 공격 시 커버 6가지, 총 12개 공격 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 공격 상황 편집 → 대형 저장(왼쪽), 대형 불러오기·편집·⭐ 최종 확정·공유(오른쪽) 순서로 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
-        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 코트 그림의 빈 곳을 눌러 공이 떨어진 곳도 남기고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 📍 코트 위치에서는 득점·실점·범실이 포지션별로 어떤 기록(빈 곳·사람 쪽 강타, 볼처리, 서브 등)이었는지와 공이 간 방향을 화살표로 보여줘요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
+        <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 📍 코트 위치에서는 득점·실점·범실이 포지션별로 어떤 기록(빈 곳·사람 쪽 강타, 볼처리, 서브 등)이었는지와 공이 간 방향을 화살표로 보여줘요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
         <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 전체 성적과 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠, 그리고 모든 경기를 합친 상세 분석(공격 방식·블로킹·코트 위치)까지 정리해줘요.</li>
         <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
@@ -2141,7 +2157,7 @@
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 세부 상황은 "2단토스"(범실)로 골라요.</li>
-          <li>득실 위치는 따로 고르지 않아요. "자세히 기록"의 선수 버튼 아래 <b>코트 그림</b>(태블릿·PC 빠른 기록 모드에서는 한 화면에 들어오게 오른쪽 📋 점수 기록 칸 맨 아래)에는 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형을 그 상황으로 재생했을 때 명단 선수가 <b>도착한 자리</b>가 실제 코트 비율 그대로 나와요(왼쪽 🔴 상대·오른쪽 🔵 우리, 가운데 네트. 서로 붙은 선수는 겹치지 않게 살짝 벌려 보여줘요). 공격 상황(레프트·A 등)에서 선수를 고르면 <b>공이 간 방향 화살표</b>가 나와요: 공격한 팀 선수 → 고른 상대 선수, 상대 선수를 안 골랐으면 그 대형을 재생했을 때 공이 떨어진 자리(흰 공)까지예요. 공격이면 코트 그림의 <b>빈 곳을 눌러 공이 떨어진 곳(🎯)</b>을 남길 수 있어요(페인트·볼처리·아웃도 같아요. 아웃은 코트 선 밖을 눌러요). 그림 아래에 "오른쪽 뒤 · 크로스"처럼 공이 간 곳 이름이 나오고, 같은 곳을 한 번 더 누르면 지워요. 왼쪽·오른쪽은 전술 시뮬레이션처럼 <b>공격하는 팀이 네트를 바라볼 때</b> 기준이고, 레프트·라이트처럼 끝에서 때린 공이 같은 쪽으로 가면 직선, 반대쪽이면 크로스예요. 선수를 안 골라도 그 상황에서 때리는 자리부터 화살표를 그려요. 선수 버튼에는 두 팀 모두 번호·이름 아래 포지션이 적혀 있어요. 동그라미를 누르거나 아래 버튼으로 <b>🔵 우리팀 선수·🔴 상대팀 선수</b>를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요(대형의 시작 위치가 아니라 그 상황을 재생했을 때 도착한 자리예요). 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
+          <li>득실 위치는 따로 고르지 않아요. "자세히 기록"의 선수 버튼 아래 <b>코트 그림</b>(태블릿·PC 빠른 기록 모드에서는 한 화면에 들어오게 오른쪽 📋 점수 기록 칸 맨 아래)에는 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형을 그 상황으로 재생했을 때 명단 선수가 <b>도착한 자리</b>가 실제 코트 비율 그대로 나와요(왼쪽 🔴 상대·오른쪽 🔵 우리, 가운데 네트. 서로 붙은 선수는 겹치지 않게 살짝 벌려 보여줘요). 공격 상황(레프트·A 등)에서 선수를 고르면 <b>공이 간 방향 화살표</b>가 나와요: 공격한 팀 선수 → 고른 상대 선수, 상대 선수를 안 골랐으면 그 대형을 재생했을 때 공이 떨어진 자리(흰 공)까지예요. 공격이면 공격 방식 바로 위 <b>🎯 공 방향</b>에서 공이 향한 칸(앞·중간·뒤 × 왼쪽·중앙·오른쪽 9칸, 전술 시뮬레이션의 "공 착지 방향 직접 설정"과 같아요)을 누르거나, 코트 그림의 <b>빈 곳을 눌러</b> 더 정확한 자리로 남길 수 있어요(페인트·볼처리도 같아요. 아웃은 공이 향한 칸을 고르고 방식에서 아웃을 누르거나 코트 선 밖을 눌러요). 태블릿·PC 빠른 기록 모드에서는 공 방향 칸도 오른쪽 코트 그림 바로 위에 있어요. 그림 아래에 "오른쪽 뒤 · 크로스"처럼 공이 간 곳 이름이 나오고, 같은 곳을 한 번 더 누르면 지워요. 왼쪽·오른쪽은 전술 시뮬레이션처럼 <b>공격하는 팀이 네트를 바라볼 때</b> 기준이고, 레프트·라이트처럼 끝에서 때린 공이 같은 쪽으로 가면 직선, 반대쪽이면 크로스예요. 선수를 안 골라도 그 상황에서 때리는 자리부터 화살표를 그려요. 선수 버튼에는 두 팀 모두 번호·이름 아래 포지션이 적혀 있어요. 동그라미를 누르거나 아래 버튼으로 <b>🔵 우리팀 선수·🔴 상대팀 선수</b>를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요(대형의 시작 위치가 아니라 그 상황을 재생했을 때 도착한 자리예요). 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
           <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기 정보(남자부·여자부, 우리팀·상대팀 이름, 포지션 명단)로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 새 경기 카드에 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 눌러요. 폴더 목록과 📊 팀 누적 분석은 경기 날짜 순서로 놓여요. 폴더 없이 남긴 기록이 있으면 새 폴더에 담을지 물어봐요.</li>
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>영상 파일 자체는 저장되지 않아요(기록·분석·파일 이름만 저장돼요). 다른 기기에서 영상을 보려면 같은 파일을 다시 올려요.</li>
@@ -2750,7 +2766,7 @@
               <dl>
                 <dt>⚔️ 공격</dt><dd>공격 위치(레프트·A·백A …)별 득점·범실, 공격 방식별 득점·범실, 그리고 <b>강타·빈 곳 / 가볍게 볼처리 / 강타·사람 쪽</b> 점수의 팀별 비율이에요. 상대의 빈 곳 강타·가볍게 볼처리 점수가 많으면 수비 빈자리를, 사람 쪽 강타 점수가 많으면 수비 자세·위치를 먼저 점검해요. 강타를 둘로 나누기 전에 남긴 기록은 "강타 (구분 전 기록)"으로 따로 모여요.</dd>
                 <dt>🧱 블로킹</dt><dd>블로킹 위치별 득점·범실, 공이 손에 맞은 관련 선수별 득점·범실, 블로킹 범실 유형, 블로킹 득점 인원이에요.</dd>
-                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. 원이 크고 진할수록 많이 일어난 곳이고 숫자가 횟수예요. <b>득점·실점·범실</b>에는 <b>공 방향 화살표</b>가 함께 나와요: 때린 선수 자리(작은 점) → 기록할 때 코트 그림에서 누른 공이 떨어진 곳(없으면 함께 고른 상대 선수 자리, 그것도 없으면 그 상황 대형에서 공이 떨어진 자리)이에요. 색은 공격 방식(초록 = 빈 곳 강타, 초록 점선 = 가볍게 볼처리, 노랑 = 사람 쪽 강타, 회색 점선 = 페인트·터치아웃 등)이고, 굵을수록 같은 길로 많이 간 공이에요. 범실은 끝이 ✕(아웃은 코트 밖, 네트 걸림은 네트)예요. 옆 표 <b>포지션별 득점·실점·범실</b>은 포지션마다 어떤 기록이었는지 색 막대로 나누고, 🎯 주로 떨어진 곳(예: 오른쪽 뒤 · 크로스)을 적어요. 표의 한 줄이나 범례를 누르면 그것만 코트에 남아요. 원 옆에는 그 자리에서 가장 많이 나온 선수 이름(이름이 없으면 번호와 포지션)을 적고, 여러 명이면 "외 N"을 붙여요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 세터가 토스 없이 바로 넘긴 <b>세터 2구</b>는 세터 자리(S)와 겹치지 않게 S 옆 네트 쪽에 짧은 점선으로 그려요. 어떤 대형 기준으로 놓였는지는 표 아래 <b>선수 자리를 정한 대형 보기</b>(블로킹은 바로 아래 표)에서 봐요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
+                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. 원이 크고 진할수록 많이 일어난 곳이고 숫자가 횟수예요. <b>득점·실점·범실</b>에는 <b>공 방향 화살표</b>가 함께 나와요: 때린 선수 자리(작은 점) → 기록할 때 고른 🎯 공 방향(9칸이나 코트 그림에서 누른 자리, 없으면 함께 고른 상대 선수 자리, 그것도 없으면 그 상황 대형에서 공이 떨어진 자리)이에요. 색은 팀(🔵 우리·🔴 상대)이고 선 모양은 공격 방식(실선 = 빈 곳 강타, 두 줄 선 = 사람 쪽 강타, 긴 점선 = 가볍게 볼처리, 짧은 점선 = 페인트·터치아웃 등)이에요. 굵을수록 같은 길로 많이 간 공이에요. 범실은 끝이 ✕(아웃은 코트 밖, 네트 걸림은 네트)예요. 옆 표 <b>포지션별 득점·실점·범실</b>은 포지션마다 어떤 기록이었는지 막대(화살표와 같은 무늬, 팀 색)로 나누고, 🎯 주로 떨어진 곳(예: 오른쪽 뒤 · 크로스)을 적어요. 표의 한 줄이나 범례를 누르면 그것만 코트에 남아요. 원 옆에는 그 자리에서 가장 많이 나온 선수 이름(이름이 없으면 번호와 포지션)을 적고, 여러 명이면 "외 N"을 붙여요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 세터가 토스 없이 바로 넘긴 <b>세터 2구</b>는 세터 자리(S)와 겹치지 않게 S 옆 네트 쪽에 짧은 점선으로 그려요. 어떤 대형 기준으로 놓였는지는 표 아래 <b>선수 자리를 정한 대형 보기</b>(블로킹은 바로 아래 표)에서 봐요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
                 <dt>🏐 토스</dt><dd>양 팀이 어디로 올렸는지(토스 방향)와 <b>점수판 × 1포인트당 토스 배분</b>이에요. 세로 한 줄이 1점이고, 윗부분 점수판에는 점수를 낸 팀 줄에 색이 채워지며 그 팀의 새 점수가 적혀요(경기 기록지와 같아요). 아랫부분에는 그 랠리에서 올라간 토스를 1번째부터 아래로 팀 색 칸에 적어요(2단은 점선 테두리). 연속 득점·실점 구간에서 어떤 토스가 이어졌는지 따라가 볼 수 있어요.</dd>
               </dl>
             </div>
@@ -2894,7 +2910,7 @@
                   <li><b>세터페인트(2구 넘김)</b>: 세터가 토스하지 않고 두 번째 터치로 바로 상대 코트에 넘긴 공(페인트·푸시·밀어넣기)</li>
                   <li><b>3구처리</b>: 정상 토스가 안 돼서 세 번째 터치로 넘긴 공(어설픈 처리 포함)</li>
                 </ul>
-                <p style="margin:6px 0 6px;"><b>공격 방식</b> — 공격 위치를 고른 뒤 <b>➕ 자세히 기록</b>에서 버튼으로 골라요(선택). 2단 연결 뒤에 때린 공도 같은 기준이에요. 방식이 달라도 공은 결국 한 곳으로 가니, 코트 그림의 빈 곳을 눌러 <b>공이 떨어진 곳(🎯)</b>도 함께 남기면 분석의 화살표가 더 정확해져요.</p>
+                <p style="margin:6px 0 6px;"><b>공격 방식</b> — 공격 위치를 고른 뒤 <b>➕ 자세히 기록</b>에서 버튼으로 골라요(선택). 2단 연결 뒤에 때린 공도 같은 기준이에요. 방식이 달라도 공은 결국 한 곳으로 가니, 방식 위 <b>🎯 공 방향</b> 9칸에서 공이 향한 칸도 함께 고르면 분석의 화살표가 더 정확해져요.</p>
                 <ul class="qr-info-list">
                   <li><b>강타·빈 곳</b>: 아무도 없는 쪽으로 세게 때린 공 · <b>강타·사람 쪽</b>: 사람이 있는 쪽으로 세게 때린 공 · <b>가볍게 볼처리</b>: 세게 치지 않고 사람 없는 쪽으로 가볍게 보낸 공</li>
                   <li><b>페인트</b>: 살짝 넘긴 공 · <b>터치아웃</b>: 블로킹 맞고 밖으로 나간 공 · <b>블로킹 맞고 네트인</b>: 블로킹 맞고 네트 앞에 떨어진 공</li>
@@ -2914,6 +2930,11 @@
             <details class="qr-more" id="qrMore">
               <summary><span class="qr-more-title">➕ 자세히 기록</span><span class="qr-more-sub" id="qrMoreHint">방식·우리·상대 선수·위치 (선택)</span></summary>
               <div class="qr-more-body">
+            <div id="qrBallHome" hidden></div><div class="quick-record-row" id="qrBallRow" style="display:none;">
+              <div class="qr-label">🎯 공 방향 <span class="qr-opt-tag">선택</span> <span class="qr-ball-state" id="qrBallState"></span></div>
+              <div class="qr-ball-pick" id="qrBallPick"></div>
+              <div class="field-note" style="margin-top:4px;">전술 시뮬레이션의 "공 착지 방향 직접 설정"과 같은 9칸이에요. 경기를 보며 공이 향한 칸을 눌러요(왼쪽·오른쪽은 <b>공격하는 팀이 네트를 바라볼 때</b> 기준, 앞은 네트 쪽). 같은 칸을 한 번 더 누르면 지워지고, 아래 코트 그림의 빈 곳을 눌러 더 정확한 자리로 고를 수도 있어요. 아웃이면 공이 향한 칸을 고르고 방식에서 아웃을 눌러요.</div>
+            </div>
             <div class="quick-record-row" id="qrDetailRow" style="display:none;">
               <div class="qr-label" id="qrDetailLabel">공격 방식</div>
               <div class="qr-controls">
@@ -2935,7 +2956,7 @@
                   <option value="">선택 안 함</option>
                 </select>
               </div>
-              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 팀별로 눌러 고르면 기록에 함께 남아요(예: 우리 공격이 막혔으면 우리 공격수와 상대 블로커). 아래 <b>코트 그림</b>(태블릿·PC 빠른 기록 모드에서는 오른쪽 점수 기록 칸 맨 아래)은 지금 고른 상황에 맞는 양 팀 대형(전술 시뮬레이션에 저장된 대형)을 재생했을 때 선수가 도착한 자리를 코트 비율 그대로 보여주고, 선수를 고르면 공이 간 방향을 화살표로 보여줘요. 동그라미를 눌러도 그 선수가 골라져요. 공격이면 코트의 빈 곳을 눌러 공이 떨어진 곳(🎯)을 남겨요(같은 곳을 또 누르면 지워요). 명단은 📋 경기 정보에서 팀별로 적어요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
+              <div class="field-note" style="margin-top:4px;">득실에 관련된 선수를 팀별로 눌러 고르면 기록에 함께 남아요(예: 우리 공격이 막혔으면 우리 공격수와 상대 블로커). 아래 <b>코트 그림</b>(태블릿·PC 빠른 기록 모드에서는 오른쪽 점수 기록 칸 맨 아래)은 지금 고른 상황에 맞는 양 팀 대형(전술 시뮬레이션에 저장된 대형)을 재생했을 때 선수가 도착한 자리를 코트 비율 그대로 보여주고, 선수를 고르면 공이 간 방향을 화살표로 보여줘요. 동그라미를 눌러도 그 선수가 골라져요. 공격이면 위 🎯 공 방향 칸이나 코트의 빈 곳을 눌러 공이 향한 곳을 남겨요(같은 곳을 또 누르면 지워요). 명단은 📋 경기 정보에서 팀별로 적어요. <b>블로킹</b>이면 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에서 선수·위치별로 모여요. <b>기록하기</b>를 누르면 "선택 안 함"으로 돌아가요.</div>
               <div id="pickCourtHome" hidden></div><div class="pick-court" id="pickCourt"></div>
             </div>
             <div id="zonePickerWrap" style="display:none;">
@@ -5879,10 +5900,10 @@
           <div class="mk-toast k-toast">🎁 상대 범실 → 우리 +1</div>`,
         script:[{click:'.k-b1', then:el=>el.classList.add('on')}, {wait:500}, {click:'.k-b2', then:(el,sc)=>{ sc.querySelector('.k-b1').classList.remove('on'); el.classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1600} ] },
       { title:'상황 버튼을 누르고, 필요하면 자세히',
-        text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·우리·상대 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러 남겨요. 코트 위치는 고른 선수의 포지션과 저장된 대형으로 자동으로 정해져요. 선수 버튼 아래 <b>코트 그림</b>(태블릿·PC는 오른쪽 점수 기록 칸 맨 아래)에 지금 상황의 양 팀 대형(왼쪽 상대·오른쪽 우리)이 나와서, 선수가 선 자리를 보고 동그라미를 눌러 고를 수 있어요. 공격이면 코트의 빈 곳을 눌러 <b>공이 떨어진 곳(🎯)</b>을 남기면 분석의 공 방향 화살표가 그 자리로 그려져요.',
+        text:'버튼판에서 상황(레프트·A·B·서브·블로킹 등)을 눌러요. 헷갈리면 <b>ℹ️ 세부 상황 고르는 기준</b>을 봐요. 공격 방식(강타·빈 곳 / 강타·사람 쪽·가볍게 볼처리·페인트·터치아웃·블로킹 맞고 네트인·네트싸움·삑사리 등)·우리·상대 선수는 <b>➕ 자세히 기록</b>에서 버튼을 바로 눌러 남겨요. 코트 위치는 고른 선수의 포지션과 저장된 대형으로 자동으로 정해져요. 선수 버튼 아래 <b>코트 그림</b>(태블릿·PC는 오른쪽 점수 기록 칸 맨 아래)에 지금 상황의 양 팀 대형(왼쪽 상대·오른쪽 우리)이 나와서, 선수가 선 자리를 보고 동그라미를 눌러 고를 수 있어요. 공격이면 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트의 빈 곳을 눌러 공이 향한 곳을 남기면 분석의 공 방향 화살표가 그 자리로 그려져요.',
         scene:`<div class="mk-card"><div class="mk-row"><span class="mk-lbl" style="width:34px;">공격</span><span class="mk-btn k-l">레프트</span><span class="mk-btn">A</span><span class="mk-btn">B</span><span class="mk-btn">라이트</span><span class="mk-btn">앞차</span><span class="mk-btn">세터 2구</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:34px;">서브</span><span class="mk-btn">서브</span><span class="mk-btn">리시브</span><span class="mk-btn">블로킹</span><span class="mk-btn">파울</span></div>
-          <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">공격 방식·선수·🎯 공이 떨어진 곳 (선택)</span></div>
+          <div class="mk-row k-more"><span class="mk-btn" style="border-style:dashed;">➕ 자세히 기록 ▾</span><span class="mk-lbl">🎯 공 방향·공격 방식·선수 (선택)</span></div>
           <div class="mk-row k-detail" style="display:none;"><span class="mk-lbl" style="width:34px;">방식</span><span class="mk-btn">강타·빈 곳</span><span class="mk-btn">강타·사람 쪽</span><span class="mk-btn">가볍게 볼처리</span><span class="mk-btn k-feint">페인트</span><span class="mk-btn">터치아웃</span><span class="mk-btn">네트인</span><span class="mk-btn">네트싸움</span><span class="mk-btn">삑사리</span></div></div>`,
         script:[{click:'.k-l', then:el=>el.classList.add('on')}, {click:'.k-more', then:(el,sc)=>{ sc.querySelector('.k-detail').style.display='flex'; }}, {click:'.k-feint', then:el=>el.classList.add('on')}, {wait:1500} ] },
       { title:'블로킹을 기록해요',
@@ -6607,7 +6628,44 @@
   }
   window.__ballZoneLabel = ballZoneLabel;
   // 코트 그림에서 눌러 고른 공이 떨어진 곳(분석 코트 좌표)과, 그때 그린 화살표 시작점
-  let pickBall = null, pickBallFrom = null;
+  let pickBall = null, pickBallFrom = null, pickBallZone = null; // pickBallZone: 9칸 버튼으로 고른 [열, 줄](팀이 바뀌어도 그 칸을 따라가요)
+  // 공 방향 9칸 ↔ 분석 코트 좌표(공격하는 팀이 네트를 바라볼 때 왼쪽·오른쪽, 앞은 네트 쪽)
+  function ballZoneXY(c, r, atkTeam){
+    const lx = [67,200,333][c], d = [63,190,317][r];
+    return [atkTeam==='our' ? lx : 400-lx, atkTeam==='our' ? 380-d : 380+d];
+  }
+  function ballZoneOf(pt, atkTeam){
+    if(!pt) return null;
+    const [x, y] = pt; if(x<0 || x>400 || y<0 || y>760 || (atkTeam==='our' ? y>=380 : y<380)) return null;
+    const lx = atkTeam==='our' ? x : 400-x, d = Math.abs(y-380);
+    return [lx<133 ? 0 : lx<267 ? 1 : 2, d<127 ? 0 : d<253 ? 1 : 2];
+  }
+  (function buildBallPick(){
+    const box = document.getElementById('qrBallPick'); if(!box) return;
+    box.innerHTML = ['앞','중간','뒤'].map((rl, r)=>`<div class="qbp-row"><span class="qbp-lbl">${rl}</span>${['왼쪽','중앙','오른쪽'].map((cl, c)=>`<button type="button" class="chip-btn" data-c="${c}" data-r="${r}" title="${cl} ${rl}">${cl}</button>`).join('')}</div>`).join('');
+    box.addEventListener('click', e=>{
+      const b = e.target.closest('button'); if(!b || readOnlyFolderView) return;
+      const z = [Number(b.dataset.c), Number(b.dataset.r)];
+      let team = 'our'; try{ team = qrTeam; }catch(err){}
+      const cur = ballZoneOf(pickBall, team);
+      if(cur && cur[0]===z[0] && cur[1]===z[1]){ pickBall = null; pickBallZone = null; }
+      else { pickBallZone = z; pickBall = ballZoneXY(z[0], z[1], team); }
+      renderPickCourt();
+    });
+  })();
+  // 공 방향 줄은 공격 상황일 때만 보이고, 지금 고른 칸(코트 그림에서 누른 자리 포함)을 표시해요
+  function syncBallPick(isAtk, team){
+    const row = document.getElementById('qrBallRow'); if(!row) return;
+    const was = row.style.display;
+    row.style.display = isAtk ? '' : 'none';
+    // 오른쪽 칸에 있을 때 보였다 숨었다 하면 점수 목록 높이를 다시 맞춰요
+    if(was!==row.style.display && row.classList.contains('in-side') && typeof fitQsList==='function') requestAnimationFrame(fitQsList);
+    if(pickBallZone) pickBall = ballZoneXY(pickBallZone[0], pickBallZone[1], team);
+    const z = ballZoneOf(pickBall, team);
+    row.querySelectorAll('#qrBallPick button').forEach(b=>b.classList.toggle('on', !!z && Number(b.dataset.c)===z[0] && Number(b.dataset.r)===z[1]));
+    const st = document.getElementById('qrBallState');
+    if(st) st.textContent = pickBall ? (z ? '' : '· 코트 밖·직접 고른 자리') : '';
+  }
   // 자세히 기록의 코트 그림: 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형으로 명단 선수 자리를 보여주고, 눌러서 고르게 해요.
   // 분석 코트(가로 400·세로 760, 아래 우리)를 왼쪽으로 눕혀 그려요: X = y, Y = 400 - x (오른쪽 우리, 왼쪽 상대).
   // 빠른 기록 모드의 태블릿·PC(700px 이상)는 왼쪽 기록 칸에 남는 높이가 없어서, 오른쪽 📋 점수 기록 칸 맨 아래로 옮겨 한 화면에 들어오게 해요.
@@ -6615,10 +6673,14 @@
     const box = document.getElementById('pickCourt'), side = document.getElementById('qsActBar'), home = document.getElementById('pickCourtHome');
     if(!box || !side || !home) return false;
     const wide = document.body.classList.contains('qr-mode') && window.innerWidth >= 700 && window.innerHeight >= 500; // 오른쪽 칸이 보이는 크기와 같게
+    // 🎯 공 방향 칸도 코트 그림과 함께 옮겨서, 왼쪽 기록 칸이 한 화면을 넘지 않게 해요(오른쪽 칸은 점수 목록이 남는 높이에 맞춰 줄어요)
+    const ball = document.getElementById('qrBallRow'), ballHome = document.getElementById('qrBallHome');
     if(box.previousElementSibling===home && !wide) return false;
-    if(wide && box.nextElementSibling===side) return false;
-    if(wide) side.before(box); else home.after(box);
+    if(wide && box.nextElementSibling===side && (!ball || ball.nextElementSibling===box)) return false;
+    if(wide){ side.before(box); if(ball) box.before(ball); }
+    else { home.after(box); if(ball && ballHome) ballHome.after(ball); }
     box.classList.toggle('in-side', wide);
+    if(ball) ball.classList.toggle('in-side', wide);
     return true;
   }
   function renderPickCourt(){
@@ -6628,7 +6690,8 @@
     let team = 'our'; try{ team = qrTeam; }catch(err){}
     const sides = [['our', videoRoster, 'videoPlayerSelect', 'var(--own)'], ['opp', oppRoster, 'videoOppPlayerSelect', 'var(--opp)']];
     const isAtk = ATTACK_SET.has(opt); // 공격이면 명단이 없어도 코트를 띄워서 공이 떨어진 곳을 누를 수 있게 해요
-    if(!isAtk) pickBall = null;
+    if(!isAtk){ pickBall = null; pickBallZone = null; }
+    syncBallPick(isAtk, team);
     if(!isAtk && !sides.some(([,ro])=>Object.values(ro||{}).some(e=>e && e.position))){ box.innerHTML = ''; return; }
     // 동그라미 크기는 시뮬레이터 코트와 같은 비율(선수 반지름 14)에 가깝게 두고, 오른쪽 칸(좁은 폭)에서만 누르기 쉽게 조금 키워요
     const R = big ? 21 : 17, cap = {}, miss = [], items = [];
@@ -6728,6 +6791,7 @@
       const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
       const p = pt.matrixTransform(svg.getScreenCTM().inverse()), an = [400 - p.y, p.x];
       // 같은 자리를 한 번 더 누르면 지워요
+      pickBallZone = null;
       pickBall = pickBall && Math.hypot(an[0]-pickBall[0], an[1]-pickBall[1]) < 30 ? null : [Math.round(an[0]), Math.round(an[1])];
       renderPickCourt(); return;
     }
@@ -7328,6 +7392,7 @@
     const o = document.querySelector(`#qrOutcomeSeg button[data-outcome="${btn.dataset.outcome}"]`);
     if(t) t.click(); if(o) o.click();
     syncBucketGrid();
+    renderPickCourt(); // 공격 팀이 바뀌면 코트 그림과 공 방향 칸도 그 팀 기준으로 바꿔요
   }));
   document.querySelectorAll('#qrOutcomeSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -7387,7 +7452,7 @@
       });
       sel.appendChild(og);
     });
-    sel.addEventListener('change', ()=>{ pickBall = null; updateLocationPickerVisibility(); updateDetailRow(); syncOptionBoard(); updateRecordReady(); updateAutoSpotNote(); });
+    sel.addEventListener('change', ()=>{ pickBall = null; pickBallZone = null; updateLocationPickerVisibility(); updateDetailRow(); syncOptionBoard(); updateRecordReady(); updateAutoSpotNote(); });
     // 세부 상황 버튼판: 드롭다운 대신 자주 쓰는 항목을 한눈에 눌러요(값은 숨겨 둔 드롭다운과 같이 움직여요).
     const board = document.getElementById('qrOptionBoard');
     QR_OPTION_GROUPS.forEach(g=>{
@@ -7556,7 +7621,7 @@
     selectedPlayer = null; selectedOppPlayer = null;
     document.getElementById('videoPlayerSelect').value = '';
     document.getElementById('videoOppPlayerSelect').value = '';
-    pickBall = null;
+    pickBall = null; pickBallZone = null;
     tossSeq = []; toss2ndArmed = false; renderTossUI();
     refreshAllChips(); renderPickCourt();
   }
@@ -7698,7 +7763,7 @@
     selectedNineZone = rec.grid9 || null;
     document.querySelectorAll('.qr-nine-grid button').forEach(b=>b.classList.toggle('active', !!(rec.grid9 && b.dataset.col==String(rec.grid9.col) && b.dataset.row==String(rec.grid9.row) && (b.dataset.side==='opp')===(rec.grid9.side==='opp'))));
     updateNineZoneStatus();
-    pickBall = rec.ball && rec.ball.to ? rec.ball.to.slice() : null; renderPickCourt();
+    pickBallZone = null; pickBall = rec.ball && rec.ball.to ? rec.ball.to.slice() : null; renderPickCourt();
     tossSeq = rec.tosses ? JSON.parse(JSON.stringify(rec.tosses)) : []; renderTossUI();
   }
   document.getElementById('qsSets').addEventListener('click', e=>{ const b = e.target.closest('.qs-set'); if(!b) return; qsSet = Number(b.dataset.set); renderQsSide(); });
@@ -8190,19 +8255,39 @@
     const x = [80,200,320][g.col], y = [440,560,680][g.row];
     return onOur ? {x, y, folder:'직접 고른 위치', scenLabel:''} : {x:400-x, y:760-y, folder:'직접 고른 위치', scenLabel:''};
   }
-  // 득점·실점·범실의 공 방향 화살표: 공격 방식마다 색·선 모양을 정해요(초록 = 빈 곳, 초록 점선 = 가볍게, 노랑 = 사람 쪽)
+  // 득점·실점·범실의 공 방향 화살표: 색은 팀(🔵 우리·🔴 상대), 선 모양은 공격 방식이에요
+  //  solid 실선 · double 두 줄 선 · dash 긴 점선 · dot 짧은 점선. 표의 막대도 같은 무늬를 팀 색으로 칠해요.
   const COURT_WAYS = {
-    empty:{label:'강타·빈 곳', col:'var(--good)', dash:''},
-    person:{label:'강타·사람 쪽', col:'var(--warn)', dash:''},
-    soft:{label:'가볍게 볼처리', col:'var(--good)', dash:'9 6'},
-    etcScore:{label:'페인트·터치아웃 등', col:'var(--muted)', dash:'3 6'},
-    out:{label:'아웃', col:'var(--warn)', dash:''},
-    net:{label:'네트 걸림·네트싸움', col:'var(--accent)', dash:''},
-    etcFault:{label:'삑사리·구분 안 함', col:'var(--muted)', dash:'3 6'},
-    serve:{label:'서브', col:'var(--accent-2)', dash:''},
-    block:{label:'블로킹', col:'var(--accent)', dash:''},
-    other:{label:'그 밖의 기록', col:'var(--border-2)', dash:''}
+    empty:{label:'강타·빈 곳', line:'solid'},
+    person:{label:'강타·사람 쪽', line:'double'},
+    soft:{label:'가볍게 볼처리', line:'dash'},
+    etcScore:{label:'페인트·터치아웃 등', line:'dot'},
+    out:{label:'아웃', line:'solid', bar:'hatch'},
+    net:{label:'네트 걸림·네트싸움', line:'double', bar:'hatch2'},
+    etcFault:{label:'삑사리·구분 안 함', line:'dot'},
+    serve:{label:'서브', line:'solid', bar:'faint'},
+    block:{label:'블로킹', line:'solid', bar:'faint2'},
+    other:{label:'그 밖의 기록', line:'solid', bar:'faint3'}
   };
+  function courtWayBar(way, C){
+    const W0 = COURT_WAYS[way], k = W0.bar || W0.line;
+    return {
+      solid:`background:${C};`,
+      double:`background:linear-gradient(to bottom, ${C} 0 34%, transparent 34% 66%, ${C} 66%);`,
+      dash:`background:repeating-linear-gradient(90deg, ${C} 0 8px, transparent 8px 12px);`,
+      dot:`background:repeating-linear-gradient(90deg, ${C} 0 3px, transparent 3px 6px);`,
+      hatch:`background:repeating-linear-gradient(45deg, ${C} 0 3px, transparent 3px 6px);`,
+      hatch2:`background:repeating-linear-gradient(-45deg, ${C} 0 3px, transparent 3px 6px);`,
+      faint:`background:${C}; opacity:.55;`, faint2:`background:${C}; opacity:.35;`, faint3:`background:var(--border-2);`
+    }[k];
+  }
+  // 한 줄(곡선) 그리기: 같은 모양을 분석 코트와 범례에서 함께 써요
+  function courtWayStroke(d, way, C, w){
+    const L = COURT_WAYS[way].line, base = `d="${d}" fill="none" stroke-linecap="round"`;
+    if(L==='double') return `<path ${base} stroke="${C}" stroke-width="${(w+3).toFixed(1)}"/><path ${base} stroke="var(--panel-2)" stroke-width="${((w+3)*0.38).toFixed(1)}"/>`;
+    const dash = L==='dash' ? ` stroke-dasharray="${(w*2.6).toFixed(1)} ${(w*1.6).toFixed(1)}"` : L==='dot' ? ` stroke-dasharray="0.1 ${(w*1.9).toFixed(1)}"` : '';
+    return `<path ${base} stroke="${C}" stroke-width="${(L==='dot' ? w+1.5 : w).toFixed(1)}"${dash}/>`;
+  }
   function courtWay(n){
     const d = n.detail || '';
     if(ATTACK_SET.has(n.main) || n.main==='공격(위치 미지정)'){
@@ -8220,20 +8305,21 @@
     const A = n.team, D = A==='our' ? 'opp' : 'our';
     const ball = (sp[A] && sp[A].ball) || (sp[D] && sp[D].ball);
     const from = sp[A] ? [sp[A].x, sp[A].y] : ball ? ball.from.slice() : rec && rec.ball && rec.ball.from ? rec.ball.from.slice() : null;
-    // 기록할 때 코트 그림에서 공이 떨어진 곳을 눌렀으면 그 자리를 그대로 써요(아웃도 누른 자리까지)
-    if(from && rec && rec.ball && rec.ball.to) return {from, to: rec.ball.to.slice(), picked:true};
-    let to = n.outcome==='score' && sp[D] ? [sp[D].x, sp[D].y] : ball ? ball.to.slice() : null;
+    // 기록할 때 고른 공 방향(9칸 또는 코트 그림에서 누른 자리)이 있으면 그 자리를 먼저 써요
+    const picked = !!(from && rec && rec.ball && rec.ball.to);
+    let to = picked ? rec.ball.to.slice() : n.outcome==='score' && sp[D] ? [sp[D].x, sp[D].y] : ball ? ball.to.slice() : null;
     if(!from || !to) return null;
-    if(n.outcome==='fault' && way==='net'){
+    const inCourt = to[0]>=0 && to[0]<=400 && to[1]>=0 && to[1]<=760;
+    if(n.outcome==='fault' && way==='net' && !picked){
       const t = (to[1]-from[1]) ? (380-from[1])/(to[1]-from[1]) : -1;
       if(t>0 && t<=1.5) to = [from[0]+(to[0]-from[0])*t, 380 + (A==='our' ? 10 : -10)];
-    } else if(n.outcome==='fault' && way==='out'){
+    } else if(n.outcome==='fault' && way==='out' && inCourt){ // 아웃은 고른 방향 그대로 코트 밖까지 뻗어요
       const dx = to[0]-from[0], dy = to[1]-from[1], len = Math.hypot(dx, dy) || 1;
       let [x, y] = to;
       for(let i=0; i<80 && x>=0 && x<=400 && y>=0 && y<=760; i++){ x += dx/len*8; y += dy/len*8; }
       to = [Math.min(410, Math.max(-10, x + dx/len*10)), Math.min(782, Math.max(-22, y + dy/len*10))];
     }
-    return {from, to};
+    return {from, to, picked};
   }
   // 포지션 줄·범례를 누르면 그것만 코트에 남겨요(그래프와 팀 누적 분석이 따로 기억해요)
   const courtFocusBy = {};
@@ -8404,7 +8490,7 @@
         const gs = Object.values(fg).map(g=>({...g, fx:g.fx/g.n, fy:g.fy/g.n, tx:g.tx/g.n, ty:g.ty/g.n}));
         const fmax = Math.max(1, ...gs.map(g=>g.n)), wayIdx = Object.keys(COURT_WAYS);
         gs.sort((a,b)=>b.n-a.n).forEach(g=>{
-          const W0 = COURT_WAYS[g.way], w = 3 + 5*g.n/fmax;
+          const W0 = COURT_WAYS[g.way], w = 3 + 4.5*g.n/fmax, C = col(g.team);
           const dx = g.tx-g.fx, dy = g.ty-g.fy, len = Math.hypot(dx, dy); if(len < 24) return;
           const ux = dx/len, uy = dy/len;
           // 방식마다 살짝 다른 곡선으로 휘어서 같은 길의 다른 방식이 겹치지 않게 해요
@@ -8417,15 +8503,15 @@
           const tip = `${W0.label} ${g.n}회${g.fault?' (범실)':''}${g.zone?' · '+g.zone:''}`;
           svgInner += `<g class="cw-flow"><title>${dEsc(tip)}</title><circle cx="${g.fx.toFixed(1)}" cy="${g.fy.toFixed(1)}" r="5" fill="${col(g.team)}"/>`
             + `<path d="M${g.fx.toFixed(1)},${g.fy.toFixed(1)} Q${cx.toFixed(1)},${cy.toFixed(1)} ${lx.toFixed(1)},${ly.toFixed(1)}" fill="none" stroke="var(--panel-2)" stroke-width="${(w+4).toFixed(1)}" stroke-linecap="round" opacity=".8"/>`
-            + `<path d="M${g.fx.toFixed(1)},${g.fy.toFixed(1)} Q${cx.toFixed(1)},${cy.toFixed(1)} ${lx.toFixed(1)},${ly.toFixed(1)}" fill="none" stroke="${W0.col}" stroke-width="${w.toFixed(1)}" stroke-linecap="round"${W0.dash?` stroke-dasharray="${W0.dash}"`:''}/>`
+            + courtWayStroke(`M${g.fx.toFixed(1)},${g.fy.toFixed(1)} Q${cx.toFixed(1)},${cy.toFixed(1)} ${lx.toFixed(1)},${ly.toFixed(1)}`, g.way, C, w)
             + (g.fault
-              ? `<path d="M${(ex-9).toFixed(1)},${(ey-9).toFixed(1)} L${(ex+9).toFixed(1)},${(ey+9).toFixed(1)} M${(ex+9).toFixed(1)},${(ey-9).toFixed(1)} L${(ex-9).toFixed(1)},${(ey+9).toFixed(1)}" stroke="${W0.col}" stroke-width="4.5" stroke-linecap="round"/>`
-              : `<path d="M${ex.toFixed(1)},${ey.toFixed(1)} L${(ex-vx*head-vy*head*0.55).toFixed(1)},${(ey-vy*head+vx*head*0.55).toFixed(1)} L${(ex-vx*head+vy*head*0.55).toFixed(1)},${(ey-vy*head-vx*head*0.55).toFixed(1)} z" fill="${W0.col}" stroke="var(--panel-2)" stroke-width="1.5"/>`)
-            + (g.n>1 ? `<text x="${((g.fx+2*cx+g.tx)/4).toFixed(1)}" y="${((g.fy+2*cy+g.ty)/4+5).toFixed(1)}" text-anchor="middle" class="court-an-lbl" fill="${W0.col}">${g.n}</text>` : '') + `</g>`;
+              ? `<path d="M${(ex-9).toFixed(1)},${(ey-9).toFixed(1)} L${(ex+9).toFixed(1)},${(ey+9).toFixed(1)} M${(ex+9).toFixed(1)},${(ey-9).toFixed(1)} L${(ex-9).toFixed(1)},${(ey+9).toFixed(1)}" stroke="${C}" stroke-width="4.5" stroke-linecap="round"/>`
+              : `<path d="M${ex.toFixed(1)},${ey.toFixed(1)} L${(ex-vx*head-vy*head*0.55).toFixed(1)},${(ey-vy*head+vx*head*0.55).toFixed(1)} L${(ex-vx*head+vy*head*0.55).toFixed(1)},${(ey-vy*head-vx*head*0.55).toFixed(1)} z" fill="${C}" stroke="var(--panel-2)" stroke-width="1.5"/>`)
+            + (g.n>1 ? `<text x="${((g.fx+2*cx+g.tx)/4).toFixed(1)}" y="${((g.fy+2*cy+g.ty)/4+5).toFixed(1)}" text-anchor="middle" class="court-an-lbl" fill="${C}">${g.n}</text>` : '') + `</g>`;
         });
         // 범례: 누르면 그 방식만 남아요
         const used = [...new Set(flows.map(f=>f.way))];
-        const sample = k => { const W0 = COURT_WAYS[k]; return `<svg viewBox="0 0 26 10" aria-hidden="true"><line x1="2" y1="5" x2="20" y2="5" stroke="${W0.col}" stroke-width="3.5" stroke-linecap="round"${W0.dash?` stroke-dasharray="${W0.dash.split(' ').map(v=>v/2).join(' ')}"`:''}/>${['out','net','etcFault'].includes(k)?`<path d="M20,1 L26,9 M26,1 L20,9" stroke="${W0.col}" stroke-width="2.5"/>`:`<path d="M26,5 L19,1 L19,9 z" fill="${W0.col}"/>`}</svg>`; };
+        const sample = k => `<svg viewBox="0 0 30 12" aria-hidden="true">${courtWayStroke('M2,6 L21,6', k, 'var(--text-dim)', 2.4)}${['out','net','etcFault'].includes(k)?'<path d="M22,2 L29,10 M29,2 L22,10" stroke="var(--text-dim)" stroke-width="2.4"/>':'<path d="M29,6 L21,1.5 L21,10.5 z" fill="var(--text-dim)"/>'}</svg>`;
         if(used.length) legend = `<div class="cw-legend">${used.map(k=>`<button type="button" class="cw-chip${focus.way===k?' active':''}" data-cf="${attr}" data-cf-way="${k}">${sample(k)}${dEsc(COURT_WAYS[k].label)}</button>`).join('')}${focus.row||focus.way?`<button type="button" class="cw-chip cw-reset" data-cf="${attr}" data-cf-reset="1">↺ 전체 보기</button>`:''}</div>`;
       }
       // 대형별 표: 어떤 대형 기준으로 놓였는지
@@ -8440,12 +8526,12 @@
         rowList.sort((a,b)=>(a.team===b.team ? 0 : a.team==='our' ? -1 : 1) || (a.pos==='선수 미지정') - (b.pos==='선수 미지정') || b.n-a.n);
         // 그 포지션 공이 주로 떨어진 곳(공격하는 팀이 네트를 바라볼 때 기준, 직선·크로스)
         const zoneTop = row => { const z = Object.entries(row.zones||{}).sort((a,b)=>b[1]-a[1]); return z.length ? `<small class="cw-zone">🎯 주로 ${z.slice(0,2).map(([k,v])=>`${dEsc(k)} ${v}`).join(' · ')}</small>` : ''; };
-        const bar = wd => { const W0 = COURT_WAYS[wd.way]; return `<i style="flex:${wd.n};${W0.dash ? `background:repeating-linear-gradient(90deg, ${W0.col} 0 6px, transparent 6px 9px);` : `background:${W0.col};`}" title="${dEsc(wd.label)} ${wd.n}"></i>`; };
+        const bar = (wd, team) => `<i style="flex:${wd.n};${courtWayBar(wd.way, col(team))}" title="${dEsc(wd.label)} ${wd.n}"></i>`;
         table = `<div class="cw-title">${title}</div><table class="court-an-table cw-table"><thead><tr><th></th><th>포지션</th><th>횟수</th><th>어떤 기록이었나</th></tr></thead><tbody>${rowList.map(row=>{
           const ws = Object.values(row.ways).sort((a,b)=>b.n-a.n);
-          return `<tr class="cw-row${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" title="누르면 이 포지션 화살표만 보여요"><td style="color:${col(row.team)};">${row.team==='our'?'🔵':'🔴'}</td><td><b>${dEsc(row.pos)}</b></td><td>${row.n}</td><td><div class="cw-bar">${ws.map(bar).join('')}</div><small>${ws.map(wd=>`${dEsc(wd.label)} ${wd.n}`).join(' · ')}</small>${zoneTop(row)}</td></tr>`;
+          return `<tr class="cw-row${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" title="누르면 이 포지션 화살표만 보여요"><td style="color:${col(row.team)};">${row.team==='our'?'🔵':'🔴'}</td><td><b>${dEsc(row.pos)}</b></td><td>${row.n}</td><td><div class="cw-bar">${ws.map(wd=>bar(wd, row.team)).join('')}</div><small>${ws.map(wd=>`${dEsc(wd.label)} ${wd.n}`).join(' · ')}</small>${zoneTop(row)}</td></tr>`;
         }).join('')}</tbody></table>
-        <div class="field-note" style="margin-top:4px;">화살표는 때린 선수 자리(작은 점)에서 공이 간 곳까지예요. 공이 간 곳은 함께 고른 상대 선수 자리이고, 안 골랐으면 그 상황 대형을 재생했을 때 공이 떨어진 자리예요. 색은 공격 방식(초록 = 빈 곳, 초록 점선 = 가볍게 볼처리, 노랑 = 사람 쪽, 회색 점선 = 페인트·터치아웃 등)이고 굵을수록 같은 길로 많이 간 공이에요. 범실은 끝이 ✕예요(아웃은 코트 밖, 네트 걸림은 네트에서 멈춰요). 서브·블로킹·파울처럼 공 길이 없는 기록은 표에만 들어가요. 표의 한 줄이나 위 범례를 누르면 그것만 코트에 남아요.${metric==='lost'?' 실점 표는 점수를 내준 팀 선수의 포지션(상대가 득점할 때 함께 고른 우리 선수, 범실이면 범실한 선수)으로 나눠요.':''}</div>`
+        <div class="field-note" style="margin-top:4px;">화살표는 때린 선수 자리(작은 점)에서 공이 간 곳까지예요. 공이 간 곳은 기록할 때 고른 🎯 공 방향이고, 없으면 함께 고른 상대 선수 자리, 그것도 없으면 그 상황 대형을 재생했을 때 공이 떨어진 자리예요. 색은 팀(🔵 우리·🔴 상대), 선 모양은 공격 방식(실선 = 빈 곳 강타, 두 줄 선 = 사람 쪽 강타, 긴 점선 = 가볍게 볼처리, 짧은 점선 = 페인트·터치아웃 등)이고 굵을수록 같은 길로 많이 간 공이에요. 표의 막대도 같은 무늬예요. 범실은 끝이 ✕예요(아웃은 코트 밖, 네트 걸림은 네트에서 멈춰요). 서브·블로킹·파울처럼 공 길이 없는 기록은 표에만 들어가요. 표의 한 줄이나 위 범례를 누르면 그것만 코트에 남아요.${metric==='lost'?' 실점 표는 점수를 내준 팀 선수의 포지션(상대가 득점할 때 함께 고른 우리 선수, 범실이면 범실한 선수)으로 나눠요.':''}</div>`
           + (formTable ? `<details class="cw-forms"><summary>선수 자리를 정한 대형 보기</summary>${formTable}</details>` : '');
       }
     }
