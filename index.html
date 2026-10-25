@@ -6272,7 +6272,8 @@
 
   // 경기 영상 분석(아래 스크립트)이 저장된 대형으로 선수 위치를 정할 수 있게 대형 자료를 열어 둬요.
   window.__tacticsFormations = {
-    presets: () => presets, scenLabel: SCEN_LABEL, arrival: arrivalFor,
+    presets: () => presets, scenLabel: SCEN_LABEL, arrival: arrivalFor, scenOf: resolveScenarioForPreset,
+    posNow: () => POSITIONS, oppPosNow: () => OPP_POSITIONS, // 포지션 배정 카드에서 바꾼 지금의 번호↔포지션
     base: ORIGINAL_BASE, oppBase: ORIGINAL_OPP_BASE,
     pos: DEFAULT_POSITIONS, oppPos: DEFAULT_OPP_POSITIONS
   };
@@ -6484,6 +6485,7 @@
   // 선수 자리: side 팀의 posCode 선수가, attackTeam 팀이 option으로 공격한 장면에서 서 있던 곳
   function formationSpot(side, posCode, option, attackTeam, ctx){
     const T = window.__tacticsFormations; if(!T || !posCode) return null;
+    const scenOf = p => (T.scenOf ? T.scenOf(p) : p.scenario) || null;
     const folder = formFolderFor(side, ctx);
     const top = !!folder && /^\s*상대팀/.test(folder); // "상대팀 ·" 폴더는 위쪽(oppBase) 팀 대형이에요
     const k = OPT_SCEN[option];
@@ -6493,19 +6495,21 @@
       if(k){
         const teamAttacks = attackTeam===side;
         scen = (teamAttacks === !top) ? 'OUR_'+k : k; // 시뮬레이터에서 아래 팀이 공격하면 OUR_ 상황이에요
-        preset = list.find(p=>p.scenario===scen);
+        // 예전에 저장한 대형은 상황 표시(scenario)가 없을 수 있어서, 시뮬레이터가 불러올 때와 같은 방법(이름)으로 상황을 찾아요
+        preset = list.find(p=>scenOf(p)===scen);
       }
       if(preset) exact = true;
       else preset = list[0] || null; // 같은 상황 대형이 없으면 그 폴더의 첫 대형을 써요
-      if(preset && preset.scenario!==scen) scen = preset.scenario || null;
+      if(preset && scenOf(preset)!==scen) scen = scenOf(preset);
     } else if(k){
       scen = attackTeam===side ? 'OUR_'+k : k; // 기본 대형은 아래 팀 기준이라 그 팀이 공격하면 OUR_ 상황이에요
     }
     // 대형의 시작 위치가 아니라, 그 상황을 재생했을 때 선수들이 도착한 자리를 써요
     const arr = scen && T.arrival ? T.arrival(preset ? preset.base : null, preset ? preset.oppBase : null, scen) : null;
     const dots = arr ? (top ? arr.oppBase : arr.base) : preset ? (top ? preset.oppBase : preset.base) : null;
-    const posMap = top ? T.oppPos : T.pos;
-    const id = Object.keys(posMap).find(i=>posMap[i]===posCode);
+    // 시뮬레이터에서 포지션 배정을 바꿨으면 그 배정으로 번호를 찾아요(대형 점과 같은 기준)
+    const posMap = (top ? (T.oppPosNow && T.oppPosNow()) : (T.posNow && T.posNow())) || (top ? T.oppPos : T.pos);
+    const id = Object.keys(posMap).find(i=>posMap[i]===posCode) || Object.keys(top ? T.oppPos : T.pos).find(i=>(top ? T.oppPos : T.pos)[i]===posCode);
     const raw = (dots && dots[id]) || (top ? T.oppBase : T.base)[id];
     if(!raw) return null;
     let [x, y] = raw;
