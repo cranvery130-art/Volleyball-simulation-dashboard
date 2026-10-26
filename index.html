@@ -10216,7 +10216,8 @@
     }
     // 🔑 내 API 키: 이 기기 브라우저에만 둬요(기억하기를 끄면 이 화면을 닫을 때까지만)
     const KEY_LS = 'volleyAiGeminiKey';
-    const apiKey = ()=> $('aiKey').value.trim();
+    // 붙여 넣을 때 딸려 온 빈칸·줄바꿈·보이지 않는 글자·따옴표는 지워요
+    const apiKey = ()=> $('aiKey').value.replace(/[\s\u200B-\u200D\u2060\uFEFF"'`“”‘’]/g, '');
     try{ const k = localStorage.getItem(KEY_LS); if(k) $('aiKey').value = k; else if(localStorage.getItem(KEY_LS+':off')) $('aiKeyKeep').checked = false; }catch(e){}
     function saveKey(){
       try{
