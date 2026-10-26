@@ -182,7 +182,12 @@ module.exports = async (req, res) => {
     const errText = JSON.stringify(r.j.error || '');
     if (/API_KEY_INVALID|API key not valid|PERMISSION_DENIED/i.test(errText) || r.status === 403) { last = { status: 401, msg: 'API 키가 맞지 않거나 쓸 수 없는 키예요. 🔑 키를 다시 확인해 주세요.', code: 'badkey' }; break; }
     if (r.status === 404 || (r.status === 400 && /model/i.test(errText))) { last = { status: 502, msg: `모델(${m})을 쓸 수 없어요.` }; continue; }
-    if (r.status === 429) { last = { status: 429, msg: '내 키의 AI 사용량 한도에 걸렸어요. 잠시 뒤(하루 한도면 내일) 이어서 분석해 주세요.' }; break; }
+    if (r.status === 429) {
+      // 하루 한도와 1분 한도를 나눠 알려 줘요(화면이 기다리는 시간이 달라요)
+      const daily = /per ?day|PerDay|daily/i.test(errText);
+      last = daily ? { status: 429, code: 'daily', msg: '내 키의 하루 AI 사용량을 다 썼어요.' } : { status: 429, code: 'minute', msg: '1분 사용량 한도에 걸렸어요.' };
+      break;
+    }
     if (r.status === 400 && /video|youtube|file/i.test(errText)) { last = { status: 400, msg: '이 영상을 읽지 못했어요. 공개 영상인지 확인해 주세요.' }; break; }
     if (r.status !== 200) { last = { status: 502, msg: `AI 분석에 실패했어요(${r.status}).` }; break; }
     const cand = (r.j.candidates || [])[0];
