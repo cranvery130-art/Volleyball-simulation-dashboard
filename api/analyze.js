@@ -97,7 +97,8 @@ ${b.layout}` : ''}
 - 관련 선수(수동 기록원이 팀별로 '관련 선수'를 고르듯 양 팀 모두): 우리 공격이 막혔으면 우리 공격수와 상대 블로커, 공격 득점이면 공격수와 (닿았다면) 받지 못한 상대 수비수,
   서브면 서버와 받은 선수, 범실·반칙이면 실수한 선수. 관련 없는 팀은 null.
   ourRole / oppRole: 그 선수의 포지션(${ROLE_TEXT}) — 9인제는 자리가 고정이라 코트 위치로 판단합니다. 모르면 null.
-  ourNumber / oppNumber: 그 선수의 등번호(보이면), 아니면 null.
+  ourNumber / oppNumber: 그 선수의 등번호(보이면), 아니면 null.${b.jerseys ? `
+  명단 등번호(등번호=포지션): ${b.jerseys.replace(/\n/g, ' / ')}. 등번호가 보이면 이 명단으로 포지션을 맞추고, 안 보이면 서 있는 자리로 정합니다.` : ''}
 - blockZone: option이 블로킹이거나 블로킹이 결정적이었으면, 블로킹한 팀이 네트를 바라볼 때 기준 네트 앞 자리 0=레프트 앞 1=앞차 앞 2=A 앞 3=백차(백A) 앞 4=라이트 앞. 아니면 null.
 - attack: option이 공격(레프트·라이트·A·B·백A·앞차·백차)이면 그 마지막 공격의 사실을 [공격 위치 구분] 기준으로 적습니다:
   {hitX(m), setterX(m), tempo: quick(공격수가 먼저 뜬 속공)|low(낮고 빠른 토스)|high(높게 띄운 오픈), behindSetter(세터 뒤로 갔으면 true), fake(속공수가 먼저 뛰어 속였으면 true)}. 공격이 아니면 null.
@@ -229,8 +230,8 @@ async function callGemini(key, model, b, id) {
         temperature: b.mode === 'detail' ? 0.2 : b.mode === 'scores' ? 0 : 0.2,
         responseMimeType: 'application/json',
         responseSchema: SCHEMA[b.mode],
-        // 랠리 찾기는 움직임만 보면 돼서 낮은 화질로 아껴요. 랠리 자세히 보기는 기본 화질로 봐요.
-        ...(b.mode === 'rallies' ? { mediaResolution: 'MEDIA_RESOLUTION_LOW' } : {}),
+        // 화질(TJ 2026-10-26): 랠리 찾기는 보통, 랠리 자세히 보기는 높음(공·라인·등번호가 또렷하게)
+        ...(b.mode === 'rallies' ? { mediaResolution: 'MEDIA_RESOLUTION_MEDIUM' } : b.mode === 'detail' ? { mediaResolution: 'MEDIA_RESOLUTION_HIGH' } : {}),
       },
     }),
   });
@@ -266,7 +267,7 @@ module.exports = async (req, res) => {
     mode, start, end,
     fps: Math.min(mode === 'detail' ? 10 : mode === 'scores' ? 2 : 4, Math.max(0.5, Number(raw.fps) || (mode === 'detail' ? 4 : 1))),
     ourName: clean(raw.ourName, 30), oppName: clean(raw.oppName, 30), ourDesc: clean(raw.ourDesc), oppDesc: clean(raw.oppDesc),
-    ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200), layout: clean(raw.layout, 1800),
+    ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200), layout: clean(raw.layout, 1800), jerseys: clean(raw.jerseys, 400),
   };
 
   const tier = raw.model === 'pro' ? 'pro' : 'flash';
