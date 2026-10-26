@@ -62,7 +62,15 @@ winner는 랠리 끝에 주심이 팔로 가리킨 팀(선심 깃발·반칙 수
   }
   return `${teamsText(b)}
 이 요청은 랠리 하나만 봅니다: 영상 ${b.start}초~${b.end}초.${b.hint ? `\n앞 단계에서 본 내용(틀릴 수 있음): ${b.hint}` : ''}
-${b.angle ? `이번에는 이렇게 봅니다: ${b.angle}\n` : ''}이 랠리의 마지막 점수를 결정한 플레이를 기록합니다. 득실과 반칙은 위 [심판 판정]을 먼저 따릅니다(랠리가 끝난 뒤 몇 초 동안 주심·선심을 봅니다).${b.layout ? `
+${b.angle ? `이번에는 이렇게 봅니다: ${b.angle}\n` : ''}당신은 프로배구 선수 출신 전문 기록원입니다. 이 랠리의 마지막 점수를 결정한 플레이를 기록합니다. 득실과 반칙은 위 [심판 판정]을 먼저 따릅니다(랠리가 끝난 뒤 몇 초 동안 주심·선심을 봅니다).
+[먼저 사실을 적습니다] 분류(득점/범실)를 고르기 전에, 공이 죽기 직전 마지막 세 번의 터치를 순서대로 observe에 적고 아래 사실 칸을 채웁니다.
+- lastTouchTeam: 공에 마지막으로 닿은 팀(our|opp|unknown). 블로커 손끝·수비수 팔에 스친 것도 터치입니다.
+- lastTouchKind: 그 마지막 터치 종류 serve|attack|over(공격 아닌 넘김)|block|receive|dig|set|unknown.
+- ending: 랠리가 끝난 방식 in(코트 안에 떨어짐)|out(라인 밖·안테나 밖·천장·벽)|net(네트에 걸려 못 넘어감)|foul(심판이 반칙 선언)|unknown.
+- landedCourt: in이나 out일 때 공이 떨어진 쪽 코트(our|opp). out이면 공이 넘어가려던 쪽(라인 밖 가까운 쪽) 코트입니다.
+- foulTeam: foul이면 반칙한 팀(our|opp), 아니면 null.
+[기록 규칙] 공격한 공이 라인 밖=공격 팀 범실(아웃). 블로커·수비수에 맞고 밖=공격 팀 득점(터치아웃). 서브가 밖·네트=서브 팀 범실. 네트에 걸려 못 넘김=그 팀 범실.
+블로킹에 막혀 공격 팀 코트에 떨어짐=블로킹 팀 득점. 상대 코트 안에 떨어짐=보낸 팀 득점. 리시브·디그가 우리 코트 밖으로 튐=그 팀이 못 받은 것이므로 상대 득점.${b.layout ? `
 [포지션 자리] 9인제는 자리가 고정이에요. 이 팀들은 아래 자리에 서요(전술 시뮬레이션에 놓아 둔 대형, 그 팀이 네트를 바라볼 때 기준). 선수가 서 있는 자리를 이 대형과 맞춰 포지션을 정합니다.
 ${b.layout}` : ''}
 - winner: 점수를 딴 팀(our|opp|unknown)
@@ -129,6 +137,12 @@ const SCHEMA = {
   detail: {
     type: 'OBJECT',
     properties: {
+      observe: { type: 'STRING' },
+      lastTouchTeam: { type: 'STRING', enum: ['our', 'opp', 'unknown'] },
+      lastTouchKind: { type: 'STRING', enum: ['serve', 'attack', 'over', 'block', 'receive', 'dig', 'set', 'unknown'] },
+      ending: { type: 'STRING', enum: ['in', 'out', 'net', 'foul', 'unknown'] },
+      landedCourt: { type: 'STRING', enum: ['our', 'opp'], nullable: true },
+      foulTeam: { type: 'STRING', enum: ['our', 'opp'], nullable: true },
       winner: { type: 'STRING', enum: ['our', 'opp', 'unknown'] },
       team: { type: 'STRING', enum: ['our', 'opp'] },
       outcome: { type: 'STRING', enum: ['score', 'fault'] },
@@ -146,7 +160,10 @@ const SCHEMA = {
       tosses: { type: 'ARRAY', items: { type: 'OBJECT', properties: { team: { type: 'STRING', enum: ['our', 'opp'] }, to: { type: 'STRING', enum: TOSS_TO } } } },
       confidence: { type: 'NUMBER' }, note: { type: 'STRING' },
     },
-    required: ['winner', 'team', 'outcome', 'option', 'confidence'],
+    required: ['observe', 'lastTouchTeam', 'ending', 'winner', 'team', 'outcome', 'option', 'confidence'],
+    // 사실(observe·마지막 터치·끝난 방식)을 먼저 쓰고 분류를 나중에 고르게 순서를 정해요
+    propertyOrdering: ['observe', 'lastTouchTeam', 'lastTouchKind', 'ending', 'landedCourt', 'foulTeam', 'refereeSeen', 'refereeCall', 'lineCall',
+      'winner', 'team', 'outcome', 'option', 'detail', 'ball', 'ourRole', 'oppRole', 'ourNumber', 'oppNumber', 'blockZone', 'tosses', 'confidence', 'note'],
   },
 };
 
@@ -179,7 +196,7 @@ async function callGemini(key, model, b, id) {
         ],
       }],
       generationConfig: {
-        temperature: b.mode === 'detail' ? 0.4 : b.mode === 'scores' ? 0 : 0.2,
+        temperature: b.mode === 'detail' ? 0.2 : b.mode === 'scores' ? 0 : 0.2,
         responseMimeType: 'application/json',
         responseSchema: SCHEMA[b.mode],
         // 랠리 찾기는 움직임만 보면 돼서 낮은 화질로 아껴요. 랠리 자세히 보기는 기본 화질로 봐요.
