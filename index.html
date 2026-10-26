@@ -2292,7 +2292,7 @@
 
     <div class="card" id="cardPositions">
       <h2>포지션 배정</h2>
-      <div class="field-note" style="margin-top:0; margin-bottom:10px;">공격수·세터·리시브 배정과 움직임이 지정한 포지션에 맞게 반영돼요. 레프트백·센터백·라이트백은 리베로 역할이라 블로킹에 가담하지 않아요.<br>포지션 아래 칸에 <b>이름</b>을 적으면 코트 도트에 번호 대신 그 이름이 표시돼요(비워두면 번호로 보여요).</div>
+      <div class="field-note" style="margin-top:0; margin-bottom:10px;">공격수·세터·리시브 배정과 움직임이 지정한 포지션에 맞게 반영돼요. 레프트백·센터백·라이트백은 리베로 역할이라 블로킹에 가담하지 않아요.<br>코트 도트에는 여기서 고른 <b>포지션 이름</b>이 짧게 보여요(레프트·세터·라이트·A·빽A·앞차·빽차·레백·센백·라백). 포지션 아래 칸에 <b>이름</b>을 적으면 그 선수 도트에는 이름이 보여요.</div>
       <div class="pos-cols">
         <div>
           <div class="pos-team-label"><span class="dot" style="background:var(--own);"></span>아군</div>
@@ -4238,6 +4238,8 @@
       });
       loadSelect.appendChild(grp);
     });
+    // 지금 코트에 불러온 대형이 있으면 목록 칸에 그 이름을 보여줘요
+    if(activePreset && presets.includes(activePreset)) loadSelect.value = String(presets.indexOf(activePreset));
 
     const folderSelect=document.getElementById('presetFolderSelect');
     const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f && f!==FINAL_FOLDER))).sort((a,b)=>a.localeCompare(b));
@@ -4885,7 +4887,7 @@
     if(overrideMode && overridePhase==='fake' && !currentHasFake()){ overridePhase='final'; applyOverridePhase(); }
     let hint;
     if(overrideMode && overridePhase==='fake') hint='상대의 페이크(시간차) 동작에 <b>우리 블로커가 처음 반응해서 이동하는 위치</b>를 드래그로 정할 수 있어요. 이후 진짜 공격이 나오면 최종 도착 위치로 다시 고쳐 서요.';
-    else if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀 번호를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
+    else if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀 도트를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
     else if(editMode){
       const teamWord = editTeamFilter==='own' ? '아군' : editTeamFilter==='opp' ? '상대팀' : '아군·상대팀 전체';
       hint = `코트 위 ${teamWord} 점을 드래그해 <b>시작 위치</b>를 바꿀 수 있어요. 재생하면 이 위치에서 이동이 시작돼요.`;
@@ -4967,7 +4969,7 @@
     if(idx==='') return;
     const p = presets[Number(idx)];
     if(p){ loadPreset(p); lastPickedPreset = p; }
-    e.target.value = ''; // reset to placeholder so re-selecting the same item still fires change
+    e.target.value = p ? String(presets.indexOf(p)) : ''; // 불러온 대형 이름이 목록 칸에 계속 보여요
   });
   document.getElementById('btnPresetRename').addEventListener('click', ()=>{
     if(!lastPickedPreset || !presets.includes(lastPickedPreset)){
@@ -5211,9 +5213,11 @@
     if(len>=2) text.style.fontSize = len===2 ? '12.5px' : len===3 ? '10.5px' : '9.5px';
     if(len>=3){ text.setAttribute('textLength', maxWidth); text.setAttribute('lengthAdjust','spacingAndGlyphs'); }
   }
+  // 코트 점 안에는 번호 대신 포지션 배정에 따른 포지션 이름을 짧게 넣어요(이름을 적은 선수는 이름).
+  const POS_DOT = {LEFT:'레프트', SETTER:'세터', RIGHT:'라이트', QA:'A', QBACKA:'빽A', FRONTSLIDE:'앞차', BACKSLIDE:'빽차', LBACK:'레백', CBACK:'센백', RBACK:'라백'};
   function updateDotLabels(){
-    IDS.forEach(id=>{ const n=PLAYER_NAMES[id]; setDotLabel(ownEls[id].text, n||String(id), !!n, 25); });
-    Object.keys(oppEls).forEach(id=>{ const n=OPP_PLAYER_NAMES[id]; setDotLabel(oppEls[id].text, n||String(OPP_NUM[id]), !!n, 25); });
+    IDS.forEach(id=>{ const n=PLAYER_NAMES[id], ps=POS_DOT[POSITIONS[id]]; setDotLabel(ownEls[id].text, n||ps||String(id), !!(n||ps), 25); });
+    Object.keys(oppEls).forEach(id=>{ const n=OPP_PLAYER_NAMES[id], ps=POS_DOT[OPP_POSITIONS[id]]; setDotLabel(oppEls[id].text, n||ps||String(OPP_NUM[id]), !!(n||ps), 25); });
   }
   function renderPosGrid(){
     const grid = document.getElementById('posGrid');
@@ -5227,7 +5231,7 @@
         if(POSITIONS[id]===code) opt.selected=true;
         sel.appendChild(opt);
       });
-      sel.addEventListener('change', ()=>{ POSITIONS[id]=sel.value; updateTexts(); render(); scheduleAutoSave(); });
+      sel.addEventListener('change', ()=>{ POSITIONS[id]=sel.value; updateTexts(); updateDotLabels(); render(); scheduleAutoSave(); });
       const row1=document.createElement('div'); row1.className='row1';
       row1.appendChild(num); row1.appendChild(sel);
       const nameInput=document.createElement('input'); nameInput.type='text'; nameInput.placeholder='이름(선택)'; nameInput.maxLength=12;
@@ -5250,7 +5254,7 @@
         if(OPP_POSITIONS[id]===code) opt.selected=true;
         sel.appendChild(opt);
       });
-      sel.addEventListener('change', ()=>{ OPP_POSITIONS[id]=sel.value; updateTexts(); render(); scheduleAutoSave(); });
+      sel.addEventListener('change', ()=>{ OPP_POSITIONS[id]=sel.value; updateTexts(); updateDotLabels(); render(); scheduleAutoSave(); });
       const row1=document.createElement('div'); row1.className='row1';
       row1.appendChild(num); row1.appendChild(sel);
       const nameInput=document.createElement('input'); nameInput.type='text'; nameInput.placeholder='이름(선택)'; nameInput.maxLength=12;
@@ -5774,7 +5778,7 @@
   const GUIDE_STEPS = {
     sim: [
       { title:'포지션을 배정해요',
-        text:'코트 아래 <b>포지션 배정</b>에서 9명의 포지션을 고르고, 아래 칸에 <b>이름</b>을 적으면 코트 도트에 번호 대신 이름이 보여요.',
+        text:'코트 아래 <b>포지션 배정</b>에서 9명의 포지션을 고르고, 코트 도트에는 고른 <b>포지션 이름</b>이 보이고, 아래 칸에 <b>이름</b>을 적으면 그 선수는 이름이 보여요.',
         scene:`<div class="mk-card"><div class="mk-h">포지션 배정</div><div class="mk-row">
           <div class="mk-pos"><div class="mk-row"><span class="mk-num">1</span><span class="mk-btn">레프트 ▾</span></div><div class="mk-input k-name" data-ph="이름(선택)"></div></div>
           <div class="mk-pos"><div class="mk-row"><span class="mk-num">2</span><span class="mk-btn">세터 ▾</span></div><div class="mk-input" data-ph="이름(선택)"></div></div>
