@@ -4,7 +4,7 @@
    - 받는 것: 공개 유튜브 링크, 볼 구간(초), 1초에 볼 장면 수, 두 팀 유니폼 설명·이름. 아무것도 저장하지 않아요.
    - 한 번에 짧은 구간만 봐요(화면이 구간을 나눠 여러 번 부르고, 랠리마다 다시 자세히 봐요). */
 const MODELS = ['gemini-3.6-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash'];
-const MAX_SPAN = { rallies: 240, detail: 40 }; // 한 번에 볼 수 있는 최대 길이(초)
+const MAX_SPAN = { scores: 300, rallies: 240, detail: 40 }; // 한 번에 볼 수 있는 최대 길이(초)
 const hits = new Map(); // 같은 인스턴스 안에서만 유지되는 간단한 남용 방지(1분 30회)
 
 const OPTIONS = ['레프트', '라이트', 'A', 'B', '백A', '앞차', '백차', '다이렉트', '세터페인트(2구 넘김)', '3구처리',
@@ -29,6 +29,16 @@ function teamsText(b) {
 }
 
 function promptFor(b) {
+  if (b.mode === 'scores') {
+    return `${teamsText(b)}
+이 요청은 영상의 ${b.start}초부터 ${b.end}초까지만 봅니다. 공의 움직임은 보지 말고 **화면의 점수판만** 읽습니다
+(방송 자막 점수, 경기장 전광판, 손으로 넘기는 점수판 모두 포함).
+- 구간 시작 때 보이는 점수를 첫 항목으로 적고(time=처음 보인 시각), 그 뒤 점수판 숫자가 바뀔 때마다 한 항목씩 순서대로 모두 적습니다.
+- 각 항목: time(숫자가 바뀐 시각, 영상 전체 기준 초), our·opp(바뀐 뒤 우리팀·상대팀 점수), set(점수판에 세트 번호나 세트 스코어가 보이면 지금 세트 번호, 아니면 null), confidence(0~1).
+- 어느 숫자가 어느 팀인지는 점수판의 팀 이름·색과 위 유니폼 설명으로 판단하고, 그 근거를 mapping에 짧게 적습니다. 끝까지 같은 기준을 지킵니다.
+- 다시보기 화면, 다른 경기 점수, 숫자가 가려져 확실히 안 읽히는 순간은 적지 않습니다.
+- 점수판이 전혀 안 보이면 boardVisible=false, changes=[] 로 답합니다.`;
+  }
   if (b.mode === 'rallies') {
     return `${teamsText(b)}
 이 요청은 영상의 ${b.start}초부터 ${b.end}초까지만 봅니다.
@@ -58,6 +68,25 @@ ${b.angle ? `이번에는 이렇게 봅니다: ${b.angle}\n` : ''}이 랠리의 
 }
 
 const SCHEMA = {
+  scores: {
+    type: 'OBJECT',
+    properties: {
+      boardVisible: { type: 'BOOLEAN' },
+      mapping: { type: 'STRING' },
+      changes: {
+        type: 'ARRAY',
+        items: {
+          type: 'OBJECT',
+          properties: {
+            time: { type: 'NUMBER' }, our: { type: 'INTEGER' }, opp: { type: 'INTEGER' },
+            set: { type: 'INTEGER', nullable: true }, confidence: { type: 'NUMBER' },
+          },
+          required: ['time', 'our', 'opp'],
+        },
+      },
+    },
+    required: ['boardVisible', 'changes'],
+  },
   rallies: {
     type: 'OBJECT',
     properties: {
@@ -131,7 +160,7 @@ async function callGemini(key, model, b, id) {
         ],
       }],
       generationConfig: {
-        temperature: b.mode === 'detail' ? 0.4 : 0.2,
+        temperature: b.mode === 'detail' ? 0.4 : b.mode === 'scores' ? 0 : 0.2,
         responseMimeType: 'application/json',
         responseSchema: SCHEMA[b.mode],
         // 랠리 찾기는 움직임만 보면 돼서 낮은 화질로 아껴요. 랠리 자세히 보기는 기본 화질로 봐요.
@@ -162,14 +191,14 @@ module.exports = async (req, res) => {
   const raw = typeof req.body === 'string' ? (() => { try { return JSON.parse(req.body); } catch (e) { return {}; } })() : (req.body || {});
   const id = youtubeId(raw.url);
   if (!id) { res.status(400).json({ error: '유튜브 영상 링크를 확인해 주세요.' }); return; }
-  const mode = raw.mode === 'detail' ? 'detail' : 'rallies';
+  const mode = ['scores', 'detail'].includes(raw.mode) ? raw.mode : 'rallies';
   const start = Math.max(0, Math.floor(Number(raw.start) || 0));
   const end = Math.floor(Number(raw.end) || 0);
   if (!(end > start) || end - start > MAX_SPAN[mode]) { res.status(400).json({ error: `한 번에 ${MAX_SPAN[mode]}초까지만 볼 수 있어요.` }); return; }
   const clean = (v, n) => String(v || '').replace(/[<>`]/g, '').slice(0, n || 60);
   const b = {
     mode, start, end,
-    fps: Math.min(mode === 'detail' ? 10 : 4, Math.max(0.5, Number(raw.fps) || (mode === 'detail' ? 4 : 1))),
+    fps: Math.min(mode === 'detail' ? 10 : mode === 'scores' ? 2 : 4, Math.max(0.5, Number(raw.fps) || (mode === 'detail' ? 4 : 1))),
     ourName: clean(raw.ourName, 30), oppName: clean(raw.oppName, 30), ourDesc: clean(raw.ourDesc), oppDesc: clean(raw.oppDesc),
     ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200),
   };
