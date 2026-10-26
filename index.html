@@ -3642,9 +3642,8 @@
       }
       if(isOur(scenario) && f.fakeAttackerId===id){
         const base = CUSTOM_BASE[id]; const to=[OUR_ATTACKS[scenario].fakeX,420];
-        if(p<=0.35){ pos = lerpPt(base, to, easeInOut(p/0.35)*0.7); }
-        else if(p<=0.55){ pos = lerpPt(lerpPt(base,to,0.7), base, easeInOut((p-0.35)/0.2)); }
-        else { pos = lerpPt(base, f.targets[id], easeInOut((p-0.55)/0.45)); }
+        // 속공하는 척 네트 앞으로 들어간 뒤 빠지지 않고 그 자리에 머물러요
+        pos = p<=0.35 ? lerpPt(base, to, easeInOut(p/0.35)) : to.slice();
       }
       out[id]=pos;
     });
@@ -3670,20 +3669,17 @@
   }
 
   // Scenarios with a decoy (fakeContact) need the real toss to start only after the decoy has
-  // fully retreated (see fakeOppPosAt); scenarios without one can toss from the very start. Deriving
+  // made its fake approach (see fakeOppPosAt); scenarios without one can toss from the very start. Deriving
   // this from atk.timing.peak (rather than a fixed stored fraction) keeps it correct automatically
   // whenever the tempo/duration changes.
   function tossStartFor(atk){ return atk.fakeContact ? atk.timing.peak*0.87 : (atk.tossStart||0); }
 
+  // 시간차 페이크: 속공수가 네트 앞으로 들어가 속공하는 척하고, 다시 빠지지 않고 그 자리에 머물러요.
   function fakeOppPosAt(atk, p){
     const from = CUSTOM_OPP_BASE[resolveOppByPos(atk.fakePos, atk.fakeOpp)], to = atk.fakeContact;
-    // Scaled to this scenario's own peak timing (not a fixed fraction of the whole timeline) so the
-    // decoy always finishes retreating well before the real attack peaks, no matter what tempo is set.
-    const fakeInEnd = atk.timing.peak * 0.55;
-    const fakeOutEnd = atk.timing.peak * 0.85;
-    if(p<=fakeInEnd){ return lerpPt(from, to, easeInOut(p/fakeInEnd)*0.75); }
-    if(p<=fakeOutEnd){ return lerpPt(lerpPt(from,to,0.75), from, easeInOut((p-fakeInEnd)/(fakeOutEnd-fakeInEnd))); }
-    return from.slice();
+    const fakeInEnd = atk.timing.peak * 0.55; // 진짜 공격보다 먼저 들어가요(템포가 바뀌어도 같은 비율)
+    if(p<=fakeInEnd) return lerpPt(from, to, easeInOut(p/fakeInEnd));
+    return to.slice();
   }
 
   function isFrontRowLanding(landing, isOurAttack){
