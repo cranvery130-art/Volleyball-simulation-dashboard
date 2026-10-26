@@ -3150,6 +3150,7 @@
         <p style="margin:0 0 8px;"><b>득실·세트</b> — 점수판이 보이면 점수판 숫자가 바뀌는 순간으로 득실 순서·세트를 정해요. 세트 결과를 적어 두면 그보다 많은 세트·점수는 걸러요.</p>
         <p style="margin:0 0 8px;"><b>심판 판정</b> — 득실은 <b>주심</b>이 팔로 가리킨 팀, <b>주심·부심</b>의 반칙 수신호(네트터치·오버네트·센터라인·포히트·더블컨택·홀딩 등), <b>선심</b> 깃발(위로 들면 아웃, 아래로 내리면 인, 깃발 끝을 쓸면 터치아웃)을 먼저 따라요. 선심이 서 있는 곳 앞의 선을 경기장 라인으로 삼아 인·아웃을 봐요.</p>
         <p style="margin:0 0 8px;"><b>채우는 칸</b> — 수동 분석처럼 랠리마다 득실·세부 상황·방식·공 방향·토스 순서·관련 선수·블로킹 자리를 모두 채워요.</p>
+        <p style="margin:0 0 8px;"><b>득실 정하는 법</b> — 기록원처럼 마지막 터치 팀과 끝난 방식(인·아웃·네트·반칙)을 먼저 보고, 득점·범실은 기록 규칙으로 정해요. 공격이 라인 밖이면 공격 팀 범실(아웃), 블로커에 맞고 나가면 공격 팀 득점(터치아웃), 네트에 걸리면 그 팀 범실이에요.</p>
         <p style="margin:0;"><b>포지션</b> — 전술 시뮬레이션에 놓아 둔 대형(팀 이름과 같은 대형 폴더가 있으면 그 폴더, 없으면 기본 대형)의 자리와 맞춰 정하고, 관련 선수는 📋 경기 정보 명단의 포지션으로 찾아 넣어요. 명단에 포지션을 적어 두면 더 많이 채워져요.</p>
       </div>
     </div>
@@ -10481,13 +10482,41 @@
       const bad = tg.length && (sets.length !== tg.length || sets.some(s=>tg[s-1] && last[s].join(':')!==tg[s-1].join(':')));
       return ` (${txt}${bad ? ` — 입력한 세트 결과 ${tg.map(x=>x.join(':')).join(', ')}와 달라요. ⚠️ 줄을 확인해 주세요` : ''})`;
     }
+    // AI가 고른 분류(득점·범실)보다 AI가 본 사실(마지막 터치 팀·끝난 방식·떨어진 코트)을 믿어요(TJ: 우리 공격 아웃이 득점으로 기록됨)
+    // 기록 규칙: 공격·서브가 밖·네트 = 보낸 팀 범실, 블로커에 맞고 밖 = 공격 팀 득점(터치아웃), 상대 코트 안 = 보낸 팀 득점, 반칙 = 반칙한 팀 범실
+    const otherTeam = x => x==='our' ? 'opp' : 'our';
+    function factCall(d){
+      const lt = d.lastTouchTeam, k = d.lastTouchKind, e = d.ending;
+      if(e==='foul' && (d.foulTeam==='our' || d.foulTeam==='opp')) return {team:d.foulTeam, outcome:'fault', option:'파울(반칙)', detail:d.option==='파울(반칙)' ? d.detail : null};
+      if(lt!=='our' && lt!=='opp') return null;
+      if(e==='net') return {team:lt, outcome:'fault', option:k==='serve' ? '서브' : null, detail:'네트 걸림'};
+      if(e==='out'){
+        if(k==='block') return {team:otherTeam(lt), outcome:'score', option:null, detail:'터치아웃'};
+        if(k==='receive' || k==='dig') return {team:otherTeam(lt), outcome:'score', option:null, detail:null};
+        return {team:lt, outcome:'fault', option:k==='serve' ? '서브' : null, detail:'아웃'};
+      }
+      if(e==='in' && (d.landedCourt==='our' || d.landedCourt==='opp')){
+        if(d.landedCourt!==lt) return {team:lt, outcome:'score', option:k==='block' ? '블로킹' : k==='serve' ? '서브' : null, detail:null};
+        return {team:otherTeam(lt), outcome:'score', option:null, detail:null}; // 자기 코트에 떨어뜨림 = 못 받은 것
+      }
+      return null;
+    }
+    function normDetail(d){
+      const f = factCall(d); if(!f) return d;
+      const same = f.team===d.team && f.outcome===d.outcome;
+      const n = Object.assign({}, d, {team:f.team, outcome:f.outcome, _fixed:!same});
+      if(f.option) n.option = f.option;
+      else if(!same && d.option==='파울(반칙)') n.option = null;
+      if(f.detail) n.detail = f.detail; else if(!same) n.detail = null;
+      return n;
+    }
     function buildRows(state){
       const keep = new Map(rows.map(r=>[r.key, r]));
       const targets = setTargets();
       let set = 1, our = 0, opp = 0, lastBoard = null;
       rows = state.found.slice().sort((x,y)=>x.end-y.end).map(r=>{
         const key = Math.round(r.end);
-        const ds = r.details || [];
+        const ds = (r.details || []).map(normDetail);
         const pick = f => vote(ds.map(f));
         const team = pick(d=>d.team), outcome = pick(d=>d.outcome), option = pick(d=>d.option), detail = pick(d=>d.detail||null), ball = pick(d=>d.ball||null);
         const ourRole = pick(d=>d.ourRole||null), oppRole = pick(d=>d.oppRole||null), blockZone = pick(d=>Number.isInteger(d.blockZone) ? d.blockZone : null);
@@ -10506,11 +10535,15 @@
         }
         let opt = (ref && ref.option) || option.v || (r.how==='serve' ? '서브' : r.how==='block' ? '블로킹' : '');
         let winner = (t==='our') === (o==='score') ? 'our' : 'opp';
-        if(r.fromBoard && winner!==r.winner){ // 점수판이 정답이에요: 득점 팀은 점수판을 따르고 세부 상황은 다시 고르게 해요
+        if(r.fromBoard && winner!==r.winner){ // 점수판이 정답이에요: 득점 팀은 점수판을 따라요
           if(ds.length) flags.push('점수판과 자세히 보기의 득점 팀이 달라요');
-          winner = r.winner; t = r.winner; o = 'score'; opt = '';
+          const loser = otherTeam(r.winner);
+          // 진 팀이 한 플레이를 득점으로 봤다면 그 플레이가 실패한 것(범실)으로 바꾸고, 아니면 이긴 팀 득점으로 두고 세부 상황은 다시 고르게 해요
+          if(t===loser){ o = 'fault'; } else { t = r.winner; o = 'score'; opt = ''; }
+          winner = r.winner;
         } else if(r.winner && r.winner!=='unknown' && r.winner!==winner) flags.push('랠리 찾기와 자세히 보기의 득점 팀이 달라요');
         if(r.boardJump) flags.push('점수판이 한 번에 여러 점 바뀌었어요');
+        if(ds.some(d=>d._fixed)) flags.push('AI가 고른 득실을 본 사실(마지막 터치·아웃 여부)에 맞춰 고쳤어요');
         if(ds.length>1 && !ref && (team.n<ds.length || option.n<ds.length)) flags.push('네 시각의 답이 서로 달라요');
         const conf = ds.length ? ds.reduce((a,d)=>a+(Number(d.confidence)||0),0)/ds.length : Number(r.confidence)||0;
         if(conf < 0.5) flags.push('AI가 확신하지 못해요');
