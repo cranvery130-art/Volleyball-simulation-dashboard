@@ -1,5 +1,6 @@
 /* 경기 분석(AI) — 유튜브 경기 영상을 Google Gemini가 보고 랠리·득실을 읽어 주는 Vercel 서버리스 함수
-   - 환경 변수: GEMINI_API_KEY(필수), GEMINI_MODEL(선택, 기본은 아래 목록을 차례로 시도)
+   - Gemini API 키는 쓰는 사람이 자기 키를 화면에 넣어 요청 머리(x-gemini-key)로 보내요. 사용량·요금은 그 사람 계정에 쌓이고, 키는 저장하지 않아요.
+   - 환경 변수: GEMINI_MODEL(선택, 기본은 아래 목록을 차례로 시도)
    - 받는 것: 공개 유튜브 링크, 볼 구간(초), 1초에 볼 장면 수, 두 팀 유니폼 설명·이름. 아무것도 저장하지 않아요.
    - 한 번에 짧은 구간만 봐요(화면이 구간을 나눠 여러 번 부르고, 랠리마다 다시 자세히 봐요). */
 const MODELS = ['gemini-3.6-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash'];
@@ -142,8 +143,10 @@ module.exports = async (req, res) => {
   const now = Date.now(); const h = (hits.get(ip) || []).filter(t => now - t < 60000); h.push(now); hits.set(ip, h);
   if (h.length > 30) { res.status(429).json({ error: '요청이 너무 많아요. 잠시 뒤 다시 시도해 주세요.' }); return; }
 
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) { res.status(503).json({ error: 'AI 분석이 아직 설정되지 않았어요(Vercel 환경변수 GEMINI_API_KEY 없음).', code: 'nokey' }); return; }
+  // 쓰는 사람 자신의 키만 써요(사이트 주인의 키로 대신 내 주지 않아요)
+  const key = String(req.headers['x-gemini-key'] || '').trim();
+  if (!key) { res.status(401).json({ error: '🔑 내 Gemini API 키를 먼저 넣어 주세요.', code: 'nokey' }); return; }
+  if (!/^[A-Za-z0-9_-]{20,100}$/.test(key)) { res.status(401).json({ error: 'API 키 모양이 아니에요. AI Studio에서 복사한 키를 그대로 붙여 주세요.', code: 'badkey' }); return; }
   const raw = typeof req.body === 'string' ? (() => { try { return JSON.parse(req.body); } catch (e) { return {}; } })() : (req.body || {});
   const id = youtubeId(raw.url);
   if (!id) { res.status(400).json({ error: '유튜브 영상 링크를 확인해 주세요.' }); return; }
@@ -165,8 +168,9 @@ module.exports = async (req, res) => {
     let r;
     try { r = await callGemini(key, m, b, id); } catch (e) { last = { status: 502, msg: 'AI 서버에 연결하지 못했어요.' }; break; }
     const errText = JSON.stringify(r.j.error || '');
+    if (/API_KEY_INVALID|API key not valid|PERMISSION_DENIED/i.test(errText) || r.status === 403) { last = { status: 401, msg: 'API 키가 맞지 않거나 쓸 수 없는 키예요. 🔑 키를 다시 확인해 주세요.', code: 'badkey' }; break; }
     if (r.status === 404 || (r.status === 400 && /model/i.test(errText))) { last = { status: 502, msg: `모델(${m})을 쓸 수 없어요.` }; continue; }
-    if (r.status === 429) { last = { status: 429, msg: 'AI 사용량 한도에 걸렸어요. 잠시 뒤 이어서 분석해 주세요.' }; break; }
+    if (r.status === 429) { last = { status: 429, msg: '내 키의 AI 사용량 한도에 걸렸어요. 잠시 뒤(하루 한도면 내일) 이어서 분석해 주세요.' }; break; }
     if (r.status === 400 && /video|youtube|file/i.test(errText)) { last = { status: 400, msg: '이 영상을 읽지 못했어요. 공개 영상인지 확인해 주세요.' }; break; }
     if (r.status !== 200) { last = { status: 502, msg: `AI 분석에 실패했어요(${r.status}).` }; break; }
     const cand = (r.j.candidates || [])[0];
@@ -177,5 +181,5 @@ module.exports = async (req, res) => {
     res.status(200).json({ model: m, mode, start, end, result: out, tokens: usage.totalTokenCount || null });
     return;
   }
-  res.status((last && last.status) || 502).json({ error: (last && last.msg) || 'AI 분석에 실패했어요.' });
+  res.status((last && last.status) || 502).json({ error: (last && last.msg) || 'AI 분석에 실패했어요.', code: last && last.code });
 };
