@@ -109,7 +109,7 @@
   .shared-banner{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 14px; margin-bottom:14px; border:1px solid var(--accent); background:var(--accent-soft); border-radius:var(--radius-md); }
   .shared-banner-text{ flex:1 1 260px; font-size:13px; color:var(--text); line-height:1.5; }
   .shared-banner-text span{ display:block; font-size:11.5px; color:var(--text-dim); }
-  body.shared-view #appModeSeg button[data-appmode="video"], body.shared-view #appModeSeg button[data-appmode="team"], body.shared-view #btnFeatureGuide, body.shared-view #topCodePill, body.shared-view #shareFormationSection{ display:none !important; }
+  body.shared-view #appModeSeg button[data-appmode="video"], body.shared-view #appModeSeg button[data-appmode="team"], body.shared-view #appModeSeg button[data-appmode="ai"], body.guest-view #appModeSeg button[data-appmode="ai"], body.shared-view #btnFeatureGuide, body.shared-view #topCodePill, body.shared-view #shareFormationSection{ display:none !important; }
   #themeSeg{ flex:none; }
   #themeSeg button{ padding:9px 12px; font-size:12px; white-space:nowrap; }
   #btnThemeToggle{
@@ -574,7 +574,7 @@
   #videoCol{ padding:0 clamp(8px,2.2vw,40px); box-sizing:border-box; }
   #videoCol .video-grid-col > .card{ width:100%; box-sizing:border-box; }
   @media (max-width:520px){ #settingsCol{ padding:0 8px; } }
-  #mainAppCol.mode-hidden, #videoCol.mode-hidden, #settingsCol.mode-hidden{ display:none; }
+  #mainAppCol.mode-hidden, #videoCol.mode-hidden, #settingsCol.mode-hidden, #aiCol.mode-hidden{ display:none; }
   .mode-seg-wrap{
     max-width:1400px; margin:0 auto 24px; padding:12px 16px; display:flex; flex-wrap:wrap; align-items:center; gap:12px;
     background:var(--panel); border:1px solid var(--border); border-radius:16px;
@@ -674,6 +674,8 @@
 
   /* ---------- 기능 구분: 탭별 카드 색 띠 + 카드 안 기능 묶음(fgroup) ---------- */
   #mainAppCol{ --fam:var(--accent); }
+  #aiCol{ --fam:var(--accent-2); }
+  #aiCol .card{ border-top:3px solid var(--fam); }
   #videoCol{ --fam:var(--accent-2); }
   #settingsCol{ --fam:var(--good); }
   #mainAppCol .card, #videoCol .card, #settingsCol .card{ border-top:3px solid var(--fam); }
@@ -709,8 +711,9 @@
     #btnFeatureGuide{ grid-row:1; grid-column:1; padding:7px 10px; font-size:12px; white-space:nowrap; }
     #topCodePill{ grid-row:1; grid-column:2; justify-self:start; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
     #btnLocalExit{ grid-row:1; grid-column:3; padding:7px 10px; font-size:12px; }
-    #appModeSeg{ grid-row:2; grid-column:1 / -1; display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:4px; }
-    #appModeSeg button{ justify-content:center; gap:4px; padding:12px 4px; font-size:12.5px; }
+    /* 배너가 4~5개라 휴대폰에서는 두 칸씩 줄을 나눠요(글자가 잘리지 않게) */
+    #appModeSeg{ grid-row:2; grid-column:1 / -1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+    #appModeSeg button{ justify-content:center; gap:4px; padding:11px 4px; font-size:12.5px; }
     #themeSeg{ grid-row:3; grid-column:1 / -1; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
     #themeSeg button{ padding:9px 4px; font-size:12px; }
     /* 포지션 칸: 화면 폭을 3칸으로 고르게 */
@@ -1042,6 +1045,38 @@
   .gv-fold:not(.collapsed) > h2 .fold-hint{ display:none; }
   body.guest-view #recordsCard{ max-height:none; }
   /* 경기 영상 분석 맨 위 탭: 🎬 매치 분석(한 경기) / 📊 팀 누적 분석(저장 경기 모음) — 고른 탭의 카드만 보여요 */
+  /* ---------- 경기 분석(AI) ---------- */
+  #aiCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; padding:0 clamp(8px,2.2vw,40px); box-sizing:border-box; display:flex; flex-direction:column; gap:16px; }
+  #aiCol #btnQrMode{ display:none; } /* 기록 입력은 경기 분석(수동)에서 해요 */
+  .ai-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px; }
+  .ai-grid .fgroup{ margin-top:12px; }
+  .ai-player-wrap{ margin-top:8px; position:relative; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#000; }
+  .ai-player-wrap iframe, .ai-player-wrap > div{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .ai-range{ display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap; margin-top:8px; }
+  .ai-range label{ display:flex; flex-direction:column; gap:3px; font-size:12px; font-weight:700; color:var(--text-dim); flex:1 1 90px; }
+  .ai-range .login-input{ margin-top:0; }
+  .ai-range .btn{ flex:1 1 110px; }
+  .ai-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .ai-actions .btn{ flex:1 1 140px; min-height:44px; }
+  .ai-progress{ height:8px; border-radius:4px; background:var(--panel); border:1px solid var(--border); overflow:hidden; margin-top:10px; }
+  .ai-progress i{ display:block; height:100%; width:0; background:var(--accent-2); transition:width .3s ease-out; }
+  .ai-rows{ display:flex; flex-direction:column; gap:6px; margin-top:8px; max-height:min(70vh, 720px); overflow:auto; }
+  .ai-set-head{ font-weight:800; font-size:13px; color:var(--text); padding:6px 2px 2px; }
+  .ai-row{ display:grid; grid-template-columns:auto 64px auto minmax(110px,1fr) minmax(120px,1.4fr) auto; gap:6px; align-items:center; padding:6px 8px; border:1px solid var(--border); border-radius:10px; background:var(--panel); }
+  .ai-row.off{ opacity:.5; }
+  .ai-row.warn{ border-color:var(--warn); }
+  .ai-row select{ padding:6px 8px; font-size:12px; }
+  .ai-row .ai-t{ font-variant-numeric:tabular-nums; font-size:12px; padding:6px 8px; white-space:nowrap; }
+  .ai-row .ai-score{ font-size:12px; font-weight:800; font-variant-numeric:tabular-nums; text-align:center; }
+  .ai-row .ai-meta{ grid-column:1 / -1; font-size:11px; color:var(--muted); line-height:1.5; }
+  .ai-row .ai-meta b{ color:var(--warn-text, var(--text)); }
+  .ai-row input[type=checkbox]{ width:20px; height:20px; }
+  @media (max-width:700px){
+    .ai-row{ grid-template-columns:auto auto 1fr auto; }
+    .ai-row .ai-score{ text-align:left; }
+    .ai-row .ai-opt, .ai-row .ai-det{ grid-column:span 2; }
+    .ai-row input[type=checkbox]{ grid-row:1; grid-column:4; }
+  }
   /* 매치 분석·팀 누적 분석은 맨 위 배너(경기 분석(수동)·팀 누적 분석)로 나뉘어서 안쪽 탭은 숨겨요. 경기 영상 칸도 빠졌어요 */
   #vaTabSeg, #videoCard{ display:none !important; }
   .va-tabs{ margin:0 0 14px; border-radius:14px; padding:4px; gap:4px; flex-wrap:nowrap; }
@@ -2065,6 +2100,7 @@
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요. 상대 서브는 칸 사이나 사이드라인·끝선 쪽으로도 정할 수 있어요.</li>
         <li><b>경기 분석(수동)</b>경기를 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 📍 코트 위치에서는 득점·실점·범실이 포지션별로 어떤 기록(빈 곳·사람 쪽 강타, 볼처리, 서브 등)이었는지와 공이 간 방향을 화살표로 보여줘요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
         <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 전체 성적과 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠, 그리고 모든 경기를 합친 상세 분석(공격 방식·블로킹·코트 위치)까지 정리해줘요.</li>
+        <li><b>경기 분석(AI)</b>공개된 유튜브 경기 영상 링크를 넣고 두 팀 유니폼을 적으면 AI(Google Gemini)가 영상을 구간별로 나눠 랠리를 찾고, 랠리마다 다시 자세히 보며 누가 어떻게 점수를 냈는지(공격 위치·방식·공 방향·토스)를 읽어요. 빠르게·보통·꼼꼼히 중 고를 수 있고, 꼼꼼히는 랠리를 두 시각으로 따로 본 뒤 겹치는 답을 골라요. 점수판과 다르거나 확신이 낮은 줄은 ⚠️로 표시돼서 시간을 눌러 영상으로 확인하고 고친 뒤, 새 경기 카드에서 고른 경기 폴더에 넣으면 수동 기록과 똑같이 그래프·종합 분석·팀 누적 분석에 들어가요. 넣은 기록의 시간을 누르면 유튜브 그 장면이 열려요.</li>
         <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
         <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
@@ -2090,6 +2126,7 @@
     <button data-appmode="sim" class="active">🏐 전술 시뮬레이션</button>
     <button data-appmode="video">📝 경기 분석(수동)</button>
     <button data-appmode="team">📊 팀 누적 분석</button>
+    <button data-appmode="ai">🤖 경기 분석(AI)</button>
     <button data-appmode="settings" id="btnModeSettings" style="display:none;">⚙️ 설정</button>
   </div>
   <div class="seg" id="themeSeg" title="화면 모드">
@@ -2627,6 +2664,7 @@
       <div class="field-note" style="margin-top:6px;">위에서 고른 부(남자부·여자부)의 저장된 경기 폴더 중 📋 경기 정보에 이 팀 이름(우리팀·상대팀 어느 쪽이든)이 적힌 경기만 모아 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표를 막대·띠·점 그래프로 보여줘요. 아래 팀 이름을 눌러도 바로 분석하고, 그래프에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요.</div>
       <div id="teamAnalysisResult"></div>
   </div>
+  <span id="matchSaveHome" hidden></span>
   <div class="card match-save-card" id="matchSaveCard" style="margin-bottom:16px;">
     <h2>매치 분석 저장</h2>
     <div class="field-note" style="margin-top:0;">경기마다 기록·그래프·종합 분석·코치 의견을 폴더 하나로 저장해요. 폴더를 새로 만들거나 불러오면 그 폴더가 "활성 폴더"가 되고, 이후 기록이 자동으로 함께 저장돼요.</div>
@@ -3078,6 +3116,62 @@
   </div>
 
 </div>
+</div>
+
+<div id="aiCol" class="mode-hidden">
+  <span id="aiMatchSlot" hidden></span>
+  <div class="card" id="aiCard">
+    <h2>🤖 경기 분석(AI)</h2>
+    <div class="field-note" style="margin-top:0;">공개된 유튜브 경기 영상 링크를 넣으면 AI(Google Gemini)가 영상을 구간별로 나눠 보고, 랠리마다 다시 자세히 보며 <b>누가 어떻게 점수를 냈는지</b>(공격 위치·방식·공 방향·토스)를 읽어요. 결과를 확인·고친 뒤 위 카드에서 고른 경기 폴더에 기록으로 넣으면 📝 경기 분석(수동)의 그래프·종합 분석과 📊 팀 누적 분석에 함께 들어가요.</div>
+    <div class="ai-grid">
+      <div class="fgroup" id="aiVideoGroup">
+        <div class="fgroup-head"><span class="fg-ic">🎬</span><span class="fg-title">경기 영상</span><span class="fg-sub">유튜브 링크(공개 영상)</span></div>
+        <input type="url" id="aiUrl" class="login-input" style="margin-top:0;" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+        <div class="ai-player-wrap" id="aiPlayerWrap" hidden><div id="aiPlayer"></div></div>
+        <div class="ai-range">
+          <label>분석 시작<input type="text" id="aiFrom" class="login-input" placeholder="0:00" inputmode="numeric"></label>
+          <label>분석 끝<input type="text" id="aiTo" class="login-input" placeholder="영상 끝" inputmode="numeric"></label>
+          <button type="button" class="btn" id="aiFromNow" title="지금 재생 중인 장면을 시작으로">⏱ 지금 장면부터</button>
+        </div>
+        <div class="field-note" id="aiVideoNote">경기 앞뒤의 준비 운동·인터뷰는 빼고 <b>경기 부분만</b> 고르면 더 빠르고 정확해요(분:초로 적어요).</div>
+      </div>
+      <div class="fgroup" id="aiTeamGroup">
+        <div class="fgroup-head"><span class="fg-ic">👕</span><span class="fg-title">팀 구분</span><span class="fg-sub">AI가 두 팀을 헷갈리지 않게</span></div>
+        <label class="field-label" style="margin-top:0;">🔵 <span class="ai-our-name">우리팀</span> 유니폼</label>
+        <input type="text" id="aiOurDesc" class="login-input" maxlength="60" placeholder="예: 흰색 상의, 검은 하의">
+        <label class="field-label">🔴 <span class="ai-opp-name">상대팀</span> 유니폼</label>
+        <input type="text" id="aiOppDesc" class="login-input" maxlength="60" placeholder="예: 빨간 상의">
+        <label class="field-label">영상 시작 때 우리팀 위치</label>
+        <div class="seg" id="aiSideSeg">
+          <button type="button" data-side="" class="active">모름</button><button type="button" data-side="왼쪽">왼쪽</button><button type="button" data-side="오른쪽">오른쪽</button><button type="button" data-side="아래쪽(카메라 쪽)">아래</button><button type="button" data-side="위쪽(카메라 반대쪽)">위</button>
+        </div>
+        <div class="field-note">팀 이름은 위 📋 경기 정보의 이름을 써요.</div>
+      </div>
+      <div class="fgroup" id="aiHowGroup">
+        <div class="fgroup-head"><span class="fg-ic">🔍</span><span class="fg-title">분석 방법</span><span class="fg-sub">여러 번 볼수록 정확하지만 오래 걸려요</span></div>
+        <div class="seg" id="aiLevelSeg">
+          <button type="button" data-level="fast">빠르게</button><button type="button" data-level="normal" class="active">보통</button><button type="button" data-level="deep">꼼꼼히</button>
+        </div>
+        <div class="field-note" id="aiLevelNote"></div>
+        <div class="ai-actions">
+          <button type="button" class="btn primary" id="aiStart">🤖 AI 분석 시작</button>
+          <button type="button" class="btn" id="aiStop" hidden>⏸ 멈추기</button>
+        </div>
+        <div class="ai-progress" id="aiProgress" hidden><i id="aiProgressBar"></i></div>
+        <div class="field-note" id="aiStatus" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="fgroup" id="aiResultGroup" hidden>
+      <div class="fgroup-head"><span class="fg-ic">📋</span><span class="fg-title">AI 분석 결과</span><span class="fg-sub" id="aiResultSub"></span></div>
+      <div class="field-note" style="margin-top:0;">AI가 읽은 결과예요. <b>⚠️ 표시</b>는 점수판과 다르거나 AI가 확신하지 못한 줄이라 시간을 눌러 영상으로 확인하고 고쳐요. 체크한 줄만 넣어요.</div>
+      <div class="ai-rows" id="aiRows"></div>
+      <div class="ai-actions">
+        <button type="button" class="btn primary" id="aiApply">✅ 고른 기록을 경기 폴더에 넣기</button>
+        <button type="button" class="btn" id="aiClear">🗑️ 결과 지우기</button>
+      </div>
+      <div class="field-note" id="aiApplyNote"></div>
+    </div>
+  </div>
 </div>
 
 <div id="settingsCol" class="mode-hidden">
@@ -5450,7 +5544,7 @@
     });
   }
 
-  // ---------- app mode switcher (전술 시뮬레이션 / 경기 분석(수동) / 팀 누적 분석 / 설정) ----------
+  // ---------- app mode switcher (전술 시뮬레이션 / 경기 분석(수동) / 팀 누적 분석 / 경기 분석(AI) / 설정) ----------
   document.querySelectorAll('#appModeSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#appModeSeg button').forEach(b=>b.classList.toggle('active', b===btn));
@@ -5458,6 +5552,14 @@
       document.getElementById('mainAppCol').classList.toggle('mode-hidden', mode!=='sim');
       // 경기 분석(수동)과 팀 누적 분석은 같은 칸(videoCol)을 나눠 써요: 팀 누적 분석 배너는 팀 분석 카드만 보여줘요
       document.getElementById('videoCol').classList.toggle('mode-hidden', mode!=='video' && mode!=='team');
+      document.getElementById('aiCol').classList.toggle('mode-hidden', mode!=='ai');
+      // 경기 분석(AI)도 같은 새 경기·저장된 폴더·경기 정보 카드를 써요: 보이는 칸으로 카드를 옮겨요
+      const msc = document.getElementById('matchSaveCard');
+      if(msc){
+        const target = mode==='ai' ? document.getElementById('aiMatchSlot') : document.getElementById('matchSaveHome');
+        if(target && msc.previousElementSibling!==target) target.after(msc);
+      }
+      if(mode==='ai' && window.onAiTabOpen) window.onAiTabOpen();
       if((mode==='video' || mode==='team') && window.setVaTab) window.setVaTab(mode==='team' ? 'team' : 'match');
       document.getElementById('settingsCol').classList.toggle('mode-hidden', mode!=='settings');
     });
@@ -7242,6 +7344,7 @@
       if(!rec.videoName && sc && sc.won!==null) timeBtn.classList.add(sc.won?'won':'lost');
       timeBtn.title = rec.videoName ? `영상: ${rec.videoName} — 누르면 이 장면으로 이동해요` : `영상 없이 남긴 기록 — ${sc?sc.set:rec.set||1}세트, 이 점수가 난 뒤 점수(${ourTeamName} : ${oppTeamName})`;
       timeBtn.addEventListener('click', ()=>{
+        if(window.__openYoutubeAt && window.__openYoutubeAt(rec)) return;
         if(rec.videoName){ video.currentTime = rec.time; if(!document.body.classList.contains('qr-mode')) openFoldCard('videoCard'); }
       });
       const input = document.createElement('input'); input.type='text'; input.value=rec.label;
@@ -10021,6 +10124,270 @@
     renderAllGraphs();
     renderAutoAnalysis();
     tryOpenSharedFolder();
+  };
+  // ---------- 🤖 경기 분석(AI): 유튜브 경기 영상을 서버(api/analyze.js → Google Gemini)가 여러 번 나눠 보고 기록 초안을 만들어요 ----------
+  // 1회차: 구간(90~120초)마다 랠리 시작·끝·득점 팀·점수판을 찾고, 2회차: 랠리마다 짧게 잘라 더 촘촘히(1초에 4~8장) 다시 보며
+  // 결정적 플레이(공격 위치·방식·공 방향·토스)를 읽어요. 꼼꼼히는 랠리를 두 시각으로 따로 보고 겹치는 답을 골라요.
+  // 3회차는 여기서 해요: 점수 흐름·점수판·세트 바뀜을 맞춰 보고 어긋난 줄에 ⚠️를 붙여요. 사람이 확인한 뒤 경기 폴더에 넣어요.
+  (function initAiAnalysis(){
+    const $ = id => document.getElementById(id);
+    if(!$('aiCard')) return;
+    const AI_LEVELS = {
+      fast:   {fps:1, seg:120, detail:[], note:'구간마다 한 번만 보고 랠리별 득실만 읽어요. 공격 위치·방식은 비어 있을 수 있어요. 가장 빠르고 사용량이 적어요.'},
+      normal: {fps:1, seg:120, detail:[{fps:4, angle:''}], note:'구간을 보고 랠리를 찾은 뒤, 랠리마다 1초에 4장씩 다시 보며 공격 위치·방식·공 방향·토스를 읽어요.'},
+      deep:   {fps:2, seg:90,  detail:[{fps:5, angle:'공을 따라가며 마지막 터치와 공이 떨어진 자리를 봅니다.'}, {fps:8, angle:'세터의 토스 방향과 공격수의 도움닫기·때린 위치를 봅니다.'}],
+               note:'구간을 더 촘촘히 보고, 랠리마다 서로 다른 두 시각(공의 흐름 / 토스·공격수)으로 따로 본 뒤 겹치는 답을 골라요. 가장 정확하지만 오래 걸리고 사용량이 많아요.'}
+    };
+    let level = 'normal', side = '', ytId = null, player = null, duration = 0;
+    let job = null; // {stop:false}
+    let rows = []; // 분석 결과(사람이 고친 값 포함)
+    const fmt = t => { t = Math.max(0, Math.round(t)); const h = Math.floor(t/3600), m = Math.floor(t%3600/60), s = t%60; return (h ? h+':'+String(m).padStart(2,'0') : m)+':'+String(s).padStart(2,'0'); };
+    const parseT = v => { v = String(v||'').trim(); if(!v) return null; const p = v.split(':').map(Number); if(p.some(isNaN)) return null; return p.reduce((a,x)=>a*60+x, 0); };
+    const ytOf = u => { const m = String(u||'').match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|live\/|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/); return m ? m[1] : null; };
+    const setStatus = (t, pct) => { $('aiStatus').innerHTML = t; if(pct!=null){ $('aiProgress').hidden = false; $('aiProgressBar').style.width = Math.round(pct*100)+'%'; } };
+
+    function renderLevel(){
+      document.querySelectorAll('#aiLevelSeg button').forEach(b=>b.classList.toggle('active', b.dataset.level===level));
+      const L = AI_LEVELS[level], span = rangeSpan();
+      let est = '';
+      if(span){ const segs = Math.ceil(span/L.seg), rallies = Math.round(span/25); est = ` 이 범위(${fmt(span)})는 AI에게 약 ${segs + rallies*L.detail.length}번 물어봐요.`; }
+      $('aiLevelNote').textContent = L.note + est;
+    }
+    function rangeSpan(){ const a = parseT($('aiFrom').value) || 0, b = parseT($('aiTo').value) || duration; return b > a ? b - a : 0; }
+    function syncNames(){
+      document.querySelectorAll('.ai-our-name').forEach(e=>e.textContent = ourTeamName);
+      document.querySelectorAll('.ai-opp-name').forEach(e=>e.textContent = oppTeamName);
+    }
+    window.onAiTabOpen = ()=>{ syncNames(); renderLevel(); renderRows(); };
+
+    // 유튜브 플레이어: 영상 길이를 알고, 결과의 시간을 누르면 그 장면으로 가요
+    function loadPlayer(id){
+      $('aiPlayerWrap').hidden = false;
+      const make = ()=>{
+        if(player && player.loadVideoById){ player.cueVideoById(id); return; }
+        player = new YT.Player('aiPlayer', {videoId:id, playerVars:{rel:0, playsinline:1},
+          events:{onReady:()=>{ duration = player.getDuration() || 0; afterDuration(); }, onStateChange:()=>{ const d = player.getDuration && player.getDuration(); if(d && d!==duration){ duration = d; afterDuration(); } }}});
+      };
+      if(window.YT && window.YT.Player) make();
+      else {
+        const prev = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = ()=>{ if(prev) prev(); make(); };
+        if(!document.getElementById('ytApiScript')){ const sc = document.createElement('script'); sc.id='ytApiScript'; sc.src='https://www.youtube.com/iframe_api'; document.head.appendChild(sc); }
+      }
+    }
+    function afterDuration(){ if(duration) $('aiTo').placeholder = fmt(duration)+' (영상 끝)'; renderLevel(); }
+    $('aiUrl').addEventListener('change', ()=>{
+      const id = ytOf($('aiUrl').value);
+      $('aiVideoNote').innerHTML = id ? '경기 앞뒤의 준비 운동·인터뷰는 빼고 <b>경기 부분만</b> 고르면 더 빠르고 정확해요(분:초로 적어요).' : '<b>유튜브 링크가 아니에요.</b> 주소창의 링크(youtube.com/watch?v=… 또는 youtu.be/…)를 붙여 주세요.';
+      if(id && id!==ytId){ ytId = id; duration = 0; loadPlayer(id); }
+    });
+    $('aiFromNow').addEventListener('click', ()=>{ if(player && player.getCurrentTime) $('aiFrom').value = fmt(player.getCurrentTime()); renderLevel(); });
+    ['aiFrom','aiTo'].forEach(id=>$(id).addEventListener('input', renderLevel));
+    $('aiLevelSeg').addEventListener('click', e=>{ const b = e.target.closest('[data-level]'); if(!b || job) return; level = b.dataset.level; renderLevel(); });
+    $('aiSideSeg').addEventListener('click', e=>{ const b = e.target.closest('[data-side]'); if(!b) return; side = b.dataset.side; document.querySelectorAll('#aiSideSeg button').forEach(x=>x.classList.toggle('active', x===b)); });
+
+    async function ask(body){
+      for(let attempt=0; attempt<4; attempt++){
+        if(job && job.stop) throw new Error('stopped');
+        let r, j;
+        try{
+          r = await fetch('/api/analyze', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({
+            url:'https://www.youtube.com/watch?v='+ytId, ourName:ourTeamName, oppName:oppTeamName,
+            ourDesc:$('aiOurDesc').value.trim(), oppDesc:$('aiOppDesc').value.trim(), ourSide:side}, body))});
+          j = await r.json().catch(()=>({}));
+        }catch(err){ j = {error:'서버에 연결하지 못했어요.'}; r = {status:0}; }
+        if(r.status===200) return j;
+        if(r.status===429 || r.status===502 || r.status===0){ // 한도·일시 오류는 잠깐 쉬었다가 다시 해요
+          const wait = r.status===429 ? 30 : 5;
+          for(let s=wait; s>0; s--){ if(job && job.stop) throw new Error('stopped'); setStatus(`${j.error||'잠시 문제가 생겼어요.'} ${s}초 뒤 다시 해요…`); await new Promise(res=>setTimeout(res, 1000)); }
+          continue;
+        }
+        throw new Error(j.error || `AI 분석에 실패했어요(${r.status}).`);
+      }
+      throw new Error('AI가 계속 응답하지 않아요. 잠시 뒤 "이어서 분석"을 눌러 주세요.');
+    }
+
+    // 랠리 찾기 결과 시간이 구간 기준(0부터)으로 온 경우를 영상 전체 기준으로 바로잡아요
+    function fixTimes(list, a, b){
+      if(!list.length) return list;
+      const looksRelative = a > 30 && list.every(r=>r.end <= (b-a)+5);
+      return list.map(r=>looksRelative ? Object.assign({}, r, {start:r.start+a, end:r.end+a}) : r);
+    }
+    function vote(vals){ const c = {}; vals.forEach(v=>{ if(v==null) return; const k = JSON.stringify(v); c[k] = (c[k]||0)+1; }); const best = Object.entries(c).sort((x,y)=>y[1]-x[1])[0]; return best ? {v:JSON.parse(best[0]), n:best[1]} : {v:null, n:0}; }
+
+    async function run(resume){
+      if(!ytId){ alert('유튜브 영상 링크를 먼저 넣어 주세요.'); return; }
+      const from = parseT($('aiFrom').value) || 0, to = parseT($('aiTo').value) || duration;
+      if(!to || to <= from){ alert('분석 끝 시간을 적어 주세요(영상 길이를 아직 못 읽었어요).'); return; }
+      const L = AI_LEVELS[level];
+      job = {stop:false};
+      $('aiStart').disabled = true; $('aiStop').hidden = false;
+      const state = resume && run.state && run.state.ytId===ytId ? run.state : (run.state = {ytId, from, to, level, found:[], segDone:0, detailDone:0, tokens:0});
+      const segs = []; for(let a=state.from; a<state.to; a+=L.seg) segs.push([Math.max(state.from, a-8), Math.min(state.to, a+L.seg)]); // 앞 구간과 8초 겹쳐 봐서 경계의 랠리를 놓치지 않아요
+      const total = segs.length + 1;
+      try{
+        for(let i=state.segDone; i<segs.length; i++){
+          setStatus(`1회차: 랠리 찾는 중 (${fmt(segs[i][0])}~${fmt(segs[i][1])}, ${i+1}/${segs.length}구간)`, i/total*(L.detail.length?0.35:1));
+          const j = await ask({mode:'rallies', start:segs[i][0], end:segs[i][1], fps:L.fps});
+          state.tokens += j.tokens||0;
+          fixTimes((j.result && j.result.rallies)||[], segs[i][0], segs[i][1]).forEach(r=>{
+            if(r.replay || !(r.end > r.start)) return;
+            if(state.found.some(f=>Math.abs(f.end - r.end) < 4)) return; // 겹쳐 본 구간에서 같은 랠리를 두 번 세지 않아요
+            state.found.push(r);
+          });
+          state.segDone = i+1;
+          buildRows(state); renderRows();
+        }
+        state.found.sort((x,y)=>x.end-y.end);
+        for(let i=state.detailDone; i<state.found.length && L.detail.length; i++){
+          const r = state.found[i];
+          setStatus(`2회차: 랠리 ${i+1}/${state.found.length} 자세히 보는 중 (${fmt(r.start)})`, 0.35 + 0.65*i/state.found.length);
+          const a = Math.max(0, Math.floor(r.start)-2), b = Math.min(Math.ceil(r.end)+3, a+40);
+          const hint = `랠리 찾기에서는 ${r.winner==='our'?ourTeamName:r.winner==='opp'?oppTeamName:'누가'} 점수를 땄고(${r.how||'방법 모름'}) ${r.note||''}`;
+          const outs = [];
+          for(const d of L.detail){
+            const j = await ask({mode:'detail', start:a, end:b, fps:d.fps, angle:d.angle, hint});
+            state.tokens += j.tokens||0;
+            if(j.result) outs.push(j.result);
+          }
+          r.details = outs;
+          state.detailDone = i+1;
+          buildRows(state); renderRows();
+        }
+        setStatus(`✅ 다 봤어요. 랠리 ${state.found.length}개를 찾았어요${state.tokens ? ` (AI 사용량 약 ${Math.round(state.tokens/1000).toLocaleString()}천 토큰)` : ''}. 아래 결과를 확인해 주세요.`, 1);
+      }catch(err){
+        if(err.message==='stopped') setStatus(`⏸ 멈췄어요. <b>🤖 이어서 분석</b>을 누르면 멈춘 곳부터 이어서 봐요.`);
+        else setStatus(`⚠️ ${escChip(err.message)} <b>🤖 이어서 분석</b>을 누르면 멈춘 곳부터 이어서 봐요.`);
+      }finally{
+        job = null; $('aiStart').disabled = false; $('aiStop').hidden = true;
+        const left = run.state && (run.state.segDone < segs.length || (L.detail.length && run.state.detailDone < run.state.found.length));
+        $('aiStart').textContent = left ? '🤖 이어서 분석' : '🤖 AI 분석 시작';
+        $('aiStart').dataset.resume = left ? '1' : '';
+      }
+    }
+
+    // 3회차: 랠리 결과 → 기록 줄. 세트는 점수판(보이면)이나 점수가 0:0으로 돌아간 곳으로 나누고, 점수 흐름과 점수판이 어긋나면 ⚠️
+    function buildRows(state){
+      const keep = new Map(rows.map(r=>[r.key, r]));
+      let set = 1, our = 0, opp = 0, lastBoard = null;
+      rows = state.found.slice().sort((x,y)=>x.end-y.end).map(r=>{
+        const key = Math.round(r.end);
+        const ds = r.details || [];
+        const pick = f => vote(ds.map(f));
+        const team = pick(d=>d.team), outcome = pick(d=>d.outcome), option = pick(d=>d.option), detail = pick(d=>d.detail||null), ball = pick(d=>d.ball||null);
+        let t, o;
+        if(team.v && outcome.v){ t = team.v; o = outcome.v; }
+        else { // 랠리 찾기 결과만 있으면: 이긴 팀 득점(상대 실수면 상대 범실)
+          if(r.how==='opp_error'){ t = r.winner==='our' ? 'opp' : 'our'; o = 'fault'; } else { t = r.winner==='opp' ? 'opp' : 'our'; o = 'score'; }
+        }
+        const opt = option.v || (r.how==='serve' ? '서브' : r.how==='block' ? '블로킹' : '');
+        const flags = [];
+        const winner = (t==='our') === (o==='score') ? 'our' : 'opp';
+        if(r.winner && r.winner!=='unknown' && r.winner!==winner) flags.push('랠리 찾기와 자세히 보기의 득점 팀이 달라요');
+        if(ds.length>1 && (team.n<ds.length || option.n<ds.length)) flags.push('두 시각의 답이 달라요');
+        const conf = ds.length ? ds.reduce((a,d)=>a+(Number(d.confidence)||0),0)/ds.length : Number(r.confidence)||0;
+        if(conf < 0.5) flags.push('AI가 확신하지 못해요');
+        if(!r.winner || r.winner==='unknown') flags.push('득점 팀을 못 읽었어요');
+        // 세트: 점수판 세트 번호 → 점수판이 0 근처로 돌아감 → 앞 세트가 21점(듀스면 2점 차)으로 끝남
+        const b = r.scoreAfter && Number.isFinite(r.scoreAfter.our) ? r.scoreAfter : null;
+        if(r.set && r.set > set){ set = r.set; our = 0; opp = 0; }
+        else if(b && lastBoard && b.our + b.opp < lastBoard.our + lastBoard.opp - 4){ set++; our = 0; opp = 0; }
+        else if(Math.max(our, opp) >= 21 && Math.abs(our-opp) >= 2){ set++; our = 0; opp = 0; }
+        if(winner==='our') our++; else opp++;
+        if(b){
+          if(b.our!==our || b.opp!==opp) flags.push(`점수판 ${b.our}:${b.opp}와 계산 ${our}:${opp}가 달라요`);
+          lastBoard = b;
+        }
+        const prev = keep.get(key) && keep.get(key).edited ? keep.get(key) : null;
+        if(prev){ prev.flags = flags; prev.score = [our, opp]; prev.set = set; return prev; }
+        const d0 = ds[0] || {};
+        return {key, start:r.start, end:r.end, set, team:t, outcome:o, option:opt, detail:fullDetail(opt, o, detail.v), ball:ball.v,
+          tosses:(d0.tosses||[]).filter(x=>x && (x.team==='our'||x.team==='opp') && x.to), number:d0.attackerNumber||null,
+          note:[r.note, ...ds.map(d=>d.note)].filter(Boolean).join(' / ').slice(0, 200), conf, flags, include:true, score:[our, opp]};
+      });
+    }
+    function fullDetail(opt, outcome, short){
+      if(!short) return '';
+      const list = detailOptionsFor(opt, outcome) || [];
+      const s = String(short).replace(/\s/g,'');
+      return list.find(x=>x && x.replace(/\s/g,'').startsWith(s)) || list.find(x=>x && s && x.replace(/\s/g,'').includes(s)) || '';
+    }
+
+    const BUCKETS = [['our','score'], ['opp','score'], ['our','fault'], ['opp','fault']];
+    const bucketText = (t,o) => (t==='our' ? (o==='score' ? `🔵 ${ourTeamName} 득점` : `⚠️ ${ourTeamName} 범실`) : (o==='score' ? `🔴 ${oppTeamName} 득점` : `🎁 ${oppTeamName} 범실`));
+    function renderRows(){
+      const box = $('aiRows');
+      $('aiResultGroup').hidden = !rows.length;
+      if(!rows.length){ box.innerHTML = ''; return; }
+      const warn = rows.filter(r=>r.flags.length).length, on = rows.filter(r=>r.include).length;
+      $('aiResultSub').textContent = `랠리 ${rows.length}개 · ⚠️ ${warn}개 · 넣을 기록 ${on}개`;
+      let lastSet = null;
+      box.innerHTML = rows.map((r,i)=>{
+        const head = r.set!==lastSet ? `<div class="ai-set-head">${r.set}세트</div>` : ''; lastSet = r.set;
+        const opts = QR_UNIFIED_OPTIONS.map(o=>`<option${o===r.option?' selected':''}>${escChip(o)}</option>`).join('');
+        const dets = (detailOptionsFor(r.option, r.outcome)||['']).map(d=>`<option value="${escChip(d)}"${d===r.detail?' selected':''}>${d?escChip(d):'방식 구분 안 함'}</option>`).join('');
+        const zone = r.ball && Number.isInteger(r.ball.col) ? ` · 🎯 ${['왼쪽','중앙','오른쪽'][r.ball.col]||''} ${['앞','중간','뒤'][r.ball.row]||''}` : '';
+        const toss = r.tosses && r.tosses.length ? ` · 토스 ${r.tosses.map(x=>(x.team==='our'?'🔵':'🔴')+x.to).join('→')}` : '';
+        return head + `<div class="ai-row${r.include?'':' off'}${r.flags.length?' warn':''}" data-i="${i}">
+          <button type="button" class="btn ai-t" data-act="seek" title="이 장면으로 이동">▶ ${fmt(r.start)}</button>
+          <span class="ai-score">${r.score[0]}:${r.score[1]}</span>
+          <select data-f="bucket" aria-label="결과">${BUCKETS.map(([t,o])=>`<option value="${t}|${o}"${t===r.team&&o===r.outcome?' selected':''}>${escChip(bucketText(t,o))}</option>`).join('')}</select>
+          <select data-f="option" class="ai-opt" aria-label="세부 상황"><option value=""${r.option?'':' selected'}>세부 상황 모름</option>${opts}</select>
+          <select data-f="detail" class="ai-det" aria-label="방식">${dets}</select>
+          <input type="checkbox" data-f="include"${r.include?' checked':''} aria-label="기록에 넣기">
+          <div class="ai-meta">${r.flags.length ? '⚠️ <b>'+escChip(r.flags.join(' · '))+'</b> · ' : ''}확신 ${Math.round((r.conf||0)*100)}%${r.number?` · #${r.number}`:''}${zone}${toss}${r.note ? ' · '+escChip(r.note) : ''}</div>
+        </div>`;
+      }).join('');
+    }
+    $('aiRows').addEventListener('click', e=>{
+      const b = e.target.closest('[data-act="seek"]'); if(!b) return;
+      const r = rows[Number(b.closest('.ai-row').dataset.i)];
+      if(player && player.seekTo){ player.seekTo(Math.max(0, r.start-1), true); player.playVideo(); $('aiPlayerWrap').scrollIntoView({block:'nearest', behavior:'smooth'}); }
+    });
+    $('aiRows').addEventListener('change', e=>{
+      const el = e.target, row = el.closest('.ai-row'); if(!row) return;
+      const r = rows[Number(row.dataset.i)]; r.edited = true;
+      if(el.dataset.f==='include') r.include = el.checked;
+      if(el.dataset.f==='bucket'){ [r.team, r.outcome] = el.value.split('|'); r.detail = fullDetail(r.option, r.outcome, r.detail) || ''; }
+      if(el.dataset.f==='option'){ r.option = el.value; r.detail = ''; }
+      if(el.dataset.f==='detail') r.detail = el.value;
+      if(run.state) buildRows(run.state);
+      renderRows();
+    });
+    $('aiStart').addEventListener('click', ()=>run($('aiStart').dataset.resume==='1'));
+    $('aiStop').addEventListener('click', ()=>{ if(job) job.stop = true; });
+    $('aiClear').addEventListener('click', ()=>{ if(!confirm('AI 분석 결과를 지울까요? (경기 폴더에 넣은 기록은 그대로예요)')) return; rows = []; run.state = null; $('aiStart').textContent='🤖 AI 분석 시작'; $('aiStart').dataset.resume=''; setStatus(''); $('aiProgress').hidden = true; renderRows(); });
+    $('aiApply').addEventListener('click', ()=>{
+      const pick = rows.filter(r=>r.include && r.option);
+      const noOpt = rows.filter(r=>r.include && !r.option).length;
+      if(readOnlyFolderView){ alert('지금은 조회 전용이라 기록을 넣을 수 없어요.'); return; }
+      if(!lastPickedMatchFolder){ alert('위 카드에서 🆕 새 경기를 시작하거나 저장된 폴더를 불러온 뒤 넣어 주세요. 그 폴더에 기록이 저장돼요.'); return; }
+      if(!pick.length){ alert(noOpt ? '세부 상황이 정해진 줄이 없어요. 줄마다 세부 상황을 골라 주세요.' : '넣을 기록이 없어요.'); return; }
+      if(!confirm(`"${lastPickedMatchFolder.name}" 폴더에 AI 기록 ${pick.length}개를 넣을까요?${noOpt ? `\n(세부 상황을 고르지 않은 ${noOpt}줄은 빼요)` : ''}${records.length ? `\n이 폴더에는 이미 기록 ${records.length}개가 있어요. 뒤에 이어서 넣어요.` : ''}`)) return;
+      pushUndo(`AI 기록 ${pick.length}개 넣기`);
+      pick.forEach(r=>{
+        const entry = {category: qrCategoryFor(r.team, r.outcome), optionLabel: r.option, team: r.team, outcome: r.outcome};
+        if(r.detail) entry.detail = r.detail;
+        const ballTo = r.ball && ATTACK_SET.has(r.option) && Number.isInteger(r.ball.col) && Number.isInteger(r.ball.row) ? ballZoneXY(Math.min(2,Math.max(0,r.ball.col)), Math.min(2,Math.max(0,r.ball.row)), r.team) : null;
+        records.push({
+          time: r.end, entries:[entry], label: entryRecordLabel(entry), category: entry.category, optionLabel: r.option,
+          videoName: 'YouTube:'+ytId, zone:null, grid9:null, player:null, oppPlayer:null,
+          ball: ballTo ? {from:null, to:ballTo} : undefined,
+          tosses: r.tosses && r.tosses.length ? r.tosses.map(x=>({team:x.team, to:x.to})) : undefined,
+          set: r.set, ai: {conf: Math.round((r.conf||0)*100)/100, number: r.number||null, note: r.note||''}
+        });
+      });
+      lastPickedMatchFolder.youtube = 'https://www.youtube.com/watch?v='+ytId;
+      afterRecordsChanged();
+      $('aiApplyNote').innerHTML = `✅ "${escChip(lastPickedMatchFolder.name)}" 폴더에 기록 ${pick.length}개를 넣었어요. <b>📝 경기 분석(수동)</b>에서 그래프·종합 분석을 보고, 등번호에 맞는 선수는 기록 목록에서 골라 주세요. 잘못 넣었으면 수동 화면의 ↩️ 되돌리기로 취소해요.`;
+    });
+    renderLevel();
+  })();
+  // 유튜브(AI 분석)로 남긴 기록은 시간을 누르면 유튜브 그 장면을 새 탭으로 열어요
+  window.__openYoutubeAt = (rec)=>{
+    const m = /^YouTube:([A-Za-z0-9_-]{11})$/.exec(rec.videoName||''); if(!m) return false;
+    window.open(`https://www.youtube.com/watch?v=${m[1]}&t=${Math.max(0, Math.floor(rec.time-3))}s`, '_blank', 'noopener');
+    return true;
   };
   if(window.__pendingVideoAnalysis){ const pend = window.__pendingVideoAnalysis; window.__pendingVideoAnalysis = null; window.applyVideoAnalysisState(pend); }
 
