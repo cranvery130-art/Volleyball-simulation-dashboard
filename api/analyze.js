@@ -85,7 +85,8 @@ ${b.angle ? `이번에는 이렇게 봅니다: ${b.angle}\n` : ''}당신은 프�
 - foulTeam: foul이면 반칙한 팀(our|opp), 아니면 null.
 [기록 규칙] 공격한 공이 라인 밖=공격 팀 범실(아웃). 블로커·수비수에 맞고 밖=공격 팀 득점(터치아웃). 서브가 밖·네트=서브 팀 범실. 네트에 걸려 못 넘김=그 팀 범실.
 블로킹에 막혀 공격 팀 코트에 떨어짐=블로킹 팀 득점. 상대 코트 안에 떨어짐=보낸 팀 득점. 리시브·디그가 우리 코트 밖으로 튐=그 팀이 못 받은 것이므로 상대 득점.${b.layout ? `
-[포지션 자리] 9인제는 자리가 고정이에요. 이 팀들은 아래 자리에 서요(전술 시뮬레이션에 놓아 둔 대형, 그 팀이 네트를 바라볼 때 기준). 선수가 서 있는 자리를 이 대형과 맞춰 포지션을 정합니다.
+[포지션 자리] 9인제는 대형 모양이 거의 그대로예요. 이 팀들은 아래 자리에 서요(전술 시뮬레이션에 놓아 둔 대형, 그 팀이 네트를 바라볼 때 기준).
+다만 서브 차례가 오면 서버가 잠시 빠지고 다른 선수들이 그때그때 빈자리를 메워서, 서 있는 자리와 그 선수의 원래 포지션이 다를 수 있어요. 그래서 포지션은 등번호로 먼저 정하고, 등번호가 안 보일 때만 서 있는 자리를 이 대형과 맞춰 정합니다.
 ${b.layout}` : ''}
 - winner: 점수를 딴 팀(our|opp|unknown)
 - team: 결정적 플레이를 한 팀(our|opp). 잘해서 났으면 딴 팀, 실수(아웃·네트·반칙·서브 범실 등)로 났으면 실수한 팀입니다.
@@ -96,9 +97,11 @@ ${b.layout}` : ''}
 - ball: 공격·서브라면 공이 떨어진 곳 {col,row}. col 0=왼쪽 1=가운데 2=오른쪽(공을 보낸 팀이 네트를 바라볼 때 기준), row 0=네트 가까운 앞 1=중간 2=뒤. 모르면 null.
 - 관련 선수(수동 기록원이 팀별로 '관련 선수'를 고르듯 양 팀 모두): 우리 공격이 막혔으면 우리 공격수와 상대 블로커, 공격 득점이면 공격수와 (닿았다면) 받지 못한 상대 수비수,
   서브면 서버와 받은 선수, 범실·반칙이면 실수한 선수. 관련 없는 팀은 null.
-  ourRole / oppRole: 그 선수의 포지션(${ROLE_TEXT}) — 9인제는 자리가 고정이라 코트 위치로 판단합니다. 모르면 null.
+  ourRole / oppRole: 그 선수의 포지션(${ROLE_TEXT}) — 등번호가 보이면 명단의 그 번호 포지션, 안 보이면 서 있는 자리로 판단합니다. 모르면 null.
   ourNumber / oppNumber: 그 선수의 등번호(보이면), 아니면 null.${b.jerseys ? `
-  명단 등번호(등번호=포지션): ${b.jerseys.replace(/\n/g, ' / ')}. 등번호가 보이면 이 명단으로 포지션을 맞추고, 안 보이면 서 있는 자리로 정합니다.` : ''}
+  명단 등번호(등번호=포지션): ${b.jerseys.replace(/\n/g, ' / ')}. 등번호가 보이면 서 있는 자리보다 이 명단을 먼저 따릅니다(서버가 빠진 자리를 다른 선수가 메우기 때문). 안 보이면 서 있는 자리로 정합니다.` : ''}
+- serverTeam / serverNumber: 이 랠리 처음에 서브한 팀(our|opp|unknown)과 서버의 등번호(보이면, 아니면 null).${b.serve ? `
+  서브 순서로 본 예상(틀릴 수 있음): ${b.serve}. 실제 서버 등번호가 다르면 본 그대로 적습니다.` : ''}
 - blockZone: option이 블로킹이거나 블로킹이 결정적이었으면, 블로킹한 팀이 네트를 바라볼 때 기준 네트 앞 자리 0=레프트 앞 1=앞차 앞 2=A 앞 3=백차(백A) 앞 4=라이트 앞. 아니면 null.
 - attack: option이 공격(레프트·라이트·A·B·백A·앞차·백차)이면 그 마지막 공격의 사실을 [공격 위치 구분] 기준으로 적습니다:
   {hitX(m), setterX(m), tempo: quick(공격수가 먼저 뜬 속공)|low(낮고 빠른 토스)|high(높게 띄운 오픈), behindSetter(세터 뒤로 갔으면 true), fake(속공수가 먼저 뛰어 속였으면 true)}. 공격이 아니면 null.
@@ -186,6 +189,8 @@ const SCHEMA = {
       lineCall: { type: 'STRING', enum: ['in', 'out', 'touch', 'none'], nullable: true },
       attack: { type: 'OBJECT', nullable: true, properties: ATTACK_FACTS },
       netCrossings: { type: 'INTEGER', nullable: true },
+      serverTeam: { type: 'STRING', enum: ['our', 'opp', 'unknown'], nullable: true },
+      serverNumber: { type: 'INTEGER', nullable: true },
       tosses: { type: 'ARRAY', items: { type: 'OBJECT', properties: Object.assign({
         time: { type: 'NUMBER', nullable: true }, team: { type: 'STRING', enum: ['our', 'opp'] }, to: { type: 'STRING', enum: TOSS_TO },
       }, ATTACK_FACTS, { second: { type: 'BOOLEAN', nullable: true } }), required: ['team', 'to'] } },
@@ -194,7 +199,7 @@ const SCHEMA = {
     required: ['observe', 'lastTouchTeam', 'ending', 'winner', 'team', 'outcome', 'option', 'netCrossings', 'tosses', 'confidence'],
     // 사실(observe·마지막 터치·끝난 방식)을 먼저 쓰고 분류를 나중에 고르게 순서를 정해요. 토스도 공격 위치를 고르기 전에 먼저 적어요.
     propertyOrdering: ['observe', 'lastTouchTeam', 'lastTouchKind', 'ending', 'landedCourt', 'foulTeam', 'refereeSeen', 'refereeCall', 'lineCall',
-      'netCrossings', 'tosses', 'attack', 'winner', 'team', 'outcome', 'option', 'detail', 'ball', 'ourRole', 'oppRole', 'ourNumber', 'oppNumber', 'blockZone', 'confidence', 'note'],
+      'serverTeam', 'serverNumber', 'netCrossings', 'tosses', 'attack', 'winner', 'team', 'outcome', 'option', 'detail', 'ball', 'ourRole', 'oppRole', 'ourNumber', 'oppNumber', 'blockZone', 'confidence', 'note'],
   },
 };
 
@@ -267,7 +272,7 @@ module.exports = async (req, res) => {
     mode, start, end,
     fps: Math.min(mode === 'detail' ? 10 : mode === 'scores' ? 2 : 4, Math.max(0.5, Number(raw.fps) || (mode === 'detail' ? 4 : 1))),
     ourName: clean(raw.ourName, 30), oppName: clean(raw.oppName, 30), ourDesc: clean(raw.ourDesc), oppDesc: clean(raw.oppDesc),
-    ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200), layout: clean(raw.layout, 1800), jerseys: clean(raw.jerseys, 400),
+    ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200), layout: clean(raw.layout, 1800), jerseys: clean(raw.jerseys, 400), serve: clean(raw.serve, 200),
   };
 
   const tier = raw.model === 'pro' ? 'pro' : 'flash';
