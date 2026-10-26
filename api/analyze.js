@@ -21,7 +21,17 @@ const BASE = `당신은 9인제 배구(한국 생활체육) 경기 기록원입�
 세터페인트(2구 넘김), 3구처리(셋째 터치로 넘긴 공).
 왼쪽·오른쪽은 언제나 그 플레이를 한 팀이 네트를 바라볼 때 기준입니다.
 보이지 않거나 확실하지 않은 것은 지어내지 말고 null 또는 "unknown"으로 두고 confidence를 낮게 줍니다.
-시간은 반드시 영상 전체 기준 초(숫자)로 씁니다.`;
+시간은 반드시 영상 전체 기준 초(숫자)로 씁니다.
+
+[코트 라인] 9인제 코트는 길이 21m·너비 10.5m(한쪽 10.5m×10.5m)이고, 네트 가운데 아래 센터라인이 두 코트를 나눕니다. 라인 위에 떨어진 공은 인입니다.
+체육관 바닥에는 농구·배드민턴 등 다른 종목 선도 많습니다. 선심(깃발을 든 심판)은 코트 모서리 바깥에 서서 자기 앞의 사이드라인·엔드라인을 맡으므로,
+선심이 서 있는 곳 바로 앞으로 이어진 선이 배구 경기장 라인입니다. 선심 위치로 코트 네 변을 먼저 찾고, 그 선을 기준으로 인·아웃을 봅니다.
+[심판 판정] 득실은 선수와 공만 보지 말고 심판 판정을 기준으로 정합니다. 영상으로 애매해도 심판이 선언하면 그대로 점수가 됩니다.
+- 주심(네트 옆 높은 심판대)은 랠리가 끝나면 다음 서브를 넣을 팀(=점수를 딴 팀) 쪽으로 팔을 뻗어 가리킵니다. 이것이 득점 팀입니다.
+- 주심·부심 반칙 수신호: 네트터치(손으로 네트를 가리키거나 만짐), 오버네트(손을 네트 위로 넘겨 내림), 센터라인 침범(센터라인을 가리킴),
+  포히트(손가락 4개), 더블컨택(손가락 2개), 홀딩(손바닥을 위로 천천히 들어 올림), 서브 풋폴트(엔드라인을 가리킴), 안테나 반칙(안테나를 가리킴). 수신호 뒤 가리킨 팀이 득점합니다.
+- 선심 깃발: 깃발을 위로 들면 아웃, 깃발을 코트 바닥 쪽으로 내려 가리키면 인, 깃발을 세우고 다른 손바닥으로 깃발 끝을 쓸면 터치아웃(수비·블로커에 맞고 나감).
+- 심판 판정이 공의 겉보기 결과와 다르면 심판 판정을 따릅니다.`;
 
 function teamsText(b) {
   return `우리팀: ${b.ourName || '우리팀'} (유니폼: ${b.ourDesc || '설명 없음'})
@@ -46,11 +56,14 @@ function promptFor(b) {
 각 랠리: start(서브 시각), end(공이 죽은 시각), winner(점수를 딴 팀 our|opp|unknown), how(결정 방법 attack|serve|block|opp_error|unknown),
 server(서브한 팀 our|opp|unknown), scoreAfter(점수판이나 자막에 보이는 랠리 뒤 점수 {our,opp}, 안 보이면 null), set(보이면 세트 번호, 아니면 null),
 replay(다시보기 화면이면 true — 같은 랠리를 두 번 세지 않도록), confidence(0~1), note(짧은 한국어 설명).
-작전타임·교체·다시보기 장면은 랠리가 아닙니다.`;
+작전타임·교체·다시보기 장면은 랠리가 아닙니다.
+winner는 랠리 끝에 주심이 팔로 가리킨 팀(선심 깃발·반칙 수신호 포함 심판 판정)을 먼저 따르고, 심판이 안 보일 때만 공을 보고 정합니다. end는 주심이 가리킨 시각까지 포함합니다.`;
   }
   return `${teamsText(b)}
 이 요청은 랠리 하나만 봅니다: 영상 ${b.start}초~${b.end}초.${b.hint ? `\n앞 단계에서 본 내용(틀릴 수 있음): ${b.hint}` : ''}
-${b.angle ? `이번에는 이렇게 봅니다: ${b.angle}\n` : ''}이 랠리의 마지막 점수를 결정한 플레이를 기록합니다.
+${b.angle ? `이번에는 이렇게 봅니다: ${b.angle}\n` : ''}이 랠리의 마지막 점수를 결정한 플레이를 기록합니다. 득실과 반칙은 위 [심판 판정]을 먼저 따릅니다(랠리가 끝난 뒤 몇 초 동안 주심·선심을 봅니다).${b.layout ? `
+[포지션 자리] 9인제는 자리가 고정이에요. 이 팀들은 아래 자리에 서요(전술 시뮬레이션에 놓아 둔 대형, 그 팀이 네트를 바라볼 때 기준). 선수가 서 있는 자리를 이 대형과 맞춰 포지션을 정합니다.
+${b.layout}` : ''}
 - winner: 점수를 딴 팀(our|opp|unknown)
 - team: 결정적 플레이를 한 팀(our|opp). 잘해서 났으면 딴 팀, 실수(아웃·네트·반칙·서브 범실 등)로 났으면 실수한 팀입니다.
 - outcome: score(잘해서 득점) | fault(실수로 실점)
@@ -64,6 +77,8 @@ ${b.angle ? `이번에는 이렇게 봅니다: ${b.angle}\n` : ''}이 랠리의 
   ourNumber / oppNumber: 그 선수의 등번호(보이면), 아니면 null.
 - blockZone: option이 블로킹이거나 블로킹이 결정적이었으면, 블로킹한 팀이 네트를 바라볼 때 기준 네트 앞 자리 0=레프트 앞 1=앞차 앞 2=A 앞 3=백차(백A) 앞 4=라이트 앞. 아니면 null.
 - tosses: 이 랠리에서 올라간 토스를 순서대로 [{team:our|opp, to:${TOSS_TO.join('|')}}]. 모르면 빈 배열.
+- refereeSeen: 주심·선심의 판정 동작이 보였으면 true. refereeCall: 본 판정을 짧게(예: '주심이 상대팀 가리킴', '선심 깃발 위로=아웃', '네트터치 수신호'), 못 봤으면 null.
+  lineCall: 선심 판정 in|out|touch|none(선심 판정 없음). 심판이 반칙을 선언했으면 option은 '파울(반칙)', detail은 그 반칙 이름으로 씁니다.
 - confidence(0~1), note(짧은 한국어 설명).`;
 }
 
@@ -124,6 +139,9 @@ const SCHEMA = {
       ourNumber: { type: 'INTEGER', nullable: true },
       oppNumber: { type: 'INTEGER', nullable: true },
       blockZone: { type: 'INTEGER', nullable: true },
+      refereeSeen: { type: 'BOOLEAN' },
+      refereeCall: { type: 'STRING', nullable: true },
+      lineCall: { type: 'STRING', enum: ['in', 'out', 'touch', 'none'], nullable: true },
       tosses: { type: 'ARRAY', items: { type: 'OBJECT', properties: { team: { type: 'STRING', enum: ['our', 'opp'] }, to: { type: 'STRING', enum: TOSS_TO } } } },
       confidence: { type: 'NUMBER' }, note: { type: 'STRING' },
     },
@@ -200,7 +218,7 @@ module.exports = async (req, res) => {
     mode, start, end,
     fps: Math.min(mode === 'detail' ? 10 : mode === 'scores' ? 2 : 4, Math.max(0.5, Number(raw.fps) || (mode === 'detail' ? 4 : 1))),
     ourName: clean(raw.ourName, 30), oppName: clean(raw.oppName, 30), ourDesc: clean(raw.ourDesc), oppDesc: clean(raw.oppDesc),
-    ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200),
+    ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200), layout: clean(raw.layout, 1800),
   };
 
   const models = [process.env.GEMINI_MODEL, ...MODELS].filter((m, i, a) => m && a.indexOf(m) === i);
