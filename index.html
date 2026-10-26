@@ -266,6 +266,9 @@
   .nine-zone-grid button{ padding:12px 4px; font-size:11.5px; font-weight:600; border:1px solid var(--border); background:var(--panel); color:var(--text-dim); border-radius:6px; cursor:pointer; font-family:inherit; }
   .nine-zone-grid button:hover{ background:rgba(255,255,255,0.04); color:var(--text); }
   .nine-zone-grid button.active{ background:var(--grad); color:var(--on-accent); border-color:transparent; }
+  /* 서브 착지: 칸 사이·사이드라인·끝선 쪽 작은 점 */
+  .nine-zone-grid button.zone-dot{ width:14px; height:14px; min-height:0; padding:0; border-radius:50%; justify-self:center; align-self:center; background:var(--panel); border:1.5px solid var(--border-2); }
+  .nine-zone-grid button.zone-dot.active{ background:var(--grad); border-color:transparent; box-shadow:0 0 0 3px rgba(232,93,42,0.25); }
   /* 네트 표기: 위치 칸 위쪽이 네트(전위), 아래로 갈수록 후위 */
   /* "공 착지 방향 직접 설정" grid: laid out in the same orientation as the court view, with the net on the matching side */
   .landing-court{ display:flex; gap:4px; }
@@ -360,6 +363,8 @@
   .tl-btn:hover{ filter:brightness(1.12); }
   .tl-btn:disabled{ opacity:0.4; cursor:not-allowed; }
   .tl-mid{ flex:1; min-width:0; }
+  .tl-note{ font-size:11.5px; color:var(--text-dim); margin:6px 4px 0; line-height:1.45; transition:color .2s ease-out; }
+  .tl-note.warn{ color:var(--accent); font-weight:600; }
   .tl-phase{ font-family:var(--mono); font-size:11px; letter-spacing:0.06em; color:var(--accent); font-weight:600; margin-bottom:4px; }
   input[type=range]{ width:100%; appearance:none; height:5px; border-radius:3px; background:linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct,0%), var(--border-2) var(--pct,0%), var(--border-2) 100%); cursor:pointer; }
   input[type=range]::-webkit-slider-thumb{ appearance:none; width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); cursor:pointer; }
@@ -2055,7 +2060,7 @@
       <ul class="feature-list">
         <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지와 상대 서브(우리 서브 리시브), 우리 팀 공격 시 커버 6가지, 총 13개 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 공격 상황 편집 → 대형 저장(왼쪽), 대형 불러오기·편집·⭐ 최종 확정·공유(오른쪽) 순서로 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
-        <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요.</li>
+        <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요. 상대 서브는 칸 사이나 사이드라인·끝선 쪽으로도 정할 수 있어요.</li>
         <li><b>경기 영상 분석</b>경기 영상을 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 📍 코트 위치에서는 득점·실점·범실이 포지션별로 어떤 기록(빈 곳·사람 쪽 강타, 볼처리, 서브 등)이었는지와 공이 간 방향을 화살표로 보여줘요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
         <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 전체 성적과 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠, 그리고 모든 경기를 합친 상세 분석(공격 방식·블로킹·코트 위치)까지 정리해줘요.</li>
         <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
@@ -2283,6 +2288,7 @@
           <input type="range" id="timeline" min="0" max="100" value="0" />
         </div>
       </div>
+      <div class="tl-note" id="playNote">▶ 재생은 <b>편집 모드</b>를 <b>끔</b>으로 두어야 눌러져요. 시작 위치·도착 위치를 고른 동안에는 재생 버튼이 꺼져 있어요.</div>
       <div class="legend stage-legend">
         <div class="row"><span class="dot" style="background:var(--own);"></span>우리 팀 (1~9)</div>
         <div class="row"><span class="dot" style="background:var(--opp);"></span>상대 팀 (1~9, 포지션 배정 순서)</div>
@@ -2363,7 +2369,7 @@
           <div class="fgroup">
           <div class="fgroup-head"><span class="fg-ic">🎯</span><span class="fg-title">공 착지</span><span class="fg-sub">공이 떨어질 자리를 직접 골라요</span></div>
           <div class="check-row" style="margin-top:0;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
-          <div class="field-note" style="margin-top:0;">칸을 누르면 저장하지 않아도 지금 공격 상황에 바로 적용되고, 처음부터 다시 재생해서 공이 떨어지는 곳을 보여줘요.</div>
+          <div class="field-note" style="margin-top:0;">칸을 누르면 저장하지 않아도 지금 공격 상황에 바로 적용되고, 처음부터 다시 재생해서 공이 떨어지는 곳을 보여줘요. 상대 서브는 칸 사이·측면의 작은 점도 고를 수 있어요.</div>
           <div id="customLandingRow" style="display:none; margin-top:6px;">
             <div class="landing-court net-top" id="landingCourt">
             <div class="landing-net">네트</div>
@@ -2384,6 +2390,7 @@
               <p style="margin:0 0 8px;">9칸은 <b>경기장 화면과 같은 방향</b>으로 놓여 있어요. 화면에서 공을 떨어뜨리고 싶은 자리와 같은 위치의 칸을 누르면 그 자리로 정확히 날아가요. 상대 공격이면 왼쪽으로, 우리 공격이면 오른쪽으로 90도 돌아간 모양이에요.</p>
               <p style="margin:0 0 8px;"><b>앞·뒤</b> — 주황색 "네트" 막대에 가까운 줄이 "앞", 먼 줄이 "뒤"예요.</p>
               <p style="margin:0 0 8px;"><b>왼쪽·오른쪽</b> — 공격하는 팀이 아니라 <b>공을 받는 팀</b>이 네트를 바라볼 때의 왼쪽·오른쪽이에요. 상대 공격이면 우리 팀 기준, 우리 공격이면 상대 팀 기준이에요.</p>
+              <p style="margin:0 0 8px;"><b>상대 서브</b>일 때는 칸 사이와 <b>사이드라인·끝선 쪽</b>에 작은 점이 더 생겨요. 실제 경기처럼 칸과 칸 사이나 코트 옆·끝으로 들어오는 서브는 점을 눌러 정해요.</p>
               <p style="margin:0;" id="landingSideHint"></p>
             </div>
           </div>
@@ -3196,10 +3203,11 @@
   const OWN_COL_X = [80, 200, 320];
   const OPP_COL_X = [320, 200, 80]; // mirrored: opponent's own-left (col 0) is physical x=320
   function nineZoneToXY(col, row, isOurAttack){
-    const cols = isOurAttack ? OWN_COL_X : OPP_COL_X; // left/right follow the ATTACKER's own facing, not the receiving side
-    const rows = isOurAttack ? OPP_ROW_Y : OWN_ROW_Y;
-    const rowKeys = ['front','mid','back'];
-    return [cols[col], rows[rowKeys[row]]];
+    // col/row는 0~2 칸 번호예요. 서브 착지는 칸 사이(0.5·1.5)나 사이드라인·끝선 쪽(-0.4·2.4)도 써요 — 칸 간격(120)으로 이어서 계산해요.
+    // left/right follow the ATTACKER's own facing, not the receiving side
+    const x = isOurAttack ? OWN_COL_X[0] + 120*col : OPP_COL_X[0] - 120*col;
+    const y = isOurAttack ? OPP_ROW_Y.front - 120*row : OWN_ROW_Y.front + 120*row;
+    return [x, y];
   }
 
   const ORIGINAL_BASE = {
@@ -3642,9 +3650,8 @@
       }
       if(isOur(scenario) && f.fakeAttackerId===id){
         const base = CUSTOM_BASE[id]; const to=[OUR_ATTACKS[scenario].fakeX,420];
-        if(p<=0.35){ pos = lerpPt(base, to, easeInOut(p/0.35)*0.7); }
-        else if(p<=0.55){ pos = lerpPt(lerpPt(base,to,0.7), base, easeInOut((p-0.35)/0.2)); }
-        else { pos = lerpPt(base, f.targets[id], easeInOut((p-0.55)/0.45)); }
+        // 속공하는 척 네트 앞으로 들어간 뒤 빠지지 않고 그 자리에 머물러요
+        pos = p<=0.35 ? lerpPt(base, to, easeInOut(p/0.35)) : to.slice();
       }
       out[id]=pos;
     });
@@ -3670,20 +3677,17 @@
   }
 
   // Scenarios with a decoy (fakeContact) need the real toss to start only after the decoy has
-  // fully retreated (see fakeOppPosAt); scenarios without one can toss from the very start. Deriving
+  // made its fake approach (see fakeOppPosAt); scenarios without one can toss from the very start. Deriving
   // this from atk.timing.peak (rather than a fixed stored fraction) keeps it correct automatically
   // whenever the tempo/duration changes.
   function tossStartFor(atk){ return atk.fakeContact ? atk.timing.peak*0.87 : (atk.tossStart||0); }
 
+  // 시간차 페이크: 속공수가 네트 앞으로 들어가 속공하는 척하고, 다시 빠지지 않고 그 자리에 머물러요.
   function fakeOppPosAt(atk, p){
     const from = CUSTOM_OPP_BASE[resolveOppByPos(atk.fakePos, atk.fakeOpp)], to = atk.fakeContact;
-    // Scaled to this scenario's own peak timing (not a fixed fraction of the whole timeline) so the
-    // decoy always finishes retreating well before the real attack peaks, no matter what tempo is set.
-    const fakeInEnd = atk.timing.peak * 0.55;
-    const fakeOutEnd = atk.timing.peak * 0.85;
-    if(p<=fakeInEnd){ return lerpPt(from, to, easeInOut(p/fakeInEnd)*0.75); }
-    if(p<=fakeOutEnd){ return lerpPt(lerpPt(from,to,0.75), from, easeInOut((p-fakeInEnd)/(fakeOutEnd-fakeInEnd))); }
-    return from.slice();
+    const fakeInEnd = atk.timing.peak * 0.55; // 진짜 공격보다 먼저 들어가요(템포가 바뀌어도 같은 비율)
+    if(p<=fakeInEnd) return lerpPt(from, to, easeInOut(p/fakeInEnd));
+    return to.slice();
   }
 
   function isFrontRowLanding(landing, isOurAttack){
@@ -4937,6 +4941,7 @@
     const anyMode = editMode||overrideMode;
     document.getElementById('btnPlay').disabled = anyMode;
     document.getElementById('timeline').disabled = anyMode;
+    document.getElementById('playNote').classList.toggle('warn', anyMode);
     const showPhaseRow = overrideMode && currentHasFake();
     document.getElementById('overridePhaseRow').style.display = showPhaseRow ? 'block' : 'none';
     document.getElementById('editAdv').style.display = (editMode || showPhaseRow) ? '' : 'none';
@@ -5174,8 +5179,19 @@
     if(useLanding && !zb) return; // 칸을 고르기 전에는 기다려요
     document.getElementById('btnSaveCustom').click();
     progress = 0; ballCurrent = null; playing = true; updatePlayBtn();
-    document.getElementById('customStatus').textContent = useLanding ? `공 착지를 '${zb.textContent}'(으)로 바로 적용했어요.` : '공 착지 직접 설정을 껐어요. 자동으로 정한 곳에 떨어져요.';
+    document.getElementById('customStatus').textContent = useLanding ? `공 착지를 '${zb.dataset.label||zb.textContent}'(으)로 바로 적용했어요.` : '공 착지 직접 설정을 껐어요. 자동으로 정한 곳에 떨어져요.';
   }
+  // 서브 착지용 작은 점: 칸 사이(0.5·1.5)와 사이드라인·끝선 쪽(-0.4·2.4). 상대 서브일 때만 보여요.
+  (()=>{
+    const grid = document.getElementById('landingNineZone');
+    const COLS = [-0.4,0,0.5,1,1.5,2,2.4], ROWS = [0,0.5,1,1.5,2,2.4];
+    COLS.forEach(c=>ROWS.forEach(r=>{
+      if(Number.isInteger(c) && Number.isInteger(r)) return;
+      const b = document.createElement('button');
+      b.className = 'zone-dot'; b.dataset.col = c; b.dataset.row = r;
+      grid.appendChild(b);
+    }));
+  })();
   document.querySelectorAll('#landingNineZone button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#landingNineZone button').forEach(b=>b.classList.remove('active'));
@@ -5196,7 +5212,10 @@
   function layoutLandingNineZone(){
     const key = document.getElementById('customTargetSelect').value;
     const our = isOur(key);
-    const btns = [...document.querySelectorAll('#landingNineZone button')];
+    const serve = !our && !!(ATTACKS[key] && ATTACKS[key].serve);
+    const allBtns = [...document.querySelectorAll('#landingNineZone button')];
+    allBtns.forEach(b=>{ if(b.classList.contains('zone-dot')) b.style.display = serve ? '' : 'none'; });
+    const btns = allBtns.filter(b=>serve || !b.classList.contains('zone-dot'));
     const pts = btns.map(b=>{
       const xy = nineZoneToXY(Number(b.dataset.col), Number(b.dataset.row), our);
       return {b, xy, d:toDisplay(xy)};
@@ -5205,13 +5224,28 @@
     const ys = [...new Set(pts.map(p=>p.d[1]))].sort((a,b)=>a-b);
     const sideNames = ['왼쪽','중앙','오른쪽'];
     const rowNames = ['앞','중간','뒤'];
+    // 칸이 있는 줄은 넓게(1fr), 점만 있는 사이 줄은 좁게
+    const isMain = b => !b.classList.contains('zone-dot');
+    const track = (vals, axis) => vals.map(v=>pts.some(p=>isMain(p.b) && p.d[axis]===v) ? '1fr' : '16px').join(' ');
+    const grid = document.getElementById('landingNineZone');
+    grid.style.gridTemplateColumns = serve ? track(xs,0) : '';
+    grid.style.gridTemplateRows = serve ? track(ys,1) : '';
+    const sideOf = s => s<0 ? '왼쪽 사이드라인 쪽' : s>2 ? '오른쪽 사이드라인 쪽' : Number.isInteger(s) ? sideNames[s] : sideNames[Math.floor(s)]+'·'+sideNames[Math.ceil(s)]+' 사이';
+    const rowOf = r => r>2 ? '끝선 쪽' : Number.isInteger(r) ? rowNames[r] : rowNames[Math.floor(r)]+'·'+rowNames[Math.ceil(r)]+' 사이';
     pts.forEach(({b, xy, d})=>{
       b.style.gridColumn = String(xs.indexOf(d[0])+1);
       b.style.gridRow = String(ys.indexOf(d[1])+1);
       // receiving team's own left: our team (bottom, facing up) → smaller x; opponent (top, facing down) → larger x
-      const sideIdx = our ? 2 - OWN_COL_X.indexOf(xy[0]) : OWN_COL_X.indexOf(xy[0]);
+      const s = Math.round((xy[0]-OWN_COL_X[0])/12)/10;
+      const sideIdx = our ? Math.round((2 - s)*10)/10 : s;
       const rowIdx = Number(b.dataset.row);
-      b.textContent = (sideIdx===1 && rowIdx===1) ? '중앙' : sideNames[sideIdx] + ' ' + rowNames[rowIdx];
+      if(isMain(b)){
+        b.textContent = (sideIdx===1 && rowIdx===1) ? '중앙' : sideNames[sideIdx] + ' ' + rowNames[rowIdx];
+        b.dataset.label = b.textContent;
+      } else {
+        b.dataset.label = sideOf(sideIdx) + ' · ' + rowOf(rowIdx);
+        b.title = b.dataset.label; b.setAttribute('aria-label', b.dataset.label);
+      }
     });
     // the net sits on the side of the front row
     const front = toDisplay(nineZoneToXY(1, 0, our)), back = toDisplay(nineZoneToXY(1, 2, our));
@@ -5222,7 +5256,7 @@
     // attack position uses the ATTACKER's facing: opponent's left is screen-top, ours is screen-bottom (landscape court)
     document.getElementById('attackSideHint').textContent = `(지금: ${our?'우리 팀':'상대 팀'} 기준 · 화면 ${our?'아래쪽':'위쪽'}이 왼쪽)`;
     // concrete hint for the current scenario/orientation: where the receiving team's "왼쪽" is on screen
-    const leftBtn = pts.find(({xy})=> (our ? 2 - OWN_COL_X.indexOf(xy[0]) : OWN_COL_X.indexOf(xy[0])) === 0).b;
+    const leftBtn = pts.find(({b, xy})=> isMain(b) && (our ? 2 - OWN_COL_X.indexOf(xy[0]) : OWN_COL_X.indexOf(xy[0])) === 0).b;
     const leftDir = (side==='left'||side==='right')
       ? (leftBtn.style.gridRow==='1' ? '위쪽' : '아래쪽')
       : (leftBtn.style.gridColumn==='1' ? '왼쪽' : '오른쪽');
@@ -5552,7 +5586,7 @@
     // hide (not just disable) editor-only controls entirely, per the "view via link" default:
     // only the simulation, description, position assignment, and read-only saved-formation
     // browsing stay visible.
-    const hideIds = ['presetEditControls','editModeSection','attackCustomControls','autoSaveStatus','cardSave'];
+    const hideIds = ['presetEditControls','editModeSection','attackCustomControls','autoSaveStatus','cardSave','playNote'];
     hideIds.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
     document.querySelectorAll('#posGrid select, #oppPosGrid select, #posGrid input, #oppPosGrid input').forEach(s=>s.disabled=true);
     document.getElementById('btnSaveRoom').style.display='none';
@@ -5958,7 +5992,7 @@
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'불러와서 고쳐요',
-        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(아래 <b>📁 폴더 고르기</b>에서 폴더를 고르면 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
+        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(아래 <b>📁 폴더 고르기</b>에서 폴더를 고르면 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 편집 모드를 <b>끔</b>으로 돌려야 ▶ 재생 버튼이 눌러져요.',
         scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
