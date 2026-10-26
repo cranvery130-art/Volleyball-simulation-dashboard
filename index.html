@@ -3879,6 +3879,14 @@
   }
 
   const oppEls={};
+  // 상대 공격 상황에서 공격 과정(공격 위치·페이크)이 동선을 정하는 상대 도트
+  function oppMoverIds(){
+    if(isOur(scenario)) return [];
+    const atk = ATTACKS[scenario];
+    const ids = [resolveOppByPos(atk.pos, atk.attackerOpp)];
+    if(atk.fakePos!=null || atk.fakeOpp!=null) ids.push(resolveOppByPos(atk.fakePos, atk.fakeOpp));
+    return ids;
+  }
   Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
     const g=document.createElementNS(svgNS,'g'); g.setAttribute('class','opp-dot'); g.dataset.id=id;
     const ring=document.createElementNS(svgNS,'circle'); ring.setAttribute('class','attacker-ring'); ring.setAttribute('r','19');
@@ -3894,7 +3902,8 @@
       if(editMode && editTeamFilter!=='own'){
         draggingId=id; g.setPointerCapture(e.pointerId);
         e.preventDefault(); e.stopPropagation();
-      } else if(overrideMode && isOur(scenario)){
+      } else if(overrideMode && (isOur(scenario) || !oppMoverIds().includes(id))){
+        // 상대 공격 상황에서도 공격수·페이크 공격수(공격 과정이 동선을 정해요) 말고는 상대 도트의 도착 위치를 옮길 수 있어요
         draggingId=id; g.setPointerCapture(e.pointerId);
         e.preventDefault(); e.stopPropagation();
       }
@@ -4012,6 +4021,19 @@
         const el=oppEls[id]; let pos=CUSTOM_OPP_BASE[id];
         if(id===attackerOppId) pos=attackerPathAt(atk,progress);
         else if(fakeOppIdVal && id===fakeOppIdVal) pos=fakeOppPosAt(atk,progress);
+        else if(!editMode && (f.targets[id] || (f.fakeTargets && f.fakeTargets[id]))){
+          // 도착 위치 편집으로 옮긴 상대 도트: 우리 팀 수비처럼 시작 위치 → (페이크 반응 위치) → 도착 위치로 움직여요
+          const endT = f.targets[id] || CUSTOM_OPP_BASE[id];
+          const fakeT = f.fakeTargets && f.fakeTargets[id];
+          if(fakeT){
+            const peak = atk.timing.peak, reactEnd = peak*0.6, correctEnd = peak*0.95;
+            if(progress<=reactEnd) pos = lerpPt(CUSTOM_OPP_BASE[id], fakeT, easeInOut(progress/reactEnd));
+            else if(progress<=correctEnd) pos = lerpPt(fakeT, endT, easeInOut((progress-reactEnd)/(correctEnd-reactEnd)));
+            else pos = endT;
+          } else {
+            pos = lerpPt(CUSTOM_OPP_BASE[id], endT, easeInOut(clip((progress*currentDuration)/DEFENSE_MOVE_MS, 0, 1)));
+          }
+        }
         el.body.setAttribute('cx',pos[0]); el.body.setAttribute('cy',pos[1]);
         el.ring.setAttribute('cx',pos[0]); el.ring.setAttribute('cy',pos[1]);
         el.dring.setAttribute('cx',pos[0]); el.dring.setAttribute('cy',pos[1]);
@@ -4949,8 +4971,8 @@
     document.getElementById('editAdv').style.display = (editMode || showPhaseRow) ? '' : 'none';
     if(overrideMode && overridePhase==='fake' && !currentHasFake()){ overridePhase='final'; applyOverridePhase(); }
     let hint;
-    if(overrideMode && overridePhase==='fake') hint='상대의 페이크(시간차) 동작에 <b>우리 블로커가 처음 반응해서 이동하는 위치</b>를 드래그로 정할 수 있어요. 이후 진짜 공격이 나오면 최종 도착 위치로 다시 고쳐 서요.';
-    else if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀 도트를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 지금 선택된 공격 상황 + 블로킹 조합에만 저장돼요.';
+    if(overrideMode && overridePhase==='fake') hint='상대의 페이크(시간차) 동작에 <b>처음 반응해서 이동하는 위치</b>를 우리 팀·상대팀 도트 모두 드래그로 정할 수 있어요. 이후 진짜 공격이 나오면 최종 도착 위치로 다시 고쳐 서요.';
+    else if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀·상대팀 도트를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 상대 공격수(와 페이크 공격수)의 동선은 공격 상황 편집의 공격 과정으로 정해요. 지금 선택된 공격 상황에만 저장돼요.';
     else if(editMode){
       const teamWord = editTeamFilter==='own' ? '아군' : editTeamFilter==='opp' ? '상대팀' : '아군·상대팀 전체';
       hint = `코트 위 ${teamWord} 점을 드래그해 <b>시작 위치</b>를 바꿀 수 있어요. 재생하면 이 위치에서 이동이 시작돼요.`;
@@ -5994,7 +6016,7 @@
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'불러와서 고쳐요',
-        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(아래 <b>📁 폴더 고르기</b>에서 폴더를 고르면 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 편집 모드를 <b>끔</b>으로 돌려야 ▶ 재생 버튼이 눌러져요.',
+        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(아래 <b>📁 폴더 고르기</b>에서 폴더를 고르면 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요(상대팀 도트도 우리 팀처럼 옮겨져요. 상대 공격수 동선만 공격 과정으로 정해요). 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 편집 모드를 <b>끔</b>으로 돌려야 ▶ 재생 버튼이 눌러져요.',
         scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
