@@ -2360,6 +2360,7 @@
           <div class="fgroup">
           <div class="fgroup-head"><span class="fg-ic">🎯</span><span class="fg-title">공 착지</span><span class="fg-sub">공이 떨어질 자리를 직접 골라요</span></div>
           <div class="check-row" style="margin-top:0;"><input type="checkbox" id="customLandingToggle"><label for="customLandingToggle">공 착지 방향 직접 설정</label></div>
+          <div class="field-note" style="margin-top:0;">칸을 누르면 저장하지 않아도 지금 공격 상황에 바로 적용되고, 처음부터 다시 재생해서 공이 떨어지는 곳을 보여줘요.</div>
           <div id="customLandingRow" style="display:none; margin-top:6px;">
             <div class="landing-court net-top" id="landingCourt">
             <div class="landing-net">네트</div>
@@ -2397,6 +2398,7 @@
               <option value="TIMEDIFF">시간차 공격 (페이크 포함)</option>
               <option value="BACKSLIDE">빽차 공격 (백슬라이드)</option>
               <option value="BACKA">빽A 공격 (빽토스)</option>
+              <option value="SERVE">상대 서브 → 우리 리시브</option>
             </optgroup>
             <optgroup label="우리 팀 공격 → 리시브·토스 커버">
               <option value="OUR_L">좌측(L) 공격 시 커버</option>
@@ -5108,14 +5110,26 @@
       btn.classList.add('active');
     });
   });
+  // 공 착지 방향을 고르면 저장 버튼을 누르지 않아도 지금 공격 상황에 바로 적용하고 처음부터 다시 재생해서 공이 가는 곳을 보여줘요.
+  function applyLandingNow(){
+    if(document.getElementById('customTargetSelect').value!==scenario) return;
+    const useLanding = document.getElementById('customLandingToggle').checked;
+    const zb = document.querySelector('#landingNineZone button.active');
+    if(useLanding && !zb) return; // 칸을 고르기 전에는 기다려요
+    document.getElementById('btnSaveCustom').click();
+    progress = 0; ballCurrent = null; playing = true; updatePlayBtn();
+    document.getElementById('customStatus').textContent = useLanding ? `공 착지를 '${zb.textContent}'(으)로 바로 적용했어요.` : '공 착지 직접 설정을 껐어요. 자동으로 정한 곳에 떨어져요.';
+  }
   document.querySelectorAll('#landingNineZone button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#landingNineZone button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
+      applyLandingNow();
     });
   });
   document.getElementById('customLandingToggle').addEventListener('change', e=>{
     document.getElementById('customLandingRow').style.display = e.target.checked ? 'block' : 'none';
+    applyLandingNow();
   });
   // Lays the landing 9-zone grid out exactly as those zones appear on the court view: each button
   // is placed by the on-screen position of the point it targets, so in landscape the grid turns
