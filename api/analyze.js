@@ -10,6 +10,9 @@ const hits = new Map(); // 같은 인스턴스 안에서만 유지되는 간단�
 const OPTIONS = ['레프트', '라이트', 'A', 'B', '백A', '앞차', '백차', '다이렉트', '세터페인트(2구 넘김)', '3구처리',
   '서브', '서브캐치', '리시브', '토스', '2단토스', '2단연결', '블로킹', '파울(반칙)'];
 const TOSS_TO = ['레프트', '라이트', 'A', 'B', '백A', '앞차', '백차', '3구처리', '세터 2구'];
+// 수동 기록의 '관련 선수'처럼 포지션으로 받아요(화면이 명단의 같은 포지션 선수로 바꿔요)
+const ROLES = { LEFT: '레프트', SETTER: '세터', RIGHT: '라이트', QA: '속공수(A)', QBACKA: '속공수(빽A)', FRONTSLIDE: '앞차', BACKSLIDE: '빽차', LBACK: '레프트백', CBACK: '센터백', RBACK: '라이트백' };
+const ROLE_TEXT = Object.entries(ROLES).map(([k, v]) => `${k}=${v}`).join(', ');
 
 const BASE = `당신은 9인제 배구(한국 생활체육) 경기 기록원입니다. 유튜브 경기 영상을 보고 사실만 기록합니다.
 9인제 배구: 한 팀 9명, 로테이션 없음, 앞줄 3명·가운데 3명·뒷줄 3명. 21점 세트(듀스 가능), 3세트 중 2세트 선승이 흔합니다.
@@ -45,7 +48,11 @@ ${b.angle ? `이번에는 이렇게 봅니다: ${b.angle}\n` : ''}이 랠리의 
 - detail: option이 공격이면 득점일 때 '강타·빈 곳'|'강타·사람 쪽'|'가볍게 볼처리'|'페인트'|'터치아웃'|'블로킹 맞고 네트인'|'네트싸움'|'삑사리', 실점일 때 '아웃'|'네트 걸림'|'네트싸움'|'삑사리';
   블로킹 득점이면 '1인 블로킹'~'4인 블로킹', 파울이면 반칙 이름(네트터치·아웃(라인 밖)·포히트·더블컨택·홀딩·서브 풋폴트 등). 모르면 null.
 - ball: 공격·서브라면 공이 떨어진 곳 {col,row}. col 0=왼쪽 1=가운데 2=오른쪽(공을 보낸 팀이 네트를 바라볼 때 기준), row 0=네트 가까운 앞 1=중간 2=뒤. 모르면 null.
-- attackerNumber: 결정적 플레이를 한 선수 등번호(보이면), 아니면 null.
+- 관련 선수(수동 기록원이 팀별로 '관련 선수'를 고르듯 양 팀 모두): 우리 공격이 막혔으면 우리 공격수와 상대 블로커, 공격 득점이면 공격수와 (닿았다면) 받지 못한 상대 수비수,
+  서브면 서버와 받은 선수, 범실·반칙이면 실수한 선수. 관련 없는 팀은 null.
+  ourRole / oppRole: 그 선수의 포지션(${ROLE_TEXT}) — 9인제는 자리가 고정이라 코트 위치로 판단합니다. 모르면 null.
+  ourNumber / oppNumber: 그 선수의 등번호(보이면), 아니면 null.
+- blockZone: option이 블로킹이거나 블로킹이 결정적이었으면, 블로킹한 팀이 네트를 바라볼 때 기준 네트 앞 자리 0=레프트 앞 1=앞차 앞 2=A 앞 3=백차(백A) 앞 4=라이트 앞. 아니면 null.
 - tosses: 이 랠리에서 올라간 토스를 순서대로 [{team:our|opp, to:${TOSS_TO.join('|')}}]. 모르면 빈 배열.
 - confidence(0~1), note(짧은 한국어 설명).`;
 }
@@ -83,7 +90,11 @@ const SCHEMA = {
       option: { type: 'STRING', enum: OPTIONS },
       detail: { type: 'STRING', nullable: true },
       ball: { type: 'OBJECT', nullable: true, properties: { col: { type: 'INTEGER' }, row: { type: 'INTEGER' } } },
-      attackerNumber: { type: 'INTEGER', nullable: true },
+      ourRole: { type: 'STRING', enum: Object.keys(ROLES), nullable: true },
+      oppRole: { type: 'STRING', enum: Object.keys(ROLES), nullable: true },
+      ourNumber: { type: 'INTEGER', nullable: true },
+      oppNumber: { type: 'INTEGER', nullable: true },
+      blockZone: { type: 'INTEGER', nullable: true },
       tosses: { type: 'ARRAY', items: { type: 'OBJECT', properties: { team: { type: 'STRING', enum: ['our', 'opp'] }, to: { type: 'STRING', enum: TOSS_TO } } } },
       confidence: { type: 'NUMBER' }, note: { type: 'STRING' },
     },
