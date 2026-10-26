@@ -270,7 +270,7 @@ module.exports = async (req, res) => {
   const clean = (v, n) => String(v || '').replace(/[<>`]/g, '').slice(0, n || 60);
   const b = {
     mode, start, end,
-    fps: Math.min(mode === 'detail' ? 10 : mode === 'scores' ? 2 : 4, Math.max(0.5, Number(raw.fps) || (mode === 'detail' ? 4 : 1))),
+    fps: Math.min(mode === 'scores' ? 2 : 10, Math.max(0.5, Number(raw.fps) || (mode === 'detail' ? 4 : 1))),
     ourName: clean(raw.ourName, 30), oppName: clean(raw.oppName, 30), ourDesc: clean(raw.ourDesc), oppDesc: clean(raw.oppDesc),
     ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200), layout: clean(raw.layout, 1800), jerseys: clean(raw.jerseys, 700), serve: clean(raw.serve, 200),
   };
