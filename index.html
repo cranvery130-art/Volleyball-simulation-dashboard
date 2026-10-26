@@ -2964,7 +2964,7 @@
             <div class="quick-record-row" id="qrBallRow" style="display:none;">
               <div class="qr-label">🎯 공 방향 <span class="qr-opt-tag">선택</span> <span class="qr-ball-state" id="qrBallState"></span></div>
               <div class="qr-ball-pick" id="qrBallPick"></div>
-              <div class="field-note" style="margin-top:4px;">전술 시뮬레이션의 "공 착지 방향 직접 설정"과 같은 9칸이에요. 경기를 보며 공이 향한 칸을 눌러요(맨 위 주황 선이 네트이고, 왼쪽·오른쪽은 <b>공격하는 팀이 네트를 바라볼 때</b> 기준, 앞은 네트 쪽). 같은 칸을 한 번 더 누르면 지워지고, 아래 코트 그림의 빈 곳을 눌러 더 정확한 자리로 고를 수도 있어요. 아웃이면 공이 향한 칸을 고르고 방식에서 아웃을 눌러요.</div>
+              <div class="field-note" style="margin-top:4px;">공격하는 팀 뒤에서 네트 너머를 바라본 모습의 9칸이에요. 경기를 보며 공이 향한 칸을 눌러요(맨 아래 주황 선이 네트이고, 왼쪽·오른쪽은 <b>공격하는 팀이 네트를 바라볼 때</b> 기준, 앞은 네트 바로 너머). 아래 코트 그림에도 같은 자리에 공이 표시돼요. 같은 칸을 한 번 더 누르면 지워지고, 아래 코트 그림의 빈 곳을 눌러 더 정확한 자리로 고를 수도 있어요. 아웃이면 공이 향한 칸을 고르고 방식에서 아웃을 눌러요.</div>
             </div>
             <div class="quick-record-row" id="qrDetailRow" style="display:none;">
               <div class="qr-label" id="qrDetailLabel">공격 방식</div>
@@ -6864,8 +6864,9 @@
   }
   (function buildBallPick(){
     const box = document.getElementById('qrBallPick'); if(!box) return;
-    // 맨 위에 네트 선을 그려서, 앞 줄이 네트 바로 앞이라는 걸 한눈에 알게 해요(전술 시뮬레이션의 공 착지 칸과 같아요)
-    box.innerHTML = `<div class="qbp-row qbp-net-row"><span class="qbp-lbl">네트</span><i class="qbp-net"></i></div>` + ['앞','중간','뒤'].map((rl, r)=>`<div class="qbp-row"><span class="qbp-lbl">${rl}</span>${['왼쪽','중앙','오른쪽'].map((cl, c)=>`<button type="button" class="chip-btn" data-c="${c}" data-r="${r}" title="${cl} ${rl}">${cl}</button>`).join('')}</div>`).join('');
+    // 공격하는 팀이 네트 너머를 바라보는 모습 그대로예요: 맨 아래가 네트, 그 위로 앞·중간·뒤, 왼쪽 칸이 공격하는 팀의 왼쪽.
+    // 그래서 이 9칸을 돌리면 아래 코트 그림(네트가 가운데 세로선)과 같은 자리가 돼요.
+    box.innerHTML = [[2,'뒤'],[1,'중간'],[0,'앞']].map(([r, rl])=>`<div class="qbp-row"><span class="qbp-lbl">${rl}</span>${['왼쪽','중앙','오른쪽'].map((cl, c)=>`<button type="button" class="chip-btn" data-c="${c}" data-r="${r}" title="${cl} ${rl}">${cl}</button>`).join('')}</div>`).join('') + `<div class="qbp-row qbp-net-row"><span class="qbp-lbl">네트</span><i class="qbp-net"></i></div>`;
     box.addEventListener('click', e=>{
       const b = e.target.closest('button'); if(!b || readOnlyFolderView) return;
       const z = [Number(b.dataset.c), Number(b.dataset.r)];
