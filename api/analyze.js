@@ -1,9 +1,14 @@
 /* 경기 분석(AI) — 유튜브 경기 영상을 Google Gemini가 보고 랠리·득실을 읽어 주는 Vercel 서버리스 함수
    - Gemini API 키는 쓰는 사람이 자기 키를 화면에 넣어 요청 머리(x-gemini-key)로 보내요. 사용량·요금은 그 사람 계정에 쌓이고, 키는 저장하지 않아요.
-   - 환경 변수: GEMINI_MODEL(선택, 기본은 아래 목록을 차례로 시도)
+   - 환경 변수: GEMINI_MODEL(선택, Flash 목록 앞에 끼워 시도). 화면에서 Pro를 고르면 Pro 목록을 차례로 시도해요.
    - 받는 것: 공개 유튜브 링크, 볼 구간(초), 1초에 볼 장면 수, 두 팀 유니폼 설명·이름. 아무것도 저장하지 않아요.
    - 한 번에 짧은 구간만 봐요(화면이 구간을 나눠 여러 번 부르고, 랠리마다 다시 자세히 봐요). */
-const MODELS = ['gemini-3.6-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash'];
+// Flash(기본·저렴)와 Pro(더 꼼꼼·비쌈·느림). Pro는 결제를 연결한 키만 쓸 수 있어요. 목록 앞에서부터 되는 모델을 써요.
+const MODELS = {
+  flash: ['gemini-3.6-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash'],
+  pro: ['gemini-3.6-pro', 'gemini-3.1-pro-preview', 'gemini-3-pro-preview', 'gemini-2.5-pro'],
+};
+const okModel = {}; // 이 인스턴스에서 한 번 된 모델은 다음에 바로 써요(없는 모델을 매번 다시 묻지 않게)
 const MAX_SPAN = { scores: 300, rallies: 240, detail: 40 }; // 한 번에 볼 수 있는 최대 길이(초)
 const hits = new Map(); // 같은 인스턴스 안에서만 유지되는 간단한 남용 방지(1분 30회)
 
@@ -16,10 +21,19 @@ const ROLE_TEXT = Object.entries(ROLES).map(([k, v]) => `${k}=${v}`).join(', ');
 
 const BASE = `당신은 9인제 배구(한국 생활체육) 경기 기록원입니다. 유튜브 경기 영상을 보고 사실만 기록합니다.
 9인제 배구: 한 팀 9명, 로테이션 없음, 앞줄 3명·가운데 3명·뒷줄 3명. 21점 세트(듀스 가능), 3세트 중 2세트 선승이 흔합니다.
-공격 위치 이름: 레프트(공격하는 팀 기준 왼쪽 끝 오픈), 라이트(오른쪽 끝), A(세터 앞 빠른 속공), B(A보다 조금 떨어진 속공),
-앞차(시간차, 속공수가 페이크 뒤 옆에서 때림), 백차(세터 뒤쪽으로 옮겨 때리는 시간차), 백A(세터 뒤 속공), 다이렉트(상대가 넘긴 공을 바로 때림),
-세터페인트(2구 넘김), 3구처리(셋째 터치로 넘긴 공).
 왼쪽·오른쪽은 언제나 그 플레이를 한 팀이 네트를 바라볼 때 기준입니다.
+[공격 위치 구분] 공격 위치는 공격수가 공을 때린 네트 위 자리(hitX)와 토스 모양으로 정합니다.
+hitX = 공격하는 팀이 네트를 바라볼 때 왼쪽 안테나에서 공을 때린 곳까지 거리(m, 0~10.5). setterX = 같은 기준으로 세터가 토스한 자리(보통 5~6.5m).
+- 레프트: hitX 0~2m(왼쪽 안테나 가까이). 높게 띄운 오픈 토스(공이 꼭대기에서 내려올 때 때림). 레프트 자리 선수.
+- 앞차(앞 시간차): 세터 앞쪽(세터 왼쪽)에서 속공수가 먼저 뛰어 속이는 동안(fake) 다른 선수가 한 박자 늦게 hitX 약 2~4m(레프트와 A 사이)에서 때림. 토스는 낮고 짧아요(레프트보다 훨씬 낮음).
+- A: 세터 바로 앞(세터 왼쪽 0~1.5m). 공격수가 토스 전에 먼저 뛰어 있는 아주 빠른 속공.
+- B: 세터 앞쪽 1.5~3m 떨어진 낮고 빠른 속공.
+- 백A: 세터 바로 뒤(세터 오른쪽 0~1.5m)로 등 뒤로 짧고 빠르게 넘긴 빽토스 속공.
+- 백차(백 시간차): 세터 뒤(세터 오른쪽 약 1.5~3.5m, 오른쪽 안테나에서 2m보다 안쪽). 공격수가 옆으로 길게 미끄러지듯 달려와(슬라이드) 때리고, 토스는 낮고 빠르게 세터 뒤로 가요.
+- 라이트: hitX 8.5~10.5m(오른쪽 안테나 가까이). 세터 뒤로 높게 또는 길게 올린 토스. 라이트 자리 선수.
+- 헷갈릴 때: 레프트와 앞차는 때린 자리가 왼쪽 안테나 2m 안이고 토스가 높으면 레프트, 2m 밖이고 토스가 낮거나 속공 페이크가 있었으면 앞차.
+  백차와 라이트는 오른쪽 안테나 2m 안이고 토스가 높으면 라이트, 세터에 가깝고(1.5~3.5m) 토스가 낮고 빠르면 백차.
+- 그 밖: 다이렉트(상대가 넘긴 공을 바로 때림), 세터페인트(2구 넘김), 3구처리(토스 없이 셋째 터치로 넘긴 공).
 보이지 않거나 확실하지 않은 것은 지어내지 말고 null 또는 "unknown"으로 두고 confidence를 낮게 줍니다.
 시간은 반드시 영상 전체 기준 초(숫자)로 씁니다.
 
@@ -85,12 +99,24 @@ ${b.layout}` : ''}
   ourRole / oppRole: 그 선수의 포지션(${ROLE_TEXT}) — 9인제는 자리가 고정이라 코트 위치로 판단합니다. 모르면 null.
   ourNumber / oppNumber: 그 선수의 등번호(보이면), 아니면 null.
 - blockZone: option이 블로킹이거나 블로킹이 결정적이었으면, 블로킹한 팀이 네트를 바라볼 때 기준 네트 앞 자리 0=레프트 앞 1=앞차 앞 2=A 앞 3=백차(백A) 앞 4=라이트 앞. 아니면 null.
-- tosses: 이 랠리에서 올라간 토스를 순서대로 [{team:our|opp, to:${TOSS_TO.join('|')}}]. 모르면 빈 배열.
+- attack: option이 공격(레프트·라이트·A·B·백A·앞차·백차)이면 그 마지막 공격의 사실을 [공격 위치 구분] 기준으로 적습니다:
+  {hitX(m), setterX(m), tempo: quick(공격수가 먼저 뜬 속공)|low(낮고 빠른 토스)|high(높게 띄운 오픈), behindSetter(세터 뒤로 갔으면 true), fake(속공수가 먼저 뛰어 속였으면 true)}. 공격이 아니면 null.
+- netCrossings: 서브를 포함해 이 랠리에서 공이 네트를 넘어간 횟수.
+- tosses: 이 랠리에서 올라간 **모든 토스**를 시간 순서대로 하나도 빼지 않고 적습니다. 수동 기록원이 토스마다 버튼을 누르듯, 서브를 받은 뒤 첫 공격, 디그·블로킹 커버 뒤의 반격 등
+  공이 네트를 넘어가기 전 각 팀의 차례마다 토스를 찾습니다(토스 없이 넘긴 차례는 '3구처리', 세터가 직접 넘기면 '세터 2구').
+  [{time(토스한 시각, 영상 전체 기준 초), team:our|opp, to:${TOSS_TO.join('|')}, hitX, tempo, behindSetter, fake, second}]
+  second: 세터가 아닌 선수가 올렸거나 리시브가 흔들려 멀리서 높게 올린 2단 토스면 true. 공격하지 못한 토스는 hitX를 null로 둡니다.
 - refereeSeen: 주심·선심의 판정 동작이 보였으면 true. refereeCall: 본 판정을 짧게(예: '주심이 상대팀 가리킴', '선심 깃발 위로=아웃', '네트터치 수신호'), 못 봤으면 null.
   lineCall: 선심 판정 in|out|touch|none(선심 판정 없음). 심판이 반칙을 선언했으면 option은 '파울(반칙)', detail은 그 반칙 이름으로 씁니다.
 - confidence(0~1), note(짧은 한국어 설명).`;
 }
 
+// 공격 위치를 화면이 직접 정할 수 있게 받는 사실(때린 자리·세터 자리·토스 빠르기·세터 뒤·속공 페이크)
+const ATTACK_FACTS = {
+  hitX: { type: 'NUMBER', nullable: true }, setterX: { type: 'NUMBER', nullable: true },
+  tempo: { type: 'STRING', enum: ['quick', 'low', 'high'], nullable: true },
+  behindSetter: { type: 'BOOLEAN', nullable: true }, fake: { type: 'BOOLEAN', nullable: true },
+};
 const SCHEMA = {
   scores: {
     type: 'OBJECT',
@@ -157,13 +183,17 @@ const SCHEMA = {
       refereeSeen: { type: 'BOOLEAN' },
       refereeCall: { type: 'STRING', nullable: true },
       lineCall: { type: 'STRING', enum: ['in', 'out', 'touch', 'none'], nullable: true },
-      tosses: { type: 'ARRAY', items: { type: 'OBJECT', properties: { team: { type: 'STRING', enum: ['our', 'opp'] }, to: { type: 'STRING', enum: TOSS_TO } } } },
+      attack: { type: 'OBJECT', nullable: true, properties: ATTACK_FACTS },
+      netCrossings: { type: 'INTEGER', nullable: true },
+      tosses: { type: 'ARRAY', items: { type: 'OBJECT', properties: Object.assign({
+        time: { type: 'NUMBER', nullable: true }, team: { type: 'STRING', enum: ['our', 'opp'] }, to: { type: 'STRING', enum: TOSS_TO },
+      }, ATTACK_FACTS, { second: { type: 'BOOLEAN', nullable: true } }), required: ['team', 'to'] } },
       confidence: { type: 'NUMBER' }, note: { type: 'STRING' },
     },
-    required: ['observe', 'lastTouchTeam', 'ending', 'winner', 'team', 'outcome', 'option', 'confidence'],
-    // 사실(observe·마지막 터치·끝난 방식)을 먼저 쓰고 분류를 나중에 고르게 순서를 정해요
+    required: ['observe', 'lastTouchTeam', 'ending', 'winner', 'team', 'outcome', 'option', 'netCrossings', 'tosses', 'confidence'],
+    // 사실(observe·마지막 터치·끝난 방식)을 먼저 쓰고 분류를 나중에 고르게 순서를 정해요. 토스도 공격 위치를 고르기 전에 먼저 적어요.
     propertyOrdering: ['observe', 'lastTouchTeam', 'lastTouchKind', 'ending', 'landedCourt', 'foulTeam', 'refereeSeen', 'refereeCall', 'lineCall',
-      'winner', 'team', 'outcome', 'option', 'detail', 'ball', 'ourRole', 'oppRole', 'ourNumber', 'oppNumber', 'blockZone', 'tosses', 'confidence', 'note'],
+      'netCrossings', 'tosses', 'attack', 'winner', 'team', 'outcome', 'option', 'detail', 'ball', 'ourRole', 'oppRole', 'ourNumber', 'oppNumber', 'blockZone', 'confidence', 'note'],
   },
 };
 
@@ -239,14 +269,17 @@ module.exports = async (req, res) => {
     ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200), layout: clean(raw.layout, 1800),
   };
 
-  const models = [process.env.GEMINI_MODEL, ...MODELS].filter((m, i, a) => m && a.indexOf(m) === i);
+  const tier = raw.model === 'pro' ? 'pro' : 'flash';
+  const models = [okModel[tier], tier === 'flash' ? process.env.GEMINI_MODEL : null, ...MODELS[tier]].filter((m, i, a) => m && a.indexOf(m) === i);
   let last = null;
   for (const m of models) {
     let r;
     try { r = await callGemini(key, m, b, id); } catch (e) { last = { status: 502, msg: 'AI 서버에 연결하지 못했어요.' }; break; }
     const errText = JSON.stringify(r.j.error || '');
     if (/API_KEY_INVALID|API key not valid|PERMISSION_DENIED/i.test(errText) || r.status === 403) { last = { status: 401, msg: 'API 키가 맞지 않거나 쓸 수 없는 키예요. 🔑 키를 다시 확인해 주세요.', code: 'badkey' }; break; }
-    if (r.status === 404 || (r.status === 400 && /model/i.test(errText))) { last = { status: 502, msg: `모델(${m})을 쓸 수 없어요.` }; continue; }
+    if (r.status === 404 || (r.status === 400 && /model/i.test(errText))) { if (okModel[tier] === m) delete okModel[tier]; last = { status: 502, msg: `모델(${m})을 쓸 수 없어요.` }; continue; }
+    // 무료 키는 Pro 한도가 0이에요: 기다려도 안 풀리니 바로 알려 줘요
+    if (r.status === 429 && tier === 'pro' && /limit: ?0\b/i.test(errText)) { last = { status: 403, code: 'nopro', msg: '이 키는 Pro 모델을 쓸 수 없어요(결제를 연결한 키만 돼요). 모델을 Flash로 바꿔 주세요.' }; break; }
     if (r.status === 429) {
       // 하루 한도와 1분 한도를 나눠 알려 줘요(화면이 기다리는 시간이 달라요)
       const daily = /per ?day|PerDay|daily/i.test(errText);
@@ -260,7 +293,9 @@ module.exports = async (req, res) => {
     const out = parseJson(text);
     if (!out) { last = { status: 502, msg: 'AI 응답을 읽지 못했어요. 다시 시도해 주세요.' }; break; }
     const usage = r.j.usageMetadata || {};
-    res.status(200).json({ model: m, mode, start, end, result: out, tokens: usage.totalTokenCount || null });
+    okModel[tier] = m;
+    res.status(200).json({ model: m, tier, mode, start, end, result: out, tokens: usage.totalTokenCount || null,
+      inTokens: usage.promptTokenCount || null, outTokens: ((usage.candidatesTokenCount || 0) + (usage.thoughtsTokenCount || 0)) || null });
     return;
   }
   res.status((last && last.status) || 502).json({ error: (last && last.msg) || 'AI 분석에 실패했어요.', code: last && last.code });
