@@ -3138,7 +3138,7 @@
     <div class="ai-notice" id="aiNotice">
       <div class="ai-notice-title">📌 쓰기 전에 꼭 읽어 주세요</div>
       <ul>
-        <li><b>내 키로 써요.</b> 아래 🔑 칸에 내 Gemini API 키를 넣어요. 결제를 연결하지 않은 키는 <b>무료</b>이고, 사용량은 내 키에만 쌓여요.</li>
+        <li><b>내 키로 써요.</b> 아래 🔑 칸에 내 Gemini API 키를 넣어요. 결제를 연결하지 않은 키는 <b>무료</b>이고, 사용량은 내 키에만 쌓여요. <b>결제를 연결한 키(Tier 1 이상)</b>는 한도가 넉넉한 대신 쓴 만큼 요금이 나가요. 아래 분석 방법에 이 범위의 예상 사용량이 나오니 시작 전에 확인해요(Google Cloud 결제 화면에서 예산 알림을 걸어 두면 좋아요).</li>
         <li><b>1분 한도</b>에 걸리면 앱이 잠깐 기다렸다가 저절로 이어서 봐요.</li>
         <li><b>하루 한도</b>는 <b>매일 오후 4시</b>(11월 초~3월 초는 <b>오후 5시</b>)에 다시 채워져요. 한 경기를 하루에 다 못 보면 다음 날 <b>🤖 이어서 분석</b>을 누르면 멈춘 곳부터 이어서 봐요(<b>이 화면을 열어 두면</b> 한도가 다시 채워질 때 저절로 이어서 보고, 화면을 닫았다 다시 열어도 진행 상황이 이 기기에 남아 있어요).</li>
         <li><b>점수판이 보이는 영상</b>은 점수판 숫자가 바뀌는 순간으로 득실 순서·세트를 정해서 가장 정확해요. <b>세트 결과</b>를 적어 두면 그보다 많은 세트·점수는 걸러 내요.</li>
@@ -10188,7 +10188,11 @@
     function renderLevel(){
       const L = AI_LEVELS[level], span = rangeSpan();
       let est = '';
-      if(span){ const segs = Math.ceil(span/PASS1[boardOn() ? 'board' : 'rally'].seg), rallies = Math.round(span/25); est = ` 이 범위(${fmt(span)})는 AI에게 약 ${segs + rallies*L.detail.length}번 물어봐요.`; }
+      if(span){ const segs = Math.ceil(span/PASS1[boardOn() ? 'board' : 'rally'].seg), rallies = Math.round(span/25); // 예상 토큰(대략): 영상 1장 ≈ 258토큰(랠리 찾기는 낮은 화질 ≈ 66토큰), 랠리마다 약 19초를 세 시각(1초 5·8·6장)으로 봐요
+        const P = PASS1[boardOn() ? 'board' : 'rally'], pass1 = span * P.fps * (boardOn() ? 258 : 66);
+        const detail = rallies * 19 * L.detail.reduce((a,d)=>a+d.fps, 0) * 258;
+        const tok = Math.round((pass1 + detail) / 10000);
+        est = ` 이 범위(${fmt(span)})는 AI에게 약 ${segs + rallies*L.detail.length}번 물어보고, 사용량은 약 ${tok.toLocaleString()}만 토큰(추정)이에요. 무료 키는 하루 한도 안에서 나눠 보고, 결제한 키는 이만큼 요금이 나가요.`; }
       $('aiLevelNote').textContent = L.note + est;
     }
     function rangeSpan(){ const a = parseT($('aiFrom').value) || 0, b = parseT($('aiTo').value) || duration; return b > a ? b - a : 0; }
