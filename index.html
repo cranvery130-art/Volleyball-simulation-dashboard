@@ -239,6 +239,13 @@
   #videoRosterGrid .pos-item select, #oppRosterGrid .pos-item select{ flex:1; min-width:0; width:auto; font-size:10.5px; padding:4px 3px; }
   #videoRosterGrid .pos-item input, #oppRosterGrid .pos-item input{ font-size:11px; padding:3px 5px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-family:inherit; width:100%; }
   #videoRosterGrid .pos-item .row2, #oppRosterGrid .pos-item .row2{ display:flex; gap:4px; }
+  .bench-list{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+  .bench-row{ display:flex; gap:5px; align-items:center; }
+  .bench-row input, .bench-row select{ font-size:11.5px; padding:5px 6px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-family:inherit; min-width:0; }
+  .bench-row input.jersey{ width:44px; flex:none; text-align:center; }
+  .bench-row input.bname{ flex:1; }
+  .bench-row select{ flex:1.3; }
+  .bench-row .bench-del{ flex:none; padding:4px 9px; }
   #videoRosterGrid .pos-item input.jersey, #oppRosterGrid .pos-item input.jersey{ width:34px; flex:none; text-align:center; padding:3px 2px; }
   #videoRosterGrid .pos-item .row2 input:not(.jersey), #oppRosterGrid .pos-item .row2 input:not(.jersey){ flex:1; min-width:0; width:auto; }
   .pos-item.opp .num{ background:var(--opp); }
@@ -2773,15 +2780,19 @@
             </div>
         <details class="roster-fold" id="rosterFold">
         <summary><span class="field-label" style="margin:0;">🔵 우리팀 포지션 명단</span><span class="rf-count" id="rosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
-        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">포지션과 등번호(#)·이름(선택)을 적어두면 "자세히 기록"의 <b>🔵 우리팀 선수</b>에서 골라 기록에 함께 남길 수 있어요. 등번호를 적으면 🤖 경기 분석(AI)이 영상 속 등번호로 선수를 찾아요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 경기 폴더마다 따로 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
+        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">포지션과 등번호(#)·이름(선택)을 적고, <b>➕ 교체 선수 추가</b>로 교체 선수와 들어가는 자리를 적어두면 "자세히 기록"의 <b>🔵 우리팀 선수</b>에서 골라 기록에 함께 남길 수 있어요. 등번호를 적으면 🤖 경기 분석(AI)이 영상 속 등번호로 선수를 찾아요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 경기 폴더마다 따로 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
+        <div class="bench-list" id="ourBenchList"></div>
+        <button type="button" class="btn" id="btnAddOurBench" style="width:100%; margin-top:6px;">➕ 교체 선수 추가</button>
         <label class="field-label" for="ourServeOrder">🏐 우리팀 서브 순서 <span class="fg-sub">선택 · 등번호를 서브하는 순서대로</span></label>
         <input type="text" id="ourServeOrder" class="login-input serve-order" style="margin-top:0;" maxlength="60" inputmode="numeric" placeholder="예: 7, 3, 12, 5, 9, 1, 8, 4, 10" autocomplete="off">
         </details>
         <details class="roster-fold" id="oppRosterFold">
         <summary><span class="field-label" style="margin:0;">🔴 상대팀 포지션 명단</span><span class="rf-count" id="oppRosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
-        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">상대 선수의 포지션과 등번호(#)·이름(선택)을 적어두면 "자세히 기록"의 <b>🔴 상대팀 선수</b>에서 골라 기록에 남길 수 있어요. 우리팀 명단처럼 경기 폴더마다 따로 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 등번호를 적어주세요.</div>
+        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">상대 선수의 포지션과 등번호(#)·이름(선택)과 교체 선수를 적어두면 "자세히 기록"의 <b>🔴 상대팀 선수</b>에서 골라 기록에 남길 수 있어요. 우리팀 명단처럼 경기 폴더마다 따로 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 등번호를 적어주세요.</div>
         <div class="pos-grid" id="oppRosterGrid"></div>
+        <div class="bench-list" id="oppBenchList"></div>
+        <button type="button" class="btn" id="btnAddOppBench" style="width:100%; margin-top:6px;">➕ 교체 선수 추가</button>
         <label class="field-label" for="oppServeOrder">🏐 상대팀 서브 순서 <span class="fg-sub">선택 · 등번호를 서브하는 순서대로</span></label>
         <input type="text" id="oppServeOrder" class="login-input serve-order" style="margin-top:0;" maxlength="60" inputmode="numeric" placeholder="예: 11, 2, 6, 14, 3, 9, 1, 7, 5" autocomplete="off">
         <div class="field-note" style="margin-top:4px;">서브 순서를 적어 두면 🤖 경기 분석(AI)이 점수 흐름으로 지금 누가 서브할 차례인지 계산해서, 서버가 빠진 자리를 다른 선수가 메워도 등번호로 포지션을 맞추고 서버가 순서와 다르면 ⚠️로 알려 줘요.</div>
@@ -3158,7 +3169,7 @@
         <p style="margin:0 0 8px;"><b>득실·세트</b> — 점수판이 보이면 점수판 숫자가 바뀌는 순간으로 득실 순서·세트를 정해요. 세트 결과를 적어 두면 그보다 많은 세트·점수는 걸러요.</p>
         <p style="margin:0 0 8px;"><b>심판 판정</b> — 득실은 <b>주심</b>이 팔로 가리킨 팀, <b>주심·부심</b>의 반칙 수신호(네트터치·오버네트·센터라인·포히트·더블컨택·홀딩 등), <b>선심</b> 깃발(위로 들면 아웃, 아래로 내리면 인, 깃발 끝을 쓸면 터치아웃)을 먼저 따라요. 선심이 서 있는 곳 앞의 선을 경기장 라인으로 삼아 인·아웃을 봐요.</p>
         <p style="margin:0 0 8px;"><b>화질·장면 수</b> — AI는 영상을 동영상 그대로 보지 않고 사진을 여러 장 찍어 보듯 봐요. 랠리를 찾을 때는 보통 화질로 1초에 4장, 랠리를 자세히 볼 때는 높은 화질로 1초에 4~8장을 봐요. 사진과 사진 사이에 지나간 아주 짧은 순간(스파이크가 손에 닿는 찰나 등)은 놓칠 수 있어요.</p>
-        <p style="margin:0 0 8px;"><b>등번호</b> — 📋 경기 정보 명단에 등번호(#)를 적어 두면, AI가 영상 속 등번호로 선수를 찾아 관련 선수에 넣어요. 서브 차례에 서버가 빠지면 다른 선수가 빈자리를 메워 서 있는 자리와 포지션이 달라질 수 있어서, 포지션은 등번호를 먼저 따르고 번호가 안 보일 때만 서 있는 자리로 정해요.</p>
+        <p style="margin:0 0 8px;"><b>등번호</b> — 📋 경기 정보 명단에 등번호(#)를 적어 두면, AI가 영상 속 등번호로 선수를 찾아 관련 선수에 넣어요. 서브 차례에 서버가 빠지면 다른 선수가 빈자리를 메워 서 있는 자리와 포지션이 달라질 수 있어서, 포지션은 등번호를 먼저 따르고 번호가 안 보일 때만 서 있는 자리로 정해요. 명단 아래 <b>➕ 교체 선수 추가</b>로 교체 선수 등번호와 들어가는 자리를 적어 두면, 교체 선수도 그 자리 선수의 포지션·서브 순번을 이어받아 찾아요.</p>
         <p style="margin:0 0 8px;"><b>서브 순서</b> — 📋 경기 정보 명단 아래에 두 팀 서브 순서(등번호)를 적어 두면, 앞 랠리 득점 팀이 서브하고 서브권이 넘어올 때마다 다음 사람이 서브하는 흐름으로 서버를 계산해 AI에게 알려 줘요. AI가 본 서버가 순서와 다르거나, 서브한 팀이 앞 랠리 득점 팀과 다르면 ⚠️로 알려 줘요(득실 순서가 틀렸는지 찾는 단서예요). 세트마다 첫 서버는 AI가 본 번호로 맞춰요.</p>
         <p style="margin:0 0 8px;"><b>채우는 칸</b> — 수동 분석처럼 랠리마다 득실·세부 상황·방식·공 방향·토스 순서(2단 토스 포함)·관련 선수·블로킹 자리를 모두 채워요. 토스는 시각까지 적게 해서 네 시각의 답을 맞춰 합치니, 한 시각이 놓친 토스도 다른 시각이 보면 들어가요.</p>
         <p style="margin:0 0 8px;"><b>공격 위치</b> — AI가 붙인 이름보다 공을 때린 자리를 믿어요. 공격하는 팀이 네트를 볼 때 왼쪽 안테나 2m 안에서 높은 토스면 레프트, 그보다 안쪽에서 낮은 토스나 속공 페이크가 있으면 앞차, 세터 뒤 1.5~3.5m에서 낮고 빠르면 백차, 오른쪽 안테나 2m 안에서 높은 토스면 라이트예요. 마지막 토스와 공격수 포지션도 함께 맞춰 보고, 갈리면 ⚠️로 알려 줘요.</p>
@@ -6780,15 +6791,17 @@
   // ---------- position roster (reuses the tactics-tab position format, plus an optional name) ----------
   let videoRoster = {}; // {1:{position:'',name:''}, ..., 9:{...}}
   for(let i=1;i<=9;i++) videoRoster[i] = {position:'', name:'', jersey:''};
-  videoRoster.serveOrder = '';
+  videoRoster.serveOrder = ''; videoRoster.bench = []; // bench: 교체 선수 [{jersey, name, slot(들어가는 자리 1~9)}]
   // 명단은 경기 폴더마다 함께 저장돼요(명단이 없는 예전 폴더를 불러오면 지금 명단을 그대로 둬요).
   // 상대팀 명단도 같은 모양으로 따로 둬요(자세히 기록의 🔴 상대팀 선수).
   let oppRoster = {};
   for(let i=1;i<=9;i++) oppRoster[i] = {position:'', name:'', jersey:''};
-  oppRoster.serveOrder = '';
+  oppRoster.serveOrder = ''; oppRoster.bench = [];
   function copyRosterOf(src){
     const r = {}; for(let i=1;i<=9;i++){ const e = (src&&src[i])||{}; r[i] = {position: e.position||'', name: e.name||'', jersey: e.jersey||''}; }
     r.serveOrder = (src && typeof src.serveOrder==='string') ? src.serveOrder : ''; // 서브 순서(등번호를 쉼표로)도 명단과 함께 저장해요
+    // 교체 선수: 들어가는 자리(1~9)의 포지션·서브 순번을 이어받아요
+    r.bench = (src && Array.isArray(src.bench) ? src.bench : []).slice(0, 12).map(b=>({jersey: String(b && b.jersey || '').replace(/\D/g,'').slice(0,3), name: String(b && b.name || '').slice(0,20), slot: Math.min(9, Math.max(1, Number(b && b.slot) || 1))}));
     return r;
   }
   const rosterCopy = () => copyRosterOf(videoRoster);
@@ -6803,7 +6816,42 @@
     renderRosterGrid('videoRosterGrid', videoRoster);
     renderRosterGrid('oppRosterGrid', oppRoster);
     [['ourServeOrder', videoRoster], ['oppServeOrder', oppRoster]].forEach(([id, ro])=>{ const el = document.getElementById(id); el.value = ro.serveOrder||''; el.disabled = readOnlyFolderView; });
+    renderBench('ourBenchList', videoRoster); renderBench('oppBenchList', oppRoster);
+    ['btnAddOurBench','btnAddOppBench'].forEach(id=>{ document.getElementById(id).disabled = readOnlyFolderView; });
   }
+  // 명단(포지션·번호·이름)이 바뀌면 교체 선수의 '들어가는 자리' 글자도 맞춰요(입력 중인 칸은 그대로)
+  function refreshBenchLabels(){
+    [['ourBenchList', videoRoster], ['oppBenchList', oppRoster]].forEach(([id, ro])=>document.querySelectorAll('#'+id+' select').forEach(sl=>Array.from(sl.options).forEach(o=>{ o.textContent = '→ '+rosterLabel(Number(o.value), ro); })));
+  }
+  // 교체 선수: 등번호·이름과 들어가는 자리를 적어요. 그 자리 선수의 포지션·서브 순번을 이어받아요
+  function renderBench(listId, roster){
+    const box = document.getElementById(listId);
+    if(!Array.isArray(roster.bench)) roster.bench = [];
+    box.innerHTML = '';
+    roster.bench.forEach((b, k)=>{
+      const row = document.createElement('div'); row.className = 'bench-row';
+      const jn = document.createElement('input'); jn.type='text'; jn.inputMode='numeric'; jn.maxLength=3; jn.className='jersey'; jn.placeholder='#'; jn.title='교체 선수 등번호'; jn.value = b.jersey||'';
+      jn.addEventListener('input', ()=>{ jn.value = jn.value.replace(/\D/g,'').slice(0,3); b.jersey = jn.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      const nm = document.createElement('input'); nm.type='text'; nm.maxLength=20; nm.className='bname'; nm.placeholder='이름'; nm.value = b.name||'';
+      nm.addEventListener('input', ()=>{ b.name = nm.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      const sl = document.createElement('select'); sl.title = '들어가는 자리';
+      for(let i=1;i<=9;i++){ const o = document.createElement('option'); o.value = i; o.textContent = '→ '+rosterLabel(i, roster); if(Number(b.slot)===i) o.selected = true; sl.appendChild(o); }
+      sl.addEventListener('change', ()=>{ b.slot = Number(sl.value); renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      const del = document.createElement('button'); del.type='button'; del.className='btn bench-del'; del.textContent='✕'; del.title='이 교체 선수 지우기';
+      del.addEventListener('click', ()=>{ if(readOnlyFolderView) return; roster.bench.splice(k, 1); renderBench(listId, roster); renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      [jn, nm, sl, del].forEach(el=>{ el.disabled = readOnlyFolderView; row.appendChild(el); });
+      box.appendChild(row);
+    });
+  }
+  [['btnAddOurBench', 'ourBenchList', ()=>videoRoster], ['btnAddOppBench', 'oppBenchList', ()=>oppRoster]].forEach(([btn, list, ro])=>{
+    document.getElementById(btn).addEventListener('click', ()=>{
+      if(readOnlyFolderView) return; const r = ro(); if(!Array.isArray(r.bench)) r.bench = [];
+      if(r.bench.length >= 12){ alert('교체 선수는 12명까지 넣을 수 있어요.'); return; }
+      r.bench.push({jersey:'', name:'', slot:1}); renderBench(list, r);
+      const inputs = document.querySelectorAll('#'+list+' input.jersey'); if(inputs.length) inputs[inputs.length-1].focus();
+      if(window.scheduleAutoSave) window.scheduleAutoSave();
+    });
+  });
   // 서브 순서: 숫자 말고는 쉼표로 바꿔 "7, 3, 12"처럼 정리해서 명단에 저장해요
   [['ourServeOrder', ()=>videoRoster], ['oppServeOrder', ()=>oppRoster]].forEach(([id, ro])=>{
     const el = document.getElementById(id);
@@ -6826,16 +6874,16 @@
         if(entry.position===code) opt.selected=true;
         sel.appendChild(opt);
       });
-      sel.addEventListener('change', ()=>{ entry.position=sel.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      sel.addEventListener('change', ()=>{ entry.position=sel.value; renderVideoPlayerSelect(); refreshBenchLabels(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
       sel.disabled = readOnlyFolderView;
       // 등번호(선택): 경기 분석(AI)이 영상 속 등번호로 이 선수를 찾을 때 써요
       const jerseyInput = document.createElement('input'); jerseyInput.type='text'; jerseyInput.inputMode='numeric'; jerseyInput.maxLength=3;
       jerseyInput.placeholder='#'; jerseyInput.title='등번호(선택)'; jerseyInput.className='jersey'; jerseyInput.value=entry.jersey||'';
-      jerseyInput.addEventListener('input', ()=>{ jerseyInput.value = jerseyInput.value.replace(/\D/g,'').slice(0,3); entry.jersey=jerseyInput.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      jerseyInput.addEventListener('input', ()=>{ jerseyInput.value = jerseyInput.value.replace(/\D/g,'').slice(0,3); entry.jersey=jerseyInput.value; renderVideoPlayerSelect(); refreshBenchLabels(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
       jerseyInput.disabled = readOnlyFolderView;
       row1.appendChild(num); row1.appendChild(sel);
       const nameInput = document.createElement('input'); nameInput.type='text'; nameInput.placeholder='이름'; nameInput.value=entry.name;
-      nameInput.addEventListener('input', ()=>{ entry.name=nameInput.value; renderVideoPlayerSelect(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
+      nameInput.addEventListener('input', ()=>{ entry.name=nameInput.value; renderVideoPlayerSelect(); refreshBenchLabels(); if(window.scheduleAutoSave) window.scheduleAutoSave(); });
       nameInput.disabled = readOnlyFolderView;
       const row2 = document.createElement('div'); row2.className='row2'; row2.appendChild(jerseyInput); row2.appendChild(nameInput);
       item.appendChild(row1); item.appendChild(row2);
@@ -6886,6 +6934,15 @@
         opt.title = opt.textContent;
         sel.appendChild(opt);
       }
+      // 교체 선수는 들어가는 자리 번호로 기록돼요(포지션별 분석에 그 자리로 모여요)
+      (roster.bench||[]).forEach((b, k)=>{
+        if(!b.jersey && !b.name) return;
+        const opt = document.createElement('option'); opt.value = 'b'+k;
+        opt.textContent = `교체 ${b.jersey ? '#'+b.jersey : ''}${b.name ? ' '+b.name : ''} → ${rosterLabel(b.slot, roster)}`;
+        const e = roster[b.slot] || {}, ps = e.position && window.POS_LABEL[e.position] ? window.POS_LABEL[e.position].replace(/\(.*\)/,'') : '';
+        opt.dataset.short = '교체' + (b.jersey ? ' #'+b.jersey : '') + (b.name ? ' '+b.name : ''); if(ps) opt.dataset.pos = ps;
+        opt.title = opt.textContent; sel.appendChild(opt);
+      });
       sel.value = prevValue;
       refreshChips(id);
     });
@@ -6893,14 +6950,18 @@
   }
   let selectedPlayer = null; // 우리팀 명단 번호(1-9) or null
   let selectedOppPlayer = null; // 상대팀 명단 번호(1-9) or null
+  let selectedSub = null, selectedOppSub = null; // 고른 교체 선수 {jersey, name, slot} or null
+  // 'b0'처럼 교체 선수를 고르면 그 선수가 들어간 자리 번호로 기록해요
+  const pickFromSelect = (v, ro) => { if(!v) return [null, null]; if(v[0]==='b'){ const b = (ro.bench||[])[Number(v.slice(1))]; return b ? [Number(b.slot), b] : [null, null]; } return [Number(v), null]; };
   document.getElementById('videoPlayerSelect').addEventListener('change', e=>{
-    selectedPlayer = e.target.value ? Number(e.target.value) : null;
+    [selectedPlayer, selectedSub] = pickFromSelect(e.target.value, videoRoster);
   });
   document.getElementById('videoOppPlayerSelect').addEventListener('change', e=>{
-    selectedOppPlayer = e.target.value ? Number(e.target.value) : null;
+    [selectedOppPlayer, selectedOppSub] = pickFromSelect(e.target.value, oppRoster);
   });
-  const playerSnap = () => selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)} : null;
-  const oppPlayerSnap = () => selectedOppPlayer ? {id:selectedOppPlayer, label:oppRosterLabel(selectedOppPlayer)} : null;
+  const subTag = b => b ? ` (교체${b.jersey ? ' #'+b.jersey : ''}${b.name ? ' '+b.name : ''})` : '';
+  const playerSnap = () => selectedPlayer ? {id:selectedPlayer, label:rosterLabel(selectedPlayer)+subTag(selectedSub), ...(selectedSub ? {sub:{jersey:selectedSub.jersey, name:selectedSub.name}} : {})} : null;
+  const oppPlayerSnap = () => selectedOppPlayer ? {id:selectedOppPlayer, label:oppRosterLabel(selectedOppPlayer)+subTag(selectedOppSub), ...(selectedOppSub ? {sub:{jersey:selectedOppSub.jersey, name:selectedOppSub.name}} : {})} : null;
 
   // ---------- 대형으로 선수 위치 정하기 ----------
   // 팀 이름이 들어간 전술 시뮬레이션 대형 폴더를 찾고(또는 경기 정보에서 고른 폴더), 기록 상황에 맞는 공격 상황 대형에서
@@ -8020,7 +8081,7 @@
     document.querySelectorAll('.qr-nine-grid button').forEach(b=>b.classList.remove('active'));
     updateNineZoneStatus();
     const nf = document.getElementById('nineZoneFold'); if(nf) nf.open = false;
-    selectedPlayer = null; selectedOppPlayer = null;
+    selectedPlayer = null; selectedOppPlayer = null; selectedSub = null; selectedOppSub = null;
     document.getElementById('videoPlayerSelect').value = '';
     document.getElementById('videoOppPlayerSelect').value = '';
     pickBall = null; pickBallZone = null;
@@ -8159,8 +8220,10 @@
     const bb = document.querySelector(`#qrBucketGrid button[data-team="${n.team}"][data-outcome="${n.outcome}"]`); if(bb) bb.click();
     const ob = document.querySelector(`#qrOptionBoard .qr-opt-btn[data-value="${CSS.escape(n.main)}"]`); if(ob) ob.click();
     const ds = document.getElementById('qrDetailSelect'); if(n.detail && ds){ ds.value = n.detail; refreshChips('qrDetailSelect'); }
-    const ps = document.getElementById('videoPlayerSelect'); ps.value = rec.player ? String(rec.player.id) : ''; ps.dispatchEvent(new Event('change')); refreshChips('videoPlayerSelect');
-    const ops = document.getElementById('videoOppPlayerSelect'); ops.value = rec.oppPlayer ? String(rec.oppPlayer.id) : ''; ops.dispatchEvent(new Event('change')); refreshChips('videoOppPlayerSelect');
+    // 교체 선수로 남긴 기록은 같은 교체 선수를 다시 골라요
+    const selVal = (p, ro) => { if(!p) return ''; if(p.sub){ const k = (ro.bench||[]).findIndex(b=>Number(b.slot)===Number(p.id) && b.jersey===p.sub.jersey && b.name===p.sub.name); if(k>=0) return 'b'+k; } return String(p.id); };
+    const ps = document.getElementById('videoPlayerSelect'); ps.value = selVal(rec.player, videoRoster); ps.dispatchEvent(new Event('change')); refreshChips('videoPlayerSelect');
+    const ops = document.getElementById('videoOppPlayerSelect'); ops.value = selVal(rec.oppPlayer, oppRoster); ops.dispatchEvent(new Event('change')); refreshChips('videoOppPlayerSelect');
     selectedZone = rec.zone || null; renderZonePicker(); updateZoneStatus();
     selectedNineZone = rec.grid9 || null;
     document.querySelectorAll('.qr-nine-grid button').forEach(b=>b.classList.toggle('active', !!(rec.grid9 && b.dataset.col==String(rec.grid9.col) && b.dataset.row==String(rec.grid9.row) && (b.dataset.side==='opp')===(rec.grid9.side==='opp'))));
@@ -9754,7 +9817,7 @@
     selectedNineZone = null;
     document.querySelectorAll('.qr-nine-grid button').forEach(b=>b.classList.remove('active'));
     updateNineZoneStatus();
-    selectedPlayer = null; selectedOppPlayer = null;
+    selectedPlayer = null; selectedOppPlayer = null; selectedSub = null; selectedOppSub = null;
     document.getElementById('videoPlayerSelect').value = '';
     document.getElementById('videoOppPlayerSelect').value = '';
     selectedSet = 1;
@@ -10296,9 +10359,25 @@
 
     // AI가 읽은 포지션 → 명단에서 그 포지션 선수 번호(1~9). 없으면 null(수동 화면에서 골라요)
     // 등번호가 명단에 있으면 등번호로 먼저 찾아요(포지션보다 확실해요)
+    // 등번호 → 명단 자리(1~9). 그 자리의 교체 선수 번호도 같은 자리로 봐요
+    const subNums = (ro, i) => (ro.bench||[]).filter(b=>Number(b.slot)===i && b.jersey).map(b=>Number(b.jersey));
+    function slotByNum(side, number){
+      if(!number) return null; const ro = side==='our' ? videoRoster : oppRoster, n = Number(number);
+      for(let i=1;i<=9;i++) if(ro[i] && ro[i].jersey && Number(ro[i].jersey)===n) return i;
+      const b = (ro.bench||[]).find(b=>b.jersey && Number(b.jersey)===n);
+      return b ? Number(b.slot) : null;
+    }
+    // AI가 찾은 선수 → 기록의 선수(교체 선수면 들어간 자리 번호 + 교체 표시)
+    function aiPlayer(side, role, number){
+      const slot = rosterSlotFor(side, role, number); if(!slot) return null;
+      const ro = side==='our' ? videoRoster : oppRoster, lab = side==='our' ? rosterLabel(slot) : oppRosterLabel(slot);
+      const b = isSubNum(side, number) ? (ro.bench||[]).find(x=>x.jersey && Number(x.jersey)===Number(number)) : null;
+      return b ? {id:slot, label:lab+` (교체 #${b.jersey}${b.name ? ' '+b.name : ''})`, sub:{jersey:b.jersey, name:b.name}} : {id:slot, label:lab};
+    }
+    const isSubNum = (side, number) => { const i = slotByNum(side, number), ro = side==='our' ? videoRoster : oppRoster; return !!(i && Number(ro[i].jersey)!==Number(number)); };
     function rosterSlotFor(side, role, number){
       const ro = side==='our' ? videoRoster : oppRoster;
-      if(number) for(let i=1;i<=9;i++) if(ro[i] && ro[i].jersey && Number(ro[i].jersey)===Number(number)) return i;
+      const byNum = slotByNum(side, number); if(byNum) return byNum;
       if(!role) return null;
       for(let i=1;i<=9;i++) if(ro[i] && ro[i].position===role) return i;
       return null;
@@ -10306,13 +10385,14 @@
     // 서브 순서(등번호 배열)와 등번호 → 명단 포지션
     const serveOrderOf = side => ((side==='our' ? videoRoster : oppRoster).serveOrder||'').match(/\d{1,3}/g)?.map(Number) || [];
     function roleByNum(side, number){
-      if(!number) return null; const ro = side==='our' ? videoRoster : oppRoster;
-      for(let i=1;i<=9;i++) if(ro[i] && ro[i].jersey && Number(ro[i].jersey)===Number(number) && ro[i].position) return ro[i].position;
-      return null;
+      const i = slotByNum(side, number), ro = side==='our' ? videoRoster : oppRoster;
+      return i && ro[i].position ? ro[i].position : null;
     }
+    // 서브 순번 비교용: 명단에 있는 번호는 자리로 바꿔서 교체 선수도 같은 순번으로 봐요
+    const serveKey = (side, n) => { const i = slotByNum(side, n); return i ? 'slot'+i : 'n'+n; };
     // AI에게 알려 줄 명단 등번호(포지션별)
     function jerseyText(){
-      const one = (ro, name) => { const p = []; for(let i=1;i<=9;i++){ const e = ro[i]; if(e && e.jersey) p.push(`#${e.jersey}=${e.position && window.POS_LABEL[e.position] || '포지션 모름'}`); } return p.length ? `${name}: ${p.join(', ')}` : ''; };
+      const one = (ro, name) => { const p = []; for(let i=1;i<=9;i++){ const e = ro[i]; if(e && (e.jersey || subNums(ro, i).length)){ const subs = subNums(ro, i); p.push(`${e.jersey ? '#'+e.jersey : '번호 모름'}${subs.length ? `(교체 ${subs.map(n=>'#'+n).join('·')})` : ''}=${e.position && window.POS_LABEL[e.position] || '포지션 모름'}`); } } return p.length ? `${name}: ${p.join(', ')}` : ''; };
       return [one(videoRoster, '우리팀'), one(oppRoster, '상대팀')].filter(Boolean).join('\n');
     }
     // 🔑 내 API 키: 이 기기 브라우저에만 둬요(기억하기를 끄면 이 화면을 닫을 때까지만)
@@ -10623,6 +10703,7 @@
       let set = 1, our = 0, opp = 0, lastBoard = null;
       // 서브 순서 따라가기(세트마다 새로): 앞 랠리 득점 팀이 서브하고, 서브권이 넘어올 때마다 그 팀 순번이 하나씩 넘어가요
       const orders = {our:serveOrderOf('our'), opp:serveOrderOf('opp')}, ptr = {our:null, opp:null};
+      const ordKeys = {our:orders.our.map(n=>serveKey('our', n)), opp:orders.opp.map(n=>serveKey('opp', n))};
       let prevWinner = null, prevSet = null, curServe = null;
       rows = state.found.slice().sort((x,y)=>x.end-y.end).map(r=>{
         const key = Math.round(r.end);
@@ -10701,13 +10782,14 @@
           const ord = orders[sTeam];
           if(ord.length){
             if(sTeam!==curServe || ptr[sTeam]==null){ // 서브권이 넘어왔어요: 다음 순번(처음이면 AI가 본 서버로 순번을 맞춰요)
-              if(ptr[sTeam]==null){ const k = aiSrvNum!=null ? ord.indexOf(aiSrvNum) : -1; ptr[sTeam] = k>=0 ? k : null; }
+              if(ptr[sTeam]==null){ const k = aiSrvNum!=null ? ordKeys[sTeam].indexOf(serveKey(sTeam, aiSrvNum)) : -1; ptr[sTeam] = k>=0 ? k : null; }
               else ptr[sTeam] = (ptr[sTeam]+1) % ord.length;
             }
             if(ptr[sTeam]!=null) expected = ord[ptr[sTeam]];
-            if(expected!=null && aiSrvNum!=null && aiSrvNum!==expected){
+            // 교체 선수는 바꾼 선수의 서브 순번을 이어받아서 같은 자리면 같은 차례로 봐요
+            if(expected!=null && aiSrvNum!=null && serveKey(sTeam, aiSrvNum)!==serveKey(sTeam, expected)){
               flags.push(`서브 순서로는 #${expected} 차례인데 #${aiSrvNum}가 서브했어요`);
-              const k = ord.indexOf(aiSrvNum); if(k>=0){ ptr[sTeam] = k; expected = aiSrvNum; }
+              const k = ordKeys[sTeam].indexOf(serveKey(sTeam, aiSrvNum)); if(k>=0){ ptr[sTeam] = k; expected = ord[k]; }
             }
           }
           if(aiSrvTeam && prevWinner && aiSrvTeam!==prevWinner) flags.push('앞 랠리 득점 팀과 서브한 팀이 달라요(득실 순서 확인)');
@@ -10747,7 +10829,7 @@
         const toss = r.tosses && r.tosses.length ? ` · 토스 ${r.tosses.length}번 ${r.tosses.map(x=>(x.team==='our'?'🔵':'🔴')+x.to+(x.kind==='2nd'?'(2단)':'')).join('→')}` : '';
         const who = [['our','🔵',r.ourRole,r.ourNum],['opp','🔴',r.oppRole,r.oppNum]].filter(x=>x[2]||x[3]).map(([s,ic,role,num])=>{
           const slot = rosterSlotFor(s, role, num);
-          return ic + (slot ? (s==='our' ? rosterLabel(slot) : oppRosterLabel(slot)) : (role && window.POS_LABEL[role] || '') + (num ? ` #${num}` : '') + (role ? ' (명단에 없음)' : ''));
+          return ic + (slot ? (s==='our' ? rosterLabel(slot) : oppRosterLabel(slot)) + (isSubNum(s, num) ? ` (교체 #${num})` : '') : (role && window.POS_LABEL[role] || '') + (num ? ` #${num}` : '') + (role ? ' (명단에 없음)' : ''));
         }).join(' ');
         const sv = r.srv && r.srv.team ? ` · 🏐 ${r.srv.team==='our'?'🔵':'🔴'}서브${r.srv.seen ? ' #'+r.srv.seen : r.srv.expected!=null ? ' #'+r.srv.expected+'(순서)' : ''}` : '';
         const bz = r.option==='블로킹' && Number.isInteger(r.blockZone) && ZONE_LABELS[0][r.blockZone] ? ` · 📍${ZONE_LABELS[0][r.blockZone]} 앞` : '';
@@ -10796,8 +10878,7 @@
           time: r.end, entries:[entry], label: entryRecordLabel(entry), category: entry.category, optionLabel: r.option,
           videoName: 'YouTube:'+ytId,
           zone: r.option==='블로킹' && Number.isInteger(r.blockZone) && r.blockZone>=0 && r.blockZone<=4 ? {row:0, col:r.blockZone} : null, grid9:null,
-          player: (s=>s ? {id:s, label:rosterLabel(s)} : null)(rosterSlotFor('our', r.ourRole, r.ourNum)),
-          oppPlayer: (s=>s ? {id:s, label:oppRosterLabel(s)} : null)(rosterSlotFor('opp', r.oppRole, r.oppNum)),
+          player: aiPlayer('our', r.ourRole, r.ourNum), oppPlayer: aiPlayer('opp', r.oppRole, r.oppNum),
           ball: ballTo ? {from:null, to:ballTo} : undefined,
           tosses: r.tosses && r.tosses.length ? r.tosses.map(x=>({team:x.team, to:x.to, ...(x.kind==='2nd' ? {kind:'2nd'} : {})})) : undefined,
           set: r.set, ai: {conf: Math.round((r.conf||0)*100)/100, ourRole: r.ourRole||null, oppRole: r.oppRole||null, ourNumber: r.ourNum||null, oppNumber: r.oppNum||null, note: r.note||''}
