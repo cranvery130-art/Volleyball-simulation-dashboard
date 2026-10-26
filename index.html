@@ -166,6 +166,9 @@
   select{ width:100%; padding:10px 12px; border-radius:var(--radius-md); border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); font-size:13.5px; font-family:inherit; cursor:pointer; }
   .preset-load-actions{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; margin-top:6px; }
   .preset-load-actions .btn{ width:100%; padding:8px 4px; font-size:12.5px; white-space:nowrap; }
+  /* 폴더 고르기: 폴더째 이름 바꾸기·복사·삭제 */
+  .preset-folder-tools{ margin-top:10px; padding-top:8px; border-top:1px dashed var(--border); }
+  .preset-folder-tools .preset-load-actions{ grid-template-columns:repeat(3, minmax(0,1fr)); }
   select:focus, button:focus-visible, input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
   optgroup{ color:var(--text-dim); font-style:normal; }
   .field-note{ font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.5; }
@@ -2320,7 +2323,7 @@
           <div class="fgroup">
           <div class="fgroup-head"><span class="fg-ic">⚡</span><span class="fg-title">공격 동작</span><span class="fg-sub">어디서·얼마나 빠르게 공격할지 정해요</span></div>
           <label class="field-label" style="margin-top:0;">공격 위치</label>
-          <div class="field-note" style="margin-top:0; margin-bottom:6px;">왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. <span id="attackSideHint"></span></div>
+          <div class="field-note" style="margin-top:0; margin-bottom:6px;">공격 위치는 <b>공격하는 팀의 공격수 도트가 네트 앞에서 공을 때리는 점</b>이에요. 이 점에서 아래 <b>공 착지</b> 칸으로 공이 날아가서 공격 방향이 정해지고, 수비 팀은 이 점을 보고 블로킹·수비 자리를 잡아요(서브는 서버가 끝선 뒤에서 서브하는 자리예요). 왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. <span id="attackSideHint"></span></div>
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
             <button data-x="145">왼쪽 중간</button>
@@ -2485,13 +2488,21 @@
       <select id="presetLoadSelect" style="width:100%; margin-top:0;">
         <option value="">불러올 대형 선택...</option>
       </select>
-      <div class="preset-load-actions">
+      <div class="preset-load-actions" style="grid-template-columns:repeat(3, minmax(0,1fr));">
         <button class="btn" id="btnPresetRename" title="선택한 대형 이름 바꾸기">✏️ 수정</button>
         <button class="btn" id="btnPresetDeleteFromLoad" title="선택한 대형 삭제">🗑️ 삭제</button>
-        <button class="btn" id="btnPresetCopyFolder" title="선택한 대형이 든 폴더를 통째로 복사">📁 폴더 복사</button>
         <button class="btn" id="btnPresetSearchToggle" title="폴더 검색">🔍 찾기</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">목록에서 대형을 고르면 바로 불러와요. 방금 고른 대형은 아래 <b>✏️ 수정</b>으로 이름을 바꾸거나 <b>🗑️ 삭제</b>로 지우고, <b>📁 폴더 복사</b>로 그 대형이 든 폴더를 통째로 복사해요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때 좋아요). 🔍 찾기의 폴더 이름 옆 📄로도 복사할 수 있어요.</div>
+      <div class="field-note" style="margin-top:4px;">목록에서 대형을 고르면 바로 불러와요. 방금 고른 대형은 <b>✏️ 수정</b>으로 이름을 바꾸거나 <b>🗑️ 삭제</b>로 지워요.</div>
+      <div class="preset-folder-tools">
+        <select id="presetFolderPick" style="width:100%; margin-top:0;" aria-label="폴더 고르기"><option value="">📁 폴더 고르기...</option></select>
+        <div class="preset-load-actions">
+          <button class="btn" id="btnFolderRename" title="고른 폴더 이름 바꾸기">✏️ 폴더 이름</button>
+          <button class="btn" id="btnPresetCopyFolder" title="고른 폴더를 통째로 복사">📄 폴더 복사</button>
+          <button class="btn" id="btnFolderDelete" title="고른 폴더와 그 안의 대형 모두 삭제">🗑️ 폴더 삭제</button>
+        </div>
+        <div class="field-note" style="margin-top:4px;">폴더를 고르면 폴더째 <b>이름 바꾸기·복사·삭제</b>를 할 수 있어요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때는 복사가 좋아요). 대형을 불러오면 그 대형의 폴더가 자동으로 골라져요. ⭐ 최종 대형 폴더는 여기서 바꿀 수 없어요.</div>
+      </div>
       <div id="presetSearchBox" style="display:none; margin-top:8px;">
         <input type="text" id="presetSearchInput" class="login-input" placeholder="폴더 이름으로 검색 (예: 위드나인)" style="margin-top:0;">
         <div class="preset-list" id="presetList" style="margin-top:10px;"></div>
@@ -4284,6 +4295,7 @@
     });
     // 지금 코트에 불러온 대형이 있으면 목록 칸에 그 이름을 보여줘요
     if(activePreset && presets.includes(activePreset)) loadSelect.value = String(presets.indexOf(activePreset));
+    renderFolderPick();
 
     const folderSelect=document.getElementById('presetFolderSelect');
     const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f && f!==FINAL_FOLDER))).sort((a,b)=>a.localeCompare(b));
@@ -5012,7 +5024,7 @@
     const idx = e.target.value;
     if(idx==='') return;
     const p = presets[Number(idx)];
-    if(p){ loadPreset(p); lastPickedPreset = p; }
+    if(p){ folderPickTouched = null; loadPreset(p); lastPickedPreset = p; }
     e.target.value = p ? String(presets.indexOf(p)) : ''; // 불러온 대형 이름이 목록 칸에 계속 보여요
   });
   document.getElementById('btnPresetRename').addEventListener('click', ()=>{
@@ -5027,9 +5039,53 @@
     renderPresets();
     scheduleAutoSave();
   });
+  // ---------- 폴더 고르기: 폴더째 이름 바꾸기·복사·삭제 ----------
+  var folderPickTouched = null; // var: 시작할 때 renderPresets가 이 줄보다 먼저 불려도 괜찮게 — 사용자가 직접 고른 폴더(불러온 대형이 바뀌면 그 대형 폴더로 따라가요)
+  function editableFolders(){ return [...new Set(presets.map(p=>p.folder||'').filter(f=>f && f!==FINAL_FOLDER))].sort((a,b)=>a.localeCompare(b,'ko')); }
+  function renderFolderPick(){
+    const sel = document.getElementById('presetFolderPick'); if(!sel) return;
+    const names = editableFolders();
+    const loaded = activePreset && presets.includes(activePreset) ? (activePreset.folder||'') : '';
+    let want = folderPickTouched && names.includes(folderPickTouched) ? folderPickTouched : (names.includes(loaded) ? loaded : '');
+    sel.innerHTML = '<option value="">📁 폴더 고르기...</option>' + names.map(f=>{
+      const n = presets.filter(p=>(p.folder||'')===f).length;
+      return `<option value="${f.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}">📁 ${f.replace(/&/g,'&amp;').replace(/</g,'&lt;')} (${n})</option>`;
+    }).join('');
+    sel.value = want;
+  }
+  document.getElementById('presetFolderPick').addEventListener('change', e=>{ folderPickTouched = e.target.value || null; });
+  function pickedFolder(action){
+    const f = document.getElementById('presetFolderPick').value;
+    if(!f){ alert(`먼저 ${action}할 폴더를 골라주세요.`); return null; }
+    return f;
+  }
   document.getElementById('btnPresetCopyFolder').addEventListener('click', ()=>{
-    if(!lastPickedPreset || !presets.includes(lastPickedPreset)){ alert('먼저 위 목록에서 복사할 폴더의 대형을 하나 선택해주세요.'); return; }
-    copyPresetFolder(lastPickedPreset.folder||'');
+    const f = pickedFolder('복사'); if(f===null) return;
+    copyPresetFolder(f);
+  });
+  document.getElementById('btnFolderRename').addEventListener('click', ()=>{
+    const f = pickedFolder('이름을 바꿀'); if(f===null) return;
+    const src = presets.filter(p=>(p.folder||'')===f && !isFinalPreset(p));
+    const newName = (prompt(`'${f}' 폴더(대형 ${src.length}개)의 새 이름을 입력하세요:`, f) || '').trim().slice(0,40);
+    if(!newName || newName===f) return;
+    if(newName===FINAL_FOLDER){ alert('⭐ 최종 대형 폴더 이름은 쓸 수 없어요.'); return; }
+    if(presets.some(p=>(p.folder||'')===newName) && !confirm(`'${newName}' 폴더가 이미 있어요. 두 폴더를 합칠까요?`)) return;
+    src.forEach(p=>{ p.folder = newName; });
+    const fi = document.getElementById('presetFolder'); if(fi.value===f) fi.value = newName;
+    folderPickTouched = newName;
+    pendingActionDescription = `'${f}' 폴더 이름을 '${newName}'(으)로 바꿨어요`;
+    renderPresets(); updateTexts(); scheduleAutoSave();
+  });
+  document.getElementById('btnFolderDelete').addEventListener('click', ()=>{
+    const f = pickedFolder('삭제'); if(f===null) return;
+    const src = presets.filter(p=>(p.folder||'')===f && !isFinalPreset(p));
+    if(!src.length) return;
+    if(!confirm(`'${f}' 폴더와 그 안의 대형 ${src.length}개를 모두 삭제할까요?\n되돌릴 수 없어요.`)) return;
+    src.forEach(p=>{ const i = presets.indexOf(p); if(i!==-1) presets.splice(i,1); if(activePreset===p) activePreset=null; if(lastPickedPreset===p) lastPickedPreset=null; });
+    const fi = document.getElementById('presetFolder'); if(fi.value===f) fi.value = '';
+    folderPickTouched = null;
+    pendingActionDescription = `'${f}' 폴더를 삭제했어요`;
+    renderPresets(); updateTexts(); scheduleAutoSave();
   });
   document.getElementById('btnPresetDeleteFromLoad').addEventListener('click', ()=>{
     const i = presets.indexOf(lastPickedPreset);
@@ -5902,7 +5958,7 @@
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'불러와서 고쳐요',
-        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(목록 아래 <b>📁 폴더 복사</b>로 그 폴더를 통째로 복사해 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
+        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(아래 <b>📁 폴더 고르기</b>에서 폴더를 고르면 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요. 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요.',
         scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
