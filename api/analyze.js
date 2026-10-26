@@ -157,7 +157,8 @@ module.exports = async (req, res) => {
   // 쓰는 사람 자신의 키만 써요(사이트 주인의 키로 대신 내 주지 않아요)
   const key = String(req.headers['x-gemini-key'] || '').trim();
   if (!key) { res.status(401).json({ error: '🔑 내 Gemini API 키를 먼저 넣어 주세요.', code: 'nokey' }); return; }
-  if (!/^[A-Za-z0-9_-]{20,100}$/.test(key)) { res.status(401).json({ error: 'API 키 모양이 아니에요. AI Studio에서 복사한 키를 그대로 붙여 주세요.', code: 'badkey' }); return; }
+  // 키 모양은 Google이 바뀔 수 있어서(예: 점이 들어간 새 키) 여기서는 길이·글자만 보고, 맞는지는 Google이 판단해요
+  if (!/^[\x21-\x7E]{10,300}$/.test(key)) { res.status(401).json({ error: 'API 키에 빈칸이나 다른 글자가 섞였어요. AI Studio의 복사 버튼으로 다시 복사해 붙여 주세요.', code: 'badkey' }); return; }
   const raw = typeof req.body === 'string' ? (() => { try { return JSON.parse(req.body); } catch (e) { return {}; } })() : (req.body || {});
   const id = youtubeId(raw.url);
   if (!id) { res.status(400).json({ error: '유튜브 영상 링크를 확인해 주세요.' }); return; }
