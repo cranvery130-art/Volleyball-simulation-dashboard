@@ -2787,7 +2787,7 @@
                 <label style="flex:1; min-width:150px;"><span class="field-note" style="margin:0 0 3px; display:block;">🔵 우리팀</span><select id="formOurSelect" style="width:100%;"></select></label>
                 <label style="flex:1; min-width:150px;"><span class="field-note" style="margin:0 0 3px; display:block;">🔴 상대팀</span><select id="formOppSelect" style="width:100%;"></select></label>
               </div>
-              <div class="field-note" style="margin-top:4px;">기록에서 고른 선수가 코트 어디에 있었는지는 전술 시뮬레이션에 저장된 대형으로 정해요. <b>자동</b>이면 팀 이름이 들어간 대형 폴더(예: "상대팀 · 한빛")를 찾아 상황(레프트·A·백차 등)에 맞는 공격 상황 대형을 써요. 그 팀 대형이 없으면 비슷한 팀의 폴더를 골라 기준으로 삼거나 <b>기본 대형</b>을 골라요. "상대팀 ·"으로 시작하는 폴더는 위쪽 코트 팀의 대형으로 읽어요.</div>
+              <div class="field-note" style="margin-top:4px;">기록에서 고른 선수가 코트 어디에 있었는지는 전술 시뮬레이션에 저장된 대형으로 정해요. <b>자동</b>이면 팀 이름이 들어간 대형 폴더(예: "상대팀 · 한빛")를 찾아 상황(레프트·A·백차 등)에 맞는 공격 상황 대형을 써요. 그 팀 대형이 없으면 비슷한 팀의 폴더를 골라 기준으로 삼거나 <b>기본 대형</b>을 골라요. "상대팀 ·"으로 시작하는 폴더는 위쪽 코트 팀의 대형으로 읽어요. 저장된 폴더 카드에서 <b>⭐ 우리팀</b>을 정했으면, 우리팀은 이름이 들어간 폴더 중 "상대팀 ·"이 아닌 것을 먼저 쓰고 없으면 "우리팀 ·" 폴더를 써요(우리팀이 상대팀 칸에 적힌 경기도 같아요). 다른 팀은 "상대팀 · 팀 이름" 폴더를 먼저 찾아요.</div>
             </div>
         <details class="roster-fold" id="rosterFold">
         <summary><span class="field-label" style="margin:0;">🔵 우리팀 포지션 명단</span><span class="rf-count" id="rosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
@@ -6980,15 +6980,22 @@
   // 그 선수 포지션의 자리를 꺼내요. 분석 코트는 아래가 우리팀, 위가 상대팀이에요(가로 0~400, 세로 0~760, 네트 380).
   const OPT_SCEN = {'레프트':'L','라이트':'R','A':'C','B':'C','백A':'BACKA','앞차':'TIMEDIFF','백차':'BACKSLIDE','서브':'SERVE'}; // 서브는 상대 서브 상황만 있어요
   const FORM_DEFAULT = '__default';
+  // ⭐ 우리팀(저장된 폴더 카드에서 정해요): 폴더 목록 나누기와 대형 자동 고르기의 기준이에요
+  let homeTeam = '';
+  const homeNorm = n => String(n||'').replace(/\s+/g,'').toLowerCase();
   let formOur = '', formOpp = ''; // '' 자동 · FORM_DEFAULT 기본 대형 · 그 밖은 대형 폴더 이름
   const formNorm = t => String(t||'').replace(/\s+/g,'').toLowerCase();
   function formFolders(){
     const T = window.__tacticsFormations; if(!T) return [];
     return [...new Set(T.presets().map(p=>p.folder||'').filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
   }
+  // 자동: ⭐ 우리팀이면 팀 이름 폴더 중 "상대팀 ·"이 아닌 것 → "우리팀 ·" 폴더 순으로, 다른 팀이면 "상대팀 ·" 폴더를 먼저 찾아요
+  const isOppFolder = f => /^\s*상대팀/.test(f), isOurFolder = f => /^\s*우리팀/.test(f);
   function autoFormFolder(teamName, isDefaultName){
     const k = formNorm(teamName); if(!k || isDefaultName) return null;
-    return formFolders().find(f=>formNorm(f).includes(k)) || null;
+    const fs = formFolders(), named = fs.filter(f=>formNorm(f).includes(k));
+    if(homeTeam && k===homeNorm(homeTeam)) return named.find(f=>!isOppFolder(f)) || named[0] || fs.find(isOurFolder) || null;
+    return named.find(isOppFolder) || named[0] || null;
   }
   // side: 'our'|'opp' → 쓸 대형 폴더(null이면 기본 대형)
   function formFolderFor(side, ctx){
@@ -9367,8 +9374,6 @@
     if(_coreScheduleAutoSave) _coreScheduleAutoSave();
   };
   // ⭐ 우리팀: 저장된 폴더 목록을 우리팀 경기와 기타로 나누는 기준이에요(방에 함께 저장돼서 다른 기기에서도 같아요).
-  let homeTeam = '';
-  const homeNorm = n => String(n||'').replace(/\s+/g,'').toLowerCase();
   const homeTeamKey = () => homeNorm(homeTeam);
   const isHomeFolder = f => { const k = homeTeamKey(); return !!k && (homeNorm(f.ourTeamName)===k || homeNorm(f.oppTeamName)===k); };
   function renderHomeTeamSelect(){
@@ -9387,7 +9392,7 @@
   document.getElementById('homeTeamSelect').addEventListener('change', e=>{
     if(readOnlyFolderView) { renderHomeTeamSelect(); return; }
     homeTeam = e.target.value.trim();
-    renderMatchFolderSelect();
+    renderMatchFolderSelect(); renderFormSelects(); updateAutoSpotNote();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
   function renderMatchFolderSelect(){
@@ -10308,6 +10313,7 @@
     document.getElementById('oppTeamNameInput').value = (vs.oppTeamName && vs.oppTeamName!=='상대팀') ? vs.oppTeamName : '';
     document.getElementById('ourTeamNameInput').value = (vs.ourTeamName && vs.ourTeamName!=='우리팀') ? vs.ourTeamName : '';
     updateTeamSegLabels();
+    renderFormSelects(); // 팀 이름·⭐ 우리팀이 바뀐 뒤 "자동 —" 표시를 다시 맞춰요
     renderVideoRosterGrid();
     renderVideoPlayerSelect();
     if(currentVideoName && !video.src){
