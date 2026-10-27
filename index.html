@@ -1229,6 +1229,8 @@
   #autoAnalysis .aa-topic{ margin:10px 0; padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:var(--panel-2); }
   #autoAnalysis .aa-title{ margin:0 0 2px; font-weight:800; color:var(--text); }
   #autoAnalysis .aa-sub{ font-weight:500; font-size:11.5px; color:var(--muted); }
+  #autoAnalysis .aa-scout{ margin:0 0 8px; padding:8px 10px; border-radius:10px; background:var(--panel-2); border:1px dashed var(--border-2); font-size:13px; }
+  .ta-scout .analysis-list{ margin:4px 0 0; }
   #autoAnalysis .aa-verdict{ margin:4px 0 0; font-size:12.5px; color:var(--text-dim); }
   .bp-group{ margin-top:6px; padding-top:10px; border-top:1px dashed var(--border-2); }
   .bp-grid{ display:grid; grid-template-columns:1fr 1fr; column-gap:18px; align-items:start; }
@@ -2127,7 +2129,7 @@
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요. 상대 서브는 칸 사이나 사이드라인·끝선 쪽으로도 정할 수 있어요.</li>
         <li><b>경기 분석(수동)</b>경기를 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 📍 코트 위치에서는 득점·실점·범실이 포지션별로 어떤 기록(빈 곳·사람 쪽 강타, 볼처리, 서브 등)이었는지와 공이 간 방향을 화살표로 보여줘요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
-        <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 전체 성적과 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠, 그리고 모든 경기를 합친 상세 분석(공격 방식·블로킹·코트 위치)까지 정리해줘요.</li>
+        <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 전체 성적과 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠, 그리고 모든 경기를 합친 상세 분석(공격 방식·블로킹·코트 위치)까지 정리해줘요. ⭐ 우리팀을 정해 두면 다른 팀은 상대 전력 분석(막을 것·노릴 것·맞대결 전적)으로 보여줘요.</li>
         <li><b>경기 분석(AI) · 준비 중</b>지금은 정확도를 높이는 중이라 배너를 흐리게 두고 잠시 쉬어요. 다시 열면 이렇게 동작해요: 공개된 유튜브 경기 영상 링크를 넣고 두 팀 유니폼을 적으면 AI(Google Gemini)가 영상을 구간별로 나눠 봐요. 점수판이 보이면 점수판 숫자가 바뀌는 순간으로 득실 순서·세트를 정하고, 안 보이면 0.1초 간격으로 랠리를 찾아요. 세트 결과를 적어 두면 그보다 많은 세트·점수는 걸러요. 그다음 랠리마다 네 시각(공의 흐름 / 토스·공격수 / 관련 선수 / 심판 판정)으로 따로 다시 본 뒤 겹치는 답을 골라, 수동 분석에서 누르는 칸(득실·세부 상황·방식·공 방향·토스 순서·관련 선수·블로킹 자리)을 모두 채워요. 분석은 언제나 꼼꼼히 해요. 득실은 주심이 가리킨 팀, 반칙 수신호, 선심 깃발(위로 아웃·아래로 인·깃발 끝 쓸기 터치아웃)을 먼저 따르고, 선심이 서 있는 곳 앞의 선을 경기장 라인으로 삼아요. 포지션은 전술 시뮬레이션에 놓아 둔 대형의 자리와 맞춰 정하고, 관련 선수는 경기 정보 명단의 등번호(안 보이면 포지션)로 찾아 넣고, 서브 순서를 적어 두면 누가 서브할 차례인지 계산해 서버가 다르면 ⚠️로 알려 줘요. 공격 위치는 AI가 붙인 이름보다 공을 때린 자리(왼쪽 안테나에서 거리)·토스 높이·세터 뒤인지·속공 페이크를 보고 정해서 레프트와 앞차, 백차와 라이트를 가르고, 랠리의 토스는 시각까지 적어 네 시각의 답을 합쳐 빠짐없이(2단 토스 포함) 남겨요. AI 모델은 Flash(기본)와 Pro(결제를 연결한 키만, 더 꼼꼼하지만 요금이 약 4배) 중에 고르고, 고르면 예상 요금이 바로 나와요. 점수판과 다르거나 확신이 낮은 줄은 ⚠️로 표시돼서 시간을 눌러 영상으로 확인하고 고친 뒤, 새 경기 카드에서 고른 경기 폴더에 넣으면 수동 기록과 똑같이 그래프·종합 분석·팀 누적 분석에 들어가요. 넣은 기록의 시간을 누르면 유튜브 그 장면이 열려요. AI는 쓰는 사람마다 자기 Gemini API 키(Google AI Studio에서 무료로 받아요)를 넣어 쓰고, 사용량은 그 사람 키에만 쌓여요. 무료 키의 하루 한도는 매일 오후 4시(11월 초~3월 초는 오후 5시)에 다시 채워지고, 한도에 걸려도 화면을 열어 두면 한도가 채워질 때 저절로 이어서 보고, 화면을 닫았다 열어도 진행 상황이 기기에 남아 🤖 이어서 분석으로 멈춘 곳부터 이어가요.</li>
         <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
@@ -2689,7 +2691,7 @@
         <button class="btn primary" id="btnTeamAnalysis" type="button">📊 분석하기</button>
       </div>
       <div class="chip-pick ta-chips" id="teamAnalysisChips"></div>
-      <div class="field-note" style="margin-top:6px;">위에서 고른 부(남자부·여자부)의 저장된 경기 폴더 중 📋 경기 정보에 이 팀 이름(우리팀·상대팀 어느 쪽이든)이 적힌 경기만 모아 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표를 막대·띠·점 그래프로 보여줘요. 아래 팀 이름을 눌러도 바로 분석하고, 그래프에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요.</div>
+      <div class="field-note" style="margin-top:6px;">위에서 고른 부(남자부·여자부)의 저장된 경기 폴더 중 📋 경기 정보에 이 팀 이름(우리팀·상대팀 어느 쪽이든)이 적힌 경기만 모아 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표를 막대·띠·점 그래프로 보여줘요. 아래 팀 이름을 눌러도 바로 분석하고, 그래프에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요. 저장된 폴더 카드에서 <b>⭐ 우리팀</b>을 정했으면 이 화면을 열자마자 우리팀을 분석하고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 바뀌어 맨 앞에 우리팀이 그 팀을 만났을 때 막을 것·유도할 범실·잘 통한 공격·맞대결 전적을 정리해요.</div>
       <div id="teamAnalysisResult"></div>
   </div>
   <span id="matchSaveHome" hidden></span>
@@ -2721,7 +2723,7 @@
       <input type="text" id="newOurNameInput" class="login-input" style="margin-top:0; flex:1; min-width:0;" placeholder="우리팀">
     </div>
     <button class="btn primary" id="btnNewMatchFolder" style="width:100%; margin-top:10px;" title="적은 경기 정보로 경기 폴더를 만들고, 이후 기록을 그 폴더에 자동 저장해요">🆕 새 경기 시작</button>
-    <div class="field-note" style="margin-top:6px;">경기 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 누르면 화면이 비워지고, 이후 기록이 그 폴더에 자동으로 저장돼요(따로 저장 버튼을 누를 필요 없어요). 부와 우리팀 이름은 지금 경기 것이 미리 들어가 있어요. 포지션 명단과 시작 뒤 고칠 내용은 아래 📋 경기 정보에서 바꿔요. 폴더 없이 남긴 기록이 화면에 있으면 그 기록을 새 폴더에 담을지 먼저 물어봐요.</div>
+    <div class="field-note" style="margin-top:6px;">경기 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 누르면 화면이 비워지고, 이후 기록이 그 폴더에 자동으로 저장돼요(따로 저장 버튼을 누를 필요 없어요). 부는 지금 경기 것이, 우리팀 이름은 아래 <b>⭐ 우리팀</b>(정하지 않았으면 지금 경기의 우리팀)이 미리 들어가 있어요. 포지션 명단과 시작 뒤 고칠 내용은 아래 📋 경기 정보에서 바꿔요. 폴더 없이 남긴 기록이 화면에 있으면 그 기록을 새 폴더에 담을지 먼저 물어봐요.</div>
     </div>
     <div class="fgroup">
       <div class="fgroup-head"><span class="fg-ic">📂</span><span class="fg-title">저장된 폴더 불러오기</span><span class="fg-sub">다시 보거나 조회 링크로 공유해요</span></div>
@@ -2738,13 +2740,17 @@
         <label for="homeTeamSelect">⭐ 우리팀</label>
         <select id="homeTeamSelect"><option value="">정하지 않음 (모든 경기를 한 목록에)</option></select>
       </div>
-      <div class="field-note" style="margin-top:4px;">우리팀을 정하면 목록이 <b>⭐ 우리팀 경기</b>와 <b>기타</b>(우리팀이 안 나온 다른 팀끼리의 경기)로 나뉘어요. 팀 이름은 각 폴더 📋 경기 정보에 적은 우리팀·상대팀 이름에서 골라요.</div>
+      <div class="field-note" style="margin-top:4px;">우리팀을 정하면 목록이 <b>⭐ 우리팀 경기</b>와 <b>기타</b>(우리팀이 안 나온 다른 팀끼리의 경기)로 나뉘어요. 팀 이름은 각 폴더 📋 경기 정보에 적은 우리팀·상대팀 이름에서 골라요. 정해 두면 새 경기의 우리팀 칸, 📊 팀 누적 분석, 기타 경기의 종합 분석, 위치 판단 대형 자동 고르기도 이 팀 기준으로 맞춰져요.</div>
       <div class="active-folder-bar" id="activeFolderBar" style="display:none;">
         <div class="active-folder-text" id="overwriteHint"></div>
       </div>
       <div class="orphan-bar" id="orphanBar" style="display:none;">
         <div class="orphan-text" id="orphanText"></div>
         <button class="btn primary" id="btnSaveOrphan" type="button">📁 폴더에 저장</button>
+      </div>
+      <div class="orphan-bar" id="homeSideBar" style="display:none;">
+        <div class="orphan-text" id="homeSideText"></div>
+        <button class="btn primary" id="btnSwapSides" type="button">⇄ 🔵 우리 쪽으로 바꾸기</button>
       </div>
       <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·경기 정보(부·팀 이름·명단)·그래프·코치 의견으로 화면이 바뀌고(부를 안 정한 예전 폴더는 📋 경기 정보가 펼쳐져서 바로 고를 수 있어요), 이후 기록은 그 폴더에 자동 저장돼요. 고를 때마다 서버의 최신 내용을 받아 와서, 휴대폰·PC를 함께 써도 다른 기기에서 저장한 폴더와 기록이 그대로 불러와져요(명단이 없는 예전 폴더는 명단이 비어 있어요). ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 링크(받는 사람은 비밀번호 없이 바로 열어 보지만, 경기 분석만 보이고 방에는 들어갈 수 없어요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 🔄 새 링크로 바꾸기·🚫 링크 끄기를 하면 모든 폴더의 예전 링크가 함께 끊겨요(개설자·수정 권한 구성원만 할 수 있어요).</div>
       <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
@@ -6327,12 +6333,12 @@
                     sc.querySelector('.k-a').textContent='25'; sc.querySelector('.k-b').textContent='18';
                     [['.k-b1','60%'],['.k-b2','35%'],['.k-b3','70%'],['.k-b4','30%']].forEach(([k,h])=>sc.querySelector(k).style.height=h); }}, {wait:1900} ] },
       { title:'경기 폴더를 관리해요',
-        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기의 기록과 경기 정보(부·팀 이름·명단)로 바뀌고(경기 정보에서 부를 정한 폴더는 남자부·여자부·부 미지정으로 묶여 보여요. 아래 <b>⭐ 우리팀</b>을 정하면 부마다 다시 우리팀 경기와 <b>기타</b>(다른 팀끼리의 경기)로 나뉘어요), ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 분석 화면을 바로 봐요(링크에 코드가 없어 방에는 못 들어와요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 개설자나 수정 권한 구성원이 <b>🔄 새 링크로 바꾸기</b>·<b>🚫 링크 끄기</b>를 하면 모든 폴더의 예전 링크가 함께 끊겨요. 폴더 없이 기록했다면 위에 뜨는 <b>📁 폴더에 저장</b>으로 새 폴더를 만들거나 기존 폴더에 덧붙여요. <b>📊 기록 내보내기</b>로 받은 파일은 <b>📥 기록 불러오기</b>로 다시 읽어 백업한 기록을 되살려요.',
+        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기의 기록과 경기 정보(부·팀 이름·명단)로 바뀌고(경기 정보에서 부를 정한 폴더는 남자부·여자부·부 미지정으로 묶여 보여요. 아래 <b>⭐ 우리팀</b>을 정하면 부마다 다시 우리팀 경기와 <b>기타</b>(다른 팀끼리의 경기)로 나뉘고, 새 경기의 우리팀 칸이 그 팀으로 채워져요. 우리팀이 🔴 상대팀 칸에 적힌 경기는 <b>⇄ 🔵 우리 쪽으로 바꾸기</b>로 두 팀을 통째로 바꾸고, 기타 경기의 종합 분석은 두 팀을 앞으로 만날 상대로 보고 정리해요), ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 분석 화면을 바로 봐요(링크에 코드가 없어 방에는 못 들어와요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 개설자나 수정 권한 구성원이 <b>🔄 새 링크로 바꾸기</b>·<b>🚫 링크 끄기</b>를 하면 모든 폴더의 예전 링크가 함께 끊겨요. 폴더 없이 기록했다면 위에 뜨는 <b>📁 폴더에 저장</b>으로 새 폴더를 만들거나 기존 폴더에 덧붙여요. <b>📊 기록 내보내기</b>로 받은 파일은 <b>📥 기록 불러오기</b>로 다시 읽어 백업한 기록을 되살려요.',
         scene:`<div class="mk-card"><div class="mk-h">저장된 폴더 불러오기</div><div class="mk-row"><span class="mk-btn big k-sel">📁 vs 한빛 0907 ▾</span><span class="mk-btn big">✏️</span><span class="mk-btn big k-copy">📄</span><span class="mk-btn big k-link">🔗</span></div>
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] },
       { title:'팀 누적 분석으로 한 팀을 모아 봐요',
-        text:'맨 위 <b>📊 팀 누적 분석</b> 배너를 눌러(한 경기 기록·그래프는 <b>📝 경기 분석(수동)</b>) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 구성 띠, 경기별 흐름 선, 상대팀별 좌우 막대). 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 방식·블로킹·코트 위치를 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요.',
+        text:'맨 위 <b>📊 팀 누적 분석</b> 배너를 눌러(한 경기 기록·그래프는 <b>📝 경기 분석(수동)</b>) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 구성 띠, 경기별 흐름 선, 상대팀별 좌우 막대). 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 방식·블로킹·코트 위치를 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요. <b>⭐ 우리팀</b>을 정했으면 열자마자 우리팀을 보여주고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 우리팀이 그 팀을 만났을 때 막을 것·노릴 것을 먼저 정리해요.',
         scene:`<div class="mk-card"><div class="mk-h">📊 팀 누적 분석</div><div class="mk-row"><span class="mk-btn k-t1">위드나인 5경기</span><span class="mk-btn">한빛 2경기</span><span class="mk-btn">다온 1경기</span></div>
           <div class="mk-col k-res" style="display:none;"><div class="mk-lbl"><b>위드나인</b> · 5경기 4승 1패 · 득점률 53%</div><div class="mk-list"><div class="mk-item">승 · 9/12 vs 한빛전 · 75:45</div><div class="mk-item">패 · 9/19 vs 새솔전 · 57:75</div></div><div class="mk-lbl">🔑 승부 열쇠: 서브 효율(이긴 경기 56% · 진 경기 29%)</div></div></div>`,
         script:[ {click:'.k-t1', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-res').style.display='flex'; }}, {wait:2200} ] }
@@ -6983,6 +6989,8 @@
   // ⭐ 우리팀(저장된 폴더 카드에서 정해요): 폴더 목록 나누기와 대형 자동 고르기의 기준이에요
   let homeTeam = '';
   const homeNorm = n => String(n||'').replace(/\s+/g,'').toLowerCase();
+  const homeTeamKey = () => homeNorm(homeTeam);
+  const isHomeFolder = f => { const k = homeTeamKey(); return !!k && (homeNorm(f.ourTeamName)===k || homeNorm(f.oppTeamName)===k); };
   let formOur = '', formOpp = ''; // '' 자동 · FORM_DEFAULT 기본 대형 · 그 밖은 대형 폴더 이름
   const formNorm = t => String(t||'').replace(/\s+/g,'').toLowerCase();
   function formFolders(){
@@ -7787,7 +7795,8 @@
     newDivision = matchDivision; renderNewDivSeg();
     document.getElementById('matchSaveDate').value = todayStr();
     document.getElementById('newOppNameInput').value = '';
-    document.getElementById('newOurNameInput').value = (typeof ourTeamName==='string' && ourTeamName!=='우리팀') ? ourTeamName : '';
+    // ⭐ 우리팀을 정했으면 새 경기의 우리팀 칸은 늘 그 팀으로 채워요
+    document.getElementById('newOurNameInput').value = homeTeam || ((typeof ourTeamName==='string' && ourTeamName!=='우리팀') ? ourTeamName : '');
   }
   document.querySelectorAll('#newDivSeg button').forEach(b=>b.addEventListener('click', ()=>{
     if(readOnlyFolderView) return;
@@ -7823,6 +7832,7 @@
     updateTeamSegLabels();
     relabelAllRecords();
     try{ updateMatchInfoState(); }catch(err){}
+    try{ updateHomeSideBar(); }catch(err){}
     if(window.__aiSyncNames) window.__aiSyncNames();
   }
   function onTeamNamesChanged(){
@@ -9264,15 +9274,21 @@
     };
     const lines = [];
     const o = S.our, p = S.opp;
+    // ⭐ 우리팀을 정했는데 두 팀 다 우리팀이 아니면 "기타" 경기예요: 두 팀을 언젠가 만날 상대로 보고 정찰 관점으로 말해요
+    const hk = homeTeamKey();
+    const scout = !!hk && homeNorm(ourTeamName)!==hk && homeNorm(oppTeamName)!==hk;
+    const H = escChip(homeTeam);
+    if(scout) lines.push(`<p class="aa-scout">🔍 <b>기타 경기</b>예요. ⭐ ${H}이(가) 나오지 않은 경기라 두 팀을 <b>앞으로 만날 상대</b>로 보고, 막을 것·노릴 것 위주로 정리했어요.</p>`);
     lines.push(`<p><b>${scopeLabel()}</b> 점수는 <b>${ourTeamName} ${o.pts} : ${p.pts} ${oppTeamName}</b>예요. ${ourTeamName}은(는) 자력 득점 ${o.self} + ${oppTeamName} 범실 ${o.gift}, ${oppTeamName}은(는) 자력 득점 ${p.self} + ${ourTeamName} 범실 ${p.gift}로 점수를 냈어요.</p>`);
     // 1) 주 득점 루트(자력 득점 TOP + 세터 배분 + 공격 위치 성공률)
     const route = t => { const top = topByMain(S[t].me.score); if(!top) return ''; const d = routeDetails(t); return `${tag(t)} — 자력 득점 ${S[t].self}점 중 "${top.name}" ${top.n}회(${pct(top.n,S[t].self)}%)${top.det}로 가장 많아요.${d?` ${d}.`:''}`; };
     lines.push(topic('✅ 주 득점 루트 <span class="aa-sub">— 가장 많이 점수를 낸 상황, 세터 배분, 공격 위치별 성공률</span>', [route('our'), route('opp')],
-      (o.self!==p.self) ? `자력 득점은 <b>${NAME[o.self>p.self?'our':'opp']}</b>이(가) ${Math.abs(o.self-p.self)}점 많아요. 상대의 주 득점 루트에 맞춰 수비 대형·블로킹 위치를 점검해보세요.` : '상대의 주 득점 루트에 맞춰 수비 대형·블로킹 위치를 점검해보세요.'));
+      (o.self!==p.self ? `자력 득점은 <b>${NAME[o.self>p.self?'our':'opp']}</b>이(가) ${Math.abs(o.self-p.self)}점 많아요. ` : '') + (scout ? `${H}이(가) 두 팀을 만나면 위 주 득점 루트부터 막도록 블로킹·수비 위치를 준비해요.` : '상대의 주 득점 루트에 맞춰 수비 대형·블로킹 위치를 점검해보세요.')));
     // 2) 범실
     const err = t => { const top = topByMain(S[t].me.err); if(!top) return `${tag(t)} — 범실이 없어요.`; const lostTot = S[t].lost; return `${tag(t)} — 범실 ${S[t].errs}회 중 "${top.name}" ${top.n}회${top.det}로 가장 많아요. 내준 점수의 ${pct(S[t].errs,lostTot)}%가 ${NAME[t]} 실수였어요.`; };
     lines.push(topic('⚠️ 범실 <span class="aa-sub">— 줄일 수 있는 실점</span>', [err('our'), err('opp')],
-      o.errs!==p.errs ? `범실은 <b>${NAME[o.errs<p.errs?'our':'opp']}</b>이(가) ${Math.abs(o.errs-p.errs)}회 적어요. 가장 많은 범실 상황부터 훈련하면 바로 점수로 이어져요.` : ''));
+      scout ? `두 팀이 자주 범실한 상황이 나오도록 ${H}의 서브·공격 코스를 정하면 점수로 이어질 수 있어요.`
+        : o.errs!==p.errs ? `범실은 <b>${NAME[o.errs<p.errs?'our':'opp']}</b>이(가) ${Math.abs(o.errs-p.errs)}회 적어요. 가장 많은 범실 상황부터 훈련하면 바로 점수로 이어져요.` : ''));
     // 3) 공격 결정률
     const atk = t => S[t].atkTotal ? `${tag(t)} — 공격 결정률 ${S[t].atkRate}% (성공 ${S[t].atkWin} · 범실 ${S[t].atkErr} · 블로킹 당함 ${S[t].atkBlocked})${S[t].atkBlocked>=Math.max(2,S[t].atkWin/2)?' — 블로킹에 막힌 공격이 많아요. 공격 코스나 페인트·가볍게 볼처리를 섞어보세요':''}` : '';
     if(o.atkTotal + p.atkTotal >= 3) lines.push(topic('🏐 공격 결정률 <span class="aa-sub">— 성공 ÷ (성공 + 범실 + 블로킹 당함)</span>', [atk('our'), atk('opp')], better(o.atkRate, p.atkRate, true, '%p', '공격 결정률')));
@@ -9281,7 +9297,7 @@
     if(o.serveWin+o.serveErr+p.serveWin+p.serveErr) lines.push(topic('🎯 서브', [srv('our'), srv('opp')], better(o.serveWin-o.serveErr, p.serveWin-p.serveErr, true, '점', '서브 득실')));
     // 5) 리시브
     const rcv = t => `${tag(t)} — 리시브 관련 실점 ${S[t].recvLoss}점 (${NAME[t==='our'?'opp':'our']} 서브 득점 + ${NAME[t]} 리시브·서브캐치 범실)`;
-    if(o.recvLoss + p.recvLoss) lines.push(topic('🛡️ 리시브', [rcv('our'), rcv('opp')], (o.recvLoss!==p.recvLoss ? `리시브는 <b>${NAME[o.recvLoss<p.recvLoss?'our':'opp']}</b>이(가) ${Math.abs(o.recvLoss-p.recvLoss)}점 덜 내줬어요. 리시브 실점이 많은 팀은 리시브 대형을 다시 확인해보세요.` : '')));
+    if(o.recvLoss + p.recvLoss) lines.push(topic('🛡️ 리시브', [rcv('our'), rcv('opp')], (o.recvLoss!==p.recvLoss ? `리시브는 <b>${NAME[o.recvLoss<p.recvLoss?'our':'opp']}</b>이(가) ${Math.abs(o.recvLoss-p.recvLoss)}점 덜 내줬어요. ${scout ? `리시브 실점이 많은 <b>${NAME[o.recvLoss>p.recvLoss?'our':'opp']}</b>을(를) 만나면 서브로 흔들어 보세요.` : '리시브 실점이 많은 팀은 리시브 대형을 다시 확인해보세요.'}` : '')));
     // 6) 블로킹
     const blkInf = blockInfluenceHTML();
     if(blkInf) lines.push(blkInf);
@@ -9374,8 +9390,6 @@
     if(_coreScheduleAutoSave) _coreScheduleAutoSave();
   };
   // ⭐ 우리팀: 저장된 폴더 목록을 우리팀 경기와 기타로 나누는 기준이에요(방에 함께 저장돼서 다른 기기에서도 같아요).
-  const homeTeamKey = () => homeNorm(homeTeam);
-  const isHomeFolder = f => { const k = homeTeamKey(); return !!k && (homeNorm(f.ourTeamName)===k || homeNorm(f.oppTeamName)===k); };
   function renderHomeTeamSelect(){
     const hs = document.getElementById('homeTeamSelect'); if(!hs) return;
     const m = new Map();
@@ -9392,7 +9406,7 @@
   document.getElementById('homeTeamSelect').addEventListener('change', e=>{
     if(readOnlyFolderView) { renderHomeTeamSelect(); return; }
     homeTeam = e.target.value.trim();
-    renderMatchFolderSelect(); renderFormSelects(); updateAutoSpotNote();
+    renderMatchFolderSelect(); renderFormSelects(); updateAutoSpotNote(); resetNewMatchForm(); renderAutoAnalysis();
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
   function renderMatchFolderSelect(){
@@ -9465,8 +9479,42 @@
     if(window.scheduleAutoSave) window.scheduleAutoSave();
     alert(`"${name}" 폴더에 기록을 저장했어요. 이후 기록도 이 폴더에 자동으로 저장돼요.`);
   });
+  // ⭐ 우리팀이 이 경기의 🔴 상대팀 칸에 적혀 있으면 알려 주고, 두 팀을 통째로 바꿀 수 있게 해요
+  function updateHomeSideBar(){
+    const bar = document.getElementById('homeSideBar'); if(!bar) return;
+    const f = lastPickedMatchFolderIdx!==null ? matchFolders[lastPickedMatchFolderIdx] : null;
+    const k = homeTeamKey();
+    const show = !!f && !!k && !readOnlyFolderView && homeNorm(oppTeamName)===k && homeNorm(ourTeamName)!==k;
+    bar.style.display = show ? 'flex' : 'none';
+    if(show) document.getElementById('homeSideText').innerHTML = `⭐ 우리팀 <b>${escChip(homeTeam)}</b>이(가) 이 경기에서 <b>🔴 상대팀</b> 칸에 있어요. 바꾸면 두 팀의 이름·명단·위치 판단 대형과 모든 기록의 득실·선수·토스·공 방향이 함께 뒤바뀌어 우리팀이 🔵로 보여요.`;
+  }
+  const flipTeam = t => t==='our' ? 'opp' : t==='opp' ? 'our' : t;
+  document.getElementById('btnSwapSides').addEventListener('click', ()=>{
+    if(readOnlyFolderView || lastPickedMatchFolderIdx===null) return;
+    if(!confirm(`🔵 ${ourTeamName}와(과) 🔴 ${oppTeamName}을(를) 서로 바꿀까요?\n기록 ${records.length}줄의 득점·실점·범실, 고른 선수, 토스, 공 방향이 함께 바뀌어요. 한 번 더 누르면 다시 돌아와요.`)) return;
+    clearUndo(); // 바꾸기 전 기록으로 되돌리면 팀이 뒤섞여서 되돌리기 기록은 비워요
+    records.forEach(r=>{
+      (r.entries||[]).forEach(e=>{
+        const n = normEntry(e); if(!n.team) return;
+        e.optionLabel = n.main; if(n.detail) e.detail = n.detail; else delete e.detail;
+        e.team = flipTeam(n.team); e.outcome = n.outcome; e.category = qrCategoryFor(e.team, e.outcome);
+      });
+      if(r.entries && r.entries[0]) r.category = r.entries[0].category;
+      const pl = r.player; r.player = r.oppPlayer || null; r.oppPlayer = pl || null;
+      (r.tosses||[]).forEach(x=>{ x.team = flipTeam(x.team); });
+      if(r.ball){ const fl = pt => Array.isArray(pt) ? [400-pt[0], 760-pt[1]] : pt; r.ball = {from: fl(r.ball.from), to: fl(r.ball.to)}; } // 분석 코트는 아래가 우리팀이라 공 자리도 반대쪽으로 돌려요
+    });
+    const ro = videoRoster; videoRoster = oppRoster; oppRoster = ro;
+    applyFormChoice(formOpp, formOur);
+    selectedPlayer = selectedOppPlayer = null; selectedSub = selectedOppSub = null;
+    applyTeamNames(ourTeamName==='우리팀' ? '' : ourTeamName, oppTeamName==='상대팀' ? '' : oppTeamName);
+    renderVideoRosterGrid(); renderVideoPlayerSelect();
+    renderRecords(); renderTally(); renderAllGraphs(); renderAutoAnalysis();
+    updateHomeSideBar();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+  });
   function updateOverwriteButton(){
-    updateOrphanBar();
+    updateOrphanBar(); updateHomeSideBar();
     const bar = document.getElementById('activeFolderBar');
     const hint = document.getElementById('overwriteHint');
     const has = lastPickedMatchFolderIdx!==null && matchFolders[lastPickedMatchFolderIdx] && !readOnlyFolderView;
@@ -9663,6 +9711,8 @@
     }
     const T = escChip(ms[0].me);
     const allEs = ms.flatMap(m=>m.es), allRecs = ms.flatMap(m=>m.recs);
+    // ⭐ 우리팀을 정했으면, 다른 팀은 "상대 전력 분석"으로 보고 우리팀이 노릴 점을 맨 앞에 정리해요
+    const hk = homeTeamKey(), isHome = !!hk && key===hk, scout = !!hk && !isHome;
     const base = taMetrics(allEs);
     const W = ms.filter(m=>m.result==='W'), L = ms.filter(m=>m.result==='L'), D = ms.filter(m=>m.result==='D');
     const sw = ms.reduce((s,m)=>s+m.sw,0), sl = ms.reduce((s,m)=>s+m.sl,0);
@@ -9673,18 +9723,19 @@
     const ring = `<svg class="ta-ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${R}" fill="none" stroke="color-mix(in srgb, var(--opp) 30%, var(--panel-2))" stroke-width="8"/><circle cx="32" cy="32" r="${R}" fill="none" stroke="var(--own)" stroke-width="8" stroke-dasharray="${(C*rate/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 32 32)" stroke-linecap="butt"/><text x="32" y="37" text-anchor="middle">${Math.round(rate)}%</text></svg>`;
     const wl = ms.map(m=>`<i class="${m.result}" title="${escChip(m.name)} · ${m.result==='W'?'승':m.result==='L'?'패':'무'}">${m.result==='W'?'승':m.result==='L'?'패':'무'}</i>`).join('');
     html.push(`<div class="ta-hero">
-      <div class="ta-hero-name"><span>📊 팀 누적 분석 · ${taDivName(dv)}</span><b>${T}</b><small>${taDivName(dv)} 저장 경기 ${ms.length}개</small></div>
+      <div class="ta-hero-name"><span>${isHome ? '⭐ 우리팀 누적 분석' : scout ? '🔍 상대 전력 분석' : '📊 팀 누적 분석'} · ${taDivName(dv)}</span><b>${T}</b><small>${taDivName(dv)} 저장 경기 ${ms.length}개</small></div>
       <div class="ta-tile"><small>전적</small><b><span class="u">${W.length}승</span> <span class="o">${L.length}패</span>${D.length?` ${D.length}무`:''}</b><div class="ta-wl">${wl}</div></div>
       <div class="ta-tile"><small>세트</small><b><span class="u">${sw}</span> : <span class="o">${sl}</span></b><div class="ta-split"><i style="flex:${sw||0.001}; background:var(--own)"></i><i style="flex:${sl||0.001}; background:var(--opp)"></i></div></div>
       <div class="ta-tile ta-tile-ring">${ring}<div><small>득점률</small><b>${base.a.pts} : ${base.a.lost}</b><span class="ta-tsub">득점 : 실점</span></div></div>
     </div>`);
+    if(scout) html.push(taScoutHTML(T, allEs, ms, base));
     // 2) 전체 지표: 막대 + 득점·실점 구성 띠
     const meters = [
       taMeter('공격 결정률', base.atk, {sub:`성공 ${base.a.atkWin} · 범실 ${base.a.atkErr} · 막힘 ${base.a.atkBlocked}`}),
       taMeter('서브 효율', base.srv, {sub:`득점 ${base.a.serveWin} · 범실 ${base.a.serveErr}`}),
       taMeter('블로킹 효율', base.blk, {sub:`득점 ${base.blkS} · 범실 ${base.blkF}`}),
       taMeter('자력 득점 비중', base.selfShare, {sub:'득점 중 잘해서 낸 점수'}),
-      taMeter('범실 실점 비중', base.errShare, {color:'var(--opp)', sub:'실점 중 우리 실수 · 낮을수록 좋아요'}),
+      taMeter('범실 실점 비중', base.errShare, {color:'var(--opp)', sub:`실점 중 ${scout ? T+' 실수 · 높을수록 노릴 틈이 커요' : '우리 실수 · 낮을수록 좋아요'}`}),
       taMeter('리시브 실점 비중', base.recvShare, {color:'var(--opp)', sub:'실점 중 리시브 관련 · 낮을수록 좋아요'})
     ].join('');
     const comp = `<div class="ta-two">
@@ -9783,6 +9834,24 @@
     html.push(`<p class="analysis-disclaimer">※ 저장된 폴더의 기록을 모아 자동 계산한 통계예요. 막대에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요. 경기마다 기록한 양이 다르면 결과가 달라질 수 있고, 승패는 기록된 세트 점수로 판단해요. 3회보다 적게 나온 지표(공격·서브·블로킹 효율)는 빼고 계산해요.</p>`);
     out.innerHTML = html.join('');
   }
+  // 🔍 상대 전력 분석: ⭐ 우리팀이 이 팀을 만났을 때 막을 것·노릴 것·맞대결 전적
+  function taScoutHTML(T, es, ms, base){
+    const H = escChip(homeTeam), li = [];
+    const route = taTop(es, 'ourScore', 2);
+    if(route.length) li.push(`🧱 <b>먼저 막을 것</b> — ${T}의 자력 득점은 ${route.map(([k,n])=>`"${escChip(k)}" ${n}점`).join(', ')} 순이에요. 이 공격에 블로킹·수비 위치를 먼저 맞춰요.`);
+    const errs = taTop(es, 'ourError', 2);
+    if(errs.length) li.push(`🎯 <b>유도할 범실</b> — ${T}은(는) ${errs.map(([k,n])=>`"${escChip(k)}" ${n}회`).join(', ')} 범실이 많아요. 이 상황이 나오게 서브·공격 코스를 정해요.`);
+    const lost = taTop(es, 'oppScore', 2);
+    if(lost.length) li.push(`⚔️ <b>잘 통한 공격</b> — 상대 팀들이 ${T}에게 ${lost.map(([k,n])=>`"${escChip(k)}" ${n}점`).join(', ')}을(를) 많이 냈어요.`);
+    if(base.recvShare!==null && base.recvShare>=25) li.push(`🛡️ <b>서브로 흔들기</b> — ${T} 실점의 ${Math.round(base.recvShare)}%가 리시브 관련이에요. 강한 서브가 잘 통할 수 있어요.`);
+    const h2h = ms.filter(m=>homeNorm(m.opp)===homeTeamKey());
+    if(h2h.length){
+      const w = h2h.filter(m=>m.result==='L').length, l = h2h.filter(m=>m.result==='W').length; // m.result는 이 팀 기준이라 거꾸로 세요
+      li.push(`⭐ <b>${H}의 맞대결</b> — ${h2h.length}경기 ${H} ${w}승 ${l}패${h2h.length-w-l?` ${h2h.length-w-l}무`:''}.`);
+    }
+    if(!li.length) return '';
+    return `<section class="ta-sec ta-scout"><h4><span class="ta-ic">🔍</span>${H}이(가) ${T}을(를) 만나면<small>이 팀이 나온 경기 기록으로 정리</small></h4><ul class="analysis-list">${li.map(x=>`<li>${x}</li>`).join('')}</ul></section>`;
+  }
   let taDetailData = null, taDetailTab = 'attack', taCourtMetric = 'score';
   const TA_DETAIL_TABS = [['attack','⚔️ 공격'],['block','🧱 블로킹'],['court','📍 코트 위치']];
   function taDetailHTML(){
@@ -9802,7 +9871,7 @@
     const list = taTeamList();
     const cur = taNorm(document.getElementById('teamAnalysisInput').value);
     box.innerHTML = list.length
-      ? list.slice(0,12).map(t=>`<button type="button" class="chip-btn ta-chip${taNorm(t.name)===cur?' active':''}" data-team="${escChip(t.name)}">${escChip(t.name)} <small>${t.n}경기</small></button>`).join('')
+      ? list.slice().sort((a,b)=>(taNorm(b.name)===homeTeamKey()) - (taNorm(a.name)===homeTeamKey())).slice(0,12).map(t=>`<button type="button" class="chip-btn ta-chip${taNorm(t.name)===cur?' active':''}" data-team="${escChip(t.name)}">${taNorm(t.name)===homeTeamKey()?'⭐ ':''}${escChip(t.name)} <small>${t.n}경기</small></button>`).join('')
       : `<span class="field-note" style="margin:0;">${taDivName(taDiv())}에 팀 이름이 적힌 저장 폴더가 아직 없어요. 경기 폴더의 📋 경기 정보에서 부와 팀 이름을 정해 두면 여기에 나와요.</span>`;
     renderTaDivSeg();
   }
@@ -9825,6 +9894,7 @@
       // 바로가기 아이콘으로 바꿔도 맨 위 배너가 함께 바뀌어요
       document.querySelectorAll('#appModeSeg button[data-appmode="video"], #appModeSeg button[data-appmode="team"]').forEach(b=>b.classList.toggle('active', b.dataset.appmode===(team?'team':'video')));
       document.querySelectorAll('#vaTabSeg [data-vatab]').forEach(b=>{ const on = b.dataset.vatab===tab; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); });
+      if(team && !input.value.trim() && homeTeam) input.value = homeTeam; // ⭐ 우리팀을 정했으면 열자마자 우리팀부터 보여줘요
       if(team){ renderTeamAnalysisChips(); if(input.value.trim()) renderTeamAnalysis(); }
       const seg = document.getElementById('vaTabSeg');
       if(seg && seg.getBoundingClientRect().top < 0) window.scrollTo({top:seg.getBoundingClientRect().top + window.scrollY - 12});
@@ -10313,7 +10383,7 @@
     document.getElementById('oppTeamNameInput').value = (vs.oppTeamName && vs.oppTeamName!=='상대팀') ? vs.oppTeamName : '';
     document.getElementById('ourTeamNameInput').value = (vs.ourTeamName && vs.ourTeamName!=='우리팀') ? vs.ourTeamName : '';
     updateTeamSegLabels();
-    renderFormSelects(); // 팀 이름·⭐ 우리팀이 바뀐 뒤 "자동 —" 표시를 다시 맞춰요
+    renderFormSelects(); updateHomeSideBar(); // 팀 이름·⭐ 우리팀이 바뀐 뒤 "자동 —" 표시와 우리 쪽 바꾸기 안내를 다시 맞춰요
     renderVideoRosterGrid();
     renderVideoPlayerSelect();
     if(currentVideoName && !video.src){
