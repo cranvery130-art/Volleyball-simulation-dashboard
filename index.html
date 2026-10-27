@@ -1694,6 +1694,9 @@
   /* 참고사항 버튼은 작은 알약으로(설명이 기능을 가리지 않게) */
   #btnPresetInfoToggle, #btnAttackInfoToggle, #btnLandingInfoToggle, #btnQrOptionInfo{ width:auto !important; align-self:flex-end; margin-left:auto; display:block; font-size:11.5px; padding:4px 11px; border-radius:999px; color:var(--text-dim); }
   #btnSaveRoom{ display:none !important; }
+  .home-team-row{ display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .home-team-row label{ flex:none; font-size:13px; font-weight:700; color:var(--text-dim); }
+  .home-team-row select{ flex:1; min-width:0; }
 
   @media (max-width:1100px){
     .match-save-card .fgroup > div:has(> #matchFolderSelect){ flex-wrap:wrap; }
@@ -2731,6 +2734,11 @@
         <button class="btn" id="btnDeleteMatchFolder" title="불러온 폴더 삭제" style="flex:none; padding:9px 10px;">🗑️</button>
         <button class="btn" id="btnShareFolderLink" title="불러온 폴더를 조회 전용 링크로 공유">🔗 조회 링크 공유</button>
       </div>
+      <div class="home-team-row">
+        <label for="homeTeamSelect">⭐ 우리팀</label>
+        <select id="homeTeamSelect"><option value="">정하지 않음 (모든 경기를 한 목록에)</option></select>
+      </div>
+      <div class="field-note" style="margin-top:4px;">우리팀을 정하면 목록이 <b>⭐ 우리팀 경기</b>와 <b>기타</b>(우리팀이 안 나온 다른 팀끼리의 경기)로 나뉘어요. 팀 이름은 각 폴더 📋 경기 정보에 적은 우리팀·상대팀 이름에서 골라요.</div>
       <div class="active-folder-bar" id="activeFolderBar" style="display:none;">
         <div class="active-folder-text" id="overwriteHint"></div>
       </div>
@@ -6319,7 +6327,7 @@
                     sc.querySelector('.k-a').textContent='25'; sc.querySelector('.k-b').textContent='18';
                     [['.k-b1','60%'],['.k-b2','35%'],['.k-b3','70%'],['.k-b4','30%']].forEach(([k,h])=>sc.querySelector(k).style.height=h); }}, {wait:1900} ] },
       { title:'경기 폴더를 관리해요',
-        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기의 기록과 경기 정보(부·팀 이름·명단)로 바뀌고(경기 정보에서 부를 정한 폴더는 남자부·여자부·부 미지정으로 묶여 보여요), ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 분석 화면을 바로 봐요(링크에 코드가 없어 방에는 못 들어와요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 개설자나 수정 권한 구성원이 <b>🔄 새 링크로 바꾸기</b>·<b>🚫 링크 끄기</b>를 하면 모든 폴더의 예전 링크가 함께 끊겨요. 폴더 없이 기록했다면 위에 뜨는 <b>📁 폴더에 저장</b>으로 새 폴더를 만들거나 기존 폴더에 덧붙여요. <b>📊 기록 내보내기</b>로 받은 파일은 <b>📥 기록 불러오기</b>로 다시 읽어 백업한 기록을 되살려요.',
+        text:'기록은 지금 화면의 폴더에 <b>자동 저장</b>돼요. 불러오기 칸에서 폴더를 고르면 그 경기의 기록과 경기 정보(부·팀 이름·명단)로 바뀌고(경기 정보에서 부를 정한 폴더는 남자부·여자부·부 미지정으로 묶여 보여요. 아래 <b>⭐ 우리팀</b>을 정하면 부마다 다시 우리팀 경기와 <b>기타</b>(다른 팀끼리의 경기)로 나뉘어요), ✏️ 이름 바꾸기 · <b>📄 복제</b> · 🗑️ 삭제 · 🔗 조회 링크를 쓸 수 있어요. 조회 링크를 받은 사람은 비밀번호 없이 분석 화면을 바로 봐요(링크에 코드가 없어 방에는 못 들어와요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 개설자나 수정 권한 구성원이 <b>🔄 새 링크로 바꾸기</b>·<b>🚫 링크 끄기</b>를 하면 모든 폴더의 예전 링크가 함께 끊겨요. 폴더 없이 기록했다면 위에 뜨는 <b>📁 폴더에 저장</b>으로 새 폴더를 만들거나 기존 폴더에 덧붙여요. <b>📊 기록 내보내기</b>로 받은 파일은 <b>📥 기록 불러오기</b>로 다시 읽어 백업한 기록을 되살려요.',
         scene:`<div class="mk-card"><div class="mk-h">저장된 폴더 불러오기</div><div class="mk-row"><span class="mk-btn big k-sel">📁 vs 한빛 0907 ▾</span><span class="mk-btn big">✏️</span><span class="mk-btn big k-copy">📄</span><span class="mk-btn big k-link">🔗</span></div>
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] },
@@ -9358,19 +9366,59 @@
     if(typeof updateOverwriteButton==='function') updateOverwriteButton();
     if(_coreScheduleAutoSave) _coreScheduleAutoSave();
   };
+  // ⭐ 우리팀: 저장된 폴더 목록을 우리팀 경기와 기타로 나누는 기준이에요(방에 함께 저장돼서 다른 기기에서도 같아요).
+  let homeTeam = '';
+  const homeNorm = n => String(n||'').replace(/\s+/g,'').toLowerCase();
+  const homeTeamKey = () => homeNorm(homeTeam);
+  const isHomeFolder = f => { const k = homeTeamKey(); return !!k && (homeNorm(f.ourTeamName)===k || homeNorm(f.oppTeamName)===k); };
+  function renderHomeTeamSelect(){
+    const hs = document.getElementById('homeTeamSelect'); if(!hs) return;
+    const m = new Map();
+    matchFolders.forEach(f=>[f.ourTeamName, f.oppTeamName].forEach(n=>{
+      n = String(n||'').trim(); if(!n || n==='우리팀' || n==='상대팀') return;
+      const k = homeNorm(n); const d = m.get(k) || {name:n, n:0}; d.n++; m.set(k, d);
+    }));
+    if(homeTeam && !m.has(homeTeamKey())) m.set(homeTeamKey(), {name:homeTeam, n:0});
+    const list = [...m.values()].sort((a,b)=>b.n-a.n || a.name.localeCompare(b.name,'ko'));
+    hs.innerHTML = '<option value="">정하지 않음 (모든 경기를 한 목록에)</option>' + list.map(t=>`<option value="${escChip(t.name)}">${escChip(t.name)} (${t.n}경기)</option>`).join('');
+    const cur = list.find(t=>homeNorm(t.name)===homeTeamKey());
+    hs.value = cur ? cur.name : '';
+  }
+  document.getElementById('homeTeamSelect').addEventListener('change', e=>{
+    if(readOnlyFolderView) { renderHomeTeamSelect(); return; }
+    homeTeam = e.target.value.trim();
+    renderMatchFolderSelect();
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+  });
   function renderMatchFolderSelect(){
     const sel = document.getElementById('matchFolderSelect');
     sel.innerHTML = '<option value="">불러올 폴더 선택...</option>';
     // 남자부·여자부를 정한 폴더가 있으면 부별로 묶어 보여줘요(안 정한 예전 폴더는 "부 미지정"으로).
+    // ⭐ 우리팀을 정했으면 부마다 다시 "우리팀 경기"와 "기타"(우리팀이 안 나온 다른 팀끼리의 경기)로 나눠요.
+    renderHomeTeamSelect();
     const grouped = matchFolders.some(f=>DIV_LABEL[f.division]);
-    const groups = grouped ? [['men','남자부'],['women','여자부'],['','부 미지정 (경기 정보에서 정해 주세요)']].map(([d,l])=>{ const g = document.createElement('optgroup'); g.label = l; g.dataset.div = d; return g; }) : null;
+    const home = homeTeamKey();
+    const divs = grouped ? [['men','남자부'],['women','여자부'],['','부 미지정 (경기 정보에서 정해 주세요)']] : [['', '']];
+    const kinds = home ? [['home','⭐ '+homeTeam+' 경기'],['etc','기타 (다른 팀끼리)']] : [['','']];
+    const groups = [];
+    divs.forEach(([d,dl])=>kinds.forEach(([k,kl])=>{
+      const label = [dl, kl].filter(Boolean).join(' · ');
+      const g = label ? document.createElement('optgroup') : null;
+      if(g) g.label = label;
+      groups.push({d, k, g, opts:[]});
+    }));
     matchFolders.map((f,idx)=>({f, idx})).sort(byMatchDate).forEach(({f, idx})=>{
       const opt = document.createElement('option'); opt.value = idx;
       opt.textContent = `${isDateStr(f.date) ? fmtMatchDate(f.date)+' · ' : ''}${f.name}${f.videoName ? ' — '+f.videoName : ''}`;
-      if(grouped) groups.find(g=>g.dataset.div===(DIV_LABEL[f.division]?f.division:'')).appendChild(opt);
-      else sel.appendChild(opt);
+      const d = grouped && DIV_LABEL[f.division] ? f.division : '';
+      const k = home ? (isHomeFolder(f) ? 'home' : 'etc') : '';
+      groups.find(x=>x.d===d && x.k===k).opts.push(opt);
     });
-    if(grouped) groups.forEach(g=>{ if(g.children.length) sel.appendChild(g); });
+    groups.forEach(x=>{
+      if(!x.opts.length) return;
+      if(x.g){ x.opts.forEach(o=>x.g.appendChild(o)); sel.appendChild(x.g); }
+      else x.opts.forEach(o=>sel.appendChild(o));
+    });
     // keep showing which folder is currently loaded instead of resetting back to the placeholder
     if(lastPickedMatchFolderIdx!==null && matchFolders[lastPickedMatchFolderIdx]){
       sel.value = String(lastPickedMatchFolderIdx);
@@ -9789,7 +9837,7 @@
     document.getElementById('readOnlyFolderBanner').style.display = on ? 'block' : 'none';
     ['qrRecordBtn','btnToss2nd','btnRecordMoment','momentMemo','btnImportCsv','btnSaveOrphan','btnQrMode','btnClearZone','btnClearNineZone',
      'videoPlayerSelect','videoOppPlayerSelect','qrOptionSelect','qrDetailSelect','qrUndoBtn','coachNotes','blockZoneSelect','btnTossUndo','btnTossClear',
-     'btnNewMatchFolder','formOurSelect','formOppSelect','matchSaveName','matchSaveDate','newOppNameInput','newOurNameInput','matchDateInput','matchFolderSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
+     'btnNewMatchFolder','formOurSelect','formOppSelect','matchSaveName','matchSaveDate','newOppNameInput','newOurNameInput','matchDateInput','matchFolderSelect','homeTeamSelect','btnDeleteMatchFolder','btnRenameMatchFolder','btnCopyMatchFolder','videoFileInput'
     ].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled = on; });
     document.querySelectorAll('#videoRosterGrid select, #videoRosterGrid input, #oppRosterGrid select, #oppRosterGrid input').forEach(el=>el.disabled=on);
     document.querySelectorAll('#recordList select, #recordList input').forEach(el=>el.disabled=on);
@@ -10221,7 +10269,8 @@
     oppTeamName,
     ourTeamName,
     division: matchDivision,
-    date: matchDate
+    date: matchDate,
+    homeTeam
   });
   window.applyVideoAnalysisState = (vs) => {
     clearUndo(); // 다른 경기·화면으로 바뀌면 이전 화면의 되돌리기 기록은 지워요
@@ -10231,6 +10280,7 @@
     document.getElementById('coachNotes').value = vs.coachNotes || '';
     matchFolders = vs.matchFolders || [];
     deletedFolders = Array.isArray(vs.deletedFolders) ? vs.deletedFolders.filter(d=>d && d.name) : [];
+    homeTeam = typeof vs.homeTeam==='string' ? vs.homeTeam.trim().slice(0,40) : '';
     // 이전 화면(다른 코드 등)의 폴더 번호가 남아 있으면 엉뚱한 폴더에 기록이 덮어써질 수 있어서, 저장된 활성 폴더 이름으로 다시 찾아요
     lastPickedMatchFolderIdx = null; lastPickedMatchFolder = null;
     const activeIdx = vs.activeFolderName ? matchFolders.findIndex(f=>f.name===vs.activeFolderName) : -1;
