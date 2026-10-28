@@ -998,6 +998,12 @@
   .cw-ways b{ font-variant-numeric:tabular-nums; color:var(--text); }
   .court-an-big .court-an-table td small.cw-zone{ margin-top:5px; }
   .cw-topnote{ text-align:center; font-size:11.5px; color:var(--muted); margin:0 0 6px; }
+  .tm-key{ display:flex; flex-direction:column; gap:2px; margin:0 0 6px; font-size:11px; color:var(--text-dim); }
+  .tm-key span{ display:flex; align-items:center; gap:6px; } .tm-key i{ flex:none; width:16px; height:10px; border-radius:3px; border:1px solid var(--border); }
+  .tm-lab small u{ text-decoration:none; font-weight:800; color:var(--text); }
+  .ta-etc{ margin-top:4px; font-size:11px; line-height:1.5; color:var(--muted); }
+  .ta-etc b{ font-weight:800; color:var(--text-dim); margin-right:2px; }
+  .court-an-table td small.cw-etc{ font-size:11px; color:var(--muted); margin-top:3px; }
   .tm-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   @media (max-width:700px){ .tm-grid{ grid-template-columns:1fr; } }
   .tm-head{ font-size:12.5px; font-weight:800; margin-bottom:5px; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
@@ -9284,7 +9290,9 @@
       const C = team==='our' ? 'var(--own)' : 'var(--opp)';
       const items = rows.map(r=>({label:r.label, s:r[team].s, f:r[team].f, n:r[team].s+r[team].f})).filter(x=>x.n).sort((a,b)=>b.n-a.n);
       const tot = items.reduce((a,x)=>a+x.n,0), sTot = items.reduce((a,x)=>a+x.s,0);
-      const head = `<div class="tm-head" style="color:${C};">${team==='our'?'🔵':'🔴'} ${dEsc(dName(team))}<small>${tot}회 · 득점 ${sTot} · 범실 ${tot-sTot}</small></div>`;
+      const nm = dEsc(dName(team));
+      const head = `<div class="tm-head" style="color:${C};">${team==='our'?'🔵':'🔴'} ${nm}<small>공격 ${tot}회 · 득점 ${sTot} · 범실 ${tot-sTot}</small></div>`
+        + `<div class="tm-key"><span><i style="background:${C};"></i>득점 = ${nm} 공격이 점수가 됨</span><span><i style="background:repeating-linear-gradient(45deg, ${C} 0 3px, var(--panel) 3px 6px);"></i>범실 = ${nm}이(가) 공격하다 실수(아웃·네트 등) → 점수는 상대에게</span></div>`;
       if(!tot) return `<div class="tm-side">${head}<div class="tm-box tm-empty">기록 없음</div></div>`;
       const rs = treemapLayout(items.map(x=>x.n), W, H);
       const tiles = items.map((x, i)=>{
@@ -9292,14 +9300,14 @@
         const fill = `color-mix(in srgb, ${C} ${shade}%, var(--panel))`;
         const tall = r.h*1.0 > r.w*0.62; // 화면 비율(16:10)로 본 세로로 긴 칸이면 위·아래로 나눠요
         const big = r.w >= 40 && r.h >= 26, mid = r.w >= 22 && r.h >= 14;
-        const lab = big ? `<span class="tm-lab"><b>${dEsc(x.label)}</b><em>${x.n}회 · ${Math.round(x.n/tot*100)}%</em><small>득점 ${x.s} · 범실 ${x.f}</small></span>`
+        const lab = big ? `<span class="tm-lab"><b>${dEsc(x.label)}</b><em>${x.n}회 · ${Math.round(x.n/tot*100)}%</em><small>득점 ${x.s} · ${x.f ? `<u>범실 ${x.f}</u>` : '범실 0'}</small></span>`
           : mid ? `<span class="tm-lab"><b>${dEsc(x.label)} · ${x.n}</b></span>` : '';
         return `<div class="tm-tile" style="left:${(r.x/W*100).toFixed(2)}%; top:${(r.y/H*100).toFixed(2)}%; width:${(r.w/W*100).toFixed(2)}%; height:${(r.h/H*100).toFixed(2)}%;" title="${dEsc(`${x.label} ${x.n}회 (${Math.round(x.n/tot*100)}%) · 득점 ${x.s} · 범실 ${x.f}`)}"><div class="tm-fill" style="flex-direction:${tall?'column':'row'};">${x.s?`<i style="flex:${x.s}; background:${fill};"></i>`:''}${x.f?`<i style="flex:${x.f}; background:repeating-linear-gradient(45deg, ${fill} 0 4px, var(--panel) 4px 8px);"></i>`:''}</div>${lab}</div>`;
       }).join('');
       return `<div class="tm-side">${head}<div class="tm-box">${tiles}</div></div>`;
     };
     return `<div class="bf-chart"><div class="bf-title">${title}</div><div class="tm-grid">${side('our')}${side('opp')}</div>
-      <div class="bf-legend"><span><i class="bf-s"></i>득점</span><span><i class="bf-f"></i>범실</span><span class="muted">칸이 클수록 많이 쓴 방식이에요</span></div>${note?`<div class="field-note" style="margin-top:4px;">${note}</div>`:''}</div>`;
+      <div class="bf-legend"><span class="muted">칸이 클수록 많이 쓴 방식이에요. 범실은 상대 범실이 아니라 그 팀이 직접 한 공격 범실이에요.</span></div>${note?`<div class="field-note" style="margin-top:4px;">${note}</div>`:''}</div>`;
   }
   function tallyRows(list, keyFn, order){
     const m = {};
@@ -9611,8 +9619,8 @@
         // 그 포지션 공이 주로 떨어진 곳(공격하는 팀이 네트를 바라볼 때 기준, 직선·크로스)
         const zoneTop = row => { const z = Object.entries(row.zones||{}).sort((a,b)=>b[1]-a[1]); return z.length ? `<small class="cw-zone">🎯 주로 ${z.slice(0,2).map(([k,v])=>`${dEsc(k)} ${v}`).join(' · ')}</small>` : ''; };
         // 누적에서는 방식을 칸으로 나눠 많은 4개 + 그 밖으로 적어요(글자가 한 줄로 길게 이어지지 않게)
-        const waysGrid = (ws, team) => { const top = ws.slice(0,4), rest = ws.slice(4).reduce((a,w)=>a+w.n,0);
-          return `<div class="cw-ways">${top.map(wd=>`<span><i style="${courtWayBar(wd.way, col(team))}"></i><em>${dEsc(wd.label)}</em><b>${wd.n}</b></span>`).join('')}${rest?`<span><i style="background:var(--border-2);"></i><em>그 밖</em><b>${rest}</b></span>`:''}</div>`; };
+        const waysGrid = (ws, team) => { const top = ws.slice(0,4), rest = ws.slice(4).reduce((a,w)=>a+w.n,0), restTxt = ws.slice(4).map(w=>`${dEsc(w.label)} ${w.n}`).join(' · ');
+          return `<div class="cw-ways">${top.map(wd=>`<span><i style="${courtWayBar(wd.way, col(team))}"></i><em>${dEsc(wd.label)}</em><b>${wd.n}</b></span>`).join('')}${rest?`<span><i style="background:var(--border-2);"></i><em>그 밖</em><b>${rest}</b></span>`:''}</div>${rest?`<small class="cw-etc">그 밖: ${restTxt}</small>`:''}`; };
         const bar = (wd, team) => `<i style="flex:${wd.n};${courtWayBar(wd.way, col(team))}" title="${dEsc(wd.label)} ${wd.n}"></i>`;
         table = `<div class="cw-title">${title}</div><table class="court-an-table cw-table"><thead><tr><th></th><th>포지션</th><th>횟수</th><th>어떤 기록이었나</th></tr></thead><tbody>${rowList.map(row=>{
           const ws = Object.values(row.ways).sort((a,b)=>b.n-a.n);
@@ -10261,12 +10269,15 @@
     const tot = items.reduce((s,x)=>s+x.n,0); if(!tot) return '';
     const segs = items.map(x=>`<i style="flex:${x.n}; background:${x.color}" title="${escChip(x.label)} ${x.n}${unit} (${pct(x.n,tot)}%)">${x.n/tot>=0.12?`<em>${escChip(x.short||x.label)}</em>`:''}</i>`).join('');
     const leg = items.map(x=>`<span><i style="background:${x.color}"></i>${escChip(x.label)} <b>${pct(x.n,tot)}%</b></span>`).join('');
-    return `<div class="ta-strip">${segs}</div><div class="ta-legend">${leg}</div>`;
+    const etc = items.find(x=>x.detail && x.detail.length);
+    return `<div class="ta-strip">${segs}</div><div class="ta-legend">${leg}</div>${etc ? taEtc(etc.label, etc.detail, unit) : ''}`;
   }
+  // 기타·그 밖에 묶인 항목을 작은 글씨로 알려줘요
+  const taEtc = (label, list, unit) => `<div class="ta-etc"><b>${escChip(label)}</b> ${list.map(([k,v])=>`${escChip(String(k).replace('(2구 넘김)',''))} ${v}${unit||''}`).join(' · ')}</div>`;
   const taTopItems = (obj, n, base, short) => {
     const all = sortDesc(obj); const top = all.slice(0, n); const rest = all.slice(n).reduce((s,[k,v])=>s+v,0);
     const items = top.map(([k,v],i)=>({label:k, short:short?short(k):k, n:v, color:taCol(i, base)}));
-    if(rest) items.push({label:'기타', n:rest, color:'var(--border-2)'});
+    if(rest) items.push({label:'기타', n:rest, color:'var(--border-2)', detail:all.slice(n)});
     return items;
   };
   // 경기별 득점률 흐름: 50% 기준선 위는 우세, 아래는 열세. 점 색은 승(파랑)·패(빨강)
@@ -10340,7 +10351,8 @@
     });
     let rows = Object.values(g).sort((a,b)=>b.n-a.n);
     if(!rows.length) return '';
-    if(rows.length>9){ const rest = rows.slice(8).reduce((s,x)=>s+x.n,0); rows = rows.slice(0,8).concat([{label:'그 밖', n:rest, rest:true}]); }
+    let restList = [];
+    if(rows.length>9){ restList = rows.slice(8).map(x=>[x.label, x.n]); const rest = rows.slice(8).reduce((s,x)=>s+x.n,0); rows = rows.slice(0,8).concat([{label:'그 밖', n:rest, rest:true}]); }
     const tot = rows.reduce((s,x)=>s+x.n,0);
     const W = Math.max(300, Math.min(760, Math.round(width||640))), lw = W<460 ? 92 : 124, vw = 72, rh = 26, pt = 20;
     const H = pt + rows.length*rh + 6, pw = W - lw - vw - 6, X = v => lw + pw*Math.min(100,v)/100;
@@ -10357,7 +10369,8 @@
     const svg = `<svg class="ta-pareto" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="실점 원인 순위">${grid}${body}${line}</svg>`;
     const leg = `<div class="ta-legend"><span><i style="background:var(--opp)"></i>상대가 낸 점수</span><span><i style="background:${taCol(2,'--opp')}"></i>${T} 범실</span><span><i style="background:var(--text-dim); height:2px; border-radius:0;"></i>누적 몫</span></div>`;
     const note = core ? `<p class="ta-note">위 <b>${core}개</b> 원인이 ${scout ? T+' 실점' : '실점'}의 <b>${Math.round(coreCum)}%</b>예요. ${scout ? '우리팀이 먼저 노릴 곳이에요.' : '이것부터 줄이면 실점이 가장 많이 줄어요.'}</p>` : '';
-    return `<div class="ta-lab">실점 원인 순위 <small>막대 = 실점 중 몫 · 선 = 위에서부터 더한 몫 · 진한 줄 = 누적 80%까지</small></div>${svg}${leg}${note}`;
+    const etcLine = restList.length ? taEtc('그 밖', restList, '점') : '';
+    return `<div class="ta-lab">실점 원인 순위 <small>막대 = 실점 중 몫 · 선 = 위에서부터 더한 몫 · 진한 줄 = 누적 80%까지</small></div>${svg}${leg}${etcLine}${note}`;
   }
   // 강했던 면 ▲ / 약했던 면 ▼ 꼬리표
   const taTag = (x, up) => `<span class="ta-tag ${up?'up':'down'}" title="${escChip(x.m.label)} ${taP(x.v)} · 평균 ${taP(x.b)}">${up?'▲':'▼'} ${x.m.label} <b>${taP(x.v)}</b></span>`;
