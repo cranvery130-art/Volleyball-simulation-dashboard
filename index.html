@@ -909,6 +909,15 @@
   .chip-btn.none{ color:var(--text-dim); border-style:dashed; }
   .chip-btn.on{ border-color:var(--accent); border-style:solid; background:color-mix(in srgb, var(--accent) 18%, var(--panel)); color:var(--text); }
   .chip-btn:disabled{ opacity:.55; cursor:default; }
+  /* 공격 동작: 공격하는 선수·페이크 선수 칩, 페이크 자리 고르기 */
+  #atkWhoChips .chip-btn, #fakeWhoChips .chip-btn{ min-height:34px; padding:5px 9px; font-size:12px; }
+  #fakeWhoChips .chip-btn.on{ border-color:#C7A23A; background:color-mix(in srgb, #F3DFA2 30%, var(--panel)); }
+  .atk-combo-row .chip-btn{ min-height:34px; padding:6px 9px; font-size:11.5px; }
+  .fake-spot-row{ display:flex; align-items:center; gap:6px; margin-top:6px; font-size:12px; }
+  .fake-spot-row b{ min-width:64px; }
+  .fake-spot-row select{ flex:1; min-width:0; }
+  #viaHandle{ cursor:grab; }
+  #viaHandle rect{ fill:#F3DFA2; stroke:#7A5B00; stroke-width:1.5; }
   /* 조회 링크로 들어온 사람에게는 기록·편집 칸을 숨기고 폴더 고르기와 분석만 보여줘요. */
   body.guest-view #grpNewMatch, body.guest-view #quickRecordCard,
   body.guest-view #btnRenameMatchFolder, body.guest-view #btnCopyMatchFolder, body.guest-view #btnDeleteMatchFolder{ display:none !important; }
@@ -2136,7 +2145,7 @@
     <div class="modal-body">
       <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
       <ul class="feature-list">
-        <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지와 상대 서브(우리 서브 리시브), 우리 팀 공격 시 커버 6가지, 총 13개 상황을 실제 코트 비율의 애니메이션으로 재생해요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 처음에는 <b>기본 대형(3인블로킹 기준)</b> 12가지가 들어 있어 바로 볼 수 있고, 공격 상황 편집(왼쪽) → 대형 불러오기·편집·⭐ 최종 확정·대형 저장·공유(오른쪽) 순서로 내 대형을 만들어 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
+        <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지와 상대 서브(우리 서브 리시브), 우리 팀 공격 시 커버 6가지, 총 13개 상황을 실제 코트 비율의 애니메이션으로 재생해요. 공격하는 선수와 여러 명의 페이크, 돌아 들어가는 길(경유점)도 정할 수 있어요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 처음에는 <b>기본 대형(3인블로킹 기준)</b> 12가지가 들어 있어 바로 볼 수 있고, 공격 상황 편집(왼쪽) → 대형 불러오기·편집·⭐ 최종 확정·대형 저장·공유(오른쪽) 순서로 내 대형을 만들어 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요. 상대 서브는 칸 사이나 사이드라인·끝선 쪽으로도 정할 수 있어요.</li>
         <li><b>경기 분석(수동)</b>경기를 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고, 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 📍 코트 위치에서는 득점·실점·범실이 포지션별로 어떤 기록(빈 곳·사람 쪽 강타, 볼처리, 서브 등)이었는지와 공이 간 방향을 화살표로 보여줘요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
@@ -2207,7 +2216,8 @@
           <li>왼쪽·오른쪽 기준: <b>공격 위치</b>는 공격하는 팀, <b>공 착지 칸</b>은 공을 받는 팀이 네트를 바라볼 때 기준이에요.</li>
           <li>⭐ 최종 대형은 개설자만 확정·교체·해제할 수 있어요. 수정 권한자는 의견을 "의견 · 내 이름" 폴더에 저장해 주세요.</li>
           <li>오른쪽 <b>📤 대형 공유</b> 바로 위 <b>📋 기록 상황별 대형</b>(선택)에서 블로킹·리시브·다이렉트·세터페인트·세터 2구 토스 등 공격 위치가 없는 기록에 쓸 공격 상황을 정할 수 있어요. 비워 두면 경기 분석 코트 그림이 랠리 토스 순서의 마지막 공격 토스로 자동으로 골라요. 같은 카드의 <b>🔵 우리 팀 전술 대형</b>에서는 상대 공격(레프트·속공·라이트·시간차·빽차·빽A·서브)과 우리 공격마다 우리 팀이 쓸 저장된 전술 대형을 고를 수 있어요.</li>
-          <li>같은 공격 옵션이라도 <b>이름을 달리해 저장</b>하면 대형마다 시작 위치뿐 아니라 <b>도착 위치·공격 과정</b>(위치·템포·착지)도 따로 저장돼요. 불러오면 그 전술의 설정이 그대로 돌아와요(예전에 저장한 대형은 공격 옵션에 하나뿐인 설정을 써요).</li>
+          <li><b>공격하는 선수·페이크 선수·경유점</b>은 공격 상황 편집 카드에서 누르는 즉시 적용돼요. 페이크는 여러 명 고를 수 있고, 페이크가 있으면 세터 토스가 한 박자 늦게 나가요. 고른 포지션 선수가 없으면 빠른 조합이 그 선수를 건너뛰어요(포지션 배정에서 먼저 정해 주세요).</li>
+          <li>같은 공격 옵션이라도 <b>이름을 달리해 저장</b>하면 대형마다 시작 위치뿐 아니라 <b>도착 위치·공격 과정</b>(위치·템포·착지·공격하는 선수·페이크·경유점)도 따로 저장돼요. 불러오면 그 전술의 설정이 그대로 돌아와요(예전에 저장한 대형은 공격 옵션에 하나뿐인 설정을 써요).</li>
           <li>대형 코멘트는 대형마다 하나예요. 여러 사람이 동시에 고치면 마지막에 저장된 내용만 남아요.</li>
           <li>도트 크기는 실제 9인제 코트(21m×10.5m) 비율에 맞춰져 있어요. 포지션 아래 칸에 이름을 적으면 도트에 이름이 보여요.</li>
           <li>여러 사람이 동시에 편집하면 서로의 변경이 바로 보이지 않아요. 저장한 뒤 새로고침하면 반영돼요.</li>
@@ -2358,6 +2368,7 @@
             <g id="ownLayer"></g>
             <g id="impactLayer"></g>
             <g id="ballLayer"><circle id="ball" r="7" fill="#F3DFA2" stroke="#8A6A38" stroke-width="1.2"/></g>
+            <g id="viaHandle" style="display:none;"><circle r="20" fill="transparent"/><rect x="-8" y="-8" width="16" height="16" rx="2" transform="rotate(45)"/></g>
           </g>
           <g id="oppLabelLayer"></g>
           <g id="ownLabelLayer"></g>
@@ -2405,12 +2416,12 @@
 <div id="sideLeft" class="side-left">
 <div class="card" id="cardAttack">
         <details class="attack-fold" id="attackFold" open>
-        <summary><h2>공격 상황 편집</h2><span class="attack-fold-sub">① 공격 상황을 고르고 공격 과정(위치·템포·착지)을 정해요 → 오른쪽 대형 저장</span></summary>
+        <summary><h2>공격 상황 편집</h2><span class="attack-fold-sub">① 공격 상황을 고르고 공격 과정(위치·템포·공격 선수·페이크·착지)을 정해요 → 오른쪽 대형 저장</span></summary>
 
         <div id="attackCustomControls">
         <div id="customPanel">
           <div class="fgroup">
-          <div class="fgroup-head"><span class="fg-ic">⚡</span><span class="fg-title">공격 동작</span><span class="fg-sub">어디서·얼마나 빠르게 공격할지 정해요</span></div>
+          <div class="fgroup-head"><span class="fg-ic">⚡</span><span class="fg-title">공격 동작</span><span class="fg-sub">어디서·얼마나 빠르게·누가 공격할지 정해요</span></div>
           <label class="field-label" style="margin-top:0;">공격 위치</label>
           <div class="field-note" style="margin-top:0; margin-bottom:6px;">공격 위치는 <b>공격하는 팀의 공격수 도트가 네트 앞에서 공을 때리는 점</b>이에요. 이 점에서 아래 <b>공 착지</b> 칸으로 공이 날아가서 공격 방향이 정해지고, 수비 팀은 이 점을 보고 블로킹·수비 자리를 잡아요(서브는 서버가 끝선 뒤에서 서브하는 자리예요). 왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. <span id="attackSideHint"></span></div>
           <div class="seg" id="customXSeg">
@@ -2444,8 +2455,21 @@
             <button data-tempo="normal" class="active">보통</button>
             <button data-tempo="slow">느림</button>
           </div>
-          <div class="check-row" style="margin-top:4px;"><input type="checkbox" id="customFake"><label for="customFake">시간차(페이크) 동작 포함</label></div>
-          <div class="field-note" style="margin-top:0;">중앙에서 먼저 속공하는 척(페이크)한 뒤, 실제 공격은 한 박자 늦게 들어가요. 블로커가 페이크에 먼저 반응했다가 다시 따라가요.</div>
+          <div id="atkWhoBox">
+          <label class="field-label" style="margin-top:10px;">빠른 조합</label>
+          <div class="field-note" style="margin-top:0; margin-bottom:6px;">누르면 공격 옵션·공격하는 선수·페이크·돌아 들어가는 길이 한 번에 정해지고 바로 재생돼요. 그다음 아래에서 고쳐도 돼요.</div>
+          <div class="chip-pick atk-combo-row" id="atkComboRow"></div>
+          <label class="field-label" style="margin-top:10px;">공격하는 선수</label>
+          <div class="field-note" style="margin-top:0; margin-bottom:6px;">이 공격을 누가 때릴지 골라요. 예) 빽A를 빽차나 라이트가 때리게 할 수 있어요. 누르면 바로 적용돼요.</div>
+          <div class="chip-pick" id="atkWhoChips"></div>
+          <label class="field-label" style="margin-top:10px;">페이크(속이는 동작) 선수 <span class="fg-sub">여러 명 고를 수 있어요</span></label>
+          <div class="field-note" style="margin-top:0; margin-bottom:6px;">고른 선수는 먼저 네트 앞 자리로 뛰어 들어가 공격하는 척 점프해요. 블로커는 가까운 페이크에 먼저 반응했다가 진짜 공격수 쪽으로 다시 따라가요. 페이크가 있으면 세터 토스가 한 박자 늦게 나가요.</div>
+          <div class="chip-pick" id="fakeWhoChips"></div>
+          <div id="fakeSpotList"></div>
+          <label class="field-label" style="margin-top:10px;">돌아 들어가는 길(경유점)</label>
+          <div class="btn-row"><button class="btn" id="btnViaToggle" type="button">↪️ 경유점 넣기</button></div>
+          <div class="field-note" id="viaNote" style="margin-top:4px;">경유점을 넣으면 코트에 노란 ◆가 생겨요. ◆를 끌어 옮기면 공격수가 그 자리를 거쳐 공격 위치로 들어가요(예: 앞차가 빽A 뒤로 돌아 들어가기).</div>
+          </div>
 
           </div>
 
@@ -2514,7 +2538,8 @@
         <div id="attackInfoPanel" class="note-box" style="display:none; margin-top:8px;">
           <p style="margin:0 0 8px;"><b>공격 위치</b>의 왼쪽/오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요(상대 공격은 화면 위쪽, 우리 공격은 화면 아래쪽이 왼쪽). <b>공 착지 칸</b>은 화면과 같은 방향으로 놓여 있고, 좌우는 <b>공을 받는 팀</b> 기준이에요.</p>
           <p style="margin:0 0 8px;">착지는 정해진 코트 9구역 중 하나로 고정돼요 — 오른쪽 계열은 레프트·앞차·레프트백 구역, 왼쪽 계열은 라이트·빽차·라이트백 구역이에요. 포지션 배정을 바꾸거나 선수를 드래그해도 이 구역 자체는 달라지지 않아요.</p>
-          <p style="margin:0;">저장하면 선택한 공격 상황의 위치·속도·페이크·착지가 지금 값으로 덮어써지고, 이름은 그대로 유지돼요.</p>
+          <p style="margin:0 0 8px;"><b>빠른 조합·공격하는 선수·페이크 선수·경유점</b>은 저장 버튼 없이 바로 적용돼요. 페이크 선수는 고른 자리(A·빽A·앞차 자리 …)로 먼저 들어가 공격하는 척 점프하고, 블로커는 가장 가까운 페이크에 먼저 반응했다가 진짜 공격수 쪽으로 따라가요. 경유점 ◆는 공격하는 팀 코트 안에서만 움직여요.</p>
+          <p style="margin:0;">저장 버튼을 누르면 선택한 공격 상황의 위치·속도·착지가 지금 값으로 덮어써지고(공격하는 선수·페이크·경유점은 그대로), 이름은 그대로 유지돼요.</p>
         </div>
               </details>
 </div>
@@ -3487,6 +3512,26 @@
 
   function isOur(s){ return s.indexOf('OUR_')===0; }
 
+  // ---------- 공격하는 선수·페이크(여러 명)·경유점 ----------
+  // 페이크 자리는 공격하는 팀이 네트를 바라볼 때 왼쪽 끝=30 기준이에요(공격 위치 버튼과 같은 기준). 상대 팀은 화면 좌우가 반대라 400-값이에요.
+  const FAKE_SPOTS = {LEFT:{label:'레프트 자리', x:30}, FRONTSLIDE:{label:'앞차 자리', x:120}, QA:{label:'A 자리', x:165}, QBACKA:{label:'빽A 자리', x:245}, BACKSLIDE:{label:'빽차 자리', x:290}, RIGHT:{label:'라이트 자리', x:370}};
+  const spotOfPos = pos => FAKE_SPOTS[pos] ? pos : 'QA';
+  function fakeSpotX(spot, our){ const v = (FAKE_SPOTS[spot]||FAKE_SPOTS.QA).x; return our ? v : 400-v; }
+  // 예전 저장값(우리 fakeX, 상대 fakeContact·fakePos·fakeOpp 한 명)도 그대로 읽어요
+  function fakesOf(atk, our){
+    if(!atk || atk.serve) return [];
+    if(Array.isArray(atk.fakes)) return atk.fakes;
+    if(our) return atk.fakeX!=null ? [{pos:'QA', x:atk.fakeX}] : [];
+    return atk.fakeContact ? [{pos:atk.fakePos||'QA', id:atk.fakeOpp, x:atk.fakeContact[0]}] : [];
+  }
+  function oppIdFor(pos, id){ return (id && OPP_POSITIONS[id]===pos) ? id : resolveOppByPos(pos, id); }
+  function oppAttackerId(atk){ return oppIdFor(atk.pos, atk.attackerOpp); }
+  // 상대 페이크 선수 [{id, x}] — 공격수와 겹치거나 같은 선수가 두 번 나오면 빼요
+  function oppFakeList(atk){
+    const atkId = oppAttackerId(atk), seen = new Set([atkId]);
+    return fakesOf(atk, false).map(fk=>({id: oppIdFor(fk.pos, fk.id), x: fk.x})).filter(o=>o.id && !seen.has(o.id) && seen.add(o.id));
+  }
+
 
   // ---------- helpers ----------
   function clip(v,lo,hi){ return Math.max(lo,Math.min(hi,v)); }
@@ -3620,7 +3665,7 @@
   }
 
   // ---------- generative cover engine (our attacks) ----------
-  function generateCover(attackX, blockCount, base, fakeX, preferredPos, attackY){
+  function generateCover(attackX, blockCount, base, fakes, preferredPos, attackY, preferredId){
     const ay = attackY!=null ? attackY : 415;
     const colX = id => base[id][0];
     const front=[1,2,3];
@@ -3628,7 +3673,8 @@
 
     const posMatch = IDS.filter(id=>POSITIONS[id]===preferredPos);
     let attackerId;
-    if(preferredPos && posMatch.length){ attackerId = posMatch.slice().sort(byDist)[0]; }
+    if(preferredId!=null && POSITIONS[preferredId]===preferredPos){ attackerId = Number(preferredId); }
+    else if(preferredPos && posMatch.length){ attackerId = posMatch.slice().sort(byDist)[0]; }
     else { attackerId = front.slice().sort(byDist)[0]; }
 
     const setterCandidates = IDS.filter(id=>id!==attackerId);
@@ -3637,19 +3683,25 @@
     if(setterMatch.length){ setterId = setterMatch.slice().sort(byDist)[0]; }
     else { setterId = front.filter(id=>id!==attackerId).slice().sort(byDist)[0] || setterCandidates.slice().sort(byDist)[0]; }
 
-    const others = IDS.filter(id=>id!==attackerId && id!==setterId);
+    // 페이크 선수: 포지션(고른 선수 번호가 있으면 그 선수)으로 찾아요. 예전 한 명 페이크(포지션 없음)는 가장 가까운 선수예요
+    const fakeAttackerIds=[], fakeSpots={}, fakeIdsByIndex=[];
+    (fakes||[]).forEach((fk,i)=>{
+      fakeIdsByIndex[i]=null;
+      const free = IDS.filter(id=>id!==attackerId && id!==setterId && !fakeAttackerIds.includes(id));
+      const near = (a,b)=>Math.abs(colX(a)-fk.x)-Math.abs(colX(b)-fk.x);
+      let fid = (fk.id!=null && free.includes(Number(fk.id)) && POSITIONS[fk.id]===fk.pos) ? Number(fk.id) : null;
+      if(fid==null){ const m = free.filter(id=>POSITIONS[id]===fk.pos); fid = (m.length ? m : (fk.spot ? [] : free)).slice().sort(near)[0]; }
+      if(fid==null) return;
+      fakeAttackerIds.push(fid); fakeSpots[fid]=[fk.x,420]; fakeIdsByIndex[i]=fid;
+    });
+    const others = IDS.filter(id=>id!==attackerId && id!==setterId && !fakeAttackerIds.includes(id));
 
     const roles={}, targets={};
+    fakeAttackerIds.forEach(id=>{ roles[id]='fake'; targets[id]=fakeSpots[id].slice(); });
     roles[attackerId]='attacker'; targets[attackerId]=[attackX,ay];
     const setterX = clip(attackX + (colX(setterId)<attackX? -55:55), 60,340);
     roles[setterId]='setter'; targets[setterId]=[setterX,447];
 
-    let fakeAttackerId=null;
-    if(fakeX!=null){
-      const byDistFake=(a,b)=>Math.abs(colX(a)-fakeX)-Math.abs(colX(b)-fakeX);
-      const fakeMatch = others.filter(id=>POSITIONS[id]==='QA');
-      fakeAttackerId = (fakeMatch.length?fakeMatch:others).slice().sort(byDistFake)[0];
-    }
 
     const byCenterDist=(a,b)=>Math.abs(colX(a)-200)-Math.abs(colX(b)-200);
     const liberoCandidates = others.filter(id=>BACK_TYPES.includes(POSITIONS[id]));
@@ -3682,7 +3734,7 @@
     // OUR side meant for "where a deflected ball comes back for cover", which meant the ball never
     // actually crossed the net in the simulation unless a landing direction was explicitly set.)
     const landing = [clip(attackX+16,50,350), 150];
-    return {targets, roles, blockerIds:[], oppBlockerIds, oppSlots, fakeOppTargets, ballLanding:landing, attackerId, setterId, fakeAttackerId, receiverId, attackX};
+    return {targets, roles, blockerIds:[], oppBlockerIds, oppSlots, fakeOppTargets, ballLanding:landing, attackerId, setterId, fakeAttackerIds, fakeIdsByIndex, fakeSpots, receiverId, attackX};
   }
 
   function pickLanding(formation, attackX){
@@ -3767,7 +3819,7 @@
     let f, atk;
     if(isOur(scenario)){
       atk = OUR_ATTACKS[scenario];
-      f = generateCover(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE, atk.fakeX, atk.pos, atk.attackDepthY);
+      f = generateCover(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE, fakesOf(atk, true), atk.pos, atk.attackDepthY, atk.attackerOwn);
       {
         const fov = FAKE_TARGET_OVERRIDES[comboKey()];
         if(fov && Object.keys(fov).length){
@@ -3779,9 +3831,16 @@
       atk = ATTACKS[scenario];
       if(atk.serve) f = generateReceive(atk.landingOverride || [200,560], CUSTOM_BASE);
       else f = generateDefense(atk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE);
-      if(atk.fakeContact){
-        const fakeF = generateDefense(atk.fakeContact[0], BASELINE_BLOCK_COUNT, CUSTOM_BASE);
-        f.fakeTargets = fakeF.targets;
+      const oppFakes = oppFakeList(atk);
+      if(oppFakes.length){
+        // 페이크가 여러 명이면 우리 선수마다 가장 가까운 페이크에 먼저 반응해요
+        const fakeTs = oppFakes.map(fk=>generateDefense(fk.x, BASELINE_BLOCK_COUNT, CUSTOM_BASE).targets);
+        f.fakeTargets = {};
+        IDS.forEach(id=>{
+          let best=null, bd=Infinity;
+          fakeTs.forEach(t=>{ if(!t[id]) return; const d=dist(CUSTOM_BASE[id], t[id]); if(d<bd){ bd=d; best=t[id]; } });
+          if(best) f.fakeTargets[id]=best;
+        });
         const fov = FAKE_TARGET_OVERRIDES[comboKey()];
         if(fov){ Object.keys(fov).forEach(id=>{ f.fakeTargets[id]=fov[id]; }); }
       }
@@ -3828,7 +3887,8 @@
 
   function ourAttackerPathAt(atk, base, contact, p){
     const off = atk.approachOffset || [0,50];
-    const approachFrom = [clip(contact[0]+off[0],40,360), clip(contact[1]+off[1],392,735)];
+    // 경유점이 있으면 시작 위치 → 경유점 → 공격 위치로 돌아 들어가요
+    const approachFrom = atk.via ? atk.via.slice() : [clip(contact[0]+off[0],40,360), clip(contact[1]+off[1],392,735)];
     const T = atk.phase;
     if(p<=T.pass){ return lerpPt(base, approachFrom, easeInOut(p/T.pass)); }
     if(p<=T.toss){ return lerpPt(approachFrom, contact, easeInOut((p-T.pass)/(T.toss-T.pass))); }
@@ -3862,10 +3922,12 @@
       if(isOur(scenario) && f.attackerId===id){
         pos = ourAttackerPathAt(OUR_ATTACKS[scenario], CUSTOM_BASE[id], f.targets[id], p);
       }
-      if(isOur(scenario) && f.fakeAttackerId===id){
-        const base = CUSTOM_BASE[id]; const to=[OUR_ATTACKS[scenario].fakeX,420];
-        // 속공하는 척 네트 앞으로 들어간 뒤 빠지지 않고 그 자리에 머물러요
-        pos = p<=0.35 ? lerpPt(base, to, easeInOut(p/0.35)) : to.slice();
+      if(isOur(scenario) && f.fakeSpots && f.fakeSpots[id]){
+        const base = CUSTOM_BASE[id]; const to=f.fakeSpots[id];
+        // 공격하는 척 네트 앞으로 들어가 한 번 점프하고, 빠지지 않고 그 자리에 머물러요
+        if(p<=0.35) pos = lerpPt(base, to, easeInOut(p/0.35));
+        else if(p<=0.5) pos = [to[0], to[1]-12*Math.sin(Math.PI*(p-0.35)/0.15)];
+        else pos = to.slice();
       }
       out[id]=pos;
     });
@@ -3873,13 +3935,14 @@
   }
 
   function attackerPathAt(atk, p){
-    const base = CUSTOM_OPP_BASE[resolveOppByPos(atk.pos, atk.attackerOpp)];
+    const base = CUSTOM_OPP_BASE[oppAttackerId(atk)];
     const T = atk.timing;
-    if(p<=T.approach){ return lerpPt(base, atk.approachFrom, easeInOut(p/T.approach)); }
+    const from = atk.via || atk.approachFrom; // 경유점이 있으면 그 자리를 거쳐 들어가요
+    if(p<=T.approach){ return lerpPt(base, from, easeInOut(p/T.approach)); }
     if(p<=T.peak){
       const t=(p-T.approach)/(T.peak-T.approach);
       const jumpY = -15*Math.sin(Math.PI*t);
-      const pos = lerpPt(atk.approachFrom, atk.contact, easeInOut(t));
+      const pos = lerpPt(from, atk.contact, easeInOut(t));
       return [pos[0], pos[1]+jumpY];
     }
     if(p<=T.land){
@@ -3894,13 +3957,15 @@
   // made its fake approach (see fakeOppPosAt); scenarios without one can toss from the very start. Deriving
   // this from atk.timing.peak (rather than a fixed stored fraction) keeps it correct automatically
   // whenever the tempo/duration changes.
-  function tossStartFor(atk){ return atk.fakeContact ? atk.timing.peak*0.87 : (atk.tossStart||0); }
+  function tossStartFor(atk){ return oppFakeList(atk).length ? atk.timing.peak*0.87 : (atk.tossStart||0); }
 
-  // 시간차 페이크: 속공수가 네트 앞으로 들어가 속공하는 척하고, 다시 빠지지 않고 그 자리에 머물러요.
-  function fakeOppPosAt(atk, p){
-    const from = CUSTOM_OPP_BASE[resolveOppByPos(atk.fakePos, atk.fakeOpp)], to = atk.fakeContact;
+  // 페이크: 네트 앞 자리로 들어가 공격하는 척 한 번 점프하고, 다시 빠지지 않고 그 자리에 머물러요.
+  function fakeOppPosAt(atk, fk, p){
+    const from = CUSTOM_OPP_BASE[fk.id], to = [fk.x, 320];
     const fakeInEnd = atk.timing.peak * 0.55; // 진짜 공격보다 먼저 들어가요(템포가 바뀌어도 같은 비율)
+    const jumpEnd = atk.timing.peak * 0.8;
     if(p<=fakeInEnd) return lerpPt(from, to, easeInOut(p/fakeInEnd));
+    if(p<=jumpEnd) return [to[0], to[1]-15*Math.sin(Math.PI*(p-fakeInEnd)/(jumpEnd-fakeInEnd))];
     return to.slice();
   }
 
@@ -4095,9 +4160,7 @@
   function oppMoverIds(){
     if(isOur(scenario)) return [];
     const atk = ATTACKS[scenario];
-    const ids = [resolveOppByPos(atk.pos, atk.attackerOpp)];
-    if(atk.fakePos!=null || atk.fakeOpp!=null) ids.push(resolveOppByPos(atk.fakePos, atk.fakeOpp));
-    return ids;
+    return [oppAttackerId(atk), ...oppFakeList(atk).map(fk=>fk.id)];
   }
   Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
     const g=document.createElementNS(svgNS,'g'); g.setAttribute('class','opp-dot'); g.dataset.id=id;
@@ -4226,13 +4289,14 @@
       });
     } else {
       const atk = ATTACKS[scenario];
-      const attackerOppId = resolveOppByPos(atk.pos, atk.attackerOpp);
-      const fakeOppIdVal = atk.fakePos!=null||atk.fakeOpp!=null ? resolveOppByPos(atk.fakePos, atk.fakeOpp) : null;
+      const attackerOppId = oppAttackerId(atk);
+      const oppFakes = atk.serve ? [] : oppFakeList(atk);
+      const fakeOf = id => oppFakes.find(fk=>fk.id===id);
       const setterOppIdVal = atk.setterOpp ? resolveOppByPos(atk.setterPos, atk.setterOpp) : null;
       Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{
         const el=oppEls[id]; let pos=CUSTOM_OPP_BASE[id];
         if(id===attackerOppId) pos=attackerPathAt(atk,progress);
-        else if(fakeOppIdVal && id===fakeOppIdVal) pos=fakeOppPosAt(atk,progress);
+        else if(fakeOf(id)) pos=fakeOppPosAt(atk,fakeOf(id),progress);
         else if(!editMode && (f.targets[id] || (f.fakeTargets && f.fakeTargets[id]))){
           // 도착 위치 편집으로 옮긴 상대 도트: 우리 팀 수비처럼 시작 위치 → (페이크 반응 위치) → 도착 위치로 움직여요
           const endT = f.targets[id] || CUSTOM_OPP_BASE[id];
@@ -4254,7 +4318,7 @@
         const dp=toDisplay(pos); el.text.setAttribute('x',dp[0]); el.text.setAttribute('y',dp[1]);
         el.ring.style.opacity = (id===attackerOppId) ? 1:0;
         el.ring.style.animation = (id===attackerOppId) ? 'pulseRing 1.4s ease-in-out infinite':'none';
-        const decoyActive = fakeOppIdVal && id===fakeOppIdVal && progress>0.05 && progress<0.55;
+        const decoyActive = !!fakeOf(id) && progress>0.05 && progress<0.55;
         el.dring.style.opacity = decoyActive ? 1:0;
         const setterActive = setterOppIdVal && id===setterOppIdVal && progress>=tossStartFor(atk) && progress<atk.timing.peak+0.03;
         el.sring.style.opacity = setterActive ? 1:0;
@@ -4272,10 +4336,11 @@
       el.aRing.style.opacity = (role==='attacker') ? 1:0;
       el.aRing.style.animation = (role==='attacker') ? 'pulseRing 1.4s ease-in-out infinite':'none';
       el.sRing.style.opacity = (role==='setter') ? 1:0;
-      const ownDecoyActive = isOur(scenario) && f.fakeAttackerId===id && progress>0.05 && progress<0.55;
+      const isOwnFake = isOur(scenario) && !!(f.fakeSpots && f.fakeSpots[id]);
+      const ownDecoyActive = isOwnFake && progress>0.05 && progress<0.55;
       const receiverActive = isOur(scenario) && f.receiverId===id && progress < OUR_ATTACKS[scenario].phase.pass + 0.04;
       el.dRing.style.opacity = (ownDecoyActive || receiverActive) ? 1:0;
-      const isAttackingRole = role==='attacker' || (isOur(scenario) && f.fakeAttackerId===id);
+      const isAttackingRole = role==='attacker' || isOwnFake;
       const inOwnZone = (p[1]>=378 && p[1]<=415) && !isAttackingRole;
       el.g.classList.toggle('blocker', inOwnZone);
       if(inOwnZone){
@@ -4354,7 +4419,7 @@
       const originPt = isOur(scenario) ? [200,380] : ATTACKS[scenario].contact;
       IDS.forEach(id=>{
         const role=f.roles[id];
-        if(role==='attacker'||role==='setter') return;
+        if(role==='attacker'||role==='setter'||role==='fake') return;
         const p=current[id];
         const radius = role==='block' ? 34 : 58;
         const angle=Math.atan2(originPt[1]-p[1], originPt[0]-p[0]);
@@ -4384,7 +4449,7 @@
         if(isOur(scenario) && f.attackerId===id){
           const atk=OUR_ATTACKS[scenario];
           const off = atk.approachOffset || [0,50];
-          const mid = [clip(to[0]+off[0],40,360), clip(to[1]+off[1],392,735)];
+          const mid = atk.via ? atk.via.slice() : [clip(to[0]+off[0],40,360), clip(to[1]+off[1],392,735)];
           if(dist(from,mid)<10 && dist(mid,to)<10) return;
           const poly=document.createElementNS(svgNS,'polyline');
           poly.setAttribute('points', `${from[0]},${from[1]} ${mid[0]},${mid[1]} ${to[0]},${to[1]}`);
@@ -4401,6 +4466,23 @@
         line.setAttribute('marker-end','url(#arrowHead)'); line.style.opacity=Math.min(0.85,progress*1.7);
         arrowLayer.appendChild(line);
       });
+    }
+
+    // 상대 공격수 경유점: 시작 위치 → 경유점 → 공격 위치 길을 점선으로 보여줘요
+    if(!isOur(scenario) && ATTACKS[scenario].via && !ATTACKS[scenario].serve){
+      const atk3 = ATTACKS[scenario], b0 = CUSTOM_OPP_BASE[oppAttackerId(atk3)], v = atk3.via, c = atk3.contact;
+      const poly=document.createElementNS(svgNS,'polyline');
+      poly.setAttribute('points', `${b0[0]},${b0[1]} ${v[0]},${v[1]} ${c[0]},${c[1]}`);
+      poly.setAttribute('fill','none'); poly.setAttribute('stroke','#F8B4B4'); poly.setAttribute('stroke-width','1.6');
+      poly.setAttribute('stroke-dasharray','3 4'); poly.setAttribute('marker-end','url(#arrowHead)'); poly.style.opacity=0.85;
+      arrowLayer.appendChild(poly);
+    }
+    {
+      const va = (isOur(scenario) ? OUR_ATTACKS[scenario] : ATTACKS[scenario]);
+      const vh = document.getElementById('viaHandle');
+      const showVia = va && va.via && !va.serve && !editMode;
+      vh.style.display = showVia ? '' : 'none';
+      if(showVia) vh.setAttribute('transform', `translate(${va.via[0]},${va.via[1]})`);
     }
 
     if(showBallPath()){
@@ -4451,7 +4533,7 @@
       return '리시브 완료';
     }
     if(atk.setterOpp && progress>=tossStartFor(atk) && progress<T.peak) return atk.backToss ? '세터 빽토스' : '세터 토스';
-    if(atk.fakeContact && progress<T.approach*0.7) return '페이크 동작 (속공인 척)';
+    if(oppFakeList(atk).length && progress<T.approach*0.7) return '페이크 동작 (공격하는 척)';
     if(progress<T.approach) return '공격수 도움닫기';
     if(progress<T.land) return '스파이크';
     if(progress<0.92) return '우리 팀 수비 이동 중';
@@ -5108,6 +5190,7 @@
     document.getElementById('customTargetSelect').value = key;
     const cst = document.getElementById('customSaveTarget'); if(cst) cst.innerHTML = '저장 대상: <b></b> (공격 옵션이나 코트 위 제목에서 바꿔요)', cst && (cst.querySelector('b').textContent = SCEN_LABEL[key]||'');
     syncCustomPanelToScenario(key);
+    renderAttackWho();
     layoutLandingNineZone();
     currentDuration = isOur(scenario) ? OUR_ATTACKS[scenario].duration : ATTACKS[scenario].duration;
     progress=0; playing=false; updatePlayBtn();
@@ -5135,8 +5218,8 @@
   });
 
   function currentHasFake(){
-    if(isOur(scenario)) return OUR_ATTACKS[scenario].fakeX!=null;
-    return !!ATTACKS[scenario].fakeContact;
+    if(isOur(scenario)) return fakesOf(OUR_ATTACKS[scenario], true).length>0;
+    return oppFakeList(ATTACKS[scenario]).length>0;
   }
 
   function applyOverridePhase(){
@@ -5521,7 +5604,7 @@
       atk.x = x;
       atk.duration = {fast:1600, normal:2600, slow:3800}[tempo];
       atk.phase = hasFake ? {pass:0.14,toss:0.6,hit:0.85} : {pass:0.18,toss:0.44,hit:0.76};
-      if(hasFake) atk.fakeX = 200; else delete atk.fakeX;
+      if(hasFake && !fakesOf(atk, true).length) atk.fakes = [{pos:'QA', spot:'QA', x:fakeSpotX('QA', true)}]; // 페이크 선수는 '페이크 선수' 칩으로 바꿔요(여기서는 지우지 않아요)
       if(markCustomized) atk.customized = true;
     } else {
       const atk = ATTACKS[key];
@@ -5545,8 +5628,7 @@
         slow:{duration:4200, timing:{approach:0.4,peak:0.56,land:0.7,ballStart:0.56,ballEnd:0.8}}
       }[tempo];
       atk.duration = tempoPreset.duration; atk.timing = tempoPreset.timing;
-      if(hasFake){ atk.fakeContact=[200,320]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
-      else{ delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp; }
+      if(hasFake && !fakesOf(atk, false).length){ atk.fakeContact=[200,320]; atk.fakePos='QA'; if(!atk.fakeOpp) atk.fakeOpp='b'; }
       if(markCustomized) atk.customized = true;
     }
     const target = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
@@ -5559,15 +5641,187 @@
     target._panel = {perspX, tempo, hasFake, useLanding, landingCol, landingRow};
   }
 
+  // ---------- 공격하는 선수·페이크 선수·빠른 조합·경유점 (누르면 바로 적용) ----------
+  const curAtk = () => isOur(scenario) ? OUR_ATTACKS[scenario] : ATTACKS[scenario];
+  // 공격하는 팀 선수 목록(세터·리베로는 빼요): [{id, pos, label}]
+  function attackTeamPlayers(our){
+    const ids = our ? IDS.map(String) : Object.keys(ORIGINAL_OPP_BASE);
+    return ids.map(id=>{
+      const pos = our ? POSITIONS[id] : OPP_POSITIONS[id];
+      const name = our ? PLAYER_NAMES[id] : OPP_PLAYER_NAMES[id];
+      const num = our ? id : OPP_NUM[id];
+      return {id, pos, label:(POS_DOT[pos]||pos||'')+(name?` · ${name}`:''), num};
+    }).filter(pl=>pl.pos && pl.pos!=='SETTER' && pl.pos!=='LIBERO');
+  }
+  function currentAttackerId(atk, our){
+    if(our){ const f = getFormation(); return String(f.attackerId); }
+    return oppAttackerId(atk);
+  }
+  // 예전 한 명 페이크 저장값을 고칠 때는 새 목록(fakes)으로 바꿔서 써요
+  function editableFakes(atk, our){
+    if(!Array.isArray(atk.fakes)){
+      let list = fakesOf(atk, our).map(fk=>Object.assign({}, fk));
+      if(our){ const ids = getFormation().fakeIdsByIndex||[]; list = list.map((fk,i)=>Object.assign(fk, ids[i]!=null ? {id:String(ids[i]), pos:POSITIONS[ids[i]]} : {})); }
+      else list = list.map(fk=>Object.assign(fk, {id:oppIdFor(fk.pos, fk.id), pos:OPP_POSITIONS[oppIdFor(fk.pos, fk.id)]}));
+      atk.fakes = list;
+      delete atk.fakeX; delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp;
+    }
+    return atk.fakes;
+  }
+  // i번째 페이크를 실제로 하는 선수 id(우리 팀은 대형 계산에서 정한 선수)
+  function fakePlayerId(fk, our, i){
+    if(our){ const ids = getFormation().fakeIdsByIndex||[]; return ids[i]!=null ? String(ids[i]) : null; }
+    return oppIdFor(fk.pos, fk.id);
+  }
+  function afterAttackEdit(msg){
+    const atk = curAtk(); atk.customized = true;
+    progress = 0; ballCurrent = null; playing = true; updatePlayBtn();
+    IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice());
+    renderAttackWho(); render();
+    if(msg) document.getElementById('customStatus').textContent = msg;
+    pendingActionDescription = `'${SCEN_LABEL[scenario]}' 공격 과정을 바꿨어요`;
+    scheduleAutoSave();
+  }
+  function setAttacker(atk, our, pl){
+    const fakes = editableFakes(atk, our); // 바꾸기 전에 페이크 선수 번호를 정해 두고, 새 공격수는 페이크에서 빼요
+    for(let i=fakes.length-1;i>=0;i--) if(String(fakes[i].id)===pl.id) fakes.splice(i,1);
+    atk.pos = pl.pos;
+    if(our) atk.attackerOwn = pl.id; else atk.attackerOpp = pl.id;
+  }
+  function addFake(atk, our, pl, spot){
+    const fakes = editableFakes(atk, our);
+    const sp = spot || spotOfPos(pl.pos);
+    fakes.push({pos:pl.pos, id:pl.id, spot:sp, x:fakeSpotX(sp, our)});
+  }
+  // 공격 위치(공격 위치 버튼과 같은 기준의 perspX)를 저장 버튼 없이 바로 바꿔요
+  function setAttackX(key, perspX){
+    const our = isOur(key), atk = our ? OUR_ATTACKS[key] : ATTACKS[key];
+    if(our) atk.x = perspX;
+    else { const x = 400-perspX; atk.x = x; atk.contact = [x,320]; atk.approachFrom = [clip(x + (x<200? 25:-25), 40,360), 245]; }
+    atk._panel = Object.assign({}, atk._panel||{}, {perspX});
+    document.querySelectorAll('#customXSeg button').forEach(b=>b.classList.toggle('active', Number(b.dataset.x)===perspX));
+  }
+  function defaultVia(atk, our){
+    const f = getFormation();
+    const base = our ? CUSTOM_BASE[f.attackerId] : CUSTOM_OPP_BASE[oppAttackerId(atk)];
+    const contact = our ? (f.targets[f.attackerId] || [atk.x,415]) : atk.contact;
+    const mid = lerpPt(base, contact, 0.5);
+    return our ? [clip(mid[0],20,380), clip(Math.max(mid[1], contact[1]+70),395,735)] : [clip(mid[0],20,380), clip(Math.min(mid[1], contact[1]-70),25,365)];
+  }
+  // 빠른 조합: 공격하는 팀의 포지션으로 찾아요(없는 포지션은 건너뛰어요)
+  const ATK_COMBOS = [
+    {label:'A·빽A 페이크 → 앞차 시간차', opt:'TIMEDIFF', atk:['FRONTSLIDE'], x:120, fakes:[[['QA'],'QA'], [['BACKSLIDE','RIGHT'],'QBACKA']]},
+    {label:'앞차가 빽A 뒤로 돌아 시간차', opt:'TIMEDIFF', atk:['FRONTSLIDE'], x:305, fakes:[[['QA'],'QA'], [['BACKSLIDE','RIGHT'],'QBACKA']], viaBehind:'QBACKA'},
+    {label:'빽A를 빽차가', opt:'BACKA', atk:['BACKSLIDE'], fakes:[]},
+    {label:'빽A를 라이트가', opt:'BACKA', atk:['RIGHT'], fakes:[]},
+    {label:'페이크·경유점 모두 끄기', clear:true}
+  ];
+  function applyCombo(c){
+    if(c.clear){
+      const atk = curAtk(); if(atk.serve) return;
+      atk.fakes = []; delete atk.fakeX; delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp; delete atk.via;
+      afterAttackEdit('페이크와 경유점을 모두 껐어요.'); return;
+    }
+    const our = isOur(scenario);
+    const key = (our ? 'OUR_' : '') + c.opt;
+    if(key!==scenario) pickScenario(key);
+    const atk = curAtk(), players = attackTeamPlayers(our), used = new Set();
+    const byPos = list => { for(const ps of list){ const pl = players.find(q=>q.pos===ps && !used.has(q.id)); if(pl) return pl; } return null; };
+    const attacker = byPos(c.atk);
+    if(!attacker){ document.getElementById('customStatus').textContent = `${POS_DOT[c.atk[0]]} 포지션 선수가 없어요. 포지션 배정에서 먼저 정해 주세요.`; return; }
+    used.add(attacker.id);
+    atk.fakes = []; delete atk.fakeX; delete atk.fakeContact; delete atk.fakePos; delete atk.fakeOpp; delete atk.via;
+    setAttacker(atk, our, attacker);
+    if(c.x!=null) setAttackX(key, c.x);
+    c.fakes.forEach(([posList, spot])=>{ const pl = byPos(posList); if(pl){ used.add(pl.id); addFake(atk, our, pl, spot); } });
+    if(c.viaBehind){
+      const vx = fakeSpotX(c.viaBehind, our);
+      atk.via = our ? [vx, 505] : [vx, 255]; // 빽A 자리보다 네트에서 2m쯤 뒤
+    }
+    afterAttackEdit(`'${c.label}' 조합을 적용했어요.`);
+  }
+  function renderAttackWho(){
+    try{ renderAttackWhoInner(); } catch(err){} // 처음 불러오는 동안(포지션 이름 등이 아직 없을 때)은 건너뛰어요
+  }
+  function renderAttackWhoInner(){
+    const box = document.getElementById('atkWhoBox'); if(!box) return;
+    const atk = curAtk(), our = isOur(scenario);
+    box.style.display = (!atk || atk.serve) ? 'none' : '';
+    if(!atk || atk.serve) return;
+    const players = attackTeamPlayers(our);
+    const atkId = currentAttackerId(atk, our);
+    const fakes = fakesOf(atk, our);
+    const fakeIds = fakes.map((fk,i)=>fakePlayerId(fk, our, i));
+    const chip = (pl, on, kind) => `<button type="button" class="chip-btn${on?' on':''}" data-kind="${kind}" data-id="${pl.id}">${pl.label}<small>${our?'':'상대 '}${pl.num}번</small></button>`;
+    document.getElementById('atkComboRow').innerHTML = ATK_COMBOS.map((c,i)=>`<button type="button" class="chip-btn${c.clear?' none':''}" data-combo="${i}">${c.label}</button>`).join('');
+    document.getElementById('atkWhoChips').innerHTML = players.map(pl=>chip(pl, pl.id===atkId, 'atk')).join('');
+    document.getElementById('fakeWhoChips').innerHTML = players.filter(pl=>pl.id!==atkId).map(pl=>chip(pl, fakeIds.includes(pl.id), 'fake')).join('');
+    const spotOpts = sel => Object.keys(FAKE_SPOTS).map(k=>`<option value="${k}"${k===sel?' selected':''}>${FAKE_SPOTS[k].label}</option>`).join('');
+    document.getElementById('fakeSpotList').innerHTML = fakes.map((fk,i)=>{
+      const pl = players.find(q=>q.id===fakeIds[i]);
+      const sel = fk.spot || Object.keys(FAKE_SPOTS).sort((a,b)=>Math.abs(fakeSpotX(a,our)-fk.x)-Math.abs(fakeSpotX(b,our)-fk.x))[0];
+      return `<div class="fake-spot-row"><b>${pl?pl.label:'페이크'}</b><span>→</span><select data-fake="${i}" aria-label="페이크 들어갈 자리">${spotOpts(sel)}</select></div>`;
+    }).join('');
+    const vb = document.getElementById('btnViaToggle');
+    vb.textContent = atk.via ? '✕ 경유점 지우기' : '↪️ 경유점 넣기';
+    vb.classList.toggle('primary', !!atk.via);
+  }
+  document.getElementById('atkWhoBox').addEventListener('click', e=>{
+    const cb = e.target.closest('button[data-combo]');
+    if(cb){ applyCombo(ATK_COMBOS[Number(cb.dataset.combo)]); return; }
+    const b = e.target.closest('button[data-kind]'); if(!b) return;
+    const atk = curAtk(), our = isOur(scenario);
+    const pl = attackTeamPlayers(our).find(q=>q.id===b.dataset.id); if(!pl) return;
+    if(b.dataset.kind==='atk'){
+      if(pl.id===currentAttackerId(atk, our)) return;
+      setAttacker(atk, our, pl);
+      afterAttackEdit(`${pl.label}${our?'':'(상대)'} 선수가 공격하게 바꿨어요.`);
+    } else {
+      const fakes = editableFakes(atk, our);
+      const i = fakes.map((fk,j)=>fakePlayerId(fk, our, j)).indexOf(pl.id);
+      if(i>=0) fakes.splice(i,1); else addFake(atk, our, pl);
+      afterAttackEdit(i>=0 ? `${pl.label} 페이크를 뺐어요.` : `${pl.label} 선수가 페이크를 해요.`);
+    }
+  });
+  document.getElementById('fakeSpotList').addEventListener('change', e=>{
+    const sel = e.target.closest('select[data-fake]'); if(!sel) return;
+    const atk = curAtk(), our = isOur(scenario);
+    const fk = editableFakes(atk, our)[Number(sel.dataset.fake)]; if(!fk) return;
+    fk.spot = sel.value; fk.x = fakeSpotX(sel.value, our);
+    afterAttackEdit(`페이크 자리를 '${FAKE_SPOTS[sel.value].label}'(으)로 바꿨어요.`);
+  });
+  document.getElementById('btnViaToggle').addEventListener('click', ()=>{
+    const atk = curAtk(), our = isOur(scenario); if(!atk || atk.serve) return;
+    if(atk.via){ delete atk.via; afterAttackEdit('경유점을 지웠어요.'); }
+    else { atk.via = defaultVia(atk, our); playing=false; afterAttackEdit('코트의 노란 ◆를 끌어 공격수가 거쳐 갈 자리를 정해요.'); playing=false; updatePlayBtn(); }
+  });
+  // 코트 위 ◆ 끌기: 공격하는 팀 코트 안에서만 움직여요
+  let draggingVia = false;
+  document.getElementById('viaHandle').addEventListener('pointerdown', e=>{
+    if(editMode) return;
+    draggingVia = true; playing = false; updatePlayBtn();
+    e.currentTarget.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation();
+  });
+  courtSvg.addEventListener('pointermove', e=>{
+    if(!draggingVia) return;
+    const atk = curAtk(); if(!atk || !atk.via) return;
+    const loc = toSvgPoint(e), our = isOur(scenario);
+    atk.via = [clip(loc[0],20,380), our ? clip(loc[1],395,735) : clip(loc[1],25,365)];
+    render();
+  });
+  ['pointerup','pointercancel'].forEach(evt=>courtSvg.addEventListener(evt, ()=>{
+    if(!draggingVia) return;
+    draggingVia = false;
+    afterAttackEdit('경유점을 옮겼어요. 공격수가 그 자리를 거쳐 들어가요.');
+  }));
+
   function syncCustomPanelToScenario(key){
     const atk = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
     const p = atk._panel;
     if(!p) return; // no recorded panel state (shouldn't normally happen) — leave panel as-is
     document.querySelectorAll('#customXSeg button').forEach(b=>b.classList.toggle('active', Number(b.dataset.x)===p.perspX));
     document.querySelectorAll('#customTempoSeg button').forEach(b=>b.classList.toggle('active', b.dataset.tempo===p.tempo));
-    document.getElementById('customFake').checked = p.hasFake;
-    const fakeRow = document.getElementById('customFake').closest('.check-row'); // 서브에는 시간차(페이크) 동작이 없어요
-    if(fakeRow){ fakeRow.style.display = atk.serve ? 'none' : ''; if(fakeRow.nextElementSibling) fakeRow.nextElementSibling.style.display = atk.serve ? 'none' : ''; }
+    renderAttackWho();
     document.getElementById('customLandingToggle').checked = p.useLanding;
     document.getElementById('customLandingRow').style.display = p.useLanding ? 'block' : 'none';
     if(p.useLanding){
@@ -5583,9 +5837,11 @@
 
   document.getElementById('btnSaveCustom').addEventListener('click', ()=>{
     const key = document.getElementById('customTargetSelect').value;
-    const perspX = Number(document.querySelector('#customXSeg button.active').dataset.x);
+    const xBtn = document.querySelector('#customXSeg button.active'), tgt = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
+    const perspX = xBtn ? Number(xBtn.dataset.x) : ((tgt._panel && tgt._panel.perspX!=null) ? tgt._panel.perspX : 200); // 빠른 조합이 정한 자리는 버튼에 없을 수 있어요
     const tempo = document.querySelector('#customTempoSeg button.active').dataset.tempo;
-    const hasFake = document.getElementById('customFake').checked;
+    const tAtk = isOur(key) ? OUR_ATTACKS[key] : ATTACKS[key];
+    const hasFake = fakesOf(tAtk, isOur(key)).length>0;
     const useLanding = document.getElementById('customLandingToggle').checked;
     const activeZoneBtn = document.querySelector('#landingNineZone button.active');
     const landingCol = useLanding ? Number(activeZoneBtn.dataset.col) : null;
@@ -6226,7 +6482,7 @@
                     const b=sc.querySelector('.k-ball'); setTimeout(()=>{ b.style.left='80%'; b.style.top='66%'; }, 500); }},
                  {wait:2600}, {fn:sc=>{ sc.querySelector('.k-play').textContent='▶'; }}, {wait:900} ] },
       { title:'공격 상황을 편집해요',
-        text:'먼저 왼쪽 <b>공격 상황 편집</b>의 <b>공격 옵션</b>(레프트·A 속공 …)으로 공격 상황을 고르고 위치·템포·시간차·<b>공 착지 칸</b>으로 공격 과정을 정해 저장하면 <b>지금 코트의 공격 상황</b>이 바뀌어요. 공격 위치는 공격하는 팀, 착지 칸은 공을 받는 팀 기준이에요.',
+        text:'먼저 왼쪽 <b>공격 상황 편집</b>의 <b>공격 옵션</b>(레프트·A 속공 …)으로 공격 상황을 고르고 위치·템포·<b>공 착지 칸</b>으로 공격 과정을 정해 저장하면 <b>지금 코트의 공격 상황</b>이 바뀌어요. 공격 위치는 공격하는 팀, 착지 칸은 공을 받는 팀 기준이에요.',
         scene:`<div class="mk-card">
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격 위치</span><span class="mk-btn on k-x1">왼쪽</span><span class="mk-btn k-x2">중앙</span><span class="mk-btn">오른쪽</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">템포</span><span class="mk-btn k-t1">빠름</span><span class="mk-btn on k-t2">보통</span><span class="mk-btn">느림</span></div>
@@ -6238,8 +6494,17 @@
                  {click:'.k-t1', then:(el,sc)=>{ sc.querySelector('.k-t2').classList.remove('on'); el.classList.add('on'); }},
                  {click:'.k-cell', then:el=>el.classList.add('on')},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
+      { title:'누가 때리고 누가 속일지 정해요',
+        text:'같은 카드의 <b>빠른 조합</b>(예: A·빽A 페이크 → 앞차 시간차, 앞차가 빽A 뒤로 돌아 시간차, 빽A를 빽차가·라이트가)을 누르면 공격 옵션·공격하는 선수·페이크가 한 번에 정해져요. <b>공격하는 선수</b>와 <b>페이크 선수</b>(여러 명) 칩으로 고칠 수 있고, <b>↪️ 경유점 넣기</b>를 누르면 코트의 노란 ◆를 끌어 공격수가 돌아 들어갈 길을 정해요. 모두 누르는 즉시 적용되고, 대형을 저장하면 그 전술에 함께 저장돼요.',
+        scene:`<div class="mk-card"><div class="mk-lbl">빠른 조합</div>
+          <div class="mk-row"><span class="mk-btn k-combo">A·빽A 페이크 → 앞차 시간차</span><span class="mk-btn">빽A를 빽차가</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격</span><span class="mk-btn on k-a1">레프트</span><span class="mk-btn k-a2">앞차</span><span class="mk-btn">라이트</span></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:52px;">페이크</span><span class="mk-btn k-f1">A</span><span class="mk-btn k-f2">빽차</span><span class="mk-btn">레프트</span></div></div>
+          <div class="mk-toast k-toast">조합을 적용했어요</div>`,
+        script:[ {click:'.k-combo', then:(el,sc)=>{ sc.querySelector('.k-a1').classList.remove('on'); sc.querySelector('.k-a2').classList.add('on'); sc.querySelector('.k-f1').classList.add('on'); sc.querySelector('.k-f2').classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }},
+                 {wait:1800} ] },
       { title:'폴더를 정해서 저장해요',
-        text:'공격 과정을 정하고 도트 위치를 고쳤으면 오른쪽 <b>대형 불러오기 & 편집</b>의 <b>💾 대형 저장</b>(대형 공유 바로 위)에서 저장해요. <b>💡 폴더 이름 정하는 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)을 누르면 폴더 이름이 바로 채워져요. 대형 이름을 적고 저장하면 같은 카드의 "저장된 대형 불러오기"에서 언제든 불러와요. 처음에는 기본 대형(3인블로킹 기준) 폴더가 들어 있어요.',
+        text:'공격 과정을 정하고 도트 위치를 고쳤으면 오른쪽 <b>대형 불러오기 & 편집</b>의 <b>💾 대형 저장</b>(편집 모드 바로 아래)에서 저장해요. <b>💡 폴더 이름 정하는 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)을 누르면 폴더 이름이 바로 채워져요. 대형 이름을 적고 저장하면 같은 카드의 "저장된 대형 불러오기"에서 언제든 불러와요. 처음에는 기본 대형(3인블로킹 기준) 폴더가 들어 있어요.',
         scene:`<div class="mk-card"><div class="mk-lbl">💡 폴더 이름 정하는 Tip</div>
           <div class="mk-row"><span class="mk-btn">우리팀 · </span><span class="mk-btn">상대팀 · </span><span class="mk-btn k-op">의견 · 민수</span><span class="mk-btn">디테일 · </span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:40px;">폴더</span><div class="mk-input k-folder" data-ph="새 폴더 이름"></div></div>
@@ -6754,7 +7019,10 @@
       scenario = scen; currentDuration = atk.duration;
       const f = getFormation(), own = desiredOwnAt(1), opp = {};
       Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ opp[id] = (isOur(scen) && f.targets[id] ? f.targets[id] : CUSTOM_OPP_BASE[id]).slice(); });
-      if(!isOur(scen)) opp[resolveOppByPos(atk.pos, atk.attackerOpp)] = atk.contact.slice(); // 상대 공격수는 때린 자리에 있어요
+      if(!isOur(scen)){
+        opp[oppAttackerId(atk)] = atk.contact.slice(); // 상대 공격수는 때린 자리에 있어요
+        if(!atk.serve) oppFakeList(atk).forEach(fk=>{ opp[fk.id] = [fk.x, 320]; }); // 페이크 선수는 들어간 네트 앞 자리에 있어요
+      }
       // 공이 간 길: 때린 자리 → 떨어진 자리(블로킹에 맞으면 맞고 떨어진 자리)
       const from = isOur(scen) ? (f.targets[f.attackerId] || [atk.x, 415]) : atk.contact;
       out = {base: own, oppBase: opp, ball: f.ballLanding ? {from: from.slice(), to: f.ballLanding.slice()} : null};
