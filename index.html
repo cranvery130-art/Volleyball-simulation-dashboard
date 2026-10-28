@@ -1682,7 +1682,7 @@
   #btnPresetInfoToggle, #presetInfoPanel{ order:5; }
   #cardSave{ order:6; }
   #shareFormationSection{ order:7; }
-  #sceneMapSection{ order:8; }
+  #sceneMapSection{ order:7; } /* 대형 저장과 대형 공유 사이(같은 order면 HTML 순서대로) */
   .scene-map-fold > summary{ list-style:none; cursor:pointer; }
   .scene-map-fold > summary::-webkit-details-marker{ display:none; }
   .scene-map-fold > summary .fgroup-head{ margin-bottom:0; }
@@ -2205,7 +2205,7 @@
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
           <li>왼쪽·오른쪽 기준: <b>공격 위치</b>는 공격하는 팀, <b>공 착지 칸</b>은 공을 받는 팀이 네트를 바라볼 때 기준이에요.</li>
           <li>⭐ 최종 대형은 개설자만 확정·교체·해제할 수 있어요. 수정 권한자는 의견을 "의견 · 내 이름" 폴더에 저장해 주세요.</li>
-          <li>오른쪽 맨 아래 <b>📋 기록 상황별 대형</b>(선택)에서 블로킹·리시브·다이렉트·세터페인트·세터 2구 토스 등 공격 위치가 없는 기록에 쓸 공격 상황을 정할 수 있어요. 비워 두면 경기 분석 코트 그림이 랠리 토스 순서의 마지막 공격 토스로 자동으로 골라요.</li>
+          <li>오른쪽 <b>💾 대형 저장</b> 바로 아래 <b>📋 기록 상황별 대형</b>(선택)에서 블로킹·리시브·다이렉트·세터페인트·세터 2구 토스 등 공격 위치가 없는 기록에 쓸 공격 상황을 정할 수 있어요. 비워 두면 경기 분석 코트 그림이 랠리 토스 순서의 마지막 공격 토스로 자동으로 골라요.</li>
           <li>대형 코멘트는 대형마다 하나예요. 여러 사람이 동시에 고치면 마지막에 저장된 내용만 남아요.</li>
           <li>도트 크기는 실제 9인제 코트(21m×10.5m) 비율에 맞춰져 있어요. 포지션 아래 칸에 이름을 적으면 도트에 이름이 보여요.</li>
           <li>여러 사람이 동시에 편집하면 서로의 변경이 바로 보이지 않아요. 저장한 뒤 새로고침하면 반영돼요.</li>
