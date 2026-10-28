@@ -2845,7 +2845,7 @@
                 <label style="flex:1; min-width:150px;"><span class="field-note" style="margin:0 0 3px; display:block;">🔵 우리팀</span><select id="formOurSelect" style="width:100%;"></select></label>
                 <label style="flex:1; min-width:150px;"><span class="field-note" style="margin:0 0 3px; display:block;">🔴 상대팀</span><select id="formOppSelect" style="width:100%;"></select></label>
               </div>
-              <div class="field-note" style="margin-top:4px;">기록에서 고른 선수가 코트 어디에 있었는지는 전술 시뮬레이션에 저장된 대형으로 정해요. <b>자동</b>이면 팀 이름이 들어간 대형 폴더(예: "상대팀 · 한빛")를 찾아 상황(레프트·A·백차 등)에 맞는 공격 상황 대형을 써요. 그 팀 대형이 없으면 비슷한 팀의 폴더를 골라 기준으로 삼거나 <b>기본 대형</b>을 골라요. "상대팀 ·"으로 시작하는 폴더는 위쪽 코트 팀의 대형으로 읽어요. 저장된 폴더 카드에서 <b>⭐ 우리팀</b>을 정했으면, 우리팀은 이름이 들어간 폴더 중 "상대팀 ·"이 아닌 것을 먼저 쓰고 없으면 "우리팀 ·" 폴더를 써요(우리팀이 상대팀 칸에 적힌 경기도 같아요). 다른 팀은 "상대팀 · 팀 이름" 폴더를 먼저 찾아요.</div>
+              <div class="field-note" style="margin-top:4px;">기록에서 고른 선수가 코트 어디에 있었는지는 전술 시뮬레이션에 저장된 대형으로 정해요. <b>자동</b>이면 팀 이름이 들어간 대형 폴더(예: "상대팀 · 한빛")를 찾아 상황(레프트·A·백차 등)에 맞는 공격 상황 대형을 써요. 그 팀 대형이 없으면 비슷한 팀의 폴더를 골라 기준으로 삼거나 <b>기본 대형</b>을 골라요. 골라 둔 폴더를 전술 시뮬레이션에서 지우면 목록에서 빠지고 <b>자동</b>으로 돌아가요(이름을 바꾸면 새 이름을 따라가요). "상대팀 ·"으로 시작하는 폴더는 위쪽 코트 팀의 대형으로 읽어요. 저장된 폴더 카드에서 <b>⭐ 우리팀</b>을 정했으면, 우리팀은 이름이 들어간 폴더 중 "상대팀 ·"이 아닌 것을 먼저 쓰고 없으면 "우리팀 ·" 폴더를 써요(우리팀이 상대팀 칸에 적힌 경기도 같아요). 다른 팀은 "상대팀 · 팀 이름" 폴더를 먼저 찾아요.</div>
             </div>
         <details class="roster-fold" id="rosterFold">
         <summary><span class="field-label" style="margin:0;">🔵 우리팀 포지션 명단</span><span class="rf-count" id="rosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
@@ -4610,6 +4610,7 @@
   function renderPresets(){
     const list=document.getElementById('presetList');
     list.innerHTML='';
+    if(window.__onPresetsChanged) window.__onPresetsChanged(); // 지운 대형 폴더는 경기 정보의 위치 판단 대형 목록에서도 빠져요
 
     // dropdown for quickly loading any saved preset, grouped by folder
     const loadSelect = document.getElementById('presetLoadSelect');
@@ -5108,6 +5109,7 @@
           if(!newName || newName===folderKey) return;
           presets.forEach(p=>{ if((p.folder||'')===folderKey) p.folder = newName; });
           if(document.getElementById('presetFolder').value===folderKey) document.getElementById('presetFolder').value = newName;
+          if(window.__renameFormFolder) window.__renameFormFolder(folderKey, newName);
           renderPresets();
           scheduleAutoSave();
         });
@@ -7511,10 +7513,28 @@
     const auto = autoFormFolder(name, name===(side==='our'?'우리팀':'상대팀'));
     const fs = formFolders();
     const opts = [['', `자동 — ${auto ? auto : '같은 이름 폴더 없음(기본 대형)'}`], ...fs.map(f=>[f, '📁 '+f]), [FORM_DEFAULT, '기본 대형']];
-    if(cur && cur!==FORM_DEFAULT && !fs.includes(cur)) opts.splice(1, 0, [cur, `📁 ${cur} (지금은 없음)`]);
     return opts.map(([v,l])=>`<option value="${escChip(v)}"${v===cur?' selected':''}>${escChip(l)}</option>`).join('');
   }
+  // 전술 시뮬레이션에서 지운 대형 폴더를 가리키는 위치 판단 대형은 자동으로 되돌려요(지금 경기와 저장된 경기 폴더 모두)
+  function pruneFormChoices(){
+    const T = window.__tacticsFormations; if(!T) return false;
+    const fs = formFolders(), gone = v => !!v && v!==FORM_DEFAULT && !fs.includes(v);
+    let changed = false;
+    const fix = o => ['formOur','formOpp'].forEach(k=>{ if(gone(o[k])){ o[k] = ''; changed = true; } });
+    const cur = {formOur, formOpp}; fix(cur); formOur = cur.formOur; formOpp = cur.formOpp;
+    matchFolders.forEach(fix);
+    return changed;
+  }
+  // 대형 폴더 이름을 바꾸면 그 폴더를 고른 위치 판단 대형도 새 이름을 따라가요
+  window.__onPresetsChanged = () => renderFormSelects();
+  window.__renameFormFolder = (from, to) => {
+    if(formOur===from) formOur = to; if(formOpp===from) formOpp = to;
+    matchFolders.forEach(f=>{ if(f.formOur===from) f.formOur = to; if(f.formOpp===from) f.formOpp = to; });
+    renderFormSelects();
+  };
   function renderFormSelects(){
+    // 불러오는 중에 바로 저장하면 아직 덜 읽힌 값이 섞일 수 있어서, 지금 일이 끝난 뒤에 저장해요
+    if(pruneFormChoices() && !readOnlyFolderView && window.scheduleAutoSave) setTimeout(()=>window.scheduleAutoSave(), 0);
     const a = document.getElementById('formOurSelect'), b = document.getElementById('formOppSelect');
     if(a) a.innerHTML = formOptionsHTML(formOur, 'our');
     if(b) b.innerHTML = formOptionsHTML(formOpp, 'opp');
