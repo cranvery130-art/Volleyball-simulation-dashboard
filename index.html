@@ -168,6 +168,32 @@
   .preset-load-actions .btn{ width:100%; padding:8px 4px; font-size:12.5px; white-space:nowrap; }
   /* 폴더 고르기: 폴더째 이름 바꾸기·복사·삭제 */
   .preset-folder-tools{ margin-top:10px; padding-top:8px; border-top:1px dashed var(--border); }
+  /* 📂 대형 보관함: 폴더 한 칸 → 대형 버튼 목록 → 저장 줄 */
+  .vault-folder-row{ display:flex; gap:6px; align-items:stretch; }
+  .vault-folder-row select{ flex:1 1 auto; min-width:0; margin:0; }
+  .vault-menu-btn{ flex:none; white-space:nowrap; }
+  .vault-menu-btn[aria-expanded="true"]{ border-color:var(--accent); color:var(--accent); }
+  .vault-menu{ margin-top:6px; padding:8px; border:1px dashed var(--border-2); border-radius:10px; }
+  .vault-menu[hidden]{ display:none; }
+  .vault-search{ margin-top:8px !important; }
+  .vault-list{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:6px; margin-top:8px; max-height:300px; overflow-y:auto; padding:2px; }
+  .vault-item{ display:flex; flex-direction:column; align-items:flex-start; gap:1px; text-align:left; padding:7px 9px; border:1px solid var(--border); border-radius:10px; background:var(--panel); color:var(--text); cursor:pointer; font:inherit; min-width:0; transition:border-color .15s ease-out, background .15s ease-out; }
+  .vault-item b{ font-size:13px; font-weight:800; line-height:1.25; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .vault-item small{ font-size:11px; color:var(--muted); line-height:1.25; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .vault-item:hover{ border-color:var(--accent); }
+  .vault-item.active{ border:2px solid var(--accent); background:var(--accent-soft, var(--panel-2)); padding:6px 8px; }
+  .vault-item.final b::before{ content:'⭐ '; }
+  .vault-empty{ grid-column:1/-1; font-size:12px; color:var(--muted); padding:6px 2px; }
+  .vault-item-actions{ display:flex; align-items:center; gap:6px; margin-top:8px; }
+  .vault-item-actions .vault-cur{ flex:1 1 auto; min-width:0; font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .vault-item-actions .btn{ flex:none; padding:5px 10px; font-size:12px; }
+  .vault-item-actions[hidden], #btnSaveAsNew[hidden], #btnEditQuickSave[hidden]{ display:none; }
+  .vault-save{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); }
+  .vault-save-row{ display:flex; gap:6px; align-items:stretch; flex-wrap:wrap; }
+  .vault-save-row input[type=text]{ flex:1 1 160px; min-width:0; margin:0; }
+  .vault-save-row .btn{ flex:none; }
+  .vault-save-note{ margin-top:4px; }
+  .vault-save-note.dirty{ color:var(--warn); font-weight:700; }
   .preset-folder-tools .preset-load-actions{ grid-template-columns:repeat(3, minmax(0,1fr)); }
   select:focus, button:focus-visible, input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
   optgroup{ color:var(--text-dim); font-style:normal; }
@@ -1777,7 +1803,7 @@
   .match-info[open] > summary .fg-title::after{ content:' ▴'; }
   .match-info:not([open]) > summary{ border-bottom:none; padding-bottom:0; }
 
-  /* ---------- 사용 순서: 왼쪽(공격 상황 편집) → 오른쪽(불러오기 → 편집 → 대형 저장 → 최종 → 기록 상황별 대형 → 공유) ---------- */
+  /* ---------- 사용 순서: 왼쪽(공격 상황 편집) → 오른쪽(📂 대형 보관함 → 편집 → 최종 → 기록 상황별 대형 → 공유) ---------- */
   .side-left{ display:flex; flex-direction:column; gap:14px; }
   #cardPresets{ display:flex; flex-direction:column; }
   #presetEditControls, #editModeSection{ display:contents; }
@@ -1786,7 +1812,6 @@
   #grpEdit{ order:2; }
   #finalFormationSection{ order:4; }
   #btnPresetInfoToggle, #presetInfoPanel{ order:5; }
-  #cardSave{ order:3; } /* 편집 모드와 ⭐ 최종 대형 사이 */
   #shareFormationSection{ order:7; }
   #sceneMapSection{ order:7; } /* 대형 공유 바로 위(같은 order면 HTML 순서대로) */
   .scene-map-fold > summary{ list-style:none; cursor:pointer; }
@@ -2242,7 +2267,7 @@
     <div class="modal-body">
       <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
       <ul class="feature-list">
-        <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지와 상대 서브(우리 서브 리시브), 우리 팀 공격 시 커버 6가지, 총 13개 상황을 실제 코트 비율의 애니메이션으로 재생해요. 공격하는 선수와 여러 명의 페이크, 돌아 들어가는 길(경유점)도 정할 수 있어요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 처음에는 <b>기본 대형(3인블로킹 기준)</b> 12가지가 들어 있어 바로 볼 수 있고, 공격 상황 편집(왼쪽) → 대형 불러오기·편집·⭐ 최종 확정·대형 저장·공유(오른쪽) 순서로 내 대형을 만들어 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
+        <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지와 상대 서브(우리 서브 리시브), 우리 팀 공격 시 커버 6가지, 총 13개 상황을 실제 코트 비율의 애니메이션으로 재생해요. 공격하는 선수와 여러 명의 페이크, 돌아 들어가는 길(경유점)도 정할 수 있어요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 처음에는 <b>기본 대형(3인블로킹 기준)</b> 12가지가 들어 있어 바로 볼 수 있고, 공격 상황 편집(왼쪽) → 대형 불러오기·편집·⭐ 최종 확정·대형 저장·공유(오른쪽, 불러오기와 저장은 📂 대형 보관함 한 카드) 순서로 내 대형을 만들어 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요. 상대 서브는 칸 사이나 사이드라인·끝선 쪽으로도 정할 수 있어요.</li>
         <li><b>경기 분석(수동)</b>경기를 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고(마지막 토스와 결과로 정한 ✨ 추천은 점선으로 보이고 ✨ 추천대로로 한 번에 채워요), 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 블로킹 분석은 관련 선수를 골라 두면 누구 손에서 득실이 났는지 위치별로도 보여줘요. 📍 코트 위치에서는 득점·실점·범실이 포지션별로 어떤 기록(빈 곳·사람 쪽 강타, 볼처리, 서브 등)이었는지와 공이 간 방향을 화살표로 보여줘요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 다른 세트로 옮기거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
@@ -2306,7 +2331,8 @@
         <button class="btn gd-more-btn" type="button">⚠️ 참고사항 더 보기 ▾</button>
         <div class="gd-more" style="display:none;">
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
-          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·포지션 배정, <b>오른쪽</b> 대형 불러오기 → 편집 모드 → 대형 저장 → ⭐ 최종 대형 → 기록 상황별 대형 → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
+          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·포지션 배정, <b>오른쪽</b> 📂 대형 보관함(불러오기·저장) → 편집 모드 → ⭐ 최종 대형 → 기록 상황별 대형 → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
+          <li><b>📂 대형 보관함</b>: 맨 위 폴더 칸 하나가 <b>불러올 목록이자 저장할 곳</b>이에요. 폴더를 고르면 그 폴더의 대형이 버튼으로 나오고, 누르면 바로 코트에 불러와요(지금 코트의 대형은 테두리로 표시돼요). 🔍 찾기 칸에 적으면 모든 폴더에서 대형·폴더 이름으로 찾아요. 폴더 이름 바꾸기·복사·삭제와 💡 폴더 이름 Tip은 폴더 칸 옆 <b>⋯ 폴더</b>에 있고, 새 폴더는 폴더 칸 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요. 불러온 대형은 목록 아래에서 <b>✏️ 이름</b>을 바꾸거나 <b>🗑️ 삭제</b>해요. 맨 아래 저장 줄은 이름이 불러온 대형과 같으면 <b>💾 덮어쓰기</b>, 다르면 <b>💾 새로 저장</b>이 되고, <b>➕ 새 이름으로</b>는 불러온 대형은 그대로 두고 하나 더 저장해요. 도트를 고치면 '● 고쳤어요'가 뜨고, 저장하지 않고 다른 대형을 누르면 한 번 물어봐요. 편집 모드를 켜거나 고친 내용이 있으면 편집 모드 카드에도 같은 💾 저장 버튼이 나와서 위로 올라가지 않아도 돼요.</li>
           <li>처음 쓰는 사람(코드 없이 계속하기·새 코드 만들기)은 <b>기본 대형(3인블로킹 기준)</b> 폴더의 대형 12가지로 시작해요. 고쳐서 저장하면 그 방에서는 내 대형이 기준이 되고, 이미 대형을 저장해 둔 방은 그대로예요.</li>
           <li>이동 동선·착지 이동선·커버리지·블로킹 범위는 항상 코트에 함께 표시돼요.</li>
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
@@ -2514,7 +2540,7 @@
 <div id="sideLeft" class="side-left">
 <div class="card" id="cardAttack">
         <details class="attack-fold" id="attackFold" open>
-        <summary><h2>공격 상황 편집</h2><span class="attack-fold-sub">① 공격 상황을 고르고 공격 과정(위치·템포·공격 선수·페이크·착지)을 정해요 → 오른쪽 대형 저장</span></summary>
+        <summary><h2>공격 상황 편집</h2><span class="attack-fold-sub">① 공격 상황을 고르고 공격 과정(위치·템포·공격 선수·페이크·착지)을 정해요 → 오른쪽 📂 대형 보관함에서 저장</span></summary>
 
         <div id="attackCustomControls">
         <div id="customPanel">
@@ -2666,35 +2692,60 @@
         <button class="btn" id="btnPresetInfoToggle" style="width:100%; margin-top:10px;">ℹ️ 참고사항 ▾</button>
         <div id="presetInfoPanel" class="note-box" style="display:none; margin-top:8px;">
           <p style="margin:0 0 8px;"><b>공격 상황 바꾸기</b> — 코트 위 제목을 누르거나 공격 상황 편집의 <b>공격 옵션</b>(상대 공격·우리 공격 → 레프트·A 속공·라이트·시간차·빽차·빽A, 상대 공격 쪽에는 서브도 있어요)을 고르면 그 상황의 ⭐ 최종 대형(없으면 "시나리오별 대형" 폴더의 저장본, 그것도 없으면 "기본 대형(3인블로킹 기준)" 폴더의 대형)이 자동으로 불러와져요.</p>
-          <p style="margin:0 0 8px;"><b>폴더</b> — 골라두면 계속 그 폴더 안에 이어서 저장돼요. 불러온 대형을 수정한 뒤 이름을 그대로 두고 다시 저장하면 같은 항목이 업데이트돼요. 이름은 💡 Tip의 머리말로 정리하면 찾기 쉬워요.</p>
+          <p style="margin:0 0 8px;"><b>📂 대형 보관함</b> — 폴더 칸 하나가 불러올 목록이자 저장할 곳이에요. 대형 버튼을 누르면 바로 불러오고, 고친 뒤 이름을 그대로 두면 <b>💾 덮어쓰기</b>, 하나 더 남기려면 <b>➕ 새 이름으로</b>를 눌러요. 폴더째 이름 바꾸기·복사·삭제와 💡 Tip은 <b>⋯ 폴더</b>에 있어요. 이름은 Tip의 머리말로 정리하면 찾기 쉬워요.</p>
           <p style="margin:0 0 8px;"><b>📋 기록 상황별 대형</b> — 경기 분석 코트 그림에서 블로킹·리시브·다이렉트처럼 공격 위치가 없는 기록에 어떤 공격 상황 대형을 쓸지 골라요(선택). 비워 두면 랠리 토스 순서의 마지막 공격 토스를 따라가요. 아래 <b>🔵 우리 팀 전술 대형</b>에서는 상대 공격·우리 공격 종류마다 우리 팀이 쓸 전술 대형을 골라요(비우면 자동).</p>
           <p style="margin:0 0 8px;"><b>전술별 대형</b> — 같은 공격 옵션이라도 이름을 달리해 저장하면 대형마다 도착 위치·공격 과정이 따로 저장돼요. 고친 뒤 저장하지 않고 다른 전술을 불러오면 저장할지 물어봐요.</p>
           <p style="margin:0;"><b>⭐ 최종 대형</b> — 개설자가 공격 상황마다 하나씩 확정해요. 시나리오를 고르면 가장 먼저 불러와지고, 수정 권한자는 불러오기만 할 수 있어요.</p>
         </div>
       </div>
       <div class="fgroup" id="grpPresetLoad">
-      <div class="fgroup-head"><span class="fg-ic">📂</span><span class="fg-title">저장된 대형 불러오기</span><span class="fg-sub">고르면 바로 코트에 불러와요</span></div>
-      <select id="presetLoadSelect" style="width:100%; margin-top:0;">
-        <option value="">불러올 대형 선택...</option>
-      </select>
-      <div class="preset-load-actions" style="grid-template-columns:repeat(3, minmax(0,1fr));">
-        <button class="btn" id="btnPresetRename" title="선택한 대형 이름 바꾸기">✏️ 수정</button>
-        <button class="btn" id="btnPresetDeleteFromLoad" title="선택한 대형 삭제">🗑️ 삭제</button>
-        <button class="btn" id="btnPresetSearchToggle" title="폴더 검색">🔍 찾기</button>
+      <div class="fgroup-head"><span class="fg-ic">📂</span><span class="fg-title">대형 보관함</span><span class="fg-sub">폴더를 고르고 대형을 누르면 바로 불러와요 · 고친 뒤 아래에서 저장</span></div>
+      <div class="vault-folder-row">
+        <select id="presetFolderSelect" aria-label="폴더 고르기 (불러올 목록이자 저장할 곳)">
+          <option value="">(폴더 없음)</option>
+          <option value="__new__">+ 새 폴더 만들기...</option>
+        </select>
+        <button class="btn vault-menu-btn" id="btnVaultMenu" type="button" aria-expanded="false" title="폴더 이름 바꾸기·복사·삭제, 폴더 이름 Tip">⋯ 폴더</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">목록에서 대형을 고르면 바로 불러와요. 방금 고른 대형은 <b>✏️ 수정</b>으로 이름을 바꾸거나 <b>🗑️ 삭제</b>로 지워요.</div>
-      <div class="preset-folder-tools">
-        <select id="presetFolderPick" style="width:100%; margin-top:0;" aria-label="폴더 고르기"><option value="">📁 폴더 고르기...</option></select>
+      <input type="text" id="presetFolderNew" class="login-input" placeholder="새 폴더 이름 (예: 우리팀 · 기본 로테이션)" style="display:none; margin-top:6px;">
+      <div id="vaultMenu" class="vault-menu" hidden>
         <div class="preset-load-actions">
           <button class="btn" id="btnFolderRename" title="고른 폴더 이름 바꾸기">✏️ 폴더 이름</button>
           <button class="btn" id="btnPresetCopyFolder" title="고른 폴더를 통째로 복사">📄 폴더 복사</button>
           <button class="btn" id="btnFolderDelete" title="고른 폴더와 그 안의 대형 모두 삭제">🗑️ 폴더 삭제</button>
         </div>
-        <div class="field-note" style="margin-top:4px;">폴더를 고르면 폴더째 <b>이름 바꾸기·복사·삭제</b>를 할 수 있어요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때는 복사가 좋아요). 대형을 불러오면 그 대형의 폴더가 자동으로 골라져요. ⭐ 최종 대형 폴더는 여기서 바꿀 수 없어요.</div>
+        <div class="field-note" style="margin-top:4px;">고른 폴더를 폴더째 바꿔요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때는 복사가 좋아요). 새 폴더는 위 목록 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요. ⭐ 최종 대형 폴더는 여기서 바꿀 수 없어요.</div>
+        <button class="btn" id="btnFolderTipToggle" type="button" style="width:100%; margin-top:6px;">💡 폴더 이름 정하는 Tip ▾</button>
+        <div id="folderTipPanel" class="note-box folder-tip" style="display:none; margin-top:8px;">
+          <p style="margin:0 0 8px;">폴더는 <b>용도별 머리말</b>로 시작하면 여러 사람이 써도 정리가 잘 돼요. 아래 머리말을 누르면 새 폴더 이름 칸에 바로 들어가요.</p>
+          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="우리팀 · ">우리팀 · </button><span>우리 팀의 기본·변형 대형 <em>예: 우리팀 · 기본 로테이션</em></span></div>
+          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="상대팀 · ">상대팀 · </button><span>상대 팀별로 분석한 대형 <em>예: 상대팀 · 한빛고</em></span></div>
+          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="의견 · " id="folderTipOpinion">의견 · 내 이름</button><span>팀원 각자 제안하는 대형(자기 이름을 붙여요) <em>예: 의견 · 민수</em></span></div>
+          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="디테일 · ">디테일 · </button><span>블로킹·시간차·커버 등 세부 상황 <em>예: 디테일 · 블로킹 2인</em></span></div>
+          <p style="margin:8px 0 0;"><b>⭐ 최종 대형</b> 폴더는 개설자가 위 폴더들의 의견을 모아 확정한 대형이 저장되는 곳이라, 개설자만 저장·수정할 수 있어요.</p>
+        </div>
       </div>
-      <div id="presetSearchBox" style="display:none; margin-top:8px;">
-        <input type="text" id="presetSearchInput" class="login-input" placeholder="폴더 이름으로 검색 (예: 위드나인)" style="margin-top:0;">
-        <div class="preset-list" id="presetList" style="margin-top:10px;"></div>
+      <input type="search" id="vaultSearch" class="login-input vault-search" placeholder="🔍 대형·폴더 이름으로 찾기 (모든 폴더)" aria-label="대형 찾기">
+      <div class="vault-list" id="vaultList"></div>
+      <div class="vault-item-actions" id="vaultItemActions">
+        <span class="vault-cur" id="vaultCur"></span>
+        <button class="btn" id="btnPresetRename" type="button" title="불러온 대형 이름 바꾸기">✏️ 이름</button>
+        <button class="btn" id="btnPresetDeleteFromLoad" type="button" title="불러온 대형 삭제">🗑️ 삭제</button>
+      </div>
+      <div class="vault-save" id="vaultSaveBox">
+        <input type="hidden" id="presetFolder">
+        <div class="vault-save-row">
+          <input type="text" id="presetName" placeholder="대형 이름 (예: 기본 로테이션 1)" maxlength="20" aria-label="저장할 대형 이름">
+          <button class="btn primary" id="btnSavePreset" type="button" style="white-space:nowrap;">💾 저장</button>
+          <button class="btn" id="btnSaveAsNew" type="button" style="white-space:nowrap;" hidden title="지금 코트의 대형을 다른 이름으로 하나 더 저장해요(불러온 대형은 그대로)">➕ 새 이름으로</button>
+        </div>
+        <div class="field-note vault-save-note" id="vaultSaveNote"></div>
+      </div>
+      <div style="display:none;">
+        <select id="presetLoadSelect"><option value="">불러올 대형 선택...</option></select>
+        <select id="presetFolderPick"><option value="">📁 폴더 고르기...</option></select>
+        <button id="btnPresetSearchToggle" type="button"></button>
+        <div id="presetSearchBox" style="display:none;"><input type="text" id="presetSearchInput"><div class="preset-list" id="presetList"></div></div>
       </div>
       </div>
       <div class="edit-hint" id="autoSaveStatus"></div>
@@ -2730,36 +2781,10 @@
         </details>
         <div class="btn-row" style="margin-top:10px;">
           <button class="btn" id="btnResetCurrent" disabled>현재 모드 초기화</button>
+          <button class="btn primary" id="btnEditQuickSave" type="button" hidden title="위 📂 대형 보관함의 저장과 같아요">💾 저장</button>
         </div>
 
         <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
-        </div>
-
-        <div class="fgroup" id="cardSave">
-          <div class="fgroup-head"><span class="fg-ic">💾</span><span class="fg-title">대형 저장</span><span class="fg-sub">지금 코트의 대형을 폴더에 저장해요</span></div>
-          <div class="field-note" style="margin-top:0; margin-bottom:8px;">공격 상황·공격 과정을 정하고 도트 위치를 고쳤으면, 폴더와 이름을 정해 <b>지금 코트의 대형</b>을 저장해요. 저장한 대형은 위 <b>저장된 대형 불러오기</b>에서 다시 불러오고, 개설자가 ⭐ 최종 대형으로 확정해요. 같은 공격 옵션이라도 <b>이름을 달리하면 전술마다 따로</b> 저장되고, 도착 위치·공격 과정도 그 대형과 함께 저장돼요.</div>
-        <div id="grpPresetSave">
-        <label class="field-label" style="margin-top:0;">폴더</label>
-        <select id="presetFolderSelect">
-          <option value="">(폴더 없음)</option>
-          <option value="__new__">+ 새 폴더 만들기...</option>
-        </select>
-        <input type="text" id="presetFolderNew" class="login-input" placeholder="새 폴더 이름 (예: 우리팀 · 기본 로테이션)" style="display:none; margin-top:6px;">
-        <button class="btn" id="btnFolderTipToggle" type="button" style="width:100%; margin-top:6px;">💡 폴더 이름 정하는 Tip ▾</button>
-        <div id="folderTipPanel" class="note-box folder-tip" style="display:none; margin-top:8px;">
-          <p style="margin:0 0 8px;">폴더는 <b>용도별 머리말</b>로 시작하면 여러 사람이 써도 정리가 잘 돼요. 아래 머리말을 누르면 새 폴더 이름 칸에 바로 들어가요.</p>
-          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="우리팀 · ">우리팀 · </button><span>우리 팀의 기본·변형 대형 <em>예: 우리팀 · 기본 로테이션</em></span></div>
-          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="상대팀 · ">상대팀 · </button><span>상대 팀별로 분석한 대형 <em>예: 상대팀 · 한빛고</em></span></div>
-          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="의견 · " id="folderTipOpinion">의견 · 내 이름</button><span>팀원 각자 제안하는 대형(자기 이름을 붙여요) <em>예: 의견 · 민수</em></span></div>
-          <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="디테일 · ">디테일 · </button><span>블로킹·시간차·커버 등 세부 상황 <em>예: 디테일 · 블로킹 2인</em></span></div>
-          <p style="margin:8px 0 0;"><b>⭐ 최종 대형</b> 폴더는 개설자가 위 폴더들의 의견을 모아 확정한 대형이 저장되는 곳이라, 개설자만 저장·수정할 수 있어요.</p>
-        </div>
-        <div class="preset-input-row" style="margin-top:8px;">
-          <input type="hidden" id="presetFolder">
-          <input type="text" id="presetName" placeholder="예: 기본 로테이션 1" maxlength="20">
-          <button class="btn" id="btnSavePreset" style="white-space:nowrap;">저장</button>
-        </div>
-        </div>
         </div>
 
         <div class="fgroup" id="sceneMapSection">
@@ -4736,9 +4761,12 @@
     const newFolderInput = document.getElementById('presetFolderNew');
     const isCreatingNew = newFolderInput.style.display!=='none';
     folderSelect.innerHTML = '<option value="">(폴더 없음)</option>';
-    folderNames.forEach(f=>{ const opt=document.createElement('option'); opt.value=f; opt.textContent='📁 '+f; folderSelect.appendChild(opt); });
+    const nIn = f => presets.filter(p=>(p.folder||'')===f).length;
+    folderSelect.options[0].textContent = `(폴더 없음) (${nIn('')})`;
+    folderNames.forEach(f=>{ const opt=document.createElement('option'); opt.value=f; opt.textContent=`📁 ${f} (${nIn(f)})`; folderSelect.appendChild(opt); });
     const newOpt=document.createElement('option'); newOpt.value='__new__'; newOpt.textContent='+ 새 폴더 만들기...'; folderSelect.appendChild(newOpt);
     folderSelect.value = isCreatingNew ? '__new__' : (folderNames.includes(currentFolderValue) ? currentFolderValue : '');
+    renderVault();
 
     if(presets.length===0){ /* nothing saved yet — search results function will show its own empty message */ }
     renderPresetSearchResults();
@@ -4746,6 +4774,97 @@
     renderFinalSection();
     renderFormationComment();
   }
+
+
+  // ---------- 📂 대형 보관함: 폴더 한 칸(불러올 목록이자 저장할 곳) → 대형 버튼 목록 → 저장 줄 ----------
+  function vEsc(t){ return String(t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function vaultTarget(){
+    const name = document.getElementById('presetName').value.trim(), folder = document.getElementById('presetFolder').value.trim();
+    if(!name) return null;
+    if(activePreset && presets.includes(activePreset) && activePreset.name===name && (activePreset.folder||'')===folder) return activePreset;
+    return presets.find(p=>p.name===name && (p.folder||'')===folder) || null;
+  }
+  // 불러온 대형과 지금 코트(시작 위치·상대 위치·공격 과정)가 다르면 "저장 안 한 변경"이에요
+  function vaultDirty(){
+    const p = activePreset && presets.includes(activePreset) ? activePreset : null;
+    if(!p || !p.base) return false;
+    const same = (a, b) => !!a && !!b && Math.abs(a[0]-b[0])<0.5 && Math.abs(a[1]-b[1])<0.5;
+    if(IDS.some(id=>!same(CUSTOM_BASE[id], p.base[id]))) return true;
+    if(p.oppBase && Object.keys(ORIGINAL_OPP_BASE).some(id=>p.oppBase[id] && !same(CUSTOM_OPP_BASE[id], p.oppBase[id]))) return true;
+    if(p.tactic && p.tactic.scen===scenario){ try{ if(JSON.stringify(tacticSnap(scenario))!==JSON.stringify(p.tactic)) return true; }catch(err){} }
+    return false;
+  }
+  function updateVaultSave(){
+    const btn = document.getElementById('btnSavePreset'); if(!btn) return;
+    const name = document.getElementById('presetName').value.trim(), folder = document.getElementById('presetFolder').value.trim();
+    const t = vaultTarget(), dirty = vaultDirty();
+    btn.textContent = t ? '💾 덮어쓰기' : '💾 새로 저장';
+    document.getElementById('btnSaveAsNew').hidden = !t;
+    const note = document.getElementById('vaultSaveNote');
+    const where = folder ? (folder===FINAL_FOLDER ? '⭐ 최종 대형' : '📁 '+folder) : '(폴더 없음)';
+    note.classList.toggle('dirty', dirty);
+    note.textContent = dirty ? `● '${activePreset.name}'을(를) 고쳤어요. 저장하지 않고 다른 대형을 불러오면 고친 내용이 사라져요.`
+      : t ? `'${name}'에 지금 코트의 대형을 덮어써요(${where}).`
+      : `${where}에 ${name ? `'${name}'(으)로 ` : ''}새 대형을 저장해요.`;
+    const q = document.getElementById('btnEditQuickSave');
+    if(q){ q.hidden = !(editMode || overrideMode || dirty); q.textContent = t ? `💾 '${t.name}' 덮어쓰기` : '💾 새로 저장'; }
+  }
+  function renderVault(){
+    const list = document.getElementById('vaultList'); if(!list) return;
+    const folder = document.getElementById('presetFolder').value.trim();
+    const creating = document.getElementById('presetFolderNew').style.display!=='none';
+    const q = (document.getElementById('vaultSearch').value||'').trim().toLowerCase();
+    const scenName = p => { const k = resolveScenarioForPreset(p); return k ? (SCEN_LABEL[k]||'') : ''; };
+    let items;
+    if(q) items = presets.filter(p=>(p.name||'').toLowerCase().includes(q) || (p.folder||'').toLowerCase().includes(q));
+    else items = presets.filter(p=>(p.folder||'')===folder);
+    list.innerHTML = items.length ? items.map(p=>{
+      const sc = scenName(p), scen = sc && sc!==p.name ? sc : ''; // 이름이 공격 상황과 같으면 한 번만 보여줘요
+      const sub = q ? `${p.folder ? (p.folder===FINAL_FOLDER ? '⭐ 최종' : '📁 '+p.folder) : '폴더 없음'}${scen ? ' · '+scen : ''}` : scen;
+      return `<button type="button" class="vault-item${p===activePreset?' active':''}${isFinalPreset(p)?' final':''}" data-i="${presets.indexOf(p)}" title="${vEsc((p.folder?p.folder+' / ':'')+p.name)} — 누르면 불러와요"><b>${vEsc(p.name)}</b>${sub ? `<small>${vEsc(sub)}</small>` : ''}</button>`;
+    }).join('') : `<div class="vault-empty">${q ? '찾는 대형이 없어요.' : creating ? '새 폴더예요. 아래에 이름을 적고 저장하면 이 폴더에 들어가요.' : '이 폴더에는 대형이 없어요. 코트를 맞춘 뒤 아래에서 저장해요.'}</div>`;
+    const a = activePreset && presets.includes(activePreset) ? activePreset : null;
+    document.getElementById('vaultCur').textContent = a ? `불러온 대형: ${a.folder ? (a.folder===FINAL_FOLDER ? '⭐ ' : a.folder+' / ') : ''}${a.name}` : '불러온 대형 없음';
+    document.getElementById('vaultItemActions').hidden = !a;
+    updateVaultSave();
+  }
+  document.getElementById('vaultList').addEventListener('click', e=>{
+    const b = e.target.closest('.vault-item'); if(!b) return;
+    const p = presets[Number(b.dataset.i)]; if(!p) return;
+    if(p!==activePreset && vaultDirty() && !confirm(`'${activePreset.name}'을(를) 고친 뒤 저장하지 않았어요. 그래도 '${p.name}'을(를) 불러올까요?`)) return;
+    folderPickTouched = null; loadPreset(p); lastPickedPreset = p;
+  });
+  document.getElementById('vaultSearch').addEventListener('input', renderVault);
+  // 폴더 칸의 원래 처리(저장할 폴더 정하기)가 끝난 뒤에 목록을 다시 그려요
+  document.getElementById('presetFolderSelect').addEventListener('change', e=>{ folderPickTouched = e.target.value && e.target.value!=='__new__' ? e.target.value : null; setTimeout(renderVault, 0); });
+  document.getElementById('presetFolderNew').addEventListener('input', ()=>setTimeout(renderVault, 0));
+  document.getElementById('presetName').addEventListener('input', updateVaultSave);
+  document.getElementById('btnVaultMenu').addEventListener('click', ()=>{
+    const m = document.getElementById('vaultMenu'), b = document.getElementById('btnVaultMenu');
+    m.hidden = !m.hidden; b.setAttribute('aria-expanded', m.hidden ? 'false' : 'true');
+  });
+  document.getElementById('btnSaveAsNew').addEventListener('click', ()=>{
+    const input = document.getElementById('presetName'), folder = document.getElementById('presetFolder').value.trim();
+    const base = input.value.trim() || '대형';
+    let k = 2, guess = `${base} ${k}`;
+    while(presets.some(p=>p.name===guess && (p.folder||'')===folder)) guess = `${base} ${++k}`;
+    const nm = (prompt('새 이름을 적어주세요. 불러온 대형은 그대로 두고 하나 더 저장해요.', guess.slice(0,20)) || '').trim().slice(0,20);
+    if(!nm) return;
+    if(presets.some(p=>p.name===nm && (p.folder||'')===folder) && !confirm(`'${nm}'이(가) 이 폴더에 이미 있어요. 덮어쓸까요?`)) return;
+    input.value = nm;
+    document.getElementById('btnSavePreset').click();
+  });
+  document.getElementById('btnEditQuickSave').addEventListener('click', ()=>{
+    if(!document.getElementById('presetName').value.trim()){
+      const box = document.getElementById('vaultSaveBox'); box.scrollIntoView({behavior:'smooth', block:'center'});
+      document.getElementById('presetName').focus(); return;
+    }
+    document.getElementById('btnSavePreset').click();
+  });
+  // 도트를 끌거나 공격 과정을 바꾸면 "저장 안 한 변경" 표시를 바로 고쳐요(계산이 가벼워서 누를 때마다 확인해요)
+  let vaultRaf = 0;
+  const vaultSoon = () => { cancelAnimationFrame(vaultRaf); vaultRaf = requestAnimationFrame(updateVaultSave); };
+  ['pointerup','change','click','keyup'].forEach(ev=>document.addEventListener(ev, vaultSoon, true));
 
   function renderFinalSection(){
     const sec = document.getElementById('finalFormationSection');
@@ -5464,6 +5583,7 @@
     e.target.value = p ? String(presets.indexOf(p)) : ''; // 불러온 대형 이름이 목록 칸에 계속 보여요
   });
   document.getElementById('btnPresetRename').addEventListener('click', ()=>{
+    if(activePreset && presets.includes(activePreset)) lastPickedPreset = activePreset; // 보관함에서는 불러온 대형을 바꿔요
     if(!lastPickedPreset || !presets.includes(lastPickedPreset)){
       alert('먼저 위 목록에서 이름을 바꿀 대형을 선택해주세요.');
       return;
@@ -5471,7 +5591,8 @@
     if(!guardFinal(lastPickedPreset, '이름 변경')) return;
     const newName = (prompt('새 이름을 입력해주세요.', lastPickedPreset.name) || '').trim();
     if(!newName) return;
-    lastPickedPreset.name = newName.slice(0,40);
+    lastPickedPreset.name = newName.slice(0,20);
+    if(lastPickedPreset===activePreset) document.getElementById('presetName').value = lastPickedPreset.name;
     renderPresets();
     scheduleAutoSave();
   });
@@ -5491,8 +5612,9 @@
   }
   document.getElementById('presetFolderPick').addEventListener('change', e=>{ folderPickTouched = e.target.value || null; });
   function pickedFolder(action){
-    const f = document.getElementById('presetFolderPick').value;
-    if(!f){ alert(`먼저 ${action}할 폴더를 골라주세요.`); return null; }
+    const f = document.getElementById('presetFolder').value.trim();
+    if(!f || !presets.some(p=>(p.folder||'')===f)){ alert(`먼저 위 폴더 칸에서 ${action}할 폴더를 골라주세요.`); return null; }
+    if(f===FINAL_FOLDER){ alert('⭐ 최종 대형 폴더는 여기서 바꿀 수 없어요.'); return null; }
     return f;
   }
   document.getElementById('btnPresetCopyFolder').addEventListener('click', ()=>{
@@ -5524,6 +5646,7 @@
     renderPresets(); updateTexts(); scheduleAutoSave();
   });
   document.getElementById('btnPresetDeleteFromLoad').addEventListener('click', ()=>{
+    if(activePreset && presets.includes(activePreset)) lastPickedPreset = activePreset;
     const i = presets.indexOf(lastPickedPreset);
     if(!lastPickedPreset || i===-1){
       alert('먼저 위 목록에서 삭제할 대형을 선택해주세요.');
@@ -5563,6 +5686,7 @@
     }
     pendingComment = '';
     pendingActionDescription = `'${name}' 대형을 저장했어요`;
+    document.getElementById('presetFolderNew').style.display = 'none'; // 새 폴더에 저장했으면 폴더 칸이 그 폴더를 보여줘요
     renderPresets();
     updateTexts();
     scheduleAutoSave();
@@ -6202,7 +6326,7 @@
     // hide (not just disable) editor-only controls entirely, per the "view via link" default:
     // only the simulation, description, position assignment, and read-only saved-formation
     // browsing stay visible.
-    const hideIds = ['presetEditControls','editModeSection','attackCustomControls','autoSaveStatus','cardSave','playNote'];
+    const hideIds = ['presetEditControls','editModeSection','attackCustomControls','autoSaveStatus','btnVaultMenu','vaultMenu','vaultItemActions','vaultSaveBox','playNote'];
     hideIds.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
     document.querySelectorAll('#posGrid select, #oppPosGrid select, #posGrid input, #oppPosGrid input').forEach(s=>s.disabled=true);
     document.getElementById('btnSaveRoom').style.display='none';
@@ -6607,24 +6731,24 @@
         script:[ {click:'.k-combo', then:(el,sc)=>{ sc.querySelector('.k-a1').classList.remove('on'); sc.querySelector('.k-a2').classList.add('on'); sc.querySelector('.k-f1').classList.add('on'); sc.querySelector('.k-f2').classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }},
                  {wait:1800} ] },
       { title:'폴더를 정해서 저장해요',
-        text:'공격 과정을 정하고 도트 위치를 고쳤으면 오른쪽 <b>대형 불러오기 & 편집</b>의 <b>💾 대형 저장</b>(편집 모드 바로 아래)에서 저장해요. <b>💡 폴더 이름 정하는 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)을 누르면 폴더 이름이 바로 채워져요. 대형 이름을 적고 저장하면 같은 카드의 "저장된 대형 불러오기"에서 언제든 불러와요. 처음에는 기본 대형(3인블로킹 기준) 폴더가 들어 있어요.',
+        text:'공격 과정을 정하고 도트 위치를 고쳤으면 오른쪽 <b>📂 대형 보관함</b> 맨 아래 저장 줄에서 저장해요(편집 중이면 편집 모드 카드의 💾 저장도 같아요). 새 폴더는 폴더 칸의 <b>+ 새 폴더 만들기</b>를 고르고, <b>⋯ 폴더 → 💡 폴더 이름 정하는 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)을 누르면 이름이 바로 채워져요. 대형 이름을 적고 <b>💾 새로 저장</b>을 누르면 그 폴더 목록에 버튼으로 생겨요. 처음에는 기본 대형(3인블로킹 기준) 폴더가 들어 있어요.',
         scene:`<div class="mk-card"><div class="mk-lbl">💡 폴더 이름 정하는 Tip</div>
           <div class="mk-row"><span class="mk-btn">우리팀 · </span><span class="mk-btn">상대팀 · </span><span class="mk-btn k-op">의견 · 민수</span><span class="mk-btn">디테일 · </span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:40px;">폴더</span><div class="mk-input k-folder" data-ph="새 폴더 이름"></div></div>
-          <div class="mk-row"><span class="mk-lbl" style="width:40px;">이름</span><div class="mk-input k-name" data-ph="대형 이름"></div><span class="mk-btn big k-save">저장</span></div></div>
+          <div class="mk-row"><span class="mk-lbl" style="width:40px;">이름</span><div class="mk-input k-name" data-ph="대형 이름"></div><span class="mk-btn big k-save">💾 새로 저장</span></div></div>
           <div class="mk-toast k-toast">'의견 · 민수' 폴더에 저장했어요</div>`,
         script:[ {click:'.k-op', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-folder').textContent='의견 · 민수'; }},
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'불러와서 고쳐요',
-        text:'오른쪽 <b>대형 불러오기 & 편집</b>에서 저장된 대형을 불러오고(아래 <b>📁 폴더 고르기</b>에서 폴더를 고르면 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요(상대팀 도트도 우리 팀처럼 옮겨져요. 상대 공격수 동선만 공격 과정으로 정해요). 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 편집 모드를 <b>끔</b>으로 돌려야 ▶ 재생 버튼이 눌러져요.',
+        text:'오른쪽 <b>📂 대형 보관함</b>에서 폴더를 고르고 대형 버튼을 눌러 불러오고(<b>⋯ 폴더</b>에서 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요(상대팀 도트도 우리 팀처럼 옮겨져요. 상대 공격수 동선만 공격 과정으로 정해요). 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 편집 모드를 <b>끔</b>으로 돌려야 ▶ 재생 버튼이 눌러져요. 고친 대형은 편집 모드 카드의 <b>💾 덮어쓰기</b>로 바로 저장하거나, 보관함의 <b>➕ 새 이름으로</b> 하나 더 남겨요.',
         scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
                  {wait:1500} ] },
       { title:'⭐ 최종 대형을 확정해요 (개설자)',
         text:'개설자는 의견·디테일 폴더의 대형을 불러와 비교한 뒤 <b>⭐ 지금 대형을 최종으로 확정</b>을 눌러요. 공격 상황마다 하나씩 저장되고, 수정 권한자는 불러오기만 할 수 있어요.',
-        scene:`<div class="mk-card"><div class="mk-lbl">저장된 대형 불러오기</div>
+        scene:`<div class="mk-card"><div class="mk-lbl">📂 대형 보관함</div>
           <div class="mk-list"><div class="mk-item">📁 의견 · 민수 / 리시브 대형 A</div><div class="mk-item k-pick">📁 의견 · 지훈 / 리시브 대형 B</div></div></div>
           <div class="mk-card" style="border-color:rgba(255,210,63,.5);"><div class="mk-h">⭐ 최종 대형 <span class="mk-lbl">· 상대 좌측(L) 오픈 공격</span></div>
           <div class="mk-lbl k-status">아직 이 공격 상황의 최종 대형이 없어요.</div>
