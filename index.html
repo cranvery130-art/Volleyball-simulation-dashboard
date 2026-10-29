@@ -1299,6 +1299,9 @@
   .ta-pareto{ width:100%; max-width:760px; height:auto; display:block; margin-top:2px; }
   .ta-pareto.sm .ta-pl, .ta-pareto.sm .ta-pv{ font-size:11.5px; } .ta-pareto .ta-prk{ font-size:10px; font-weight:800; fill:var(--panel); font-family:var(--body); }
   .ta-leak{ width:100%; max-width:760px; height:auto; display:block; margin-top:4px; overflow:visible; cursor:grab; touch-action:pan-y; user-select:none; -webkit-user-select:none; } .ta-leak.dragging{ cursor:grabbing; }
+  .ta-leak .lk-shadow{ fill:none; stroke:rgba(0,0,0,.09); stroke-linecap:round; } .ta-pareto .ta-prow{ fill:transparent; } .ta-pareto .ta-pic{ fill:var(--muted); font-size:10px; }
+  .lk-item{ transition:opacity .15s ease-out; } .lk-hl .ta-leak .lk-item:not(.on){ opacity:.12; } .lk-hl .ta-pareto .lk-item:not(.on){ opacity:.3; } .ta-pareto .lk-item.on .ta-prow{ fill:var(--accent-soft); } .ta-leak .lk-item.on path{ filter:drop-shadow(0 0 3px var(--text)); }
+  .lk-key{ font-size:11px; margin-top:2px; } .ta-leak .lk-lead{ stroke:var(--muted); stroke-width:1; }
   .ta-leak-pair{ display:flex; flex-direction:column; gap:10px; } .ta-leak-pair.wide{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; } .ta-leak-col{ min-width:0; }
   .lk-ctl{ display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--muted); margin-top:2px; } .lk-ctl .lk-reset{ margin-left:auto; font-size:11.5px; padding:3px 10px; border-radius:999px; border:1px solid var(--border-2); background:var(--panel); color:var(--text-dim); cursor:pointer; }
   .ta-leak .lk-l{ stroke:var(--text-dim); stroke-width:1.4; } .ta-leak .lk-a{ stroke:var(--border-2); stroke-width:1; stroke-dasharray:5 4; }
@@ -2425,7 +2428,7 @@
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
           <li><b>🎯 빠른 기록 모드</b>는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝내요. 휴대폰·태블릿을 <b>가로</b>로 돌려도 한 화면에 맞춰져요: 휴대폰 가로는 왼쪽(세트·토스·결과)·오른쪽(상황·자세히 기록·기록하기) 두 칸으로 나뉘고, 자세히 기록을 펼치면 왼쪽 칸 위에 겹쳐 열려요(점수 기록은 위쪽 📋 기록 버튼). 태블릿 가로·PC는 오른쪽에 점수 기록 칸이 붙고 코트 그림은 그 칸 맨 아래에 나와요. 기본 화면은 접힌 경기 영상 → 종합 분석·그래프(넓은 화면은 왼쪽 종합 분석·오른쪽 그래프로 반반, 좁은 화면은 위아래) → 접힌 기록 순서로 놓이고, 접힌 칸은 제목을 누르면 펼쳐져요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
-          <li><b>📊 팀 누적 분석</b>: 맨 위 <b>📊 팀 누적 분석</b> 배너를 누르면 팀 누적 분석만 크게 보여요(한 경기 기록·그래프·종합 분석은 <b>📝 경기 분석(수동)</b> 배너에 있어요). 먼저 <b>남자부·여자부</b>를 고르고 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 부에서 그 팀이 나온 저장 폴더만 모아(같은 이름의 팀이어도 다른 부 기록은 섞이지 않아요. 부를 아직 안 정한 예전 폴더는 "부 미지정"으로 따로 모여요) 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. <b>📋 전체 지표</b>에서는 상대팀 버튼으로 그 팀과 한 경기만 따로 볼 수 있고(점선 = 모든 경기 평균), 플레이 체제의 <b>실점 원인 순위</b>(왼쪽)는 실점의 80%를 만드는 원인을 진하게 보여주고, 오른쪽 <b>실점 원인 지도</b>는 원인마다 가장 많이 실점한 자리에 기둥(높이 = 실점 수, 기둥 번호 = 순위)을 세운 입체 코트예요. 지도를 좌우로 끌면 360도 돌려 볼 수 있고, <b>↺ 처음 방향</b>으로 되돌려요(휴대폰은 순위 아래에 지도가 나와요). 맨 아래 <b>🔎 상세 분석 누적</b>에서는 그래프의 상세 분석(⚔️ 공격·🧱 블로킹·📍 코트 위치)을 그 팀이 나온 모든 경기로 합쳐 봐요(🔵 그 팀 / 🔴 상대한 팀들). 위에 이미 있는 공격 위치와 토스 방향(세터 배분)은 빼고, 코트 자리는 경기마다 그 경기 명단·대형으로 정해 그 팀이 늘 아래쪽에 오게 모아요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
+          <li><b>📊 팀 누적 분석</b>: 맨 위 <b>📊 팀 누적 분석</b> 배너를 누르면 팀 누적 분석만 크게 보여요(한 경기 기록·그래프·종합 분석은 <b>📝 경기 분석(수동)</b> 배너에 있어요). 먼저 <b>남자부·여자부</b>를 고르고 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 부에서 그 팀이 나온 저장 폴더만 모아(같은 이름의 팀이어도 다른 부 기록은 섞이지 않아요. 부를 아직 안 정한 예전 폴더는 "부 미지정"으로 따로 모여요) 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. <b>📋 전체 지표</b>에서는 상대팀 버튼으로 그 팀과 한 경기만 따로 볼 수 있고(점선 = 모든 경기 평균), 플레이 체제의 <b>실점 원인 순위</b>(왼쪽)는 실점의 80%를 만드는 원인을 진하게 보여주고, 오른쪽 <b>실점 원인 지도</b>는 원인마다 공이 지나간 길을 입체로 그려요(서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕ · 선 굵기 = 실점 수 · 번호 = 순위 · 빨강 = 상대가 낸 점수, 노랑 = 이 팀 범실). 지도를 좌우로 끌면 360도 돌려 볼 수 있고 <b>↺ 처음 방향</b>으로 되돌려요. 궤적이나 순위 줄에 커서를 대면(휴대폰은 누르면) 양쪽에서 같은 원인만 또렷하게 보여요(휴대폰은 순위 아래에 지도가 나와요). 원인이 많아도 15개까지는 순위 막대로 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 그래프의 상세 분석(⚔️ 공격·🧱 블로킹·📍 코트 위치)을 그 팀이 나온 모든 경기로 합쳐 봐요(🔵 그 팀 / 🔴 상대한 팀들). 위에 이미 있는 공격 위치와 토스 방향(세터 배분)은 빼고, 코트 자리는 경기마다 그 경기 명단·대형으로 정해 그 팀이 늘 아래쪽에 오게 모아요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li><b>✨ 추천(점선)</b>: 결과 버튼을 누르면 <b>랠리 토스 순서의 마지막 토스</b>와 결과로 그럴듯한 세부 상황에 점선이 둘러져요(마지막 토스를 올린 팀의 득점·범실 → 그 공격 위치, 상대 팀 득점 → 블로킹, 상대 팀 범실 → 블로킹·리시브, 토스가 없으면 → 서브·서브캐치). 세부 상황을 고르면 "자세히 기록"에도 점선이 생겨요: 🔵·🔴 선수(그 공격 자리에 서는 공격수, 맞은편 전위 블로커, 공이 간 곳 가까이 있던 수비, 경기 정보의 <b>서브 순서</b>와 앞 점수로 정한 서버), 블로킹 인원(대형에서 네트 앞에 선 수), 공격 방식(고른 🎯 공 방향으로: 앞줄 → 페인트·볼처리, 코트 밖 → 터치아웃·아웃), 🎯 공 방향(고른 방식으로: 페인트·네트인 → 때린 쪽 앞줄, 볼처리·강타 빈 곳 → 대형에서 빈 자리, 사람 쪽 → 대형 재생 때 공이 간 자리, 터치아웃 → 그쪽 코트 밖). 코트 그림에도 추천 선수는 점선 고리, 추천 공은 점선 공으로 나와요. 점선은 표시만 하고, 눌러야 골라져요. <b>✨ 추천대로</b>(자세히 기록 제목 줄 오른쪽)를 누르면 아직 고르지 않은 칸 중 추천이 하나인 것을 한 번에 채워요. 공격 기록에서 🎯 공 방향을 고르지 않고 기록하면 추천 공 방향이 <b>추천 표시</b>를 단 채 함께 남고, 코트 위치 분석의 <b>✨ 추천 공 방향 포함</b>을 끄면 직접 고른 공 방향만으로 볼 수 있어요(실점 원인 지도도 같이 바뀌어요). 마지막 토스·앞 점수와 고른 결과가 어긋나면(예: 마지막 토스가 🔴인데 🔵 공격, 앞 점수를 🔴가 냈는데 🔵 서브) 기록하기 위에 ⚠️ 한 줄이 떠요. 기록은 그대로 할 수 있어요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
@@ -6970,7 +6973,7 @@
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] },
       { title:'팀 누적 분석으로 한 팀을 모아 봐요',
-        text:'맨 위 <b>📊 팀 누적 분석</b> 배너를 눌러(한 경기 기록·그래프는 <b>📝 경기 분석(수동)</b>) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 득점·실점 구성 가로 막대, 구성 띠, 실점 원인 지도·순위, 경기별 흐름 선, 상대팀별 좌우 막대). <b>📋 전체 지표</b> 위의 상대팀 버튼(예: vs 한빛)을 누르면 그 팀과 한 경기만으로 지표를 다시 계산하고, 막대의 점선으로 모든 경기 평균과 비교해요. <b>실점 원인 지도</b>는 <b>실점 원인 순위</b> 오른쪽(휴대폰은 아래)에 있는 입체 코트(처음엔 아래 = 이 팀 코트)로, 원인마다 기둥을 세워요. 좌우로 끌면 360도 돌아가고 <b>↺ 처음 방향</b>으로 되돌려요. 기둥 높이는 실점 수, 자리는 그 원인이 가장 많이 난 곳(기록한 공 방향(✨ 추천 공 방향은 코트 위치 분석에서 켰을 때만) → 🎯 9칸 → 상황별 대표 자리 순: 서브 범실은 끝선, 리시브는 리시브 자리, 파울·블로킹은 네트 앞, 방향이 없는 상대 공격은 때린 자리)이고, 번호는 <b>실점 원인 순위</b>와 같아요. 순위는 상대가 낸 점수와 범실을 많은 순서로 놓고 선으로 누적 몫을 그려서, 실점의 80%를 만드는 원인을 진하게 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 방식·블로킹·코트 위치를 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요. <b>⭐ 우리팀</b>을 정했으면 열자마자 우리팀을 보여주고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 우리팀이 그 팀을 만났을 때 막을 것·노릴 것을 먼저 정리해요.',
+        text:'맨 위 <b>📊 팀 누적 분석</b> 배너를 눌러(한 경기 기록·그래프는 <b>📝 경기 분석(수동)</b>) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 득점·실점 구성 가로 막대, 구성 띠, 실점 원인 지도·순위, 경기별 흐름 선, 상대팀별 좌우 막대). <b>📋 전체 지표</b> 위의 상대팀 버튼(예: vs 한빛)을 누르면 그 팀과 한 경기만으로 지표를 다시 계산하고, 막대의 점선으로 모든 경기 평균과 비교해요. <b>실점 원인 지도</b>는 <b>실점 원인 순위</b> 오른쪽(휴대폰은 아래)에 있는 입체 코트(처음엔 아래 = 이 팀 코트)로, 원인마다 공이 지나간 길을 그려요. 서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕이고, 빨강은 상대가 낸 점수·노랑은 이 팀 범실이에요. 좌우로 끌면 360도 돌아가고 <b>↺ 처음 방향</b>으로 되돌려요. 궤적에 커서를 대면 순위의 같은 줄이 강조돼요. 선 굵기는 실점 수, 공이 떨어진 곳은 그 원인이 가장 많이 난 곳(기록한 공 방향(✨ 추천 공 방향은 코트 위치 분석에서 켰을 때만) → 🎯 9칸 → 상황별 대표 자리 순: 서브 범실은 끝선, 리시브는 리시브 자리, 파울·블로킹은 네트 앞, 방향이 없는 공격은 때린 자리. 공격 자리는 그 팀이 네트를 바라볼 때 왼쪽부터 레프트·앞차·A·세터·B·백A·백차·라이트 순이라 상대팀은 화면에서 좌우가 뒤집혀요)이고, 번호는 <b>실점 원인 순위</b>와 같아요. 순위는 상대가 낸 점수와 범실을 많은 순서로 놓고 선으로 누적 몫을 그려서, 실점의 80%를 만드는 원인을 진하게 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 방식·블로킹·코트 위치를 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요. <b>⭐ 우리팀</b>을 정했으면 열자마자 우리팀을 보여주고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 우리팀이 그 팀을 만났을 때 막을 것·노릴 것을 먼저 정리해요.',
         scene:`<div class="mk-card"><div class="mk-h">📊 팀 누적 분석</div><div class="mk-row"><span class="mk-btn k-t1">위드나인 5경기</span><span class="mk-btn">한빛 2경기</span><span class="mk-btn">다온 1경기</span></div>
           <div class="mk-col k-res" style="display:none;"><div class="mk-lbl"><b>위드나인</b> · 5경기 4승 1패 · 득점률 53%</div><div class="mk-list"><div class="mk-item">승 · 9/12 vs 한빛전 · 75:45</div><div class="mk-item">패 · 9/19 vs 새솔전 · 57:75</div></div><div class="mk-lbl">🔑 승부 열쇠: 서브 효율(이긴 경기 56% · 진 경기 29%)</div></div></div>`,
         script:[ {click:'.k-t1', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-res').style.display='flex'; }}, {wait:2200} ] }
@@ -11116,7 +11119,9 @@
     return `${seg}${head}<div class="ta-meters">${meters}</div>${comp}`;
   }
   // 실점 한 건이 난 자리(이 팀이 아래쪽인 코트 좌표 400×760, 네트 y=380): 기록한 공 방향 → 9칸 방향 → 상황별 대표 자리 순으로 정해요
-  const TA_ATK_X = m => /레프트/.test(m) ? 60 : /라이트/.test(m) ? 340 : /앞차/.test(m) ? 130 : /백/.test(m) ? 270 : /B/.test(m) ? 235 : /A/.test(m) ? 165 : 200;
+  // 공격 자리는 그 팀이 네트를 바라볼 때 왼쪽부터 레프트 → 앞차 → A → (세터) → B → 백A → 백차 → 라이트 순서예요(상대팀은 화면에서 좌우가 뒤집혀요)
+  const TA_ATK_X = m => /레프트/.test(m) ? 50 : /라이트/.test(m) ? 350 : /앞차/.test(m) ? 105 : /백차/.test(m) ? 295 : /백A/.test(m) ? 248 : /B/.test(m) ? 222 : /A/.test(m) ? 155 : 200;
+  const TA_ERR_COL = 'var(--warn)'; // 이 팀 범실은 상대 점수(빨강)와 대비되는 노란색
   function taLeakSpot(e, err){
     const m = String(e.main||'');
     if(e.bt) return [Math.max(-20, Math.min(420, e.bt[0])), Math.max(-20, Math.min(780, e.bt[1]))];
@@ -11128,22 +11133,28 @@
     const x = TA_ATK_X(m);
     return err ? [x, 445] : [400-x, 315];
   }
-  // 실점 원인 지도: 원근 코트 위에 원인마다 기둥(높이 = 실점 수)을 그 실점이 난 자리에 세워요. 처음엔 아래가 이 팀 코트이고, 끌면 360도 돌아가요.
+  // 원인 종류에 따라 지도에 그리는 모양이 달라요: 서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 네트의 ✕
+  const taLeakKind = m => /서브캐치|리시브/.test(m) ? 'recv' : /서브/.test(m) ? 'serve' : /블로킹/.test(m) ? 'block' : /파울|네트/.test(m) ? 'foul' : /2단|토스/.test(m) ? 'toss' : /디그|수비/.test(m) ? 'dig' : 'atk';
+  // 실점 원인 지도: 원근 코트 위에 원인마다 공 궤적(굵기 = 실점 수)을 그 실점이 가장 많이 난 자리로 그려요. 처음엔 아래가 이 팀 코트이고, 끌면 360도 돌아가요.
   const TA_LEAK = {}; let taLeakSeq = 0;
   function taLeak3D(rows, T, width){
-    // 원인마다 가장 많이 난 칸(한쪽 코트 3×3 + 네트 앞 + 코트 밖)에 세우고, 같은 칸의 기둥은 나란히 놓아요
+    // 원인마다 가장 많이 난 칸(한쪽 코트 3×3 + 네트 앞 + 코트 밖)을 고르고, 같은 칸끼리는 조금씩 비켜 그려요
     const cellOf = ([x, y]) => { const c = Math.max(0, Math.min(2, Math.floor(x/133.34))); const r = Math.abs(y-380) < 25 ? 'n' : y < 0 ? -1 : y > 760 ? 6 : Math.floor(y/126.67); return c+'|'+r; };
-    const cellXY = k => { const [c, r] = k.split('|'); const x = 67 + 133*Number(c); return [x, r==='n' ? 400 : r==='-1' ? -10 : r==='6' ? 775 : 63 + 126.67*Number(r)]; };
-    const pil = rows.filter(r=>r.pts && r.pts.length).map(r=>{ const cnt = {}; r.pts.forEach(p=>{ const k = cellOf(p); cnt[k] = (cnt[k]||0)+1; }); const [k, kn] = Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]; return {...r, cell:k, cellN:kn}; });
+    const pil = rows.filter(r=>r.pts && r.pts.length).map(r=>{
+      const cnt = {}; r.pts.forEach(p=>{ const k = cellOf(p); (cnt[k] = cnt[k] || []).push(p); });
+      const [k, list] = Object.entries(cnt).sort((a,b)=>b[1].length-a[1].length)[0];
+      return {...r, cell:k, cellN:list.length, x:list.reduce((s,p)=>s+p[0],0)/list.length, y:list.reduce((s,p)=>s+p[1],0)/list.length, kind:taLeakKind(r.main||r.label)};
+    });
     if(!pil.length) return '';
     const byCell = {}; pil.forEach(r=>{ (byCell[r.cell] = byCell[r.cell] || []).push(r); });
-    Object.entries(byCell).forEach(([k, list])=>{ const [cx, cy] = cellXY(k), nRow = Math.ceil(list.length/3); list.forEach((r,i)=>{ const row = Math.floor(i/3), inRow = Math.min(3, list.length - row*3); r.x = cx + (i%3 - (inRow-1)/2)*40; r.y = cy + (row - (nRow-1)/2)*38; }); });
+    Object.values(byCell).forEach(list=>list.forEach((r,i)=>{ r.x += (i - (list.length-1)/2)*26; }));
     const W = Math.max(300, Math.min(760, Math.round(width||640))), H = Math.round(W*(W<460 ? 0.86 : 0.62));
     const id = 'lk' + (++taLeakSeq);
     TA_LEAK[id] = {pil, T, W, H, ang:0};
-    const leg = `<div class="ta-legend"><span><i style="background:var(--opp)"></i>상대가 낸 점수</span><span><i style="background:color-mix(in srgb, var(--opp) 55%, var(--panel))"></i>${escChip(T)} 범실</span><span class="muted">흐린 기둥 = 누적 80% 밖 · 번호는 순위와 같아요</span></div>`;
+    const leg = `<div class="ta-legend"><span><i style="background:var(--opp)"></i>상대가 낸 점수</span><span><i style="background:${TA_ERR_COL}"></i>${escChip(T)} 범실</span></div>`
+      + `<div class="ta-legend lk-key"><span>⌒ 공중 궤적 = 서브·토스·공격</span><span>⌣ 바닥 가까이 = 리시브·디그</span><span>▮ 네트 위 벽 = 블로킹</span><span>✕ = 파울</span><span class="muted">선이 굵을수록 실점이 많아요 · 흐린 것 = 누적 80% 밖 · 번호 = 순위</span></div>`;
     return `<div class="lk-wrap"><svg class="ta-leak" data-lk="${id}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="실점 원인 지도 (좌우로 끌면 돌아가요)">${taLeakSVG(TA_LEAK[id])}</svg>`
-      + `<div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>${leg}`;
+      + `<div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요 · 궤적에 커서를 대면 왼쪽 순위에 표시돼요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>${leg}`;
   }
   // 입체 코트 공통: 바닥(상대 코트·이 팀 코트·공격선)·네트·글자를 지금 돌린 방향으로 그려요(실점 원인 지도·코트 위치 지도가 함께 써요)
   function lkScene(W, H, ang, opt){
@@ -11158,7 +11169,8 @@
     const kx0 = W*0.96/470, A = (H*0.8 - 8)/(1 - Z0/(Z0+840))/kx0; // 세로 눌림 비율은 처음 화면과 같게
     const K = Math.min(W*0.94/(u1-u0), (H*0.8 - 8)/(A*(s1-s0))), hk = K/kx0, yB = H - 8 - ((H*0.8 - 8) - A*K*(s1-s0))*0.45; // 납작해지면 위아래 가운데쯤에
     const P = (x, y) => { const [u, s, yr] = raw(x, y); return [W/2 + (u - (u0+u1)/2)*K, yB - (s1 - s)*A*K, s*hk, yr]; };
-    const pt = p => `${p[0].toFixed(1)},${p[1].toFixed(1)}`;
+    const P3 = (x, y, h) => { const p = P(x, y); return [p[0], p[1] - h*p[2], p[2], p[3]]; }; // h = 바닥에서 높이(px)
+    const f1 = v => v.toFixed(1), pt = p => `${f1(p[0])},${f1(p[1])}`;
     const poly = (ps, st2, cls) => `<polygon points="${ps.map(pt).join(' ')}"${st2?` style="${st2}"`:''}${cls?` class="${cls}"`:''}/>`;
     const line = (a, b, cls) => { const p = P(a[0],a[1]), q = P(b[0],b[1]); return `<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}" class="${cls}"/>`; };
     const floor = poly([P(0,0),P(400,0),P(400,380),P(0,380)], 'fill:color-mix(in srgb, var(--opp) 7%, var(--panel))')
@@ -11181,24 +11193,85 @@
     return {P, pt, poly, line, floor, net, camSide, cap, prism, si, co};
   }
   function taLeakSVG(st){
-    const {pil, T, W, H} = st;
-    const {P, poly, floor, net, camSide, cap, prism} = lkScene(W, H, st.ang);
-    let g = floor;
-    const maxN = Math.max(...pil.map(r=>r.n)), hMax = H*0.3, b = 14;
-    const hOf = r => 8 + (hMax-8)*r.n/maxN;
-    const pillar = r => {
-      const col = r.err ? 'color-mix(in srgb, var(--opp) 55%, var(--panel))' : 'var(--opp)';
-      const op = r.hot ? 1 : 0.5;
-      return `<g opacity="${op}"><title>${r.rank}. ${escChip(r.label)} ${r.n}점 (${Math.round(r.sh)}%) · 이 자리에서 ${r.cellN}점</title>`
-        + poly([[r.x-b,r.y+b],[r.x+b,r.y+b],[r.x+b,r.y-b],[r.x-b,r.y-b]].map(([x,y])=>P(x,y)), 'fill:rgba(0,0,0,.12)')
-        + prism(r.x, r.y, b, 0, hOf(r), col, true) + `</g>`;
+    const {pil, T, W, H} = st, th = st.ang*Math.PI/180, co = Math.cos(th), si = Math.sin(th);
+    const Z0 = 1000, CAMX = 110; // 눈 위치를 왼쪽으로 조금 옮겨 옆에서 비스듬히 보이게 해요
+    const rot = (x, y) => { const dx = x-200, dy = y-380; return [200 + dx*co - dy*si, 380 + dx*si + dy*co]; };
+    const raw = (x, y) => { const [xr, yr] = rot(x, y), s = Z0/(Z0 + 800 - yr); return [(xr-CAMX)*s + (CAMX-200), s, yr]; };
+    // 지금 방향에서 코트(밖 여유 포함)가 화면에 꽉 차게 크기를 맞춰요
+    const bnd = [[-20,-40],[420,-40],[420,800],[-20,800]].map(([x,y])=>raw(x,y));
+    const u0 = Math.min(...bnd.map(b=>b[0])), u1 = Math.max(...bnd.map(b=>b[0])), s0 = Math.min(...bnd.map(b=>b[1])), s1 = Math.max(...bnd.map(b=>b[1]));
+    const kx0 = W*0.96/470, A = (H*0.8 - 8)/(1 - Z0/(Z0+840))/kx0; // 세로 눌림 비율은 처음 화면과 같게
+    const K = Math.min(W*0.94/(u1-u0), (H*0.8 - 8)/(A*(s1-s0))), hk = K/kx0, yB = H - 8 - ((H*0.8 - 8) - A*K*(s1-s0))*0.45; // 납작해지면 위아래 가운데쯤에
+    const P = (x, y) => { const [u, s, yr] = raw(x, y); return [W/2 + (u - (u0+u1)/2)*K, yB - (s1 - s)*A*K, s*hk, yr]; };
+    const P3 = (x, y, h) => { const p = P(x, y); return [p[0], p[1] - h*p[2], p[2], p[3]]; }; // h = 바닥에서 높이(px)
+    const f1 = v => v.toFixed(1), pt = p => `${f1(p[0])},${f1(p[1])}`;
+    const poly = (ps, st2, cls) => `<polygon points="${ps.map(pt).join(' ')}"${st2?` style="${st2}"`:''}${cls?` class="${cls}"`:''}/>`;
+    const line = (a, b, cls) => { const p = P(a[0],a[1]), q = P(b[0],b[1]); return `<line x1="${f1(p[0])}" y1="${f1(p[1])}" x2="${f1(q[0])}" y2="${f1(q[1])}" class="${cls}"/>`; };
+    // 바닥: 상대 코트 · 이 팀 코트 · 공격선 · 끝선
+    const floor = poly([P(0,0),P(400,0),P(400,380),P(0,380)], 'fill:color-mix(in srgb, var(--opp) 7%, var(--panel))')
+      + poly([P(0,380),P(400,380),P(400,760),P(0,760)], 'fill:color-mix(in srgb, var(--own) 9%, var(--panel))')
+      + line([0,0],[400,0],'lk-l') + line([0,760],[400,760],'lk-l') + line([0,0],[0,760],'lk-l') + line([400,0],[400,760],'lk-l')
+      + line([0,253],[400,253],'lk-a') + line([0,507],[400,507],'lk-a');
+    const NH = H*0.13, maxN = Math.max(...pil.map(r=>r.n));
+    const colOf = r => r.err ? TA_ERR_COL : 'var(--opp)';
+    // 공의 길: 시작·끝(x, y, 높이)과 가장 높은 곳으로 3D 곡선을 만들어요
+    const path3 = (a, b, peak) => { const out = []; for(let i=0;i<=24;i++){ const t = i/24, x = a[0]+(b[0]-a[0])*t, y = a[1]+(b[1]-a[1])*t, h = a[2]+(b[2]-a[2])*t + 4*Math.max(0, peak - Math.max(a[2], b[2])*0.5 - Math.min(a[2], b[2])*0.5)*t*(1-t); out.push([x, y, h]); } return out; };
+    const toward = (v, c, d) => v + (v<c ? -d : d);
+    const shapeOf = r => {
+      const {x, y, kind} = r, our = !r.err; // our = 상대가 낸 점수(공은 이 팀 쪽으로 와요)
+      const land = y > 380 ? [x, y] : [x, 600];
+      if(kind==='block') return {wall:[x, r.err ? 388 : 372]};
+      if(kind==='foul') return {foul:[x, 380]};
+      if(kind==='serve') return r.err ? {pts:path3([x, 780, NH*0.7], y < 380 ? [x, y, 0] : [x, -30, 0], NH*2.1)} : {pts:path3([x, -20, NH*0.7], [x, land[1] > 760 ? 740 : land[1], 0], NH*2)};
+      if(kind==='recv' || kind==='dig'){ const sx = toward(x, 200, 80); return {pts:path3([x, y, NH*0.15], [sx, Math.min(800, y + (kind==='recv' ? 70 : 50)), 0], NH*(kind==='recv' ? 0.45 : 0.6)), low:true}; }
+      if(kind==='toss'){ const sx = x<200 ? x+120 : x-120; return {pts:path3([sx, Math.min(y, 470), NH*0.6], [x, y, 0], NH*2.6)}; }
+      // 공격: 네트 위 높은 곳에서 때려 내려와요
+      if(our) return y < 380 ? {pts:path3([x, 345, NH*1.45], [x, 600, 0], NH*1.5)} : {pts:path3([400 - TA_ATK_X(r.main||''), 345, NH*1.45], [x, y, 0], NH*1.5)};
+      return y > 380 ? {pts:path3([x, 415, NH*1.45], [x, -30, 0], NH*1.6)} : {pts:path3([TA_ATK_X(r.main||'')||x, 415, NH*1.45], [x, y, 0], NH*1.6)};
     };
-    const tag = r => { const p = P(r.x, r.y), y = p[1] - hOf(r)*p[2] - 12; return `<g class="lk-tag${r.hot?'':' dim'}"><circle cx="${p[0].toFixed(1)}" cy="${y.toFixed(1)}" r="9"/><text x="${p[0].toFixed(1)}" y="${(y+3.6).toFixed(1)}" text-anchor="middle">${r.rank}</text><text x="${(p[0]+12).toFixed(1)}" y="${(y+3.6).toFixed(1)}" class="lk-n">${r.n}</text></g>`; };
-    // 네트 너머 기둥을 먼저 그려요
-    const depth = r => P(r.x, r.y)[3];
-    const far = pil.filter(r=>Math.sign(r.y-380)!==camSide).sort((a,b2)=>depth(a)-depth(b2)), near = pil.filter(r=>Math.sign(r.y-380)===camSide).sort((a,b2)=>depth(a)-depth(b2));
-    return g + far.map(pillar).join('') + net + near.map(pillar).join('') + pil.map(tag).join('')
-      + cap('🔴 상대 코트', 200, -24, 'opp') + cap(`🔵 ${escChip(T)} 코트`, 200, 790, 'own');
+    const items = pil.map(r=>{
+      const sh = shapeOf(r), col = colOf(r), op = r.hot ? 1 : 0.42, w = 2 + 7*r.n/maxN;
+      const tip = `<title>${r.rank}. ${escChip(r.label)} ${r.n}점 (${Math.round(r.sh)}%) · 이 자리에서 ${r.cellN}점</title>`;
+      let body = '', tagAt, depth;
+      if(sh.wall){
+        const [wx, wy] = sh.wall, half = 26 + 14*r.n/maxN, top = NH*(1.15 + 0.9*r.n/maxN);
+        const a = P3(wx-half, wy, NH*0.55), b = P3(wx+half, wy, NH*0.55), c = P3(wx+half, wy, top), d = P3(wx-half, wy, top);
+        body = poly([a,b,c,d], `fill:color-mix(in srgb, ${col} 62%, transparent); stroke:${col}; stroke-width:1.5`) + `<line x1="${f1(d[0])}" y1="${f1(d[1])}" x2="${f1(c[0])}" y2="${f1(c[1])}" stroke="${col}" stroke-width="3" stroke-linecap="round"/>`;
+        tagAt = P3(wx, wy, top); depth = P(wx, wy)[3];
+      } else if(sh.foul){
+        const [fx, fy] = sh.foul, c = P3(fx, fy, NH*0.55), s = 6 + 5*r.n/maxN;
+        body = `<path d="M${f1(c[0]-s)},${f1(c[1]-s)} L${f1(c[0]+s)},${f1(c[1]+s)} M${f1(c[0]+s)},${f1(c[1]-s)} L${f1(c[0]-s)},${f1(c[1]+s)}" stroke="${col}" stroke-width="${f1(w*0.8)}" stroke-linecap="round" fill="none"/>`;
+        tagAt = P3(fx, fy, NH*0.9); depth = P(fx, fy)[3];
+      } else {
+        const ps = sh.pts.map(q=>P3(q[0], q[1], q[2])), gs = sh.pts.map(q=>P(q[0], q[1]));
+        const d = ps.map((p,i)=>`${i?'L':'M'}${pt(p)}`).join(' '), gd = gs.map((p,i)=>`${i?'L':'M'}${pt(p)}`).join(' ');
+        const end = ps[ps.length-1], beg = ps[0];
+        body = `<path d="${gd}" class="lk-shadow" stroke-width="${f1(Math.max(1.5, w*0.6))}"/>`
+          + `<path d="${d}" fill="none" stroke="${col}" stroke-width="${f1(w)}" stroke-linecap="round" stroke-linejoin="round"${sh.low?' stroke-dasharray="1 0"':''}/>`
+          + `<circle cx="${f1(beg[0])}" cy="${f1(beg[1])}" r="${f1(2+w*0.25)}" fill="var(--panel)" stroke="${col}" stroke-width="1.5"/>`
+          + `<circle cx="${f1(end[0])}" cy="${f1(end[1])}" r="${f1(3+w*0.45)}" fill="var(--ball)" stroke="${col}" stroke-width="2"/>`;
+        const hi = ps.reduce((m,p,i)=>sh.pts[i][2] > sh.pts[m][2] ? i : m, 0);
+        tagAt = ps[sh.low ? Math.round(ps.length/2) : hi]; depth = (gs[0][3] + gs[gs.length-1][3])/2;
+      }
+      return {r, depth, tagAt, svg:`<g class="lk-item" data-r="${r.rank}" opacity="${op}">${tip}${body}</g>`, mid:(sh.wall||sh.foul) ? 'net' : null};
+    }).sort((a,b)=>a.depth-b.depth);
+    // 번호표가 겹치면 옆으로 비켜 놓고, 원래 자리까지 가는 실선을 그어요(순위가 높은 것이 제자리)
+    const placed = [];
+    const tags = items.slice().sort((a,b)=>a.r.rank-b.r.rank).map(it=>{
+      const [ax, ay] = [it.tagAt[0], it.tagAt[1]-12]; let tx = ax, ty = ay;
+      for(let k=0; k<14 && placed.some(q=>Math.hypot(q[0]-tx, q[1]-ty) < 19); k++){ const ring = Math.ceil((k+1)/2), sgn = k%2 ? -1 : 1; tx = ax + sgn*20*ring; ty = ay - 4*ring; }
+      tx = Math.max(10, Math.min(W-10, tx)); ty = Math.max(10, ty); placed.push([tx, ty]);
+      const lead = (tx!==ax || ty!==ay) ? `<line x1="${f1(tx)}" y1="${f1(ty)}" x2="${f1(ax)}" y2="${f1(ay+9)}" class="lk-lead"/>` : '';
+      return `<g class="lk-item" data-r="${it.r.rank}">${lead}<g class="lk-tag${it.r.hot?'':' dim'}"><circle cx="${f1(tx)}" cy="${f1(ty)}" r="9"/><text x="${f1(tx)}" y="${f1(ty+3.6)}" text-anchor="middle">${it.r.rank}</text></g></g>`;
+    });
+    const nl = P(-18,380), nr = P(418,380), nhl = NH*nl[2], nhr = NH*nr[2];
+    const net = `<polygon points="${pt(nl)} ${pt(nr)} ${pt([nr[0],nr[1]-nhr])} ${pt([nl[0],nl[1]-nhl])}" class="lk-net"/><line x1="${f1(nl[0])}" y1="${f1(nl[1]-nhl)}" x2="${f1(nr[0])}" y2="${f1(nr[1]-nhr)}" class="lk-netb"/><line x1="${f1(nl[0])}" y1="${f1(nl[1])}" x2="${f1(nl[0])}" y2="${f1(nl[1]-nhl-6)}" class="lk-post"/><line x1="${f1(nr[0])}" y1="${f1(nr[1])}" x2="${f1(nr[0])}" y2="${f1(nr[1]-nhr-6)}" class="lk-post"/>`;
+    // 네트보다 먼 궤적 → 네트·벽 → 가까운 궤적 순서로 그려요
+    const netD = P(200, 380)[3];
+    const far = items.filter(it=>!it.mid && it.depth < netD), near = items.filter(it=>!it.mid && it.depth >= netD), atNet = items.filter(it=>it.mid);
+    const cap = (txt, x, y, cls) => { const p = P(x, y); return `<text x="${f1(Math.max(40, Math.min(W-40, p[0])))}" y="${f1(Math.max(12, Math.min(H-2, p[1])))}" text-anchor="middle" class="lk-cap ${cls}">${txt}</text>`; };
+    return floor + far.map(it=>it.svg).join('') + net + atNet.map(it=>it.svg).join('') + near.map(it=>it.svg).join('') + tags.reverse().join('')
+      + cap('🔴 상대 코트', 400, -30, 'opp') + cap(`🔵 ${escChip(T)} 코트`, 200, 790, 'own');
   }
   // 📍 코트 위치 3D 지도(상세 분석 누적): 포지션마다 그 자리에 기둥을 쌓고(칸 = 도넛과 같은 방식·색), 공 길은 고른 포지션만 바닥에 그려요
   const CP_ANG = {};
@@ -11280,6 +11353,14 @@
     });
     const end = ()=>{ if(drag){ drag.svg.classList.remove('dragging'); drag = null; } };
     document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
+    // 지도·순위에서 한 원인에 커서를 대면(휴대폰은 누르면) 양쪽에서 같은 원인을 부각해요
+    const hl = (pair, r) => { pair.classList.toggle('lk-hl', !!r); pair.querySelectorAll('.lk-item').forEach(el=>el.classList.toggle('on', !!r && el.dataset.r===r)); };
+    document.addEventListener('pointerover', e=>{
+      if(drag) return;
+      const pair = e.target.closest && e.target.closest('[data-lkp]'); if(!pair) return;
+      const it = e.target.closest('.lk-item'); hl(pair, it ? it.dataset.r : null);
+    });
+    document.addEventListener('pointerout', e=>{ const pair = e.target.closest && e.target.closest('[data-lkp]'); if(pair && !pair.contains(e.relatedTarget)) hl(pair, null); });
     document.addEventListener('click', e=>{
       const btn = e.target.closest && e.target.closest('.lk-reset'); if(!btn) return;
       const st = TA_LEAK[btn.dataset.lk], svg = document.querySelector(`svg.ta-leak[data-lk="${btn.dataset.lk}"]`); if(!st || !svg) return;
@@ -11294,36 +11375,37 @@
       const k0 = (e.main===FOUL_MAIN ? '파울' : String(e.main||'기타')).replace('(2구 넘김)','');
       const err = e.bucket==='ourError';
       const k = err ? (k0==='파울' || /범실$/.test(k0) ? k0 : k0+' 범실') : '상대 '+k0;
-      const x = g[(err?'e:':'o:')+k] = g[(err?'e:':'o:')+k] || {label:k, n:0, err, pts:[]}; x.n++; x.pts.push(taLeakSpot(e, err));
+      const x = g[(err?'e:':'o:')+k] = g[(err?'e:':'o:')+k] || {label:k, main:k0, n:0, err, pts:[]}; x.n++; x.pts.push(taLeakSpot(e, err));
     });
     let rows = Object.values(g).sort((a,b)=>b.n-a.n);
     if(!rows.length) return '';
     let restList = [];
-    if(rows.length>9){ restList = rows.slice(8).map(x=>[x.label, x.n]); const rest = rows.slice(8).reduce((s,x)=>s+x.n,0); rows = rows.slice(0,8).concat([{label:'그 밖', n:rest, rest:true}]); }
+    if(rows.length>16){ restList = rows.slice(15).map(x=>[x.label, x.n]); const rest = rows.slice(15).reduce((s,x)=>s+x.n,0); rows = rows.slice(0,15).concat([{label:'그 밖', n:rest, rest:true}]); } // 원인이 많아도 15개까지는 막대로 보여줘요
     const tot = rows.reduce((s,x)=>s+x.n,0);
     // 넓은 화면은 순위(왼쪽)와 지도(오른쪽)를 나란히, 좁으면 순위 → 지도 순서로 쌓아요
     const full = Math.round(width||640), wide = full >= 700;
-    const W = wide ? Math.min(560, Math.floor((full-18)/2)) : Math.max(300, Math.min(760, full)), lw = W<460 ? 104 : 136, vw = 72, rh = 21, pt = 18;
+    const W = wide ? Math.min(560, Math.floor((full-18)/2)) : Math.max(300, Math.min(760, full)), lw = W<460 ? 118 : 150, vw = 72, rh = rows.length>10 ? 18 : 21, pt = 18;
     const H = pt + rows.length*rh + 6, pw = W - lw - vw - 6, X = v => lw + pw*Math.min(100,v)/100;
     let cum = 0, core = 0, coreCum = 0; const pts = [];
     const body = rows.map((r,i)=>{
       const sh = r.n/tot*100, prev = cum; cum += sh;
       const hot = prev < 80 && !r.rest; if(hot){ core = i+1; coreCum = cum; }
       const y = pt + i*rh, cy = y + rh/2; pts.push([X(cum), cy]);
-      const col = r.rest ? 'var(--border-2)' : r.err ? taCol(2,'--opp') : 'var(--opp)';
+      const col = r.rest ? 'var(--border-2)' : r.err ? TA_ERR_COL : 'var(--opp)';
       r.rank = r.rest ? 0 : i+1; r.hot = hot; r.sh = sh;
       const badge = r.rank ? `<circle cx="9" cy="${cy}" r="8" fill="${hot?'var(--text)':'var(--border-2)'}"/><text x="9" y="${cy+3.5}" text-anchor="middle" class="ta-prk">${r.rank}</text>` : '';
-      return `<g class="${hot?'hot':'dim'}"><title>${escChip(r.label)} ${r.n}점 · 실점의 ${Math.round(sh)}% · 누적 ${Math.round(cum)}%</title>${badge}<text x="${lw-8}" y="${cy+4}" text-anchor="end" class="ta-pl">${escChip(r.label)}</text><rect x="${lw}" y="${y+4}" width="${Math.max(3, X(sh)-lw).toFixed(1)}" height="${rh-8}" rx="3" fill="${col}"/><text x="${W-vw}" y="${cy+4}" class="ta-pv">${r.n}점 <tspan class="ta-pc">${Math.round(sh)}%</tspan></text></g>`;
+      const ic = r.rest ? '' : {recv:'⌣', dig:'⌣', block:'▮', foul:'✕'}[taLeakKind(r.main)] || '⌒';
+      return `<g class="${hot?'hot':'dim'}${r.rank?' lk-item':''}"${r.rank?` data-r="${r.rank}"`:''}><rect x="0" y="${y}" width="${W}" height="${rh}" class="ta-prow"/><title>${escChip(r.label)} ${r.n}점 · 실점의 ${Math.round(sh)}% · 누적 ${Math.round(cum)}%</title>${badge}<text x="${lw-8}" y="${cy+4}" text-anchor="end" class="ta-pl">${escChip(r.label)}${ic?` <tspan class="ta-pic">${ic}</tspan>`:''}</text><rect x="${lw}" y="${y+4}" width="${Math.max(3, X(sh)-lw).toFixed(1)}" height="${rh-8}" rx="3" fill="${col}"/><text x="${W-vw}" y="${cy+4}" class="ta-pv">${r.n}점 <tspan class="ta-pc">${Math.round(sh)}%</tspan></text></g>`;
     }).join('');
     const line = `<path d="${pts.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')}" fill="none" stroke="var(--text-dim)" stroke-width="1.6" stroke-linejoin="round"/>` + pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===core-1?4.5:3}" fill="${i===core-1?'var(--text)':'var(--panel)'}" stroke="var(--text-dim)" stroke-width="1.5"/>`).join('');
     const grid = `<line x1="${lw}" x2="${lw}" y1="${pt-4}" y2="${H-4}" class="ta-g"/><line x1="${X(80)}" x2="${X(80)}" y1="${pt-6}" y2="${H-4}" class="ta-g80"/><text x="${X(80)}" y="${pt-9}" text-anchor="middle" class="ta-ax">누적 80%</text>`;
     const map = taLeak3D(rows.filter(r=>!r.rest), T, W);
     const svg = `<svg class="ta-pareto sm" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="실점 원인 순위">${grid}${body}${line}</svg>`;
-    const leg = `<div class="ta-legend"><span><i style="background:var(--opp)"></i>상대가 낸 점수</span><span><i style="background:${taCol(2,'--opp')}"></i>${T} 범실</span><span><i style="background:var(--text-dim); height:2px; border-radius:0;"></i>누적 몫</span></div>`;
+    const leg = `<div class="ta-legend"><span><i style="background:var(--opp)"></i>상대가 낸 점수</span><span><i style="background:${TA_ERR_COL}"></i>${T} 범실</span><span><i style="background:var(--text-dim); height:2px; border-radius:0;"></i>누적 몫</span></div>`;
     const note = core ? `<p class="ta-note">위 <b>${core}개</b> 원인이 ${scout ? T+' 실점' : '실점'}의 <b>${Math.round(coreCum)}%</b>예요. ${scout ? '우리팀이 먼저 노릴 곳이에요.' : '이것부터 줄이면 실점이 가장 많이 줄어요.'}</p>` : '';
     const etcLine = restList.length ? taEtc('그 밖', restList, tot) : '';
-    return `<div class="ta-leak-pair${wide?' wide':''}"><div class="ta-leak-col"><div class="ta-lab">실점 원인 순위 <small>막대 = 실점 중 몫 · 선 = 위에서부터 더한 몫 · 진한 줄 = 누적 80%까지</small></div>${svg}${leg}${etcLine}${note}</div>`
-      + `<div class="ta-leak-col"><div class="ta-lab">실점 원인 지도 <small>기둥 높이 = 실점 수 · 기둥 자리 = 그 원인이 가장 많이 난 곳 · 번호 = 왼쪽 순위</small></div>${map}</div></div>`;
+    return `<div class="ta-leak-pair${wide?' wide':''}" data-lkp="1"><div class="ta-leak-col"><div class="ta-lab">실점 원인 순위 <small>막대 = 실점 중 몫 · 선 = 위에서부터 더한 몫 · 진한 줄 = 누적 80%까지</small></div>${svg}${leg}${etcLine}${note}</div>`
+      + `<div class="ta-leak-col"><div class="ta-lab">실점 원인 지도 <small>선 굵기 = 실점 수 · 공이 떨어진 곳 = 그 원인이 가장 많이 난 곳 · 번호 = 왼쪽 순위</small></div>${map}</div></div>`;
   }
   // 강했던 면 ▲ / 약했던 면 ▼ 꼬리표
   const taTag = (x, up) => `<span class="ta-tag ${up?'up':'down'}" title="${escChip(x.m.label)} ${taP(x.v)} · 평균 ${taP(x.b)}">${up?'▲':'▼'} ${x.m.label} <b>${taP(x.v)}</b></span>`;
