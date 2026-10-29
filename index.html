@@ -1290,6 +1290,17 @@
   .ta-leak .lk-net{ fill:color-mix(in srgb, var(--text) 10%, transparent); stroke:var(--text-dim); stroke-width:.8; } .ta-leak .lk-netb{ stroke:var(--text); stroke-width:2.4; } .ta-leak .lk-post{ stroke:var(--text-dim); stroke-width:2; }
   .ta-leak .lk-tag circle{ fill:var(--text); stroke:var(--panel); stroke-width:1.5; } .ta-leak .lk-tag text{ font-size:10.5px; font-weight:800; fill:var(--panel); font-family:var(--body); }
   .ta-leak .lk-tag .lk-n{ fill:var(--text); font-size:11px; paint-order:stroke; stroke:var(--panel); stroke-width:3px; } .ta-leak .lk-tag.dim circle{ fill:var(--muted); }
+  .cp-map .cp-tag text{ font-size:11px; font-weight:800; fill:#fff; font-family:var(--body); }
+  .cp-map .cp-fn{ font-size:11px; font-weight:900; font-family:var(--body); paint-order:stroke; stroke:var(--panel); stroke-width:3px; }
+  .cp-map .cp-f{ display:none; } .cp-map .cp-f.pin{ display:inline; }
+  .court-an.cp-hl .cp-map .cp-f.on{ display:inline; } .court-an.cp-hl .cp-map .cp-f.pin:not(.on){ display:none; }
+  .cp-map .cp-seg, .cp-map .cp-tag, .pd-slice, .pd-card{ transition:opacity .15s ease-out; }
+  .cp-map .cp-pil.off, .cp-map .cp-tag.off, .cp-map .cp-seg.wdim{ opacity:.3; }
+  .court-an.cp-hl .cp-map .cp-seg:not(.on), .court-an.cp-hl .cp-map .cp-tag:not(.on){ opacity:.18; }
+  .court-an.cp-hl .pd-slice:not(.on){ opacity:.2; } .court-an.cp-hl .pd-card:not(.on){ opacity:.55; }
+  .court-an.cp-hl .pd-card.on{ border-color:var(--text); }
+  .cp-map .cp-seg{ cursor:pointer; }
+  .cp-info{ min-height:2.6em; font-size:12px; font-weight:700; color:var(--text-dim); text-align:center; margin-top:2px; line-height:1.35; }
   .ta-leak .lk-cap{ font-size:11.5px; font-weight:800; font-family:var(--body); } .ta-leak .lk-cap.opp{ fill:var(--opp); } .ta-leak .lk-cap.own{ fill:var(--own); }
   .ta-pareto .ta-g{ stroke:var(--border-2); stroke-width:1; } .ta-pareto .ta-g80{ stroke:var(--text-dim); stroke-width:1; stroke-dasharray:4 4; }
   .ta-pareto .ta-ax{ font-size:10.5px; fill:var(--muted); font-family:var(--body); }
@@ -9873,6 +9884,7 @@
   const courtFocusBy = {};
   document.addEventListener('click', e=>{
     const b = e.target.closest('[data-cf]'); if(!b) return;
+    if(window.__lkDragAt && Date.now()-window.__lkDragAt < 350) return;
     const f = courtFocusBy[b.dataset.cf] = courtFocusBy[b.dataset.cf] || {row:'', way:''};
     if(b.dataset.cfReset){ f.row = ''; f.way = ''; }
     if(b.dataset.cfRow!==undefined) f.row = f.row===b.dataset.cfRow ? '' : b.dataset.cfRow;
@@ -10109,6 +10121,33 @@
         };
         const donutRows = () => ['our','opp'].map(t=>{ const rs = rowList.filter(r=>r.team===t); if(!rs.length) return '';
           return `<div class="pd-team" style="color:${col(t)};">${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))}</div><div class="pd-grid">${rs.map(posDonut).join('')}</div>`; }).join('');
+        // 지도·도넛에 커서를 올리면 아래 한 줄에 무엇인지 적어요
+        const cpTip = (row, x) => `${row.team==='our'?'🔵':'🔴'} ${dName(row.team)} ${row.pos}` + (x ? ` · ${x.label} ${x.n}회 (${taPct(x.n, row.n)})` : ` · 총 ${row.n}회`);
+        if(many){
+          // 누적: 포지션마다 그 자리에 기둥 하나(칸 = 도넛과 같은 방식·색, 높이 = 횟수). 공 길은 기둥이나 도넛에 커서를 올리거나 눌렀을 때만 바닥에 그려요
+          const pills = rowList.map(row=>{
+            const ps = pts.filter(p=>p.rowKey===row.key); if(!ps.length) return null;
+            return {key:row.key, team:row.team, pos:row.pos, n:row.n, x:ps.reduce((a,p)=>a+p.s.x,0)/ps.length, y:ps.reduce((a,p)=>a+p.s.y,0)/ps.length,
+              segs:segsOf(row).map(x=>({wk:x.wk, way:x.way, n:x.n, c:x.c, label:x.label, tip:cpTip(row, x)})), tip:cpTip(row)};
+          }).filter(Boolean);
+          // 같은 자리에 겹친 기둥은 살짝 벌려요(기둥 사이 60 이상)
+          for(let k=0; k<40; k++){ let moved = false;
+            pills.forEach((a,i)=>pills.slice(i+1).forEach(b=>{ const dx = b.x-a.x, dy = b.y-a.y, d = Math.hypot(dx, dy); if(d < 60){ const m = (60-d)/2 + .5, ux = d ? dx/d : 1, uy = d ? dy/d : 0; a.x -= ux*m; a.y -= uy*m; b.x += ux*m; b.y += uy*m; moved = true; } }));
+            pills.forEach(a=>{ a.x = Math.max(18, Math.min(382, a.x)); const side = a.team==='our'; a.y = side ? Math.max(404, Math.min(742, a.y)) : Math.max(18, Math.min(356, a.y)); });
+            if(!moved) break; }
+          const topWk = {}; pills.forEach(pl=>{ topWk[pl.key] = new Set(pl.segs.map(x=>x.wk)); });
+          const fg = {};
+          flows.filter(f=>!focus.way || f.way===focus.way).forEach(f=>{
+            const wk = topWk[f.rowKey] && topWk[f.rowKey].has(f.wk) ? f.wk : '_rest';
+            const k = [f.rowKey, wk, f.way, ...f.from.map(v=>Math.round(v/40)), ...f.to.map(v=>Math.round(v/40))].join('|');
+            const g = fg[k] = fg[k] || {pk:f.rowKey, wk, way:f.way, team:f.team, fault:f.fault, zone:f.zone, fx:0, fy:0, tx:0, ty:0, n:0};
+            g.fx += f.from[0]; g.fy += f.from[1]; g.tx += f.to[0]; g.ty += f.to[1]; g.n++;
+          });
+          const fls = Object.values(fg).map(g=>({...g, fx:g.fx/g.n, fy:g.fy/g.n, tx:g.tx/g.n, ty:g.ty/g.n, tip:`${COURT_WAYS[g.way].label} ${g.n}회${g.fault?' (범실)':''}${g.zone?' · '+g.zone:''}`}));
+          const noSpot = rowList.filter(r=>!pills.some(p=>p.key===r.key));
+          map3d = cpMap3D({pills, flows:fls, focus:{...focus}, names:{our:dName('our'), opp:dName('opp')}, keep:attr})
+            + (noSpot.length ? `<div class="field-note" style="margin-top:2px;">자리를 정할 수 없는 ${noSpot.map(r=>`${r.team==='our'?'🔵':'🔴'} ${dEsc(r.pos)} ${r.n}회`).join(' · ')}는 도넛에만 있어요.</div>` : '');
+        }
         const bar = (wd, team) => `<i style="flex:${wd.n};${courtWayBar(wd.way, col(team))}" title="${dEsc(wd.label)} ${wd.n}"></i>`;
         table = many ? `<div class="cw-title">${title}</div>${donutRows()}` + `<div class="field-note" style="margin-top:6px;">도넛 가운데는 포지션과 총 횟수, 칸 안은 어떤 기록이었는지와 횟수예요(작은 칸은 도넛 아래 작은 글자로, 그 포지션 전체 중 몇 %인지). 🎯는 그 포지션 공이 주로 떨어진 곳이에요. 도넛을 누르면 그 포지션 화살표만 코트에 남아요.</div>`
           + (formTable ? `<details class="cw-forms"><summary>선수 자리를 정한 대형 보기</summary>${formTable}</details>` : '') : `<div class="cw-title">${title}</div><table class="court-an-table cw-table"><thead><tr><th></th><th>포지션</th><th>횟수</th><th>어떤 기록이었나</th></tr></thead><tbody>${rowList.map(row=>{
@@ -10119,7 +10158,7 @@
           + (formTable ? `<details class="cw-forms"><summary>선수 자리를 정한 대형 보기</summary>${formTable}</details>` : '');
       }
     }
-    return `${seg}${ballAutoToggle(items)}<div class="court-an${many?' court-an-big':''}"><div class="court-an-main">${legend}${court(svgInner)}</div><div class="court-an-side">${empty ? DETAIL_EMPTY(empty) : table}</div></div>`;
+    return `${seg}${ballAutoToggle(items)}<div class="court-an${many?' court-an-big':''}"><div class="court-an-main">${legend}${map3d || court(svgInner)}</div><div class="court-an-side">${empty ? DETAIL_EMPTY(empty) : table}</div></div>`;
   }
   function spikeGroup(d){
     if(!d) return null;
@@ -10900,9 +10939,10 @@
       + `<div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>${leg}`;
   }
   // 입체 코트 공통: 바닥(상대 코트·이 팀 코트·공격선)·네트·글자를 지금 돌린 방향으로 그려요(실점 원인 지도·코트 위치 지도가 함께 써요)
-  function lkScene(W, H, ang){
+  function lkScene(W, H, ang, opt){
+    opt = opt || {};
     const th = ang*Math.PI/180, co = Math.cos(th), si = Math.sin(th);
-    const Z0 = 1000, CAMX = 110; // 눈 위치를 왼쪽으로 조금 옮겨 기둥 옆면이 보이게 해요
+    const Z0 = opt.z0 || 1000, CAMX = 110; // 눈 위치를 왼쪽으로 조금 옮겨 기둥 옆면이 보이게 해요(z0가 클수록 원근이 약해져 먼 코트도 크게 보여요)
     const rot = (x, y) => { const dx = x-200, dy = y-380; return [200 + dx*co - dy*si, 380 + dx*si + dy*co]; };
     const raw = (x, y) => { const [xr, yr] = rot(x, y), s = Z0/(Z0 + 800 - yr); return [(xr-CAMX)*s + (CAMX-200), s, yr]; };
     // 지금 방향에서 코트(밖 여유 포함)가 화면에 꽉 차게 크기를 맞춰요
@@ -10920,7 +10960,7 @@
       + line([0,253],[400,253],'lk-a') + line([0,507],[400,507],'lk-a');
     // 눈이 네트 어느 쪽에 있는지(네트 너머 것을 먼저 그려요)
     const camSide = Math.sign((200-CAMX)*si + (Z0+800-380)*co) || 1;
-    const nl = P(-18,380), nr = P(418,380), nhl = H*0.13*nl[2], nhr = H*0.13*nr[2];
+    const nl = P(-18,380), nr = P(418,380), nhl = H*(opt.net||0.13)*nl[2], nhr = H*(opt.net||0.13)*nr[2];
     const net = `<polygon points="${pt(nl)} ${pt(nr)} ${pt([nr[0],nr[1]-nhr])} ${pt([nl[0],nl[1]-nhl])}" class="lk-net"/><line x1="${nl[0].toFixed(1)}" y1="${(nl[1]-nhl).toFixed(1)}" x2="${nr[0].toFixed(1)}" y2="${(nr[1]-nhr).toFixed(1)}" class="lk-netb"/><line x1="${nl[0].toFixed(1)}" y1="${nl[1].toFixed(1)}" x2="${nl[0].toFixed(1)}" y2="${(nl[1]-nhl-6).toFixed(1)}" class="lk-post"/><line x1="${nr[0].toFixed(1)}" y1="${nr[1].toFixed(1)}" x2="${nr[0].toFixed(1)}" y2="${(nr[1]-nhr-6).toFixed(1)}" class="lk-post"/>`;
     const cap = (txt, x, y, cls) => { const p = P(x, y); return `<text x="${Math.max(40, Math.min(W-40, p[0])).toFixed(1)}" y="${Math.max(12, Math.min(H-2, p[1])).toFixed(1)}" text-anchor="middle" class="lk-cap ${cls}">${txt}</text>`; };
     // 네모 기둥 한 칸(바닥 높이 h0 → h1): 옆면을 먼 것부터 그리고, 눈 쪽을 볼수록 밝게
@@ -10953,10 +10993,71 @@
     return g + far.map(pillar).join('') + net + near.map(pillar).join('') + pil.map(tag).join('')
       + cap('🔴 상대 코트', 200, -24, 'opp') + cap(`🔵 ${escChip(T)} 코트`, 200, 790, 'own');
   }
+  // 📍 코트 위치 3D 지도(상세 분석 누적): 포지션마다 그 자리에 기둥을 쌓고(칸 = 도넛과 같은 방식·색), 공 길은 고른 포지션만 바닥에 그려요
+  const CP_ANG = {};
+  function cpMap3D(st){
+    const W = 560, H = 660, id = 'lk' + (++taLeakSeq);
+    TA_LEAK[id] = {...st, W, H, ang:CP_ANG[st.keep]||0, draw:cpMapSVG};
+    return `<div class="lk-wrap cp-wrap"><svg class="ta-leak cp-map" data-lk="${id}" viewBox="0 0 ${W} ${H}" role="img" aria-label="포지션별 기록 3D 지도 (좌우로 끌면 돌아가요)">${cpMapSVG(TA_LEAK[id])}</svg>`
+      + `<div class="cp-info" aria-live="polite">기둥이나 오른쪽 도넛에 커서를 올리면(휴대폰은 눌러서) 그 기록이 함께 부각되고 공이 간 길이 바닥에 나와요.</div>`
+      + `<div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>`;
+  }
+  function cpMapSVG(st){
+    const {pills, flows, W, H, focus, names} = st;
+    const {P, pt, floor, net, camSide, cap, prism} = lkScene(W, H, st.ang, {z0:2600, net:0.07});
+    const col = t => t==='our' ? 'var(--own)' : 'var(--opp)';
+    const maxN = Math.max(1, ...pills.map(p=>p.n)), hMax = H*0.2, b = 15;
+    const hOf = n => 4 + (hMax-4)*n/maxN;
+    // 바닥 공 길: 곡선을 바닥 좌표에서 나눠 찍고 원근으로 옮겨요(선 모양 = 공격 방식, 색 = 팀)
+    const fmax = Math.max(1, ...flows.map(f=>f.n));
+    const floorFlows = flows.map(f=>{
+      const dx = f.tx-f.fx, dy = f.ty-f.fy, len = Math.hypot(dx, dy); if(len < 20) return '';
+      const cx = (f.fx+f.tx)/2 - dy/len*14, cy = (f.fy+f.ty)/2 + dx/len*14, q = [];
+      for(let i=0;i<=12;i++){ const t = i/12, x = (1-t)*(1-t)*f.fx + 2*(1-t)*t*cx + t*t*f.tx, y = (1-t)*(1-t)*f.fy + 2*(1-t)*t*cy + t*t*f.ty; q.push(P(x, y)); }
+      const d = 'M' + q.map(pt).join(' L'), e = q[12], e0 = q[10], C = col(f.team), w = 2 + 3*f.n/fmax;
+      const vx = e[0]-e0[0], vy = e[1]-e0[1], vl = Math.hypot(vx, vy) || 1, ux = vx/vl, uy = vy/vl, hd = 7 + w;
+      const end = f.fault
+        ? `<path d="M${(e[0]-6).toFixed(1)},${(e[1]-6).toFixed(1)} L${(e[0]+6).toFixed(1)},${(e[1]+6).toFixed(1)} M${(e[0]+6).toFixed(1)},${(e[1]-6).toFixed(1)} L${(e[0]-6).toFixed(1)},${(e[1]+6).toFixed(1)}" stroke="${C}" stroke-width="3.5" stroke-linecap="round"/>`
+        : `<path d="M${e[0].toFixed(1)},${e[1].toFixed(1)} L${(e[0]-ux*hd-uy*hd*.5).toFixed(1)},${(e[1]-uy*hd+ux*hd*.5).toFixed(1)} L${(e[0]-ux*hd+uy*hd*.5).toFixed(1)},${(e[1]-uy*hd-ux*hd*.5).toFixed(1)} z" fill="${C}"/>`;
+      const pin = focus.row===f.pk ? ' pin' : '';
+      return `<g class="cp-f${pin}" data-pk="${dEsc(f.pk)}" data-wk="${dEsc(f.wk)}"><title>${dEsc(f.tip)}</title><path d="${d}" fill="none" stroke="var(--panel)" stroke-width="${(w+4).toFixed(1)}" stroke-linecap="round" opacity=".85"/>${courtWayStroke(d, f.way, C, w)}${end}${f.n>1?`<text x="${q[6][0].toFixed(1)}" y="${(q[6][1]-6).toFixed(1)}" text-anchor="middle" class="cp-fn" fill="${C}">${f.n}</text>`:''}</g>`;
+    }).join('');
+    const pillar = pl => {
+      let h = 0; const off = focus.row && focus.row!==pl.key ? ' off' : '';
+      const body = pl.segs.map(x=>{ const h0 = h, h1 = h + hOf(x.n) - (h ? 4 : 4)*0; h = h1;
+        const dim = focus.way && x.way!==focus.way ? ' wdim' : '';
+        return prism(pl.x, pl.y, b, h0, h1, x.c, false, ` class="cp-seg${dim}" data-pk="${dEsc(pl.key)}" data-wk="${dEsc(x.wk)}" data-tip="${dEsc(x.tip)}" data-cf="${dEsc(st.keep)}" data-cf-row="${dEsc(pl.key)}"`)
+          .replace('>', `><title>${dEsc(x.tip)}</title>`); }).join('');
+      pl._h = h;
+      const lastC = pl.segs[pl.segs.length-1].c;
+      return `<g class="cp-pil${off}">` + `<polygon points="${[[pl.x-b,pl.y+b],[pl.x+b,pl.y+b],[pl.x+b,pl.y-b],[pl.x-b,pl.y-b]].map(([x,y])=>pt(P(x,y))).join(' ')}" style="fill:rgba(0,0,0,.14)"/>`
+        + body + prism(pl.x, pl.y, b, h, h, lastC, true, ` class="cp-seg" data-pk="${dEsc(pl.key)}" data-wk="${dEsc(pl.segs[pl.segs.length-1].wk)}" data-tip="${dEsc(pl.tip)}"`) + `</g>`;
+    };
+    const tag = pl => { const p = P(pl.x, pl.y), y = p[1] - pl._h*p[2] - 12, t = `${pl.pos} ${pl.n}`, w = t.length*7.4 + 12;
+      return `<g class="cp-tag${focus.row && focus.row!==pl.key ? ' off' : ''}" data-pk="${dEsc(pl.key)}" data-tip="${dEsc(pl.tip)}"><rect x="${(p[0]-w/2).toFixed(1)}" y="${(y-9).toFixed(1)}" width="${w.toFixed(1)}" height="17" rx="8.5" fill="${col(pl.team)}"/><text x="${p[0].toFixed(1)}" y="${(y+3.8).toFixed(1)}" text-anchor="middle">${dEsc(t)}</text></g>`; };
+    const depth = pl => P(pl.x, pl.y)[3];
+    const far = pills.filter(r=>Math.sign(r.y-380)!==camSide).sort((a,b2)=>depth(a)-depth(b2)), near = pills.filter(r=>Math.sign(r.y-380)===camSide).sort((a,b2)=>depth(a)-depth(b2));
+    return floor + `<g class="cp-flows">${floorFlows}</g>` + far.map(pillar).join('') + net + near.map(pillar).join('') + pills.map(tag).join('')
+      + cap(`🔴 ${dEsc(names.opp)}`, 200, -24, 'opp') + cap(`🔵 ${dEsc(names.our)}`, 200, 790, 'own');
+  }
+  // 지도 기둥·도넛 칸·도넛 카드에 커서를 올리면 같은 포지션(칸이면 같은 방식)만 남기고 흐리게 해요
+  function cpHighlight(box, pk, wk, tip){
+    box.classList.toggle('cp-hl', !!pk);
+    box.querySelectorAll('[data-pk]').forEach(x=>x.classList.toggle('on', !!pk && x.dataset.pk===pk && (!wk || !x.dataset.wk || x.dataset.wk===wk)));
+    const info = box.querySelector('.cp-info'); if(info && tip) info.textContent = tip;
+  }
+  document.addEventListener('pointerover', e=>{
+    const box = e.target.closest && e.target.closest('.court-an'); if(!box || !box.querySelector('.cp-map')) return;
+    if(box.querySelector('svg.ta-leak.dragging')) return;
+    const el = e.target.closest('[data-pk]');
+    if(el) cpHighlight(box, el.dataset.pk, el.dataset.wk || '', el.dataset.tip || '');
+    else cpHighlight(box, '', '', '');
+  });
+  document.addEventListener('pointerleave', e=>{ if(e.target.classList && e.target.classList.contains('court-an')) cpHighlight(e.target, '', '', ''); }, true);
   // 실점 원인 지도 돌리기: 좌우로 끌면 돌아가고(세로로 끌면 화면이 그대로 내려가요), ↺ 처음 방향으로 되돌려요
   (function(){
     let drag = null, raf = 0;
-    const draw = (svg, st) => { if(raf) return; raf = requestAnimationFrame(()=>{ raf = 0; svg.innerHTML = taLeakSVG(st); }); };
+    const draw = (svg, st) => { if(raf) return; raf = requestAnimationFrame(()=>{ raf = 0; svg.innerHTML = (st.draw||taLeakSVG)(st); }); };
     document.addEventListener('pointerdown', e=>{
       const svg = e.target.closest && e.target.closest('svg.ta-leak[data-lk]'); if(!svg) return;
       const st = TA_LEAK[svg.dataset.lk]; if(!st) return;
@@ -10967,13 +11068,15 @@
       if(!drag || e.pointerId!==drag.id) return;
       const k = 360/Math.max(240, drag.svg.getBoundingClientRect().width); // 지도 폭만큼 끌면 한 바퀴
       drag.st.ang = ((drag.a + (e.clientX - drag.x)*k) % 360 + 360) % 360; draw(drag.svg, drag.st);
+      if(Math.abs(e.clientX - drag.x) > 6) window.__lkDragAt = Date.now(); // 끈 뒤의 클릭은 기둥 누르기로 치지 않아요
+      if(drag.st.keep) CP_ANG[drag.st.keep] = drag.st.ang;
     });
     const end = ()=>{ if(drag){ drag.svg.classList.remove('dragging'); drag = null; } };
     document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
     document.addEventListener('click', e=>{
       const btn = e.target.closest && e.target.closest('.lk-reset'); if(!btn) return;
       const st = TA_LEAK[btn.dataset.lk], svg = document.querySelector(`svg.ta-leak[data-lk="${btn.dataset.lk}"]`); if(!st || !svg) return;
-      st.ang = 0; svg.innerHTML = taLeakSVG(st);
+      st.ang = 0; if(st.keep) CP_ANG[st.keep] = 0; svg.innerHTML = (st.draw||taLeakSVG)(st);
     });
   })();
   // 실점 원인 순위(파레토): 막대 = 실점 중 몫, 선 = 위에서부터 더한 누적 몫. 누적 80%까지의 원인을 진하게 보여줘요
