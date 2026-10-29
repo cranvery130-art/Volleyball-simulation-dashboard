@@ -1291,6 +1291,7 @@
   .ta-stack i{ display:flex; align-items:center; justify-content:center; min-width:3px; }
   .ta-stack em{ font-style:normal; font-size:11.5px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 6px; }
   .ta-stack em small{ font-size:10.5px; font-weight:600; opacity:.85; margin-left:4px; }
+  .fp-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:10px 22px; } .fp-card{ min-width:0; } .fp-title{ font-size:13px; font-weight:800; margin:0 0 4px; }
   .ta-pareto{ width:100%; max-width:760px; height:auto; display:block; margin-top:2px; }
   .ta-pareto.sm .ta-pl, .ta-pareto.sm .ta-pv{ font-size:11.5px; } .ta-pareto .ta-prk{ font-size:10px; font-weight:800; fill:var(--panel); font-family:var(--body); }
   .ta-leak{ width:100%; max-width:760px; height:auto; display:block; margin-top:4px; overflow:visible; cursor:grab; touch-action:pan-y; user-select:none; -webkit-user-select:none; } .ta-leak.dragging{ cursor:grabbing; }
@@ -1310,6 +1311,16 @@
   .court-an.cp-hl .pd-slice:not(.on){ opacity:.2; } .court-an.cp-hl .pd-card:not(.on){ opacity:.55; }
   .court-an.cp-hl .pd-card.on{ border-color:var(--text); }
   .cp-map .cp-seg{ cursor:pointer; }
+  .ts-map .ts-n{ font-size:11px; font-weight:900; fill:var(--text); font-family:var(--body); }
+  .ts-map .ts-l{ font-size:11px; font-weight:800; font-family:var(--body); paint-order:stroke; stroke:var(--panel); stroke-width:3px; stroke-linejoin:round; }
+  .ts-map .ts-s text{ font-size:11px; font-weight:900; fill:#fff; font-family:var(--body); }
+  .ts-arc, .ts-chip{ transition:opacity .15s ease-out; } .ts-arc{ cursor:pointer; }
+  .hk-box.hk-hl .ts-arc:not(.on), .hk-box.hk-hl .ts-chip:not(.on){ opacity:.15; } .hk-box.hk-hl .ts-chip.on{ border-color:var(--c); box-shadow:inset 0 0 0 1px var(--c); }
+  .ts-chip i{ width:14px; height:4px; border-radius:2px; background:var(--c); } .ts-chip.k-2nd i{ background:repeating-linear-gradient(90deg, var(--c) 0 4px, transparent 4px 6px); } .ts-chip.k-3rd i{ background:repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 4px); }
+  .ts-legend{ display:flex; flex-wrap:wrap; gap:3px 12px; margin:4px 0 6px; font-size:11.5px; color:var(--text-dim); } .ts-legend span{ display:inline-flex; align-items:center; gap:5px; } .ts-legend .muted{ color:var(--muted); }
+  .ts-legend i{ width:18px; height:4px; border-radius:2px; background:var(--text-dim); } .ts-legend i.k-2nd{ background:repeating-linear-gradient(90deg, var(--text-dim) 0 5px, transparent 5px 8px); } .ts-legend i.k-3rd{ background:repeating-linear-gradient(90deg, var(--text-dim) 0 2px, transparent 2px 5px); }
+  .hk-info{ font-size:11.5px; font-weight:700; color:var(--text-dim); margin-top:6px; min-height:1.4em; }
+  .ts-map{ max-width:620px; }
   .cp-info{ min-height:2.6em; font-size:12px; font-weight:700; color:var(--text-dim); text-align:center; margin-top:2px; line-height:1.35; }
   .ta-leak .lk-cap{ font-size:11.5px; font-weight:800; font-family:var(--body); } .ta-leak .lk-cap.opp{ fill:var(--opp); } .ta-leak .lk-cap.own{ fill:var(--own); }
   .ta-pareto .ta-g{ stroke:var(--border-2); stroke-width:1; } .ta-pareto .ta-g80{ stroke:var(--text-dim); stroke-width:1; stroke-dasharray:4 4; }
@@ -9404,11 +9415,13 @@
     </div>`;
 
     const top = b => sortDesc(T.byLabel[b]).slice(0,6);
+    // 요인별 분석: 득점(자력 + 상대 범실)과 실점(범실 + 상대 득점)을 한 파레토씩으로 합쳐, 점수의 80%를 만든 요인을 진하게 보여줘요
+    const fRows = (a, b) => sortDesc(T.byLabel[a]).map(([k,v])=>({label:k, n:v, kind:'a'})).concat(sortDesc(T.byLabel[b]).map(([k,v])=>({label:k, n:v, kind:'b'}))).sort((x,y)=>y.n-x.n);
     const factorHTML = `<div data-nav="요인별 분석" id="gsFactor" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
-      <div class="field-label" style="margin-top:0; margin-bottom:8px;">요인별 분석 <span style="font-weight:400; color:var(--muted);">— 잘해서 난 점수와 실수로 난 점수를 따로 봐요</span></div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); column-gap:18px;">
-        <div>${barsHTML(`🔵 ${bucketName('ourScore')} (자력) TOP`, top('ourScore'), 'var(--own)')}${barsHTML(`🎁 ${bucketName('oppError')}로 얻은 점수`, top('oppError'), 'color-mix(in srgb, var(--own) 55%, var(--panel-2))')}</div>
-        <div>${barsHTML(`⚠️ ${bucketName('ourError')} TOP`, top('ourError'), 'var(--opp)')}${barsHTML(`🔴 ${bucketName('oppScore')} TOP`, top('oppScore'), 'color-mix(in srgb, var(--opp) 55%, var(--panel-2))')}</div>
+      <div class="field-label" style="margin-top:0; margin-bottom:8px;">요인별 분석 <span style="font-weight:400; color:var(--muted);">— 점수를 낸 요인과 내준 요인을 많은 순서로, 선은 누적 몫</span></div>
+      <div class="fp-grid">
+        ${factorParetoHTML(`🔵 ${ourTeamName} 득점 ${T.forUs}점은 어디서 났나`, fRows('ourScore','oppError'), 'var(--own)', `${ourTeamName} 자력`, `${oppTeamName} 범실`)}
+        ${factorParetoHTML(`🔴 ${ourTeamName} 실점 ${T.against}점은 어디서 났나`, fRows('ourError','oppScore'), 'var(--opp)', `${ourTeamName} 범실`, `${oppTeamName} 득점`)}
       </div>
     </div>`;
 
@@ -9422,57 +9435,35 @@
     </div>`;
     el.innerHTML = checkHTML + cardsHTML + compHTML + factorHTML + blockAnalysisHTML(entries) + tossAnalysisHTML();
   }
-  // 블로킹 분석: 팀별로 블로킹 득점은 위치·인원, 블로킹 범실은 유형·위치로 모아요.
+  // 요인별 파레토: 막대 = 몫(진한 = 자력·직접, 옅은 = 상대 실수 쪽), 선 = 위에서부터 더한 누적 몫. 누적 80%까지 진하게
+  function factorParetoHTML(title, rows, C, la, lb){
+    if(!rows.length) return `<div class="fp-card"><div class="fp-title">${escChip(title)}</div>${DETAIL_EMPTY('아직 기록이 없어요.')}</div>`;
+    let rest = [];
+    if(rows.length > 10){ rest = rows.slice(9); rows = rows.slice(0,9).concat([{label:'그 밖 '+rest.length+'가지', n:rest.reduce((a,x)=>a+x.n,0), kind:'r'}]); }
+    const tot = rows.reduce((a,x)=>a+x.n,0), W = 420, lw = 132, vw = 66, rh = 22, pt = 20, H = pt + rows.length*rh + 6, pw = W-lw-vw-6, X = v => lw + pw*Math.min(100,v)/100;
+    const cB = `color-mix(in srgb, ${C} 45%, var(--panel))`;
+    let cum = 0, core = 0, coreCum = 0; const pts = [];
+    const body = rows.map((r,i)=>{
+      const sh = r.n/tot*100, prev = cum; cum += sh; const hot = prev < 80 && r.kind!=='r'; if(hot){ core = i+1; coreCum = cum; }
+      const y = pt + i*rh, cy = y + rh/2; pts.push([X(cum), cy]);
+      const fill = r.kind==='a' ? C : r.kind==='b' ? cB : 'var(--border-2)';
+      const lab = r.label.length > 13 ? r.label.slice(0,13)+'…' : r.label;
+      return `<g class="${hot?'hot':'dim'}"><title>${escChip(r.label)} ${r.n}점 · ${Math.round(sh)}% · 누적 ${Math.round(cum)}%${r.kind==='a'?' · '+escChip(la):r.kind==='b'?' · '+escChip(lb):''}</title><text x="${lw-8}" y="${cy+4}" text-anchor="end" class="ta-pl">${escChip(lab)}</text><rect x="${lw}" y="${y+4}" width="${Math.max(3, X(sh)-lw).toFixed(1)}" height="${rh-8}" rx="3" fill="${fill}"/><text x="${W-vw}" y="${cy+4}" class="ta-pv">${r.n}점 <tspan class="ta-pc">${Math.round(sh)}%</tspan></text></g>`;
+    }).join('');
+    const line = `<path d="${pts.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')}" fill="none" stroke="var(--text-dim)" stroke-width="1.6" stroke-linejoin="round"/>` + pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===core-1?4.5:3}" fill="${i===core-1?'var(--text)':'var(--panel)'}" stroke="var(--text-dim)" stroke-width="1.5"/>`).join('');
+    const grid = `<line x1="${lw}" x2="${lw}" y1="${pt-4}" y2="${H-4}" class="ta-g"/><line x1="${X(80)}" x2="${X(80)}" y1="${pt-6}" y2="${H-4}" class="ta-g80"/><text x="${X(80)}" y="${pt-9}" text-anchor="middle" class="ta-ax">누적 80%</text>`;
+    const sumA = rows.filter(r=>r.kind==='a').reduce((a,x)=>a+x.n,0) + rest.filter(r=>r.kind==='a').reduce((a,x)=>a+x.n,0), sumB = tot - sumA;
+    return `<div class="fp-card"><div class="fp-title">${escChip(title)}</div><svg class="ta-pareto" viewBox="0 0 ${W} ${H}" role="img" aria-label="${escChip(title)}">${grid}${body}${line}</svg>
+      <div class="ta-legend"><span><i style="background:${C}"></i>${escChip(la)} ${sumA}</span><span><i style="background:${cB}"></i>${escChip(lb)} ${sumB}</span><span><i style="background:var(--text-dim); height:2px; border-radius:0;"></i>누적 몫</span></div>
+      ${core ? `<p class="ta-note">위 <b>${core}개</b> 요인이 <b>${Math.round(coreCum)}%</b>예요.</p>` : ''}${rest.length ? `<div class="ta-etc">그 밖: ${rest.map(r=>`${escChip(r.label)} ${r.n}`).join(' · ')}</div>` : ''}</div>`;
+  }
+  // 블로킹 분석: 팀 누적 분석·상세 분석과 같은 네트축 그림(위치별 득점·범실 + 누구 손에서·범실 유형)으로 보여줘요
   function blockAnalysisHTML(entries){
-    const blk = entries.filter(e=>e.main==='블로킹');
-    if(!blk.length) return '';
-    const zoneName = e => e.zone ? ZONE_LABELS[e.zone.row][e.zone.col]+' 앞' : '위치 미지정';
-    const countBy = (list, fn) => { const m={}; list.forEach(e=>{ const k=fn(e); m[k]=(m[k]||0)+1; }); return sortDesc(m); };
-    const teamBlock = (team, name, color) => {
-      const sc = blk.filter(e=>e.team===team && e.outcome==='score'), fl = blk.filter(e=>e.team===team && e.outcome==='fault');
-      if(!sc.length && !fl.length) return '';
-      return `<div><div class="analysis-team" style="color:${color};">${name} — 블로킹 득점 ${sc.length} · 범실 ${fl.length}</div>
-        ${sc.length ? barsHTML('득점 위치', countBy(sc, zoneName), color) : ''}
-        ${sc.some(e=>e.detail) ? barsHTML('득점 인원', countBy(sc.filter(e=>e.detail), e=>e.detail), color) : ''}
-        ${fl.length ? barsHTML('범실 유형', countBy(fl, e=>e.detail ? e.detail.replace(/\(.*\)/,'') : '유형 미지정'), 'var(--warn)') : ''}
-        ${fl.length ? barsHTML('범실 위치', countBy(fl, zoneName), 'var(--warn)') : ''}</div>`;
-    };
-    // 관련 선수: 블로킹 득실을 기록할 때 공이 손에 맞은 선수를 고르면, 몇 명이 떴든 누구 손에서 득실이 났는지 위치별로 모아요.
-    const blockPlayerHTML = (sc, fl, zoneName) => {
-      const tagged = sc.concat(fl).filter(e=>e.player && e.player.id);
-      if(!tagged.length) return null;
-      const pName = e => (typeof rosterLabel==='function' ? rosterLabel(e.player.id) : '') || e.player.label;
-      const by = {}; tagged.forEach(e=>{ const k=pName(e); by[k]=by[k]||{s:0,f:0,z:{}}; if(e.outcome==='score') by[k].s++; else by[k].f++; const z=zoneName(e); by[k].z[z]=by[k].z[z]||{s:0,f:0}; if(e.outcome==='score') by[k].z[z].s++; else by[k].z[z].f++; });
-      const rows = Object.entries(by).sort((a,b)=>(b[1].s+b[1].f)-(a[1].s+a[1].f)).map(([n,d])=>`<tr><td>${escChip(n)}</td><td>${d.s}</td><td>${d.f}</td><td style="white-space:normal;">${Object.entries(d.z).map(([z,v])=>`${z} <b style="color:var(--own)">득${v.s}</b>·<b style="color:var(--warn)">실${v.f}</b>`).join('<br>')}</td></tr>`).join('');
-      const zones = {}; tagged.forEach(e=>{ const z=zoneName(e); zones[z]=zones[z]||{s:{},f:{}}; const side=e.outcome==='score'?'s':'f'; const k=pName(e); zones[z][side][k]=(zones[z][side][k]||0)+1; });
-      const list = m => Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([n,c])=>`${escChip(n)} ${c}`).join(', ') || '—';
-      const zRows = Object.entries(zones).map(([z,v])=>`<tr><td>${z}</td><td style="white-space:normal;">${list(v.s)}</td><td style="white-space:normal;">${list(v.f)}</td></tr>`).join('');
-      const untagged = sc.length + fl.length - tagged.length;
-      return {count:`${tagged.length}건${untagged?` · 선수 미지정 ${untagged}건 제외`:''}`,
-        t1:`<table class="mini-table"><thead><tr><th>선수</th><th>득점</th><th>범실</th><th>위치별</th></tr></thead><tbody>${rows}</tbody></table>`,
-        t2:`<table class="mini-table"><thead><tr><th>위치</th><th>득점에 관여</th><th>범실에 관여</th></tr></thead><tbody>${zRows}</tbody></table>`};
-    };
-    // 두 팀의 "누구 손에서" 표를 한 묶음으로: 팀 제목 · 선수별 표 · 위치별 표가 같은 줄에서 시작하도록 격자로 맞춰요.
-    const playerGroupHTML = () => {
-      const part = team => blockPlayerHTML(blk.filter(e=>e.team===team && e.outcome==='score'), blk.filter(e=>e.team===team && e.outcome==='fault'), zoneName);
-      const P = {our:part('our'), opp:part('opp')};
-      if(!P.our && !P.opp) return '';
-      const cell = (team, row, html) => `<div class="bp-cell bp-${team}" style="grid-row:${row};">${html}</div>`;
-      const head = (team, name, color) => `<div class="analysis-team" style="color:${color}; margin:0 0 4px;">${name}${P[team]?` <span style="font-weight:400; color:var(--muted); font-size:11px;">(${P[team].count})</span>`:''}</div>`;
-      const none = '<div class="field-note" style="margin:0;">관련 선수를 고른 블로킹 기록이 없어요.</div>';
-      return `<div class="bp-group">
-        <div class="field-label" style="margin:0 0 6px;">👤 누구 손에서 — 관련 선수별</div>
-        <div class="bp-grid">
-          ${cell('our',1,head('our', ourTeamName, 'var(--own)'))}${cell('opp',1,head('opp', oppTeamName, 'var(--opp)'))}
-          ${cell('our',2,P.our?P.our.t1:none)}${cell('opp',2,P.opp?P.opp.t1:none)}
-          ${cell('our',3,P.our?P.our.t2:'')}${cell('opp',3,P.opp?P.opp.t2:'')}
-        </div></div>`;
-    };
+    const blk0 = entries.filter(e=>e.main==='블로킹');
+    if(!blk0.length) return '';
     return `<div data-nav="블로킹 분석" id="gsBlock" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
       <div class="field-label" style="margin-top:0; margin-bottom:8px;">🧱 블로킹 분석 <span style="font-weight:400; color:var(--muted);">— 어디서 막았고, 왜 뚫렸고, 누구 손에서 났는지</span></div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); column-gap:18px;">${teamBlock('our', ourTeamName, 'var(--own)')}${teamBlock('opp', oppTeamName, 'var(--opp)')}</div>
-      ${playerGroupHTML()}
-    </div>`;
+      ${blockDetailHTML(entries)}</div>`;
   }
   // 세터 배분: 기록에 함께 남긴 토스 순서로 팀별 배분 빈도, 몇 번째 토스에 어디로 갔는지, 마지막 토스가 점수로 이어졌는지를 봐요.
   function tossAnalysisHTML(){
@@ -9517,16 +9508,99 @@
       }
       const decRows = Object.entries(dec).sort((a,b)=>b[1].a-a[1].a).map(([to,d])=>`<tr><td>${to}</td><td>${d.w}/${d.a}점 (${Math.round(d.w/d.a*100)}%)</td></tr>`).join('');
       return `<div><div class="analysis-team" style="color:${color};">${name} 토스 — ${all.length}회${sec.length?` (2단 ${sec.length}회 포함)`:''}</div>
-        ${barsHTML('어디로 올렸나 (빈도)', freqRows, color)}
         <table class="mini-table"><thead><tr><th>순서</th><th>가장 많이 간 곳</th></tr></thead><tbody>${orders}</tbody></table>
         ${decRows ? `<table class="mini-table"><thead><tr><th>마지막 토스</th><th>그 팀 득점으로 끝남</th></tr></thead><tbody>${decRows}</tbody></table>` : ''}${secHTML}</div>`;
     };
     return `<div data-nav="세터 배분" id="gsToss" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
       <div class="field-label" style="margin-top:0; margin-bottom:8px;">🏐 세터 배분 <span style="font-weight:400; color:var(--muted);">— 토스 순서를 남긴 ${recs.length}개 랠리 기준</span></div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); column-gap:18px;">${teamHTML('our', ourTeamName, 'var(--own)')}${teamHTML('opp', oppTeamName, 'var(--opp)')}</div>
+      ${tossMap3DHTML(recs)}
+      <details class="cw-forms"><summary>순서·결정 토스·2단 토스 표 보기</summary><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); column-gap:18px;">${teamHTML('our', ourTeamName, 'var(--own)')}${teamHTML('opp', oppTeamName, 'var(--opp)')}</div></details>
       ${tossFlowHTML()}
     </div>`;
   }
+  // 세터 배분 3D 지도: 한 코트에 두 팀의 토스를 세터 자리 → 보낸 곳까지 공 궤적(포물선)으로 그려요. 굵을수록 많이 올린 곳,
+  // ↪ 2단 토스는 후위 가운데에서 올린 점선, 3구처리는 짧은 점선으로 따로 그리고, 궤적·칩에 커서를 올리면 그 기록만 남겨요
+  const TOSS_FALLBACK = {'레프트':[40,410],'라이트':[360,410],'A':[230,410],'B':[300,410],'백A':[230,560],'앞차':[150,410],'백차':[150,560],'중앙 후위(파이프)':[200,600],'세터 2구':[310,400],'3구처리':[200,430]};
+  function tossMap3DHTML(recs){
+    const g = {}, setter = {};
+    const spot = (team, pos, opt) => { const sp = pos ? formationSpot(team, pos, opt||'', team) : null; return sp ? [sp.x, sp.y] : null; };
+    const mir = (team, xy) => team==='our' ? xy.slice() : [400-xy[0], 760-xy[1]];
+    recs.forEach(r=>{
+      const e = (r.entries||[])[0], n = e ? normEntry(e) : null;
+      ['our','opp'].forEach(team=>{
+        const mine = (r.tosses||[]).filter(t=>t.team===team); if(!mine.length) return;
+        mine.forEach((t, i)=>{
+          const kind = t.kind==='2nd' ? '2nd' : t.to==='3구처리' ? '3rd' : 'n';
+          const k = `${team}|${t.to}|${kind}`, d = g[k] = g[k] || {key:k, team, to:t.to, kind, n:0, last:0, win:0};
+          d.n++;
+          if(i===mine.length-1 && n && n.bucket){ d.last++; if((team==='our') === !!n.forUs) d.win++; }
+        });
+      });
+    });
+    const list = Object.values(g); if(!list.length) return '';
+    ['our','opp'].forEach(team=>{ setter[team] = spot(team, 'SETTER') || mir(team, [250, 418]); });
+    const tot = {our:0, opp:0}; list.forEach(d=>{ tot[d.team] += d.n; });
+    list.forEach(d=>{
+      const pos = TOSS_POS[d.to];
+      let to = d.kind==='3rd' ? null : spot(d.team, pos, d.to);
+      if(!to) to = mir(d.team, TOSS_FALLBACK[d.to] || [200, 450]);
+      if(pos==='SETTER'){ const sx = setter[d.team]; to = [sx[0] + (sx[0] > 200 ? -56 : 56), d.team==='our' ? 398 : 362]; }
+      d.from = d.kind==='2nd' ? mir(d.team, [200, 620]) : setter[d.team];
+      d.to2 = to;
+      d.short = (TOSS_ABBR[d.to] || d.to.slice(0,2)) + (d.kind==='2nd' ? '·2단' : '');
+      d.tip = `${d.team==='our'?'🔵':'🔴'} ${d.team==='our'?ourTeamName:oppTeamName} ${d.kind==='2nd'?'↪ 2단 토스 → ':''}${d.to} ${d.n}회 (팀 토스의 ${Math.round(d.n/tot[d.team]*100)}%)` + (d.last ? ` · 마지막 토스였을 때 ${d.win}/${d.last}점 (${Math.round(d.win/d.last*100)}%)` : '');
+    });
+    const W = 560, H = 600, id = 'lk' + (++taLeakSeq);
+    TA_LEAK[id] = {list, setter, W, H, ang:CP_ANG.toss||0, keep:'toss', draw:tossMapSVG};
+    const chips = ['our','opp'].map(team=>{ const ls = list.filter(d=>d.team===team).sort((a,b)=>b.n-a.n); if(!ls.length) return '';
+      return `<div class="bn-row"><span class="bn-rl" style="color:${team==='our'?'var(--own)':'var(--opp)'};">${team==='our'?'🔵':'🔴'} ${escChip(team==='our'?ourTeamName:oppTeamName)}</span>${ls.map(d=>`<button type="button" class="bn-chip ts-chip k-${d.kind}" style="--c:${team==='our'?'var(--own)':'var(--opp)'};" data-hk="${escChip(d.key)}" data-tip="${escChip(d.tip)}"><i></i>${d.kind==='2nd'?'↪ 2단 ':''}${escChip(d.to)} <b>${d.n}</b><small>${Math.round(d.n/tot[team]*100)}%${d.last?` · 결정 ${Math.round(d.win/d.last*100)}%`:''}</small></button>`).join('')}</div>`; }).join('');
+    return `<div class="hk-box"><div class="lk-wrap"><svg class="ta-leak ts-map" data-lk="${id}" viewBox="0 0 ${W} ${H}" role="img" aria-label="세터 배분 3D 지도 (좌우로 끌면 돌아가요)">${tossMapSVG(TA_LEAK[id])}</svg>
+      <div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>
+      <div class="ts-legend"><span><i class="k-n"></i>세터 토스(굵을수록 많이)</span><span><i class="k-2nd"></i>↪ 2단 토스(후위에서)</span><span><i class="k-3rd"></i>3구처리</span><span class="muted">S = 세터 자리 · 끝 숫자 = 횟수 · 결정 = 그 토스가 마지막일 때 득점률</span></div>
+      ${chips}<div class="hk-info" aria-live="polite">궤적이나 칩에 커서를 올리면(휴대폰은 눌러서) 그 토스만 진하게 남아요.</div></div>`;
+  }
+  function tossMapSVG(st){
+    const {list, setter, W, H} = st;
+    const {P, pt, floor, net, cap} = lkScene(W, H, st.ang, {z0:2600, net:0.07});
+    const col = t => t==='our' ? 'var(--own)' : 'var(--opp)';
+    const max = Math.max(1, ...list.map(d=>d.n));
+    // 공 궤적: 바닥에서 나눠 찍은 점을 원근으로 옮긴 뒤, 포물선 높이만큼 위로 올려요(먼 곳은 원근만큼 낮게)
+    const arcs = list.slice().sort((a,b)=>P(...b.to2)[3]-P(...a.to2)[3] || a.n-b.n).map(d=>{
+      const [fx, fy] = d.from, [tx, ty] = d.to2, dist = Math.hypot(tx-fx, ty-fy);
+      const peak = d.kind==='3rd' ? H*0.05 : H*0.08 + dist*0.12, q = [];
+      for(let i=0;i<=16;i++){ const t = i/16, p = P(fx+(tx-fx)*t, fy+(ty-fy)*t); q.push([p[0], p[1] - 4*peak*t*(1-t)*p[2]]); }
+      const w = 2 + 6*d.n/max, C = col(d.team), dPath = 'M' + q.map(pt).join(' L');
+      const dash = d.kind==='2nd' ? ` stroke-dasharray="${(w*2.4).toFixed(1)} ${(w*1.4).toFixed(1)}"` : d.kind==='3rd' ? ` stroke-dasharray="0.1 ${(w*1.8).toFixed(1)}" stroke-linecap="round"` : '';
+      const end = P(tx, ty), sh = q[8];
+      return `<g class="ts-arc" data-hk="${escChip(d.key)}" data-tip="${escChip(d.tip)}"><title>${escChip(d.tip)}</title>`
+        + `<path d="M${pt(P(fx,fy))} L${pt(end)}" stroke="${C}" stroke-opacity=".18" stroke-width="${(w*0.8).toFixed(1)}" stroke-dasharray="2 4" fill="none"/>`
+        + `<path d="${dPath}" fill="none" stroke="var(--panel)" stroke-width="${(w+4).toFixed(1)}" stroke-linecap="round" opacity=".7"/>`
+        + `<path d="${dPath}" fill="none" stroke="${C}" stroke-width="${w.toFixed(1)}" stroke-linecap="round"${dash}/>`
+        + `<path d="${dPath}" fill="none" stroke="transparent" stroke-width="${(w+12).toFixed(1)}"/>`
+        + `<circle cx="${end[0].toFixed(1)}" cy="${end[1].toFixed(1)}" r="${(8+4*d.n/max).toFixed(1)}" fill="var(--panel)" stroke="${C}" stroke-width="2.5"/><text x="${end[0].toFixed(1)}" y="${(end[1]+4).toFixed(1)}" text-anchor="middle" class="ts-n">${d.n}</text>`
+        + `<text x="${sh[0].toFixed(1)}" y="${(sh[1]-7).toFixed(1)}" text-anchor="middle" class="ts-l" fill="${C}">${escChip(d.short)}</text></g>`;
+    }).join('');
+    const sMark = ['our','opp'].filter(t=>list.some(d=>d.team===t && d.kind!=='2nd')).map(t=>{ const p = P(...setter[t]); return `<g class="ts-s"><rect x="${(p[0]-10).toFixed(1)}" y="${(p[1]-10).toFixed(1)}" width="20" height="20" rx="5" fill="${col(t)}"/><text x="${p[0].toFixed(1)}" y="${(p[1]+4.5).toFixed(1)}" text-anchor="middle">S</text></g>`; }).join('')
+      + ['our','opp'].filter(t=>list.some(d=>d.team===t && d.kind==='2nd')).map(t=>{ const p = P(...(t==='our' ? [200,620] : [200,140])); return `<g class="ts-s"><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="9" fill="var(--panel)" stroke="${col(t)}" stroke-width="2" stroke-dasharray="3 2"/><text x="${p[0].toFixed(1)}" y="${(p[1]+4).toFixed(1)}" text-anchor="middle" fill="${col(t)}" style="fill:${col(t)}">↪</text></g>`; }).join('');
+    return floor + net + sMark + arcs + cap(`🔴 ${escChip(oppTeamName)}`, 200, -24, 'opp') + cap(`🔵 ${escChip(ourTeamName)}`, 200, 790, 'own');
+  }
+  // 커서를 올린 칸만 남기는 공통 도우미(.hk-box 안의 같은 data-hk). 누르면 고정, 한 번 더 누르면 풀려요
+  function hkHighlight(box, k, tip){
+    box.classList.toggle('hk-hl', !!k);
+    box.querySelectorAll('[data-hk]').forEach(x=>x.classList.toggle('on', !!k && x.dataset.hk===k));
+    const info = box.querySelector('.hk-info'); if(info && tip) info.textContent = tip;
+  }
+  document.addEventListener('pointerover', e=>{
+    const box = e.target.closest && e.target.closest('.hk-box'); if(!box || box.dataset.pin || box.querySelector('svg.dragging')) return;
+    const el = e.target.closest('[data-hk]'); hkHighlight(box, el ? el.dataset.hk : '', el ? el.dataset.tip : '');
+  });
+  document.addEventListener('click', e=>{
+    const el = e.target.closest && e.target.closest('.hk-box [data-hk]'); if(!el) return;
+    if(window.__lkDragAt && Date.now()-window.__lkDragAt < 350) return;
+    const box = el.closest('.hk-box');
+    if(box.dataset.pin===el.dataset.hk){ delete box.dataset.pin; hkHighlight(box, '', ''); return; }
+    box.dataset.pin = el.dataset.hk; hkHighlight(box, el.dataset.hk, el.dataset.tip);
+  });
   // 점수별 토스 흐름: 토스 순서를 남긴 점수마다 그 랠리에서 토스가 어떻게 이어졌고 누가 점수를 냈는지 한 줄씩 보여줘요.
   function tossFlowHTML(){
     const scope = recordsInScope().slice().sort((a,b)=>((a.set||1)-(b.set||1)) || (a.time-b.time));
