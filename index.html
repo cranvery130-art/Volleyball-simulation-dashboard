@@ -994,18 +994,16 @@
   .bn-svg{ width:100%; height:auto; display:block; max-width:760px; }
   .bn-svg .bn-v{ font-size:12px; font-weight:800; font-family:var(--body); } .bn-svg .bn-vs{ font-size:10.5px; fill:var(--muted); font-weight:600; }
   .bn-svg .bn-z{ font-size:12px; font-weight:800; fill:var(--text); font-family:var(--body); } .bn-svg .bn-team{ font-size:11.5px; font-weight:800; font-family:var(--body); }
-  .cw-donut{ display:flex; align-items:center; gap:10px; min-width:0; }
-  .cw-dn{ flex:none; width:58px; height:58px; } .cw-dn text{ font-size:10px; font-weight:900; fill:var(--text); font-family:var(--body); }
-  .cw-dleg{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; font-size:12px; }
-  .cw-dleg span{ display:grid; grid-template-columns:10px minmax(0,1fr) auto; align-items:center; gap:6px; }
-  .cw-dleg i{ width:10px; height:10px; border-radius:3px; } .cw-dleg b{ font-variant-numeric:tabular-nums; }
-  .cw-dleg em{ font-style:normal; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:flex; align-items:center; gap:4px; }
-  .cw-ln{ flex:none; width:20px; height:8px; }
-  .cw-ways{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:3px 14px; margin-top:6px; font-size:12px; }
-  .cw-ways span{ display:grid; grid-template-columns:16px minmax(0,1fr) auto; align-items:center; gap:6px; }
-  .cw-ways i{ display:block; width:16px; height:8px; border-radius:2px; }
-  .cw-ways em{ font-style:normal; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .cw-ways b{ font-variant-numeric:tabular-nums; color:var(--text); }
+  .pd-team{ font-size:12.5px; font-weight:800; margin:10px 0 6px; } .pd-team:first-of-type{ margin-top:2px; }
+  .pd-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .pd-card{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 6px; border-radius:12px; border:1px solid var(--border); background:var(--panel); font:inherit; color:var(--text); cursor:pointer; min-width:0; transition:border-color .15s ease-out, background .15s ease-out; }
+  .pd-card:hover{ border-color:var(--border-2); } .pd-card.active{ border-color:var(--accent); background:var(--accent-soft); }
+  .pd-svg{ width:100%; max-width:170px; height:auto; display:block; }
+  .pd-svg .pd-pos{ font-size:15px; font-weight:900; fill:var(--text); font-family:var(--body); }
+  .pd-svg .pd-tot{ font-size:11px; font-weight:700; fill:var(--muted); font-family:var(--body); }
+  .pd-svg .pd-l, .pd-svg .pd-n{ font-family:var(--body); fill:var(--text); paint-order:stroke; stroke:var(--panel); stroke-width:2.6px; stroke-linejoin:round; }
+  .pd-svg .pd-l{ font-size:9px; font-weight:700; } .pd-svg .pd-n{ font-size:10.5px; font-weight:900; }
+  .pd-etc, .pd-zone{ font-size:10.5px; line-height:1.4; color:var(--muted); text-align:center; } .pd-zone{ color:var(--text-dim); font-weight:700; }
   .court-an-big .court-an-table td small.cw-zone{ margin-top:5px; }
   .cw-topnote{ text-align:center; font-size:11.5px; color:var(--muted); margin:0 0 6px; }
   .tm-key{ display:flex; flex-direction:column; gap:2px; margin:0 0 6px; font-size:11px; color:var(--text-dim); }
@@ -9590,7 +9588,7 @@
         let gs = Object.values(fg).map(g=>({...g, fx:g.fx/g.n, fy:g.fy/g.n, tx:g.tx/g.n, ty:g.ty/g.n}));
         const gAll = gs.length, TOPN = 3;
         if(many && !focus.row && !focus.way){ const per = {}; gs = gs.sort((a,b)=>b.n-a.n).filter(g=>(per[g.way] = (per[g.way]||0)+1) <= TOPN); }
-        if(gAll > gs.length) legend += `<div class="cw-topnote">공이 간 길 ${gAll}개 중 방식마다 많은 ${TOPN}개만 그렸어요. 표의 포지션이나 아래 방식을 누르면 그것만 모두 보여요.</div>`;
+        if(gAll > gs.length) legend += `<div class="cw-topnote">공이 간 길 ${gAll}개 중 방식마다 많은 ${TOPN}개만 그렸어요. ${many?'오른쪽 포지션 도넛':'표의 포지션'}이나 아래 방식을 누르면 그것만 모두 보여요.</div>`;
         const fmax = Math.max(1, ...gs.map(g=>g.n)), wayIdx = Object.keys(COURT_WAYS);
         gs.sort((a,b)=>b.n-a.n).forEach(g=>{
           const W0 = COURT_WAYS[g.way], w = 3 + 4.5*g.n/fmax, C = col(g.team);
@@ -9629,20 +9627,34 @@
         rowList.sort((a,b)=>(a.team===b.team ? 0 : a.team==='our' ? -1 : 1) || (a.pos==='선수 미지정') - (b.pos==='선수 미지정') || b.n-a.n);
         // 그 포지션 공이 주로 떨어진 곳(공격하는 팀이 네트를 바라볼 때 기준, 직선·크로스)
         const zoneTop = row => { const z = Object.entries(row.zones||{}).sort((a,b)=>b[1]-a[1]); return z.length ? `<small class="cw-zone">🎯 주로 ${z.slice(0,2).map(([k,v])=>`${dEsc(k)} ${v}`).join(' · ')}</small>` : ''; };
-        // 누적 표: 포지션마다 방식 몫을 작은 도넛으로(가운데 = 횟수), 옆에 많은 4개 + 그 밖
-        const waysDonut = (ws, team, total) => {
-          const top = ws.slice(0,4), restN = ws.slice(4).reduce((a,w)=>a+w.n,0), restTxt = ws.slice(4).map(w=>`${dEsc(w.label)} ${w.n}`).join(' · ');
-          const segs = top.map((w,i)=>({label:w.label, way:w.way, n:w.n, c:`color-mix(in srgb, ${col(team)} ${[100,72,50,32][i]}%, var(--panel))`}));
-          if(restN) segs.push({label:'그 밖', n:restN, c:'var(--border-2)'});
-          const R = 15, C = 2*Math.PI*R; let off = 0;
-          const arcs = segs.map(x=>{ const len = C*x.n/total, l = Math.max(0.6, len-(segs.length>1?0.8:0)); const a = `<circle cx="20" cy="20" r="${R}" fill="none" stroke="${x.c}" stroke-width="7" stroke-dasharray="${l.toFixed(2)} ${(C-l).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 20 20)"><title>${dEsc(x.label)} ${x.n}</title></circle>`; off += len; return a; }).join('');
-          const line = k => k ? `<svg class="cw-ln" viewBox="0 0 24 10" aria-hidden="true">${courtWayStroke('M2,5 L22,5', k, 'var(--text-dim)', 2)}</svg>` : '';
-          return `<div class="cw-donut"><svg viewBox="0 0 40 40" class="cw-dn" aria-hidden="true">${arcs}<text x="20" y="24" text-anchor="middle">${total}</text></svg><div class="cw-dleg">${segs.map(x=>`<span><i style="background:${x.c}"></i><em>${line(x.way)}${dEsc(x.label)}</em><b>${x.n}</b></span>`).join('')}</div></div>${restN?`<small class="cw-etc">그 밖: ${restTxt}</small>`:''}`;
+        // 누적: 포지션마다 큰 도넛 하나 — 가운데 포지션·총 횟수, 칸 안에 방식·횟수(작은 칸은 아래 글자로)
+        const WAY_SHORT = {empty:'빈 곳', person:'사람 쪽', soft:'볼처리', etcScore:'페인트 등', out:'아웃', net:'네트', etcFault:'삑사리 등', serve:'서브', block:'블로킹'};
+        const posDonut = row => {
+          const ws = Object.values(row.ways).sort((a,b)=>b.n-a.n), total = row.n;
+          const top = ws.slice(0,5), rest = ws.slice(5), restN = rest.reduce((a,w)=>a+w.n,0);
+          const segs = top.map((w,i)=>({label:w.label, short:WAY_SHORT[w.way] || w.label, n:w.n, c:`color-mix(in srgb, ${col(row.team)} ${[100,76,56,40,28][i]}%, var(--panel))`}));
+          if(restN) segs.push({label:'그 밖', short:'그 밖', n:restN, c:'var(--border-2)'});
+          const cx = 80, cy = 80, R = 56, SW = 30; let a0 = -Math.PI/2;
+          const arc = (s, e) => { const g = segs.length>1 ? 0.012 : 0; s += g; e -= g; const lg = e-s > Math.PI ? 1 : 0; return `M${(cx+R*Math.cos(s)).toFixed(2)},${(cy+R*Math.sin(s)).toFixed(2)} A${R},${R} 0 ${lg} 1 ${(cx+R*Math.cos(e)).toFixed(2)},${(cy+R*Math.sin(e)).toFixed(2)}`; };
+          let paths = '', labels = ''; const small = [];
+          segs.forEach(x=>{
+            const sweep = Math.min(2*Math.PI-0.0001, 2*Math.PI*x.n/total), a1 = a0 + sweep, am = (a0+a1)/2;
+            paths += `<path d="${arc(a0, a1)}" fill="none" stroke="${x.c}" stroke-width="${SW}"><title>${dEsc(x.label)} ${x.n}</title></path>`;
+            if(sweep >= 0.62){ const lx = cx+R*Math.cos(am), ly = cy+R*Math.sin(am); labels += `<text x="${lx.toFixed(1)}" y="${(ly-1).toFixed(1)}" text-anchor="middle" class="pd-l">${dEsc(x.short)}</text><text x="${lx.toFixed(1)}" y="${(ly+10).toFixed(1)}" text-anchor="middle" class="pd-n">${x.n}</text>`; }
+            else small.push(x);
+            a0 = a1;
+          });
+          const z = Object.entries(row.zones||{}).sort((a,b)=>b[1]-a[1]);
+          const restTxt = small.map(x=> x.label==='그 밖' ? rest.map(w=>`${dEsc(w.label)} ${w.n}`).join(' · ') : `${dEsc(x.label)} ${x.n}`).join(' · ');
+          return `<button type="button" class="pd-card${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" title="누르면 이 포지션 화살표만 보여요"><svg viewBox="0 0 160 160" class="pd-svg" role="img" aria-label="${dEsc(row.pos)} ${total}회">${paths}${labels}<text x="80" y="80" text-anchor="middle" class="pd-pos">${dEsc(row.pos)}</text><text x="80" y="97" text-anchor="middle" class="pd-tot">총 ${total}회</text></svg>${restTxt?`<small class="pd-etc">${restTxt}</small>`:''}${z.length?`<small class="pd-zone">🎯 ${z.slice(0,2).map(([k,v])=>`${dEsc(k)} ${v}`).join(' · ')}</small>`:''}</button>`;
         };
+        const donutRows = () => ['our','opp'].map(t=>{ const rs = rowList.filter(r=>r.team===t); if(!rs.length) return '';
+          return `<div class="pd-team" style="color:${col(t)};">${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))}</div><div class="pd-grid">${rs.map(posDonut).join('')}</div>`; }).join('');
         const bar = (wd, team) => `<i style="flex:${wd.n};${courtWayBar(wd.way, col(team))}" title="${dEsc(wd.label)} ${wd.n}"></i>`;
-        table = `<div class="cw-title">${title}</div><table class="court-an-table cw-table"><thead><tr><th></th><th>포지션</th><th>횟수</th><th>어떤 기록이었나</th></tr></thead><tbody>${rowList.map(row=>{
+        table = many ? `<div class="cw-title">${title}</div>${donutRows()}` + `<div class="field-note" style="margin-top:6px;">도넛 가운데는 포지션과 총 횟수, 칸 안은 어떤 기록이었는지와 횟수예요(작은 칸은 도넛 아래 글자로). 🎯는 그 포지션 공이 주로 떨어진 곳이에요. 도넛을 누르면 그 포지션 화살표만 코트에 남아요.</div>`
+          + (formTable ? `<details class="cw-forms"><summary>선수 자리를 정한 대형 보기</summary>${formTable}</details>` : '') : `<div class="cw-title">${title}</div><table class="court-an-table cw-table"><thead><tr><th></th><th>포지션</th><th>횟수</th><th>어떤 기록이었나</th></tr></thead><tbody>${rowList.map(row=>{
           const ws = Object.values(row.ways).sort((a,b)=>b.n-a.n);
-          return `<tr class="cw-row${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" title="누르면 이 포지션 화살표만 보여요"><td style="color:${col(row.team)};">${row.team==='our'?'🔵':'🔴'}</td><td><b>${dEsc(row.pos)}</b></td><td>${row.n}</td><td>${many ? waysDonut(ws, row.team, row.n) : `<div class="cw-bar">${ws.map(wd=>bar(wd, row.team)).join('')}</div><small>${ws.map(wd=>`${dEsc(wd.label)} ${wd.n}`).join(' · ')}</small>`}${zoneTop(row)}</td></tr>`;
+          return `<tr class="cw-row${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" title="누르면 이 포지션 화살표만 보여요"><td style="color:${col(row.team)};">${row.team==='our'?'🔵':'🔴'}</td><td><b>${dEsc(row.pos)}</b></td><td>${row.n}</td><td><div class="cw-bar">${ws.map(wd=>bar(wd, row.team)).join('')}</div><small>${ws.map(wd=>`${dEsc(wd.label)} ${wd.n}`).join(' · ')}</small>${zoneTop(row)}</td></tr>`;
         }).join('')}</tbody></table>
         <div class="field-note" style="margin-top:4px;">화살표는 때린 선수 자리(작은 점)에서 공이 간 곳까지예요. 공이 간 곳은 기록할 때 고른 🎯 공 방향이고, 없으면 함께 고른 상대 선수 자리, 그것도 없으면 그 상황 대형을 재생했을 때 공이 떨어진 자리예요. 색은 팀(🔵 우리·🔴 상대), 선 모양은 공격 방식(실선 = 빈 곳 강타, 두 줄 선 = 사람 쪽 강타, 긴 점선 = 가볍게 볼처리, 짧은 점선 = 페인트·터치아웃 등)이고 굵을수록 같은 길로 많이 간 공이에요. 표의 막대도 같은 무늬예요. 범실은 끝이 ✕예요(아웃은 코트 밖, 네트 걸림은 네트에서 멈춰요). 서브·블로킹·파울처럼 공 길이 없는 기록은 표에만 들어가요. 표의 한 줄이나 위 범례를 누르면 그것만 코트에 남아요.${metric==='lost'?' 실점 표는 점수를 내준 팀 선수의 포지션(상대가 득점할 때 함께 고른 우리 선수, 범실이면 범실한 선수)으로 나눠요.':''}</div>`
           + (formTable ? `<details class="cw-forms"><summary>선수 자리를 정한 대형 보기</summary>${formTable}</details>` : '');
@@ -10543,7 +10555,7 @@
     // 7) 상세 분석 누적: 그래프의 🔎 상세 분석을 모든 경기 기록으로. 위에 이미 있는 공격 위치·세터 배분(토스 방향)은 그대로 두고 빼요.
     taDetailData = {name:ms[0].me, es:allEs.filter(e=>e.team==='our'||e.team==='opp'), items:ms.flatMap(m=>m.items)};
     html.push(sec('🔎', '상세 분석 누적', `모든 경기를 합쳐 · 🔵 ${T} / 🔴 상대한 팀들`, `<div class="seg detail-filter" id="taDetailSeg" style="margin-top:2px;">${TA_DETAIL_TABS.map(([k,l])=>`<button type="button" data-tadetail="${k}" class="${k===taDetailTab?'active':''}">${l}</button>`).join('')}</div><div id="taDetailBody">${taDetailHTML()}</div>`,
-      '그래프의 🔎 상세 분석과 같은 그림을 이 팀이 나온 경기를 모두 합쳐 보여줘요. 공격 위치와 토스 방향은 위 "지금의 플레이 체제"의 공격 위치·세터 배분에서 보고, 토스는 📍 코트 위치의 토스에서 세터 자리부터 선으로 봐요. 코트 자리는 경기마다 그 경기 명단·대형으로 정하고, 이 팀이 상대팀 칸이었던 경기도 이 팀이 아래(🔵)에 오게 뒤집어 모아요. 공격 방식은 트리맵(칸이 클수록 많이 쓴 방식, 진한 부분 득점·빗금 범실)으로, 코트 위치는 기록이 많아도 보이게 코트를 크게 하고 공이 간 길은 방식마다 많은 3개만, 자리 원과 토스 선은 팀마다 많은 3곳만 그리고, 표는 포지션마다 방식 몫을 도넛으로 보여줘요. 표의 포지션이나 방식을 누르면 그것만 모두 보여요.'));
+      '그래프의 🔎 상세 분석과 같은 그림을 이 팀이 나온 경기를 모두 합쳐 보여줘요. 공격 위치와 토스 방향은 위 "지금의 플레이 체제"의 공격 위치·세터 배분에서 보고, 토스는 📍 코트 위치의 토스에서 세터 자리부터 선으로 봐요. 코트 자리는 경기마다 그 경기 명단·대형으로 정하고, 이 팀이 상대팀 칸이었던 경기도 이 팀이 아래(🔵)에 오게 뒤집어 모아요. 공격 방식은 트리맵(칸이 클수록 많이 쓴 방식, 진한 부분 득점·빗금 범실)으로, 코트 위치는 기록이 많아도 보이게 코트를 크게 하고 공이 간 길은 방식마다 많은 3개만, 자리 원과 토스 선은 팀마다 많은 3곳만 그리고, 오른쪽에는 🔵·🔴 팀별로 포지션 도넛(가운데 포지션·총 횟수, 칸 안에 방식·횟수)을 위아래로 놓아요. 포지션 도넛이나 방식을 누르면 그것만 모두 보여요.'));
     html.push(`<p class="analysis-disclaimer">※ 저장된 폴더의 기록을 모아 자동 계산한 통계예요. 막대에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요. 경기마다 기록한 양이 다르면 결과가 달라질 수 있고, 승패는 기록된 세트 점수로 판단해요. 3회보다 적게 나온 지표(공격·서브·블로킹 효율)는 빼고 계산해요.</p>`);
     out.innerHTML = html.join('');
   }
