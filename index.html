@@ -189,6 +189,7 @@
   .vault-item-actions .btn{ flex:none; padding:5px 10px; font-size:12px; }
   .vault-item-actions[hidden], #btnSaveAsNew[hidden], #btnEditQuickSave[hidden]{ display:none; }
   .vault-save{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); }
+  .vault-name-pick{ width:100%; margin:0 0 6px; }
   .vault-save-row{ display:flex; gap:6px; align-items:stretch; flex-wrap:wrap; }
   .vault-save-row input[type=text]{ flex:1 1 160px; min-width:0; margin:0; }
   .vault-save-row .btn{ flex:none; }
@@ -2616,7 +2617,7 @@
           </div>
           <div id="atkWhoBox">
           <details class="roster-fold combo-fold" id="atkComboFold">
-          <summary><span class="field-label" style="margin:0;">빠른 조합</span><span class="rf-count">4개 + 끄기</span><span class="rf-arrow">펼치기</span></summary>
+          <summary><span class="field-label" style="margin:0;">빠른 조합</span><span class="rf-count">6개 + 끄기</span><span class="rf-arrow">펼치기</span></summary>
           <div class="field-note" style="margin-top:0; margin-bottom:6px;">누르면 공격 옵션·공격하는 선수·페이크·돌아 들어가는 길이 한 번에 정해지고 바로 재생돼요. 그다음 아래에서 고쳐도 돼요.</div>
           <div class="chip-pick atk-combo-row" id="atkComboRow"></div>
           </details>
@@ -2771,8 +2772,9 @@
       </div>
       <div class="vault-save" id="vaultSaveBox">
         <input type="hidden" id="presetFolder">
+        <select id="presetNamePick" class="vault-name-pick" aria-label="저장할 대형 이름(공격 옵션) 고르기"></select>
         <div class="vault-save-row">
-          <input type="text" id="presetName" placeholder="대형 이름 (예: 기본 로테이션 1)" maxlength="20" aria-label="저장할 대형 이름">
+          <input type="text" id="presetName" placeholder="이름 고치기 (위에서 고르면 채워져요)" maxlength="20" aria-label="저장할 대형 이름">
           <button class="btn primary" id="btnSavePreset" type="button" style="white-space:nowrap;">💾 저장</button>
           <button class="btn" id="btnSaveAsNew" type="button" style="white-space:nowrap;" hidden title="지금 코트의 대형을 다른 이름으로 하나 더 저장해요(불러온 대형은 그대로)">➕ 새 이름으로</button>
         </div>
@@ -4232,6 +4234,17 @@
 
   function pickScenario(key){
     switchScenario(key);
+    // 공격 옵션을 바꿔도 지금 보던 폴더(최근에 불러온 대형의 폴더)를 지켜요: 그 폴더에 이 상황 대형이 있으면 그것을, 없으면 지금 대형을 그대로 둬요
+    const curFolder = (document.getElementById('presetFolder').value || '').trim();
+    const mine = curFolder && curFolder!==DEFAULT_FOLDER ? presets.find(p=>(p.folder||'')===curFolder && resolveScenarioForPreset(p)===key) : null;
+    if(mine){ loadPreset(mine); return; }
+    if(curFolder && curFolder!==DEFAULT_FOLDER && curFolder!==PRESET_SCENARIO_FOLDER && presets.some(p=>(p.folder||'')===curFolder)){
+      activePreset = null;
+      document.getElementById('presetName').value = SCEN_LABEL[key];
+      renderPresets(); updateTexts(); render();
+      const st = document.getElementById('customStatus'); if(st) st.textContent = `📁 ${curFolder}에 '${SCEN_LABEL[key]}' 대형이 없어서 지금 대형을 그대로 두었어요. 고친 뒤 저장하면 이 폴더에 생겨요.`;
+      return;
+    }
     const existing = finalFor(key) || presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER) || defaultFor(key);
     if(existing){
       loadPreset(existing);
@@ -4831,8 +4844,36 @@
     if(p.tactic && p.tactic.scen===scenario){ try{ if(JSON.stringify(tacticSnap(scenario))!==JSON.stringify(p.tactic)) return true; }catch(err){} }
     return false;
   }
+  // 저장 이름은 공격 옵션 목록에서 골라요(13가지 공격 상황 + 직접 추가한 옵션). 고른 이름이 아래 칸에 채워지고, 칸에서 더 고칠 수도 있어요
+  let customAtkNames = [];
+  try{ customAtkNames = JSON.parse(localStorage.getItem('vt:atk-names')||'[]').filter(x=>typeof x==='string' && x.trim()); }catch(err){}
+  const saveAtkNames = () => { try{ localStorage.setItem('vt:atk-names', JSON.stringify(customAtkNames)); }catch(err){} };
+  function renderNamePick(){
+    const sel = document.getElementById('presetNamePick'); if(!sel) return;
+    const cur = document.getElementById('presetName').value.trim();
+    const base = Object.keys(SCEN_LABEL).map(k=>SCEN_LABEL[k]);
+    const opt = (v, l) => `<option value="${escChip(v)}"${v===cur?' selected':''}>${escChip(l||v)}</option>`;
+    const known = base.includes(cur) || customAtkNames.includes(cur);
+    sel.innerHTML = `<option value=""${cur && !known ? '' : cur ? '' : ' selected'} disabled>${cur && !known ? `✏️ 직접 적은 이름: ${escChip(cur)}` : '공격 옵션 고르기 ▾'}</option>`
+      + `<optgroup label="상대 공격 → 우리 수비">${Object.keys(ATTACKS).map(k=>opt(SCEN_LABEL[k])).join('')}</optgroup>`
+      + `<optgroup label="우리 공격 → 커버">${Object.keys(OUR_ATTACKS).map(k=>opt(SCEN_LABEL[k])).join('')}</optgroup>`
+      + (customAtkNames.length ? `<optgroup label="추가한 공격 옵션">${customAtkNames.map(n=>opt(n)).join('')}</optgroup>` : '')
+      + `<option value="__add__">+ 새 공격 옵션 추가…</option>` + (customAtkNames.includes(cur) ? `<option value="__del__">🗑️ '${escChip(cur)}' 옵션을 목록에서 빼기</option>` : '');
+    if(cur && !known) sel.selectedIndex = 0;
+  }
+  document.getElementById('presetNamePick').addEventListener('change', e=>{
+    const v = e.target.value, input = document.getElementById('presetName');
+    if(v==='__add__'){
+      const nm = (prompt('추가할 공격 옵션 이름을 적어주세요. 목록에 남아서 다음에도 고를 수 있어요. (예: 파이프 공격, 레프트 페인트)', '') || '').trim().slice(0,20);
+      if(nm){ if(!customAtkNames.includes(nm) && !Object.values(SCEN_LABEL).includes(nm)){ customAtkNames.push(nm); saveAtkNames(); } input.value = nm; }
+    } else if(v==='__del__'){
+      customAtkNames = customAtkNames.filter(n=>n!==input.value.trim()); saveAtkNames();
+    } else if(v) input.value = v;
+    renderNamePick(); updateVaultSave();
+  });
   function updateVaultSave(){
     const btn = document.getElementById('btnSavePreset'); if(!btn) return;
+    const pick = document.getElementById('presetNamePick'); if(pick && document.activeElement!==pick) renderNamePick();
     const name = document.getElementById('presetName').value.trim(), folder = document.getElementById('presetFolder').value.trim();
     const t = vaultTarget(), dirty = vaultDirty();
     btn.textContent = t ? '💾 덮어쓰기' : '💾 새로 저장';
@@ -5976,6 +6017,8 @@
   const ATK_COMBOS = [
     {label:'A·빽A 페이크 → 앞차 시간차', opt:'TIMEDIFF', atk:['FRONTSLIDE'], x:120, fakes:[[['QA'],'QA'], [['BACKSLIDE','RIGHT'],'QBACKA']]},
     {label:'앞차가 빽A 뒤로 돌아 시간차', opt:'TIMEDIFF', atk:['FRONTSLIDE'], x:305, fakes:[[['QA'],'QA'], [['BACKSLIDE','RIGHT'],'QBACKA']], viaBehind:'QBACKA'},
+    {label:'빽A (속공수 빽A)', opt:'BACKA', atk:['QBACKA','QA'], fakes:[]},
+    {label:'A 페이크 → 빽A', opt:'BACKA', atk:['QBACKA','BACKSLIDE'], fakes:[[['QA'],'QA']]},
     {label:'빽A를 빽차가', opt:'BACKA', atk:['BACKSLIDE'], fakes:[]},
     {label:'빽A를 라이트가', opt:'BACKA', atk:['RIGHT'], fakes:[]},
     {label:'페이크·경유점 모두 끄기', clear:true}
@@ -6766,7 +6809,7 @@
                  {click:'.k-cell', then:el=>el.classList.add('on')},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'누가 때리고 누가 속일지 정해요',
-        text:'같은 카드의 <b>빠른 조합</b>(처음엔 접혀 있어요. 제목 줄을 누르면 펼쳐지고, 펼친 상태를 기억해요. 예: A·빽A 페이크 → 앞차 시간차, 앞차가 빽A 뒤로 돌아 시간차, 빽A를 빽차가·라이트가)을 누르면 공격 옵션·공격하는 선수·페이크가 한 번에 정해져요. <b>공격하는 선수</b>와 <b>페이크 선수</b>(여러 명) 칩으로 고칠 수 있고, <b>↪️ 경유점 넣기</b>를 누르면 코트의 노란 ◆를 끌어 공격수가 돌아 들어갈 길을 정해요. 모두 누르는 즉시 적용되고, 대형을 저장하면 그 전술에 함께 저장돼요.',
+        text:'같은 카드의 <b>빠른 조합</b>(처음엔 접혀 있어요. 제목 줄을 누르면 펼쳐지고, 펼친 상태를 기억해요. 예: A·빽A 페이크 → 앞차 시간차, 앞차가 빽A 뒤로 돌아 시간차, 빽A(속공수), A 페이크 → 빽A, 빽A를 빽차가·라이트가)을 누르면 공격 옵션·공격하는 선수·페이크가 한 번에 정해져요. <b>공격하는 선수</b>와 <b>페이크 선수</b>(여러 명) 칩으로 고칠 수 있고, <b>↪️ 경유점 넣기</b>를 누르면 코트의 노란 ◆를 끌어 공격수가 돌아 들어갈 길을 정해요. 모두 누르는 즉시 적용되고, 대형을 저장하면 그 전술에 함께 저장돼요.',
         scene:`<div class="mk-card"><div class="mk-lbl">빠른 조합</div>
           <div class="mk-row"><span class="mk-btn k-combo">A·빽A 페이크 → 앞차 시간차</span><span class="mk-btn">빽A를 빽차가</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격</span><span class="mk-btn on k-a1">레프트</span><span class="mk-btn k-a2">앞차</span><span class="mk-btn">라이트</span></div>
@@ -7721,7 +7764,8 @@
       const fixed = SCEN_OPT[mp['toss:'+x.to]]; // 세터 2구·3구처리 토스는 골라 둔 상황이 있을 때만 공격으로 봐요
       if(fixed) return {opt:fixed, team:x.team, from:'map'};
       if(OPT_SCEN[x.to] && x.to!=='서브') return {opt:x.to, team:x.team, from:'toss'}; } return null; };
-    if(OPT_SCEN[main] && main!=='서브') return {opt:main, team, from:'option'};
+    // 공격 상황을 골랐어도 랠리 토스 순서에 공격 토스가 있으면 그 마지막 토스의 대형(도착 위치)을 따라가요(앞차 = 시간차 대형)
+    if(OPT_SCEN[main] && main!=='서브') return lastAtk(null) || {opt:main, team, from:'option'};
     const mk = ['토스','2단토스','2단연결'].includes(main) ? '토스' : main, fixed = SCEN_OPT[mp[mk]];
     if(fixed){ // 골라 둔 상황: 공격한 팀은 아래 자동 규칙과 같아요
       const byOther = mk==='블로킹' || mk==='리시브' || mk==='서브캐치';
@@ -8208,6 +8252,7 @@
     const faultWay = det.startsWith('네트') ? 'net' : det.startsWith('아웃') ? 'out' : '';
     if(faultWay==='out') ballCap = pickBall ? `✕ <b>아웃</b> — 고른 방향(${escChip(pickLbl)}) 그대로 코트 밖까지 그려요 <small>(다시 누르면 지워요)</small>` : `✕ <b>아웃</b> — 그 상황 공 길 그대로 코트 밖까지 그려요 <small>(공 방향을 고르면 그 방향으로 나가요)</small>`;
     if(faultWay==='net' && !pickBall) ballCap = `🕸️ <b>네트 걸림</b> — 공이 네트에서 멈춘 것으로 남아요 <small>(공 방향을 고르면 그 자리로 남아요)</small>`;
+    if(isAtk && sc.from==='toss') ballCap += `<br><small>🏐 대형은 마지막 토스 ${sc.team==='our'?'🔵':'🔴'}<b>${escChip(sc.opt)}</b> 기준(도착 자리)</small>`;
     // 화살표는 공격 상황(레프트·A 등)에서만 그려요. 블로킹·리시브·파울 등은 선수 자리만 보여줘요
     if(isAtk && (pickBall || ((atkSel || defSel) && ballOf))){
       const a = atkSel ? [atkSel.X, atkSel.Y] : ballOf ? toXY(ballOf.from) : null;
