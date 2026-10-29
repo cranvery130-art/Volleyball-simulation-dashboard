@@ -1017,7 +1017,10 @@
   .court-an-table td small{ display:block; font-size:10.5px; color:var(--muted); }
   .court-an-main{ min-width:0; }
   /* 팀 누적 분석: 코트를 크게, 표는 옆에 글자 크기에 맞는 칸으로 */
-  @media (min-width:900px){ .court-an.court-an-big{ grid-template-columns:minmax(0,1.05fr) minmax(320px,1fr); gap:18px; } }
+  /* 큰 코트 위치(3D 지도 + 도넛)는 들어 있는 칸이 넓을 때만 좌우로 나눠요(한 경기 그래프 칸처럼 좁으면 위아래로) */
+  .court-an-cq{ container-type:inline-size; }
+  @media (min-width:900px){ .court-an.court-an-big{ grid-template-columns:minmax(0,1fr); gap:18px; } }
+  @container (min-width:760px){ .court-an.court-an-big{ grid-template-columns:minmax(0,1.05fr) minmax(320px,1fr); } }
   .court-an-big .court-an-svg{ max-width:480px; }
   .court-an-big .court-an-table{ font-size:13px; table-layout:auto; }
   .court-an-big .court-an-table th{ font-size:11.5px; padding:7px 8px; white-space:nowrap; position:sticky; top:0; background:var(--panel-2); }
@@ -1041,7 +1044,7 @@
   .bn-svg .bn-v{ font-size:12px; font-weight:800; font-family:var(--body); } .bn-svg .bn-vs{ font-size:10.5px; fill:var(--muted); font-weight:600; }
   .bn-svg .bn-z{ font-size:12px; font-weight:800; fill:var(--text); font-family:var(--body); } .bn-svg .bn-team{ font-size:11.5px; font-weight:800; font-family:var(--body); }
   .pd-team{ font-size:12.5px; font-weight:800; margin:10px 0 6px; } .pd-team:first-of-type{ margin-top:2px; }
-  .pd-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .pd-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; }
   .pd-card{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 6px; border-radius:12px; border:1px solid var(--border); background:var(--panel); font:inherit; color:var(--text); cursor:pointer; min-width:0; transition:border-color .15s ease-out, background .15s ease-out; }
   .pd-card:hover{ border-color:var(--border-2); } .pd-card.active{ border-color:var(--accent); background:var(--accent-soft); }
   .pd-svg{ width:100%; max-width:170px; height:auto; display:block; }
@@ -10296,7 +10299,7 @@
           + (formTable ? `<details class="cw-forms"><summary>선수 자리를 정한 대형 보기</summary>${formTable}</details>` : '');
       }
     }
-    return `${seg}${ballAutoToggle(items)}<div class="court-an${many?' court-an-big':''}"><div class="court-an-main">${legend}${map3d || court(svgInner)}</div><div class="court-an-side">${empty ? DETAIL_EMPTY(empty) : table}</div></div>`;
+    return `${seg}${ballAutoToggle(items)}<div class="court-an-cq"><div class="court-an${many?' court-an-big':''}"><div class="court-an-main">${legend}${map3d || court(svgInner)}</div><div class="court-an-side">${empty ? DETAIL_EMPTY(empty) : table}</div></div></div>`;
   }
   function spikeGroup(d){
     if(!d) return null;
