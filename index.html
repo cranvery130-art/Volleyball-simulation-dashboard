@@ -9556,7 +9556,7 @@
       d.short = (TOSS_ABBR[d.to] || d.to.slice(0,2)) + (d.kind==='2nd' ? '·2단' : '');
       d.tip = `${d.team==='our'?'🔵':'🔴'} ${d.team==='our'?ourTeamName:oppTeamName} ${d.kind==='2nd'?'↪ 2단 토스 → ':''}${d.to} ${d.n}회 (팀 토스의 ${Math.round(d.n/tot[d.team]*100)}%)` + (d.last ? ` · 마지막 토스였을 때 ${d.win}/${d.last}점 (${Math.round(d.win/d.last*100)}%)` : '');
     });
-    const W = 560, H = 600, id = 'lk' + (++taLeakSeq);
+    const sm = (window.innerWidth||800) < 600, W = sm ? 400 : 560, H = sm ? 460 : 600, id = 'lk' + (++taLeakSeq);
     TA_LEAK[id] = {list, setter, W, H, ang:CP_ANG.toss||0, keep:'toss', draw:tossMapSVG};
     const chips = ['our','opp'].map(team=>{ const ls = list.filter(d=>d.team===team).sort((a,b)=>b.n-a.n); if(!ls.length) return '';
       return `<div class="bn-row"><span class="bn-rl" style="color:${team==='our'?'var(--own)':'var(--opp)'};">${team==='our'?'🔵':'🔴'} ${escChip(team==='our'?ourTeamName:oppTeamName)}</span>${ls.map(d=>`<button type="button" class="bn-chip ts-chip k-${d.kind}" style="--c:${team==='our'?'var(--own)':'var(--opp)'};" data-hk="${escChip(d.key)}" data-tip="${escChip(d.tip)}"><i></i>${d.kind==='2nd'?'↪ 2단 ':''}${escChip(d.to)} <b>${d.n}</b><small>${Math.round(d.n/tot[team]*100)}%${d.last?` · 결정 ${Math.round(d.win/d.last*100)}%`:''}</small></button>`).join('')}</div>`; }).join('');
@@ -11152,7 +11152,7 @@
   // 📍 코트 위치 3D 지도(상세 분석 누적): 포지션마다 그 자리에 기둥을 쌓고(칸 = 도넛과 같은 방식·색), 공 길은 고른 포지션만 바닥에 그려요
   const CP_ANG = {};
   function cpMap3D(st){
-    const W = 560, H = 660, id = 'lk' + (++taLeakSeq);
+    const sm = (window.innerWidth||800) < 600, W = sm ? 400 : 560, H = sm ? 500 : 660, id = 'lk' + (++taLeakSeq); // 휴대폰은 작게 그려 글자가 덜 작아지게 해요
     TA_LEAK[id] = {...st, W, H, ang:CP_ANG[st.keep]||0, draw:cpMapSVG};
     return `<div class="lk-wrap cp-wrap"><svg class="ta-leak cp-map" data-lk="${id}" viewBox="0 0 ${W} ${H}" role="img" aria-label="포지션별 기록 3D 지도 (좌우로 끌면 돌아가요)">${cpMapSVG(TA_LEAK[id])}</svg>`
       + `<div class="cp-info" aria-live="polite">기둥이나 오른쪽 도넛에 커서를 올리면(휴대폰은 눌러서) 그 기록이 함께 부각되고 공이 간 길이 바닥에 나와요.</div>`
