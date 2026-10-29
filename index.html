@@ -9416,7 +9416,13 @@
 
     const top = b => sortDesc(T.byLabel[b]).slice(0,6);
     // 요인별 분석: 득점(자력 + 상대 범실)과 실점(범실 + 상대 득점)을 한 파레토씩으로 합쳐, 점수의 80%를 만든 요인을 진하게 보여줘요
-    const fRows = (a, b) => sortDesc(T.byLabel[a]).map(([k,v])=>({label:k, n:v, kind:'a'})).concat(sortDesc(T.byLabel[b]).map(([k,v])=>({label:k, n:v, kind:'b'}))).sort((x,y)=>y.n-x.n);
+    // 세부 상황(레프트·서브·블로킹 등)으로 묶어요. 상대 쪽 요인은 앞에 "상대"를 붙여요
+    const fRows = (a, b) => { const m = {};
+      entries.forEach(e=>{ if(e.bucket!==a && e.bucket!==b) return; const k0 = (e.main===FOUL_MAIN ? '파울' : String(e.main||'기타')).replace('(2구 넘김)','');
+        const isA = e.bucket===a, err = e.bucket==='ourError' || e.bucket==='oppError';
+        const lbl = (isA ? '' : '상대 ') + (err && k0!=='파울' && !/범실$/.test(k0) ? k0+' 범실' : k0);
+        const x = m[(isA?'a:':'b:')+lbl] = m[(isA?'a:':'b:')+lbl] || {label:lbl, n:0, kind:isA?'a':'b'}; x.n++; });
+      return Object.values(m).sort((x,y)=>y.n-x.n); };
     const factorHTML = `<div data-nav="요인별 분석" id="gsFactor" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
       <div class="field-label" style="margin-top:0; margin-bottom:8px;">요인별 분석 <span style="font-weight:400; color:var(--muted);">— 점수를 낸 요인과 내준 요인을 많은 순서로, 선은 누적 몫</span></div>
       <div class="fp-grid">
@@ -10301,7 +10307,7 @@
             const h = x.n/max*maxH, yy = up ? y-h : y, sh = x.shade;
             const fill = x.kind==='s' ? `color-mix(in srgb, ${C} ${sh}%, var(--panel))` : `url(#${uid}H${t==='our'?'own':'opp'})`;
             const tip = `${r.label} · ${x.who||'선수 미지정'} · ${x.kind==='s' ? '블로킹 득점' : '블로킹 범실'+(x.type?' · '+x.type:'')} ${x.n}`;
-            const lab = x.kind==='s' ? (x.who||'').split(' ').pop().slice(0,4) : (x.type||'').slice(0,4);
+            const lab = x.kind==='s' ? (x.who||'').split(' ').pop().slice(0,4) : ({'블로커 코트 인':'코트 인','블록 아웃':'블록아웃','유형 미지정':'미지정'}[x.type] || (x.type||'').slice(0,4));
             g += `<g class="bn-seg" data-bp="${dEsc(t+'|'+(x.who||''))}" data-bt="${dEsc(x.kind==='f' ? t+'|'+(x.type||'유형 미지정') : '')}" data-tip="${dEsc(tip)}"><title>${dEsc(tip)}</title><rect x="${(cx-bw/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${fill}" stroke="var(--panel)" stroke-width="1"/>`
               + (x.kind==='f' && sh<100 ? `<rect x="${(cx-bw/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="var(--panel)" opacity="${((100-sh)/180).toFixed(2)}"/>` : '')
               + (h>=14 && lab && bw>=30 ? `<text x="${cx}" y="${(yy+h/2+4).toFixed(1)}" text-anchor="middle" class="bn-sl">${dEsc(lab)}</text>` : '') + `</g>`;
