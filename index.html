@@ -1027,6 +1027,16 @@
   .court-an-big .court-an-table td small{ font-size:11.5px; line-height:1.45; margin-top:3px; }
   .court-an-big .cw-bar{ height:12px; min-width:120px; }
   .bn-svg{ width:100%; height:auto; display:block; max-width:760px; }
+  .bn-svg .bn-sl{ font-size:10px; font-weight:800; fill:var(--text); font-family:var(--body); paint-order:stroke; stroke:var(--panel); stroke-width:2.6px; stroke-linejoin:round; pointer-events:none; }
+  .bn-seg, .bn-chip{ transition:opacity .15s ease-out; cursor:pointer; }
+  .bn-box.bn-hl .bn-seg:not(.on), .bn-box.bn-hl .bn-chip:not(.on){ opacity:.2; }
+  .bn-lab{ font-size:12px; font-weight:800; margin:10px 0 4px; } .bn-lab small{ font-weight:600; color:var(--muted); margin-left:4px; }
+  .bn-row{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 5px; margin:3px 0; } .bn-rl{ font-size:11.5px; font-weight:800; margin-right:2px; }
+  .bn-chip{ display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:999px; border:1px solid var(--border-2); background:var(--panel); color:var(--text); font:inherit; font-size:11.5px; }
+  .bn-chip i{ width:10px; height:10px; border-radius:3px; flex:none; } .bn-chip b{ color:var(--c); } .bn-chip small{ color:var(--muted); }
+  .bn-chip i.bn-hatch{ background:repeating-linear-gradient(45deg, var(--c) 0 2px, transparent 2px 4px); border:1px solid var(--c); }
+  .bn-box.bn-hl .bn-chip.on{ border-color:var(--c); box-shadow:inset 0 0 0 1px var(--c); }
+  .bn-info{ font-size:11.5px; font-weight:700; color:var(--text-dim); margin-top:6px; min-height:1.4em; }
   .bn-svg .bn-v{ font-size:12px; font-weight:800; font-family:var(--body); } .bn-svg .bn-vs{ font-size:10.5px; fill:var(--muted); font-weight:600; }
   .bn-svg .bn-z{ font-size:12px; font-weight:800; fill:var(--text); font-family:var(--body); } .bn-svg .bn-team{ font-size:11.5px; font-weight:800; font-family:var(--body); }
   .pd-team{ font-size:12.5px; font-weight:800; margin:10px 0 6px; } .pd-team:first-of-type{ margin-top:2px; }
@@ -9901,8 +9911,8 @@
     const swT = (it, t) => it.swap ? (t==='our' ? 'opp' : t==='opp' ? 'our' : t) : t;
     const flip = (it, p) => p && it.swap ? {...p, x:400-p.x, y:760-p.y} : p;
     const W = 400, H = 760;
-    // 팀 누적 분석은 기록이 많아서 코트를 크게 그리고, 화살표·선수 이름은 많이 나온 것만 보여줘요(나머지는 표에서)
-    const many = attr==='data-tametric';
+    // 한 경기·팀 누적 분석 모두 같은 그림: 코트를 크게 그리고, 득점·실점·범실은 3D 지도 + 포지션 도넛, 토스 선·자리 원은 많이 나온 것만 보여줘요
+    const many = true;
     const court = inner => `<svg class="court-an-svg" viewBox="-14 -26 ${W+28} ${H+52}" role="img" aria-label="코트 위치 분석">
       <rect x="0" y="0" width="${W}" height="${H}" rx="6" fill="var(--panel-2)" stroke="var(--border)" stroke-width="2"/>
       <line x1="0" x2="${W}" y1="260" y2="260" stroke="var(--border)" stroke-dasharray="6 6"/><line x1="0" x2="${W}" y1="500" y2="500" stroke="var(--border)" stroke-dasharray="6 6"/>
@@ -10186,11 +10196,12 @@
     // 팀 누적 분석에는 공격 위치 막대가 이미 있어서 위치별 그림은 빼요(skipPos)
     return (detailCtx && detailCtx.skipPos ? '' : butterflyHTML('공격 위치별 득점 · 범실', pos))
       + spHTML
-      + (how.length ? (detailCtx ? treemapHTML('공격 방식별 득점 · 범실', how) : butterflyHTML('공격 방식별 득점 · 범실', how)) : '');
+      + (how.length ? treemapHTML('공격 방식별 득점 · 범실', how) : '');
   }
   // 블로킹 위치별: 가운데 네트(그물 띠·안테나)가 가로축이고, 🔴 상대 블로킹은 위로 🔵 우리 블로킹은 아래로 자라요. 진한 = 득점, 빗금 = 범실
   let blockNetSeq = 0;
-  function blockNetHTML(rows){
+  // segOf(zoneLabel, team) → [{kind:'s'|'f', who, type, n}]: 막대를 선수(득점)·선수×범실 유형(범실) 칸으로 쌓아요
+  function blockNetHTML(rows, segOf){
     const Zr = rows.filter(r=>r.label!=='위치 미지정'), none = rows.find(r=>r.label==='위치 미지정');
     if(!Zr.length) return '';
     const W = (window.innerWidth||800) < 600 ? 360 : 640, H = W<500 ? 340 : 300, pl = W<500?16:30, pr = pl, ny = H/2, nh = 22, maxH = ny - nh/2 - 44;
@@ -10208,6 +10219,23 @@
       [['opp',true],['our',false]].forEach(([t, up])=>{
         const d = r[t], C = t==='our' ? 'var(--own)' : 'var(--opp)', hs = d.s/max*maxH, hf = d.f/max*maxH, y0 = up ? ny-nh/2 : ny+nh/2;
         const rect = (y, h, fill) => h>0 ? `<rect x="${(cx-bw/2).toFixed(1)}" y="${(up ? y-h : y).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${fill}"/>` : '';
+        const segs = segOf ? segOf(r.label, t) : null;
+        if(segs && segs.length){
+          // 네트에서 바깥으로: 득점 칸(선수별) → 범실 칸(선수 × 유형). 칸이 크면 이름·유형을 칸 안에 적어요
+          let y = y0;
+          segs.forEach(x=>{
+            const h = x.n/max*maxH, yy = up ? y-h : y, sh = x.shade;
+            const fill = x.kind==='s' ? `color-mix(in srgb, ${C} ${sh}%, var(--panel))` : `url(#${uid}H${t==='our'?'own':'opp'})`;
+            const tip = `${r.label} · ${x.who||'선수 미지정'} · ${x.kind==='s' ? '블로킹 득점' : '블로킹 범실'+(x.type?' · '+x.type:'')} ${x.n}`;
+            const lab = x.kind==='s' ? (x.who||'').split(' ').pop().slice(0,4) : (x.type||'').slice(0,4);
+            g += `<g class="bn-seg" data-bp="${dEsc(t+'|'+(x.who||''))}" data-bt="${dEsc(x.kind==='f' ? t+'|'+(x.type||'유형 미지정') : '')}" data-tip="${dEsc(tip)}"><title>${dEsc(tip)}</title><rect x="${(cx-bw/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${fill}" stroke="var(--panel)" stroke-width="1"/>`
+              + (x.kind==='f' && sh<100 ? `<rect x="${(cx-bw/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="var(--panel)" opacity="${((100-sh)/180).toFixed(2)}"/>` : '')
+              + (h>=14 && lab && bw>=30 ? `<text x="${cx}" y="${(yy+h/2+4).toFixed(1)}" text-anchor="middle" class="bn-sl">${dEsc(lab)}</text>` : '') + `</g>`;
+            y = up ? y-h : y+h;
+          });
+          if(d.s+d.f) g += `<text x="${cx}" y="${(up ? y0-hs-hf-7 : y0+hs+hf+15).toFixed(1)}" text-anchor="middle" class="bn-v" fill="${C}">${d.s}<tspan class="bn-vs"> / ${d.f}</tspan></text>`;
+          return;
+        }
         g += `<g><title>${dEsc(r.label)} · ${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))} 블로킹 득점 ${d.s} · 범실 ${d.f}</title>${rect(y0, hs, C)}${rect(up ? y0-hs : y0+hs, hf, `url(#${uid}H${t==='our'?'own':'opp'})`)}`;
         if(d.s+d.f) g += `<text x="${cx}" y="${(up ? y0-hs-hf-7 : y0+hs+hf+15).toFixed(1)}" text-anchor="middle" class="bn-v" fill="${C}">${d.s}<tspan class="bn-vs"> / ${d.f}</tspan></text>`;
         g += `</g>`;
@@ -10217,7 +10245,7 @@
     });
     g += `<text x="${pl}" y="14" class="bn-team" fill="var(--opp)">🔴 ${dEsc(dName('opp'))} 블로킹</text><text x="${pl}" y="${H-6}" class="bn-team" fill="var(--own)">🔵 ${dEsc(dName('our'))} 블로킹</text>`;
     const noneTxt = none && (none.our.s+none.our.f+none.opp.s+none.opp.f) ? `<div class="ta-etc"><b>위치 미지정</b> 🔵 득점 ${none.our.s} · 범실 ${none.our.f} / 🔴 득점 ${none.opp.s} · 범실 ${none.opp.f}</div>` : '';
-    return `<div class="bf-chart"><div class="bf-title">블로킹 위치별 득점 · 범실</div><svg class="bn-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="블로킹 위치별 득점 범실">${g}</svg>
+    return `<div class="bf-chart"><div class="bf-title">블로킹 위치별 득점 · 범실${segOf ? ' — 누구 손에서·범실 유형' : ''}</div><svg class="bn-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="블로킹 위치별 득점 범실">${g}</svg>
       <div class="bf-legend"><span><i class="bf-s"></i>블로킹 득점(막아서 점수)</span><span><i class="bf-f"></i>블로킹 범실(네트터치·터치아웃 등)</span><span class="muted">숫자 = 득점 / 범실 · 가운데 띠 = 네트, 양 끝 = 안테나</span></div>${noneTxt}</div>`;
   }
   function blockDetailHTML(entries){
@@ -10230,13 +10258,61 @@
     // 누적에서는 경기마다 명단이 달라서, 기록마다 미리 붙여 둔 선수 이름(e.pl, 상대한 팀은 팀 이름을 앞에)으로 모아 많은 12명만 보여요
     // 한 경기에서는 블로킹한 팀의 관련 선수로 모아요(🔵 우리 블로킹 = 우리 선수 칸, 🔴 상대 블로킹 = 상대 선수 칸)
     const blocker = e => { const p = e.team==='our' ? e.player : e.oppPlayer; if(!p || !p.id) return null; const x = (e.team==='our' ? videoRoster : oppRoster)[p.id] || {}; return x.name || `${p.id}번${x.position ? ' '+POS_SHORT(x.position) : ''}`; };
-    const ply = detailCtx ? tallyRows(blk.filter(e=>e.pl), e=>e.pl).slice(0, 12) : tallyRows(blk, blocker);
-    return (blockNetHTML(zone) || butterflyHTML('블로킹 위치별 득점 · 범실', zone))
-      + (ply.length ? butterflyHTML('누구 손에서 — 관련 선수별 블로킹 득점 · 범실', ply) : `<div class="bf-chart"><div class="bf-title">누구 손에서 — 관련 선수별 블로킹 득점 · 범실</div>${DETAIL_EMPTY('블로킹을 기록할 때 "자세히 기록"에서 공이 손에 맞은 블로커를 🔵 우리 선수(우리 블로킹) 또는 🔴 상대 선수(상대 블로킹) 칸에서 고르면 여기에 선수별로 모여요.')}</div>`)
-      + (ftype.length ? butterflyHTML('블로킹 범실 유형', ftype.map(r=>({label:r.label, our:{s:r.our.f,f:0}, opp:{s:r.opp.f,f:0}})), {single:true})
-          + `<div class="field-note" style="margin-top:4px;">범실 줄에서 상황을 <b>블로킹</b>으로 남긴 기록이에요. "자세히 기록"에서 고른 이유(빈틈·자리잡기·블로커 코트 인·블록 아웃·타이밍·네트터치)별로 블로킹한 팀 쪽에 모이고, 이유를 안 고르면 "유형 미지정"이에요.</div>` : '')
+    const whoOf = e => (detailCtx ? e.pl : blocker(e)) || '';
+    const typeOf = e => e.detail ? e.detail.replace(/\(.*\)/,'') : '유형 미지정';
+    // 누구 손에서: 팀마다 많이 관여한 순서(누적은 12명까지, 나머지는 "그 밖"으로 묶어요)
+    const pStat = {our:{}, opp:{}};
+    blk.forEach(e=>{ if(e.team!=='our' && e.team!=='opp') return; const w = whoOf(e), d = pStat[e.team][w] = pStat[e.team][w] || {who:w, s:0, f:0}; d[e.outcome==='score'?'s':'f']++; });
+    const pRank = {};
+    ['our','opp'].forEach(t=>{ const list = Object.values(pStat[t]).sort((a,b)=>(!a.who)-(!b.who) || (b.s+b.f)-(a.s+a.f)); pRank[t] = list; });
+    const keepN = detailCtx ? 12 : 99;
+    const whoKey = (t, w) => { if(!w) return ''; const i = pRank[t].filter(x=>x.who).findIndex(x=>x.who===w); return i < keepN ? w : '그 밖'; };
+    const shadeOf = (t, w) => { const i = pRank[t].filter(x=>x.who).findIndex(x=>x.who===w); return !w ? 34 : [100,78,62,50][Math.min(3, Math.max(0, i))]; };
+    const segOf = (zl, t) => {
+      const list = blk.filter(e=>e.team===t && (e.zone ? ZONE_LABELS[e.zone.row][e.zone.col]+' 앞' : '위치 미지정')===zl);
+      const m = {};
+      list.forEach(e=>{ const w = whoKey(t, whoOf(e)), sc = e.outcome==='score', k = (sc?'s|':'f|'+typeOf(e)+'|')+w; const x = m[k] = m[k] || {kind:sc?'s':'f', who:w, type:sc?'':typeOf(e), n:0, shade:shadeOf(t, w)}; x.n++; });
+      return Object.values(m).sort((a,b)=>(a.kind===b.kind ? 0 : a.kind==='s' ? -1 : 1) || b.shade-a.shade || b.n-a.n);
+    };
+    // 그림 아래 칩: 선수(누구 손에서)·범실 유형. 올리거나 누르면 그 칸만 진하게 남아요
+    const chip = (t, attrs, body) => `<button type="button" class="bn-chip" style="--c:${t==='our'?'var(--own)':'var(--opp)'};" ${attrs}>${body}</button>`;
+    const pChips = ['our','opp'].map(t=>{ const list = pRank[t]; if(!list.length) return '';
+      const shown = list.filter(x=>x.who).slice(0, keepN), more = list.filter(x=>x.who).slice(keepN), none = list.find(x=>!x.who);
+      const items = shown.map(x=>chip(t, `data-bp="${dEsc(t+'|'+x.who)}"`, `<i style="background:color-mix(in srgb, var(--c) ${shadeOf(t, x.who)}%, var(--panel))"></i>${dEsc(x.who)} <b>${x.s}</b><small>/ ${x.f}</small>`));
+      if(more.length) items.push(chip(t, `data-bp="${dEsc(t+'|그 밖')}"`, `그 밖 ${more.length}명 <b>${more.reduce((a,x)=>a+x.s,0)}</b><small>/ ${more.reduce((a,x)=>a+x.f,0)}</small>`));
+      if(none) items.push(chip(t, `data-bp="${dEsc(t+'|')}"`, `<i style="background:color-mix(in srgb, var(--c) 34%, var(--panel))"></i>선수 미지정 <b>${none.s}</b><small>/ ${none.f}</small>`));
+      return `<div class="bn-row"><span class="bn-rl" style="color:${t==='our'?'var(--own)':'var(--opp)'};">${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))}</span>${items.join('')}</div>`; }).join('');
+    const ft = {}; blk.filter(e=>e.outcome==='fault' && (e.team==='our'||e.team==='opp')).forEach(e=>{ const k = e.team+'|'+typeOf(e); ft[k] = (ft[k]||0)+1; });
+    const tChips = ['our','opp'].map(t=>{ const list = Object.entries(ft).filter(([k])=>k.startsWith(t+'|')).sort((a,b)=>b[1]-a[1]); if(!list.length) return '';
+      return `<div class="bn-row"><span class="bn-rl" style="color:${t==='our'?'var(--own)':'var(--opp)'};">${t==='our'?'🔵':'🔴'} 범실 유형</span>${list.map(([k,n])=>chip(t, `data-bt="${dEsc(k)}"`, `<i class="bn-hatch"></i>${dEsc(k.split('|')[1])} <b>${n}</b>`)).join('')}</div>`; }).join('');
+    const net = blockNetHTML(zone, segOf);
+    const anyWho = blk.some(e=>whoOf(e));
+    const extra = `<div class="bn-lab">👤 누구 손에서 <small>득점 / 범실 · 칸 색이 진할수록 많이 관여한 선수</small></div>${pChips}`
+      + (anyWho ? '' : DETAIL_EMPTY('블로킹을 기록할 때 "자세히 기록"에서 공이 손에 맞은 블로커를 🔵 우리 선수(우리 블로킹) 또는 🔴 상대 선수(상대 블로킹) 칸에서 고르면 막대가 선수별 칸으로 나뉘어요.'))
+      + (tChips ? `<div class="bn-lab">🧱 블로킹 범실 유형 <small>빗금 칸 · 이유를 안 고르면 "유형 미지정"</small></div>${tChips}` : '')
+      + `<div class="bn-info" aria-live="polite">칸이나 칩에 커서를 올리면(휴대폰은 눌러서) 그 선수·유형 칸만 진하게 남아요.</div>`;
+    return (net ? `<div class="bn-box">${net.replace(/<\/div>$/, extra + '</div>')}</div>` : butterflyHTML('블로킹 위치별 득점 · 범실', zone))
       + (cnt.length ? butterflyHTML('블로킹 득점 인원', cnt.map(r=>({label:r.label, our:{s:r.our.s,f:0}, opp:{s:r.opp.s,f:0}})), {single:true}) : '');
   }
+  // 블로킹 그림: 칸·칩에 커서를 올리거나 누르면 같은 선수(또는 범실 유형) 칸만 남겨요. 누르면 고정, 한 번 더 누르면 풀려요
+  function bnHighlight(box, bp, bt, tip){
+    box.classList.toggle('bn-hl', !!(bp||bt));
+    box.querySelectorAll('[data-bp],[data-bt]').forEach(x=>{ const on = (bp && x.dataset.bp===bp) || (bt && x.dataset.bt===bt); x.classList.toggle('on', !!on); });
+    const info = box.querySelector('.bn-info'); if(info && tip) info.textContent = tip;
+  }
+  document.addEventListener('pointerover', e=>{
+    const box = e.target.closest && e.target.closest('.bn-box'); if(!box || box.dataset.pin) return;
+    const el = e.target.closest('[data-bp],[data-bt]');
+    if(el) bnHighlight(box, el.dataset.bp||'', el.classList.contains('bn-chip') ? el.dataset.bt||'' : '', el.dataset.tip || el.textContent.trim());
+    else bnHighlight(box, '', '', '');
+  });
+  document.addEventListener('click', e=>{
+    const el = e.target.closest && e.target.closest('.bn-box [data-bp], .bn-box [data-bt]'); if(!el) return;
+    const box = el.closest('.bn-box'), key = (el.dataset.bp||'')+'#'+(el.dataset.bt||'');
+    if(box.dataset.pin===key){ delete box.dataset.pin; bnHighlight(box, '', '', ''); return; }
+    box.dataset.pin = key;
+    bnHighlight(box, el.dataset.bp||'', el.classList.contains('bn-chip') ? el.dataset.bt||'' : '', el.dataset.tip || el.textContent.trim());
+  });
   const TOSS_ABBR = {'레프트':'레','라이트':'라','A':'A','B':'B','백A':'bA','앞차':'앞','백차':'백','중앙 후위(파이프)':'파','3구처리':'3구','세터 2구':'2구'};
   function tossDetailHTML(){
     const scope = recordsInScope().slice().sort((a,b)=>((a.set||1)-(b.set||1)) || (a.time-b.time));
