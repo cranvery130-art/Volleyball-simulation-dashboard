@@ -1319,6 +1319,7 @@
   .roster-fold .rf-arrow{ margin-left:auto; font-size:12px; font-weight:700; color:var(--text-dim); }
   .roster-fold .rf-arrow::after{ content:' ▾'; }
   .roster-fold[open] .rf-arrow{ font-size:0; } .roster-fold[open] .rf-arrow::after{ content:'접기 ▴'; font-size:12px; }
+  .combo-fold{ margin-top:6px; } .combo-fold > summary{ padding:4px 0; }
   .ta-fold{ margin-top:10px; } .ta-fold > summary{ cursor:pointer; font-size:12.5px; font-weight:700; color:var(--text-dim); }
   .ta-fold[open] > summary{ margin-bottom:6px; }
   .ta-matches{ display:flex; flex-direction:column; gap:4px; }
@@ -2580,9 +2581,11 @@
             <button data-tempo="slow">느림</button>
           </div>
           <div id="atkWhoBox">
-          <label class="field-label" style="margin-top:10px;">빠른 조합</label>
+          <details class="roster-fold combo-fold" id="atkComboFold">
+          <summary><span class="field-label" style="margin:0;">빠른 조합</span><span class="rf-count">4개 + 끄기</span><span class="rf-arrow">펼치기</span></summary>
           <div class="field-note" style="margin-top:0; margin-bottom:6px;">누르면 공격 옵션·공격하는 선수·페이크·돌아 들어가는 길이 한 번에 정해지고 바로 재생돼요. 그다음 아래에서 고쳐도 돼요.</div>
           <div class="chip-pick atk-combo-row" id="atkComboRow"></div>
+          </details>
           <label class="field-label" style="margin-top:10px;">공격하는 선수</label>
           <div class="field-note" style="margin-top:0; margin-bottom:6px;">이 공격을 누가 때릴지 골라요. 예) 빽A를 빽차나 라이트가 때리게 할 수 있어요. 누르면 바로 적용돼요.</div>
           <div class="chip-pick" id="atkWhoChips"></div>
@@ -5967,6 +5970,12 @@
     }
     afterAttackEdit(`'${c.label}' 조합을 적용했어요.`);
   }
+  // 빠른 조합 칸은 접었다 펼 수 있고, 마지막 상태를 기억해요
+  (function(){
+    const fold = document.getElementById('atkComboFold'); if(!fold) return;
+    try{ if(localStorage.getItem('vt:combo-open')==='1') fold.open = true; }catch(err){}
+    fold.addEventListener('toggle', ()=>{ try{ localStorage.setItem('vt:combo-open', fold.open?'1':'0'); }catch(err){} });
+  })();
   function renderAttackWho(){
     try{ renderAttackWhoInner(); } catch(err){} // 처음 불러오는 동안(포지션 이름 등이 아직 없을 때)은 건너뛰어요
   }
@@ -5980,6 +5989,7 @@
     const fakes = fakesOf(atk, our);
     const fakeIds = fakes.map((fk,i)=>fakePlayerId(fk, our, i));
     const chip = (pl, on, kind) => `<button type="button" class="chip-btn${on?' on':''}" data-kind="${kind}" data-id="${pl.id}">${pl.label}<small>${our?'':'상대 '}${pl.num}번</small></button>`;
+    const cf = document.querySelector('#atkComboFold .rf-count'); if(cf) cf.textContent = ATK_COMBOS.filter(c=>!c.clear).length+'개 + 끄기';
     document.getElementById('atkComboRow').innerHTML = ATK_COMBOS.map((c,i)=>`<button type="button" class="chip-btn${c.clear?' none':''}" data-combo="${i}">${c.label}</button>`).join('');
     document.getElementById('atkWhoChips').innerHTML = players.map(pl=>chip(pl, pl.id===atkId, 'atk')).join('');
     document.getElementById('fakeWhoChips').innerHTML = players.filter(pl=>pl.id!==atkId).map(pl=>chip(pl, fakeIds.includes(pl.id), 'fake')).join('');
@@ -6722,7 +6732,7 @@
                  {click:'.k-cell', then:el=>el.classList.add('on')},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'누가 때리고 누가 속일지 정해요',
-        text:'같은 카드의 <b>빠른 조합</b>(예: A·빽A 페이크 → 앞차 시간차, 앞차가 빽A 뒤로 돌아 시간차, 빽A를 빽차가·라이트가)을 누르면 공격 옵션·공격하는 선수·페이크가 한 번에 정해져요. <b>공격하는 선수</b>와 <b>페이크 선수</b>(여러 명) 칩으로 고칠 수 있고, <b>↪️ 경유점 넣기</b>를 누르면 코트의 노란 ◆를 끌어 공격수가 돌아 들어갈 길을 정해요. 모두 누르는 즉시 적용되고, 대형을 저장하면 그 전술에 함께 저장돼요.',
+        text:'같은 카드의 <b>빠른 조합</b>(처음엔 접혀 있어요. 제목 줄을 누르면 펼쳐지고, 펼친 상태를 기억해요. 예: A·빽A 페이크 → 앞차 시간차, 앞차가 빽A 뒤로 돌아 시간차, 빽A를 빽차가·라이트가)을 누르면 공격 옵션·공격하는 선수·페이크가 한 번에 정해져요. <b>공격하는 선수</b>와 <b>페이크 선수</b>(여러 명) 칩으로 고칠 수 있고, <b>↪️ 경유점 넣기</b>를 누르면 코트의 노란 ◆를 끌어 공격수가 돌아 들어갈 길을 정해요. 모두 누르는 즉시 적용되고, 대형을 저장하면 그 전술에 함께 저장돼요.',
         scene:`<div class="mk-card"><div class="mk-lbl">빠른 조합</div>
           <div class="mk-row"><span class="mk-btn k-combo">A·빽A 페이크 → 앞차 시간차</span><span class="mk-btn">빽A를 빽차가</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격</span><span class="mk-btn on k-a1">레프트</span><span class="mk-btn k-a2">앞차</span><span class="mk-btn">라이트</span></div>
