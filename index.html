@@ -1043,6 +1043,7 @@
   .bn-info{ font-size:11.5px; font-weight:700; color:var(--text-dim); margin-top:6px; min-height:1.4em; }
   .bn-svg .bn-v{ font-size:12px; font-weight:800; font-family:var(--body); } .bn-svg .bn-vs{ font-size:10.5px; fill:var(--muted); font-weight:600; }
   .bn-svg .bn-z{ font-size:12px; font-weight:800; fill:var(--text); font-family:var(--body); } .bn-svg .bn-team{ font-size:11.5px; font-weight:800; font-family:var(--body); }
+  .pd-team-seg{ margin:4px 0 8px; } .pd-team-seg small{ opacity:.7; margin-left:2px; }
   .pd-team{ font-size:12.5px; font-weight:800; margin:10px 0 6px; } .pd-team:first-of-type{ margin-top:2px; }
   .pd-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; }
   .pd-card{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 6px; border-radius:12px; border:1px solid var(--border); background:var(--panel); font:inherit; color:var(--text); cursor:pointer; min-width:0; transition:border-color .15s ease-out, background .15s ease-out; }
@@ -3110,7 +3111,7 @@
               <dl>
                 <dt>⚔️ 공격</dt><dd>공격 위치(레프트·A·백A …)별 득점·범실, 공격 방식별 득점·범실, 그리고 <b>강타·빈 곳 / 가볍게 볼처리 / 강타·사람 쪽</b> 점수의 팀별 비율이에요. 상대의 빈 곳 강타·가볍게 볼처리 점수가 많으면 수비 빈자리를, 사람 쪽 강타 점수가 많으면 수비 자세·위치를 먼저 점검해요. 강타를 둘로 나누기 전에 남긴 기록은 "강타 (구분 전 기록)"으로 따로 모여요.</dd>
                 <dt>🧱 블로킹</dt><dd>블로킹 위치별 득점·범실 한 그림이에요(가운데 띠가 네트, 🔴 상대 블로킹은 위로·🔵 우리 블로킹은 아래로 자라는 막대). 막대 칸이 공이 손에 맞은 선수(누구 손에서)와 범실 유형(빗금)으로 나뉘고, 칸이나 아래 칩에 커서를 올리면(휴대폰은 누르면) 그 선수·유형만 진하게 남아요. 맨 아래는 블로킹 득점 인원이에요.</dd>
-                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. <b>득점·실점·범실</b>은 <b>3D 공 궤적 지도</b>예요: 포지션마다 선수가 서 있던 자리(바닥 원·이름표 = 포지션·횟수)에서 오른쪽 <b>포지션 도넛</b>의 방식마다 공이 날아가요(색 = 도넛 칸 색, 굵기 = 횟수, 처음엔 포지션마다 많은 3가지). 공이 가는 곳은 기록할 때 고른 🎯 공 방향(없으면 함께 고른 상대 선수 자리나 그 상황 대형에서 공이 떨어진 자리, 그것도 없으면 그 방식의 보통 길)이에요. <b>강타·빈 곳</b>은 네트 위에서 내리꽂혀 바닥에 떨어지고, <b>강타·사람 쪽</b>은 그 자리에 몸을 던졌지만 못 막은 수비 사람 모양 옆으로 지나가요. <b>가볍게 볼처리</b>는 높게 띄운 긴 점선, <b>페인트·터치아웃 등</b>은 네트 바로 뒤로 떨어지는 짧은 점선, <b>서브</b>는 서브라인(끝선) 밖에서 네트를 넘어 날아가는 공, <b>블로킹</b>은 네트 위 벽에 막혀 공격한 팀 쪽으로 떨어지는 공이에요. 범실은 끝이 ✕(아웃은 코트 밖, 네트 걸림은 네트)예요. 도넛이나 이름표에 커서를 올리면(휴대폰은 누르면) 그 포지션·방식만 지도와 도넛에서 함께 진하게 남고 그 포지션의 나머지 공 길도 나와요. 도넛을 누르면 그 도넛이 크게 보이고 그 포지션 공 길이 지도에 남아요(한 번 더 누르면 원래대로). 또 위 방식 칩을 누르면 그 방식만 진하게 보여요. 지도는 좌우로 끌어 360도 돌리고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 🎯는 그 포지션 공이 주로 떨어진 곳(예: 오른쪽 뒤 · 크로스)이에요. <b>블로킹</b>은 코트 그림에 자리마다 원(크고 진할수록 많이, 숫자 = 득점/범실)으로 그려요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 세터가 토스 없이 바로 넘긴 <b>세터 2구</b>는 세터 자리(S)와 겹치지 않게 S 옆 네트 쪽에 짧은 점선으로 그려요. 블로킹·리시브처럼 공격 위치가 없는 기록은 그 랠리 토스 순서의 마지막 공격 토스 상황 대형으로 자리를 정해요. 어떤 대형 기준으로 놓였는지는 표 아래 <b>선수 자리를 정한 대형 보기</b>(블로킹은 바로 아래 표)에서 봐요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
+                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. <b>득점·실점·범실</b>은 <b>3D 공 궤적 지도</b>예요: 포지션마다 선수가 서 있던 자리(바닥 원·이름표 = 포지션·횟수)에서 오른쪽 <b>포지션 도넛</b>의 방식마다 공이 날아가요(색 = 도넛 칸 색, 굵기 = 횟수, 처음엔 포지션마다 많은 3가지). 공이 가는 곳은 기록할 때 고른 🎯 공 방향(없으면 함께 고른 상대 선수 자리나 그 상황 대형에서 공이 떨어진 자리, 그것도 없으면 그 방식의 보통 길)이에요. <b>강타·빈 곳</b>은 네트 위에서 내리꽂혀 바닥에 떨어지고, <b>강타·사람 쪽</b>은 그 자리에 몸을 던졌지만 못 막은 수비 사람 모양 옆으로 지나가요. <b>가볍게 볼처리</b>는 높게 띄운 긴 점선, <b>페인트·터치아웃 등</b>은 네트 바로 뒤로 떨어지는 짧은 점선, <b>서브</b>는 서브라인(끝선) 밖에서 네트를 넘어 날아가는 공, <b>블로킹</b>은 네트 위 벽에 막혀 공격한 팀 쪽으로 떨어지는 공이에요. 범실은 끝이 ✕(아웃은 코트 밖, 네트 걸림은 네트)예요. 도넛이나 이름표에 커서를 올리면(휴대폰은 누르면) 그 포지션·방식만 지도와 도넛에서 함께 진하게 남고 그 포지션의 나머지 공 길도 나와요. 수동 분석(한 경기)에서는 도넛 위 🔵·🔴 팀 버튼으로 한 팀씩 보고, 팀 누적 분석은 두 팀을 위아래로 보여줘요. 도넛을 누르면 그 도넛이 크게 보이고 그 포지션 공 길이 지도에 남아요(한 번 더 누르면 원래대로). 또 위 방식 칩을 누르면 그 방식만 진하게 보여요. 지도는 좌우로 끌어 360도 돌리고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 🎯는 그 포지션 공이 주로 떨어진 곳(예: 오른쪽 뒤 · 크로스)이에요. <b>블로킹</b>은 코트 그림에 자리마다 원(크고 진할수록 많이, 숫자 = 득점/범실)으로 그려요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 세터가 토스 없이 바로 넘긴 <b>세터 2구</b>는 세터 자리(S)와 겹치지 않게 S 옆 네트 쪽에 짧은 점선으로 그려요. 블로킹·리시브처럼 공격 위치가 없는 기록은 그 랠리 토스 순서의 마지막 공격 토스 상황 대형으로 자리를 정해요. 어떤 대형 기준으로 놓였는지는 표 아래 <b>선수 자리를 정한 대형 보기</b>(블로킹은 바로 아래 표)에서 봐요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
                 <dt>🏐 토스</dt><dd>양 팀이 어디로 올렸는지(토스 방향)와 <b>점수판 × 1포인트당 토스 배분</b>이에요. 세로 한 줄이 1점이고, 윗부분 점수판에는 점수를 낸 팀 줄에 색이 채워지며 그 팀의 새 점수가 적혀요(경기 기록지와 같아요). 아랫부분에는 그 랠리에서 올라간 토스를 1번째부터 아래로 팀 색 칸에 적어요(2단은 점선 테두리). 연속 득점·실점 구간에서 어떤 토스가 이어졌는지 따라가 볼 수 있어요.</dd>
               </dl>
             </div>
@@ -10032,11 +10033,13 @@
   }
   // 포지션 줄·범례를 누르면 그것만 코트에 남겨요(그래프와 팀 누적 분석이 따로 기억해요)
   const courtFocusBy = {};
+  const CP_TEAM = {}; // 수동 분석 코트 위치 도넛: 지금 보는 팀('our'|'opp'), 기록 종류를 바꿔도 그대로
   document.addEventListener('click', e=>{
     const b = e.target.closest('[data-cf]'); if(!b) return;
     if(window.__lkDragAt && Date.now()-window.__lkDragAt < 350) return;
     const f = courtFocusBy[b.dataset.cf] = courtFocusBy[b.dataset.cf] || {row:'', way:''};
     if(b.dataset.cfReset){ f.row = ''; f.way = ''; }
+    if(b.dataset.cfTeam){ CP_TEAM[b.dataset.cf] = b.dataset.cfTeam; if(f.row && !f.row.startsWith(b.dataset.cfTeam)) f.row = ''; }
     if(b.dataset.cfRow!==undefined) f.row = f.row===b.dataset.cfRow ? '' : b.dataset.cfRow;
     if(b.dataset.cfWay!==undefined) f.way = f.way===b.dataset.cfWay ? '' : b.dataset.cfWay;
     if(b.dataset.cf==='data-tametric'){ const body = document.getElementById('taDetailBody'); if(body) body.innerHTML = taDetailHTML(); }
@@ -10272,8 +10275,12 @@
           const restTxt = small.map(x=> x.label==='그 밖' ? rest.map(w=>`${dEsc(w.label)} ${taPct(w.n,total)}`).join(' · ') : `${dEsc(x.label)} ${taPct(x.n,total)}`).join(' · ');
           return `<button type="button" class="pd-card${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" data-pk="${dEsc(row.key)}" data-tip="${dEsc(cpTip(row))}" title="${focus.row===row.key?'한 번 더 누르면 원래 크기로 돌아가요':'누르면 도넛이 크게 보이고 이 포지션 공 길이 지도에 남아요'}"><svg viewBox="0 0 160 160" class="pd-svg" role="img" aria-label="${dEsc(row.pos)} ${total}회">${paths}${labels}<text x="80" y="80" text-anchor="middle" class="pd-pos">${dEsc(row.pos)}</text><text x="80" y="97" text-anchor="middle" class="pd-tot">총 ${total}회</text></svg>${restTxt?`<small class="pd-etc">${restTxt}</small>`:''}${z.length?`<small class="pd-zone">🎯 ${z.slice(0,2).map(([k,v])=>`${dEsc(k)} ${v}`).join(' · ')}</small>`:''}</button>`;
         };
-        const donutRows = () => ['our','opp'].map(t=>{ const rs = rowList.filter(r=>r.team===t); if(!rs.length) return '';
-          return `<div class="pd-team" style="color:${col(t)};">${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))}</div><div class="pd-grid">${rs.map(posDonut).join('')}</div>`; }).join('');
+        // 수동 분석(한 경기)은 팀 버튼으로 한 팀씩, 팀 누적 분석은 두 팀을 위아래로 보여줘요
+        const oneTeam = attr !== 'data-tametric', has = t => rowList.some(r=>r.team===t);
+        const seeTeam = oneTeam ? (has(CP_TEAM[attr]||'our') ? (CP_TEAM[attr]||'our') : has('our') ? 'our' : 'opp') : '';
+        const donutRows = () => (oneTeam ? `<div class="seg pd-team-seg">${['our','opp'].map(t=>`<button type="button" class="${t===seeTeam?'active':''}" data-cf="${attr}" data-cf-team="${t}"${has(t)?'':' disabled'}>${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))} <small>${rowList.filter(r=>r.team===t).reduce((a,r)=>a+r.n,0)}</small></button>`).join('')}</div>` : '')
+          + ['our','opp'].filter(t=>!oneTeam || t===seeTeam).map(t=>{ const rs = rowList.filter(r=>r.team===t); if(!rs.length) return '';
+          return `${oneTeam ? '' : `<div class="pd-team" style="color:${col(t)};">${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))}</div>`}<div class="pd-grid">${rs.map(posDonut).join('')}</div>`; }).join('');
         // 지도·도넛에 커서를 올리면 아래 한 줄에 무엇인지 적어요
         const cpTip = (row, x) => `${row.team==='our'?'🔵':'🔴'} ${dName(row.team)} ${row.pos}` + (x ? ` · ${x.label} ${x.n}회 (${taPct(x.n, row.n)})` : ` · 총 ${row.n}회`);
         if(many){
@@ -10302,7 +10309,7 @@
             + (noSpot.length ? `<div class="field-note" style="margin-top:2px;">자리를 정할 수 없는 ${noSpot.map(r=>`${r.team==='our'?'🔵':'🔴'} ${dEsc(r.pos)} ${r.n}회`).join(' · ')}는 도넛에만 있어요.</div>` : '');
         }
         const bar = (wd, team) => `<i style="flex:${wd.n};${courtWayBar(wd.way, col(team))}" title="${dEsc(wd.label)} ${wd.n}"></i>`;
-        table = many ? `<div class="cw-title">${title}</div>${donutRows()}` + `<div class="field-note" style="margin-top:6px;">도넛을 누르면 크게 보이고(한 번 더 누르면 원래대로) 그 포지션 공 길이 지도에 남아요. 도넛 가운데는 포지션과 총 횟수, 칸 안은 어떤 기록이었는지와 횟수예요(작은 칸은 도넛 아래 작은 글자로, 그 포지션 전체 중 몇 %인지). 🎯는 그 포지션 공이 주로 떨어진 곳이에요. 왼쪽 3D 지도의 공 궤적은 도넛 칸과 같은 색이에요. 빈 곳 강타는 바닥에 꽂히고, 사람 쪽 강타는 못 막은 수비 옆을 지나고, 블로킹은 네트 위 벽, 서브는 서브라인 밖에서 날아와요. 궤적이나 도넛에 커서를 올리면(휴대폰은 누르면) 같은 기록이 양쪽에서 함께 진해지고 그 포지션의 나머지 공 길도 나와요. </div>`
+        table = many ? `<div class="cw-title">${title}</div>${donutRows()}` + `<div class="field-note" style="margin-top:6px;">${oneTeam ? '위 팀 버튼으로 한 팀씩 도넛을 봐요. ' : ''}도넛을 누르면 크게 보이고(한 번 더 누르면 원래대로) 그 포지션 공 길이 지도에 남아요. 도넛 가운데는 포지션과 총 횟수, 칸 안은 어떤 기록이었는지와 횟수예요(작은 칸은 도넛 아래 작은 글자로, 그 포지션 전체 중 몇 %인지). 🎯는 그 포지션 공이 주로 떨어진 곳이에요. 왼쪽 3D 지도의 공 궤적은 도넛 칸과 같은 색이에요. 빈 곳 강타는 바닥에 꽂히고, 사람 쪽 강타는 못 막은 수비 옆을 지나고, 블로킹은 네트 위 벽, 서브는 서브라인 밖에서 날아와요. 궤적이나 도넛에 커서를 올리면(휴대폰은 누르면) 같은 기록이 양쪽에서 함께 진해지고 그 포지션의 나머지 공 길도 나와요. </div>`
           + (formTable ? `<details class="cw-forms"><summary>선수 자리를 정한 대형 보기</summary>${formTable}</details>` : '') : `<div class="cw-title">${title}</div><table class="court-an-table cw-table"><thead><tr><th></th><th>포지션</th><th>횟수</th><th>어떤 기록이었나</th></tr></thead><tbody>${rowList.map(row=>{
           const ws = Object.values(row.ways).sort((a,b)=>b.n-a.n);
           return `<tr class="cw-row${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" title="누르면 이 포지션 화살표만 보여요"><td style="color:${col(row.team)};">${row.team==='our'?'🔵':'🔴'}</td><td><b>${dEsc(row.pos)}</b></td><td>${row.n}</td><td><div class="cw-bar">${ws.map(wd=>bar(wd, row.team)).join('')}</div><small>${ws.map(wd=>`${dEsc(wd.label)} ${wd.n}`).join(' · ')}</small>${zoneTop(row)}</td></tr>`;
