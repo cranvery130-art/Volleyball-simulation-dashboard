@@ -9898,7 +9898,7 @@
       <text x="${W/2}" y="-9" text-anchor="middle" class="court-an-team" fill="var(--opp)">🔴 ${dEsc(dName('opp'))}</text>
       <text x="${W/2}" y="${H+19}" text-anchor="middle" class="court-an-team" fill="var(--own)">🔵 ${dEsc(dName('our'))}</text>${inner}</svg>`;
     const col = t => t==='our' ? 'var(--own)' : 'var(--opp)';
-    let svgInner = '', table = '', empty = '', legend = '';
+    let svgInner = '', table = '', empty = '', legend = '', map3d = '';
     if(metric==='toss'){
       // 팀별: 세터 자리 → 보낸 곳 자리 선(굵기 = 횟수), 끝 번호 = 주로 몇 번째 토스
       // 자리는 처음 나온 경기의 대형으로 정해요(경기마다 대형이 다르면 표의 대형 이름으로 확인해요)
@@ -9989,14 +9989,14 @@
           rowKey = `${t}|${pos}`;
           const row = rows[rowKey] = rows[rowKey] || {key:rowKey, team:t, pos, n:0, ways:{}};
           const wk = way==='other' ? 'other:'+n.main : way;
-          const wd = row.ways[wk] = row.ways[wk] || {way, label: way==='other' ? n.main.replace(/\(.*\)/,'') : COURT_WAYS[way].label, n:0};
+          const wd = row.ways[wk] = row.ways[wk] || {wk, way, label: way==='other' ? n.main.replace(/\(.*\)/,'') : COURT_WAYS[way].label, n:0};
           row.n++; wd.n++;
           if(n.outcome==='score' || n.outcome==='fault'){
             const path = courtBallPath(n, sp, way, r);
             if(path){
               const zone = way==='net' && !path.picked ? '네트' : ballZoneLabel(path.from, path.to, n.team);
               if(zone){ row.zones = row.zones || {}; row.zones[zone] = (row.zones[zone]||0)+1; }
-              flows.push({team:swT(it, n.team), way, from:flipXY(it, path.from), to:flipXY(it, path.to), fault:n.outcome==='fault', rowKey, zone, picked:!!path.picked});
+              flows.push({team:swT(it, n.team), way, wk, from:flipXY(it, path.from), to:flipXY(it, path.to), fault:n.outcome==='fault', rowKey, zone, picked:!!path.picked});
             }
           }
         }
@@ -10042,7 +10042,7 @@
         let gs = Object.values(fg).map(g=>({...g, fx:g.fx/g.n, fy:g.fy/g.n, tx:g.tx/g.n, ty:g.ty/g.n}));
         const gAll = gs.length, TOPN = 3;
         if(many && !focus.row && !focus.way){ const per = {}; gs = gs.sort((a,b)=>b.n-a.n).filter(g=>(per[g.way] = (per[g.way]||0)+1) <= TOPN); }
-        if(gAll > gs.length) legend += `<div class="cw-topnote">공이 간 길 ${gAll}개 중 방식마다 많은 ${TOPN}개만 그렸어요. ${many?'오른쪽 포지션 도넛':'표의 포지션'}이나 아래 방식을 누르면 그것만 모두 보여요.</div>`;
+        if(gAll > gs.length && !many) legend += `<div class="cw-topnote">공이 간 길 ${gAll}개 중 방식마다 많은 ${TOPN}개만 그렸어요. ${many?'오른쪽 포지션 도넛':'표의 포지션'}이나 아래 방식을 누르면 그것만 모두 보여요.</div>`;
         const fmax = Math.max(1, ...gs.map(g=>g.n)), wayIdx = Object.keys(COURT_WAYS);
         gs.sort((a,b)=>b.n-a.n).forEach(g=>{
           const W0 = COURT_WAYS[g.way], w = 3 + 4.5*g.n/fmax, C = col(g.team);
@@ -10083,24 +10083,29 @@
         const zoneTop = row => { const z = Object.entries(row.zones||{}).sort((a,b)=>b[1]-a[1]); return z.length ? `<small class="cw-zone">🎯 주로 ${z.slice(0,2).map(([k,v])=>`${dEsc(k)} ${v}`).join(' · ')}</small>` : ''; };
         // 누적: 포지션마다 큰 도넛 하나 — 가운데 포지션·총 횟수, 칸 안에 방식·횟수(작은 칸은 아래 글자로)
         const WAY_SHORT = {empty:'빈 곳', person:'사람 쪽', soft:'볼처리', etcScore:'페인트 등', out:'아웃', net:'네트', etcFault:'삑사리 등', serve:'서브', block:'블로킹'};
-        const posDonut = row => {
-          const ws = Object.values(row.ways).sort((a,b)=>b.n-a.n), total = row.n;
+        // 도넛 칸과 3D 지도 기둥 칸은 같은 순서·색이에요(많은 5가지 + 그 밖)
+        const segsOf = row => {
+          const ws = Object.values(row.ways).sort((a,b)=>b.n-a.n);
           const top = ws.slice(0,5), rest = ws.slice(5), restN = rest.reduce((a,w)=>a+w.n,0);
-          const segs = top.map((w,i)=>({label:w.label, short:WAY_SHORT[w.way] || w.label, n:w.n, c:`color-mix(in srgb, ${col(row.team)} ${[100,76,56,40,28][i]}%, var(--panel))`}));
-          if(restN) segs.push({label:'그 밖', short:'그 밖', n:restN, c:'var(--border-2)'});
+          const segs = top.map((w,i)=>({wk:w.wk, way:w.way, label:w.label, short:WAY_SHORT[w.way] || w.label, n:w.n, c:`color-mix(in srgb, ${col(row.team)} ${[100,76,56,40,28][i]}%, var(--panel))`}));
+          if(restN) segs.push({wk:'_rest', way:'', label:'그 밖', short:'그 밖', n:restN, c:'var(--border-2)', rest});
+          return segs;
+        };
+        const posDonut = row => {
+          const total = row.n, segs = segsOf(row), rest = (segs.find(x=>x.wk==='_rest')||{}).rest || [];
           const cx = 80, cy = 80, R = 56, SW = 30; let a0 = -Math.PI/2;
           const arc = (s, e) => { const g = segs.length>1 ? 0.012 : 0; s += g; e -= g; const lg = e-s > Math.PI ? 1 : 0; return `M${(cx+R*Math.cos(s)).toFixed(2)},${(cy+R*Math.sin(s)).toFixed(2)} A${R},${R} 0 ${lg} 1 ${(cx+R*Math.cos(e)).toFixed(2)},${(cy+R*Math.sin(e)).toFixed(2)}`; };
           let paths = '', labels = ''; const small = [];
           segs.forEach(x=>{
             const sweep = Math.min(2*Math.PI-0.0001, 2*Math.PI*x.n/total), a1 = a0 + sweep, am = (a0+a1)/2;
-            paths += `<path d="${arc(a0, a1)}" fill="none" stroke="${x.c}" stroke-width="${SW}"><title>${dEsc(x.label)} ${x.n}</title></path>`;
+            paths += `<path d="${arc(a0, a1)}" fill="none" stroke="${x.c}" stroke-width="${SW}" class="pd-slice" data-pk="${dEsc(row.key)}" data-wk="${dEsc(x.wk)}" data-tip="${dEsc(cpTip(row, x))}"><title>${dEsc(x.label)} ${x.n}</title></path>`;
             if(sweep >= 0.62){ const lx = cx+R*Math.cos(am), ly = cy+R*Math.sin(am); labels += `<text x="${lx.toFixed(1)}" y="${(ly-1).toFixed(1)}" text-anchor="middle" class="pd-l">${dEsc(x.short)}</text><text x="${lx.toFixed(1)}" y="${(ly+10).toFixed(1)}" text-anchor="middle" class="pd-n">${x.n}</text>`; }
             else small.push(x);
             a0 = a1;
           });
           const z = Object.entries(row.zones||{}).sort((a,b)=>b[1]-a[1]);
           const restTxt = small.map(x=> x.label==='그 밖' ? rest.map(w=>`${dEsc(w.label)} ${taPct(w.n,total)}`).join(' · ') : `${dEsc(x.label)} ${taPct(x.n,total)}`).join(' · ');
-          return `<button type="button" class="pd-card${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" title="누르면 이 포지션 화살표만 보여요"><svg viewBox="0 0 160 160" class="pd-svg" role="img" aria-label="${dEsc(row.pos)} ${total}회">${paths}${labels}<text x="80" y="80" text-anchor="middle" class="pd-pos">${dEsc(row.pos)}</text><text x="80" y="97" text-anchor="middle" class="pd-tot">총 ${total}회</text></svg>${restTxt?`<small class="pd-etc">${restTxt}</small>`:''}${z.length?`<small class="pd-zone">🎯 ${z.slice(0,2).map(([k,v])=>`${dEsc(k)} ${v}`).join(' · ')}</small>`:''}</button>`;
+          return `<button type="button" class="pd-card${focus.row===row.key?' active':''}" data-cf="${attr}" data-cf-row="${dEsc(row.key)}" data-pk="${dEsc(row.key)}" data-tip="${dEsc(cpTip(row))}" title="누르면 이 포지션 공 길이 지도에 남아요"><svg viewBox="0 0 160 160" class="pd-svg" role="img" aria-label="${dEsc(row.pos)} ${total}회">${paths}${labels}<text x="80" y="80" text-anchor="middle" class="pd-pos">${dEsc(row.pos)}</text><text x="80" y="97" text-anchor="middle" class="pd-tot">총 ${total}회</text></svg>${restTxt?`<small class="pd-etc">${restTxt}</small>`:''}${z.length?`<small class="pd-zone">🎯 ${z.slice(0,2).map(([k,v])=>`${dEsc(k)} ${v}`).join(' · ')}</small>`:''}</button>`;
         };
         const donutRows = () => ['our','opp'].map(t=>{ const rs = rowList.filter(r=>r.team===t); if(!rs.length) return '';
           return `<div class="pd-team" style="color:${col(t)};">${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))}</div><div class="pd-grid">${rs.map(posDonut).join('')}</div>`; }).join('');
@@ -10894,8 +10899,9 @@
     return `<div class="lk-wrap"><svg class="ta-leak" data-lk="${id}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="실점 원인 지도 (좌우로 끌면 돌아가요)">${taLeakSVG(TA_LEAK[id])}</svg>`
       + `<div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>${leg}`;
   }
-  function taLeakSVG(st){
-    const {pil, T, W, H} = st, th = st.ang*Math.PI/180, co = Math.cos(th), si = Math.sin(th);
+  // 입체 코트 공통: 바닥(상대 코트·이 팀 코트·공격선)·네트·글자를 지금 돌린 방향으로 그려요(실점 원인 지도·코트 위치 지도가 함께 써요)
+  function lkScene(W, H, ang){
+    const th = ang*Math.PI/180, co = Math.cos(th), si = Math.sin(th);
     const Z0 = 1000, CAMX = 110; // 눈 위치를 왼쪽으로 조금 옮겨 기둥 옆면이 보이게 해요
     const rot = (x, y) => { const dx = x-200, dy = y-380; return [200 + dx*co - dy*si, 380 + dx*si + dy*co]; };
     const raw = (x, y) => { const [xr, yr] = rot(x, y), s = Z0/(Z0 + 800 - yr); return [(xr-CAMX)*s + (CAMX-200), s, yr]; };
@@ -10908,34 +10914,42 @@
     const pt = p => `${p[0].toFixed(1)},${p[1].toFixed(1)}`;
     const poly = (ps, st2, cls) => `<polygon points="${ps.map(pt).join(' ')}"${st2?` style="${st2}"`:''}${cls?` class="${cls}"`:''}/>`;
     const line = (a, b, cls) => { const p = P(a[0],a[1]), q = P(b[0],b[1]); return `<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}" class="${cls}"/>`; };
-    // 바닥: 상대 코트 · 이 팀 코트 · 공격선 · 끝선
-    let g = poly([P(0,0),P(400,0),P(400,380),P(0,380)], 'fill:color-mix(in srgb, var(--opp) 7%, var(--panel))')
+    const floor = poly([P(0,0),P(400,0),P(400,380),P(0,380)], 'fill:color-mix(in srgb, var(--opp) 7%, var(--panel))')
       + poly([P(0,380),P(400,380),P(400,760),P(0,760)], 'fill:color-mix(in srgb, var(--own) 9%, var(--panel))')
       + line([0,0],[400,0],'lk-l') + line([0,760],[400,760],'lk-l') + line([0,0],[0,760],'lk-l') + line([400,0],[400,760],'lk-l')
       + line([0,253],[400,253],'lk-a') + line([0,507],[400,507],'lk-a');
+    // 눈이 네트 어느 쪽에 있는지(네트 너머 것을 먼저 그려요)
+    const camSide = Math.sign((200-CAMX)*si + (Z0+800-380)*co) || 1;
+    const nl = P(-18,380), nr = P(418,380), nhl = H*0.13*nl[2], nhr = H*0.13*nr[2];
+    const net = `<polygon points="${pt(nl)} ${pt(nr)} ${pt([nr[0],nr[1]-nhr])} ${pt([nl[0],nl[1]-nhl])}" class="lk-net"/><line x1="${nl[0].toFixed(1)}" y1="${(nl[1]-nhl).toFixed(1)}" x2="${nr[0].toFixed(1)}" y2="${(nr[1]-nhr).toFixed(1)}" class="lk-netb"/><line x1="${nl[0].toFixed(1)}" y1="${nl[1].toFixed(1)}" x2="${nl[0].toFixed(1)}" y2="${(nl[1]-nhl-6).toFixed(1)}" class="lk-post"/><line x1="${nr[0].toFixed(1)}" y1="${nr[1].toFixed(1)}" x2="${nr[0].toFixed(1)}" y2="${(nr[1]-nhr-6).toFixed(1)}" class="lk-post"/>`;
+    const cap = (txt, x, y, cls) => { const p = P(x, y); return `<text x="${Math.max(40, Math.min(W-40, p[0])).toFixed(1)}" y="${Math.max(12, Math.min(H-2, p[1])).toFixed(1)}" text-anchor="middle" class="lk-cap ${cls}">${txt}</text>`; };
+    // 네모 기둥 한 칸(바닥 높이 h0 → h1): 옆면을 먼 것부터 그리고, 눈 쪽을 볼수록 밝게
+    const prism = (x, y, b, h0, h1, col, top, attrs) => {
+      const cw = [[x-b,y+b],[x+b,y+b],[x+b,y-b],[x-b,y-b]], c = cw.map(([a,d])=>P(a,d));
+      const lo = c.map(p=>[p[0], p[1] - h0*p[2]]), hi = c.map(p=>[p[0], p[1] - h1*p[2]]);
+      const faces = [0,1,2,3].map(i=>{ const j = (i+1)%4, mx = (cw[i][0]+cw[j][0])/2 - x, my = (cw[i][1]+cw[j][1])/2 - y; return {i, j, d:(c[i][3]+c[j][3])/2, lit:(mx*si + my*co)/b}; }).sort((a,b2)=>a.d-b2.d);
+      return `<g${attrs||''}>` + faces.map(f=>poly([lo[f.i],lo[f.j],hi[f.j],hi[f.i]], `fill:color-mix(in srgb, ${col} ${Math.round(86 + 14*f.lit)}%, #000)`)).join('')
+        + (top ? poly(hi, `fill:color-mix(in srgb, ${col} 70%, #fff)`) : '') + `</g>`;
+    };
+    return {P, pt, poly, line, floor, net, camSide, cap, prism, si, co};
+  }
+  function taLeakSVG(st){
+    const {pil, T, W, H} = st;
+    const {P, poly, floor, net, camSide, cap, prism} = lkScene(W, H, st.ang);
+    let g = floor;
     const maxN = Math.max(...pil.map(r=>r.n)), hMax = H*0.3, b = 14;
     const hOf = r => 8 + (hMax-8)*r.n/maxN;
     const pillar = r => {
       const col = r.err ? 'color-mix(in srgb, var(--opp) 55%, var(--panel))' : 'var(--opp)';
-      const h0 = hOf(r);
-      const cw = [[r.x-b,r.y+b],[r.x+b,r.y+b],[r.x+b,r.y-b],[r.x-b,r.y-b]];
-      const c = cw.map(([x,y])=>P(x,y)), top = c.map(p=>[p[0], p[1] - h0*p[2]]);
-      // 옆면 4개를 먼 것부터 그리면 가까운 면이 앞에 남아요. 눈 쪽을 볼수록 밝게
-      const faces = [0,1,2,3].map(i=>{ const j = (i+1)%4, mx = (cw[i][0]+cw[j][0])/2 - r.x, my = (cw[i][1]+cw[j][1])/2 - r.y; const nyr = (mx*si + my*co)/b; return {i, j, d:(c[i][3]+c[j][3])/2, lit:nyr}; }).sort((a,b2)=>a.d-b2.d);
       const op = r.hot ? 1 : 0.5;
       return `<g opacity="${op}"><title>${r.rank}. ${escChip(r.label)} ${r.n}점 (${Math.round(r.sh)}%) · 이 자리에서 ${r.cellN}점</title>`
-        + poly(c, 'fill:rgba(0,0,0,.12)')
-        + faces.map(f=>poly([c[f.i],c[f.j],top[f.j],top[f.i]], `fill:color-mix(in srgb, ${col} ${Math.round(86 + 14*f.lit)}%, #000)`)).join('')
-        + poly(top, `fill:color-mix(in srgb, ${col} 70%, #fff)`) + `</g>`;
+        + poly([[r.x-b,r.y+b],[r.x+b,r.y+b],[r.x+b,r.y-b],[r.x-b,r.y-b]].map(([x,y])=>P(x,y)), 'fill:rgba(0,0,0,.12)')
+        + prism(r.x, r.y, b, 0, hOf(r), col, true) + `</g>`;
     };
     const tag = r => { const p = P(r.x, r.y), y = p[1] - hOf(r)*p[2] - 12; return `<g class="lk-tag${r.hot?'':' dim'}"><circle cx="${p[0].toFixed(1)}" cy="${y.toFixed(1)}" r="9"/><text x="${p[0].toFixed(1)}" y="${(y+3.6).toFixed(1)}" text-anchor="middle">${r.rank}</text><text x="${(p[0]+12).toFixed(1)}" y="${(y+3.6).toFixed(1)}" class="lk-n">${r.n}</text></g>`; };
-    // 눈이 네트 어느 쪽에 있는지로 네트 너머 기둥을 먼저 그려요
-    const camSide = Math.sign((200-CAMX)*si + (Z0+800-380)*co) || 1;
+    // 네트 너머 기둥을 먼저 그려요
     const depth = r => P(r.x, r.y)[3];
     const far = pil.filter(r=>Math.sign(r.y-380)!==camSide).sort((a,b2)=>depth(a)-depth(b2)), near = pil.filter(r=>Math.sign(r.y-380)===camSide).sort((a,b2)=>depth(a)-depth(b2));
-    const nl = P(-18,380), nr = P(418,380), nhl = H*0.13*nl[2], nhr = H*0.13*nr[2];
-    const net = `<polygon points="${pt(nl)} ${pt(nr)} ${pt([nr[0],nr[1]-nhr])} ${pt([nl[0],nl[1]-nhl])}" class="lk-net"/><line x1="${nl[0].toFixed(1)}" y1="${(nl[1]-nhl).toFixed(1)}" x2="${nr[0].toFixed(1)}" y2="${(nr[1]-nhr).toFixed(1)}" class="lk-netb"/><line x1="${nl[0].toFixed(1)}" y1="${nl[1].toFixed(1)}" x2="${nl[0].toFixed(1)}" y2="${(nl[1]-nhl-6).toFixed(1)}" class="lk-post"/><line x1="${nr[0].toFixed(1)}" y1="${nr[1].toFixed(1)}" x2="${nr[0].toFixed(1)}" y2="${(nr[1]-nhr-6).toFixed(1)}" class="lk-post"/>`;
-    const cap = (txt, x, y, cls) => { const p = P(x, y); return `<text x="${Math.max(40, Math.min(W-40, p[0])).toFixed(1)}" y="${Math.max(12, Math.min(H-2, p[1])).toFixed(1)}" text-anchor="middle" class="lk-cap ${cls}">${txt}</text>`; };
     return g + far.map(pillar).join('') + net + near.map(pillar).join('') + pil.map(tag).join('')
       + cap('🔴 상대 코트', 200, -24, 'opp') + cap(`🔵 ${escChip(T)} 코트`, 200, 790, 'own');
   }
