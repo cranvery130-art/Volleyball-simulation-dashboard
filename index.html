@@ -1303,7 +1303,11 @@
   .lk-item{ transition:opacity .15s ease-out; } .lk-hl .ta-leak .lk-item:not(.on){ opacity:.12; } .lk-hl .ta-pareto .lk-item:not(.on){ opacity:.3; } .ta-pareto .lk-item.on .ta-prow{ fill:var(--accent-soft); } .ta-leak .lk-item.on path{ filter:drop-shadow(0 0 3px var(--text)); }
   .lk-key{ font-size:11px; margin-top:2px; } .ta-leak .lk-lead{ stroke:var(--muted); stroke-width:1; }
   .ta-leak-pair{ display:flex; flex-direction:column; gap:10px; } .ta-leak-pair.wide{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; } .ta-leak-col{ min-width:0; }
-  .lk-ctl{ display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--muted); margin-top:2px; } .lk-ctl .lk-reset{ margin-left:auto; font-size:11.5px; padding:3px 10px; border-radius:999px; border:1px solid var(--border-2); background:var(--panel); color:var(--text-dim); cursor:pointer; }
+  .lk-ctl{ display:flex; align-items:center; flex-wrap:wrap; gap:6px 8px; font-size:11.5px; color:var(--muted); margin-top:2px; } .lk-ctl .lk-hint{ flex:1 1 220px; min-width:0; }
+  .lk-ctl .lk-btns{ display:flex; gap:4px; margin-left:auto; } .lk-ctl button{ font-size:11.5px; padding:3px 10px; min-height:28px; border-radius:999px; border:1px solid var(--border-2); background:var(--panel); color:var(--text-dim); cursor:pointer; } .lk-ctl .lk-zb{ width:30px; padding:3px 0; font-weight:800; }
+  .lk-ctl .lk-pan[aria-pressed="true"]{ background:var(--accent-soft); border-color:var(--accent); color:var(--text); font-weight:700; }
+  .lk-h-tc{ display:none; } @media (hover:none) and (pointer:coarse){ .lk-h-pc{ display:none; } .lk-h-tc{ display:inline; } .lk-ctl button{ min-height:34px; } .lk-ctl .lk-zb{ width:36px; } }
+  .ta-leak[data-zoomed]{ overflow:hidden; } .ta-leak.lk-panon{ touch-action:none; cursor:move; }
   .ta-leak .lk-l{ stroke:var(--text-dim); stroke-width:1.4; } .ta-leak .lk-a{ stroke:var(--border-2); stroke-width:1; stroke-dasharray:5 4; }
   .ta-leak .lk-net{ fill:color-mix(in srgb, var(--text) 10%, transparent); stroke:var(--text-dim); stroke-width:.8; } .ta-leak .lk-netb{ stroke:var(--text); stroke-width:2.4; } .ta-leak .lk-post{ stroke:var(--text-dim); stroke-width:2; }
   .ta-leak .lk-tag circle{ fill:var(--text); stroke:var(--panel); stroke-width:1.5; } .ta-leak .lk-tag text{ font-size:10.5px; font-weight:800; fill:var(--panel); font-family:var(--body); }
@@ -2428,7 +2432,7 @@
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
           <li><b>🎯 빠른 기록 모드</b>는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝내요. 휴대폰·태블릿을 <b>가로</b>로 돌려도 한 화면에 맞춰져요: 휴대폰 가로는 왼쪽(세트·토스·결과)·오른쪽(상황·자세히 기록·기록하기) 두 칸으로 나뉘고, 자세히 기록을 펼치면 왼쪽 칸 위에 겹쳐 열려요(점수 기록은 위쪽 📋 기록 버튼). 태블릿 가로·PC는 오른쪽에 점수 기록 칸이 붙고 코트 그림은 그 칸 맨 아래에 나와요. 기본 화면은 접힌 경기 영상 → 종합 분석·그래프(넓은 화면은 왼쪽 종합 분석·오른쪽 그래프로 반반, 좁은 화면은 위아래) → 접힌 기록 순서로 놓이고, 접힌 칸은 제목을 누르면 펼쳐져요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
-          <li><b>📊 팀 누적 분석</b>: 맨 위 <b>📊 팀 누적 분석</b> 배너를 누르면 팀 누적 분석만 크게 보여요(한 경기 기록·그래프·종합 분석은 <b>📝 경기 분석(수동)</b> 배너에 있어요). 먼저 <b>남자부·여자부</b>를 고르고 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 부에서 그 팀이 나온 저장 폴더만 모아(같은 이름의 팀이어도 다른 부 기록은 섞이지 않아요. 부를 아직 안 정한 예전 폴더는 "부 미지정"으로 따로 모여요) 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. <b>📋 전체 지표</b>에서는 상대팀 버튼으로 그 팀과 한 경기만 따로 볼 수 있고(점선 = 모든 경기 평균), 플레이 체제의 <b>실점 원인 순위</b>(왼쪽)는 실점의 80%를 만드는 원인을 진하게 보여주고, 오른쪽 <b>실점 원인 지도</b>는 원인마다 공이 지나간 길을 입체로 그려요(서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕ · 선 굵기 = 실점 수 · 번호 = 순위 · 빨강 = 상대가 낸 점수, 노랑 = 이 팀 범실). 지도를 좌우로 끌면 360도 돌려 볼 수 있고 <b>↺ 처음 방향</b>으로 되돌려요. 궤적이나 순위 줄에 커서를 대면(휴대폰은 누르면) 양쪽에서 같은 원인만 또렷하게 보여요(휴대폰은 순위 아래에 지도가 나와요). 원인이 많아도 15개까지는 순위 막대로 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 그래프의 상세 분석(⚔️ 공격·🧱 블로킹·📍 코트 위치)을 그 팀이 나온 모든 경기로 합쳐 봐요(🔵 그 팀 / 🔴 상대한 팀들). 위에 이미 있는 공격 위치와 토스 방향(세터 배분)은 빼고, 코트 자리는 경기마다 그 경기 명단·대형으로 정해 그 팀이 늘 아래쪽에 오게 모아요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
+          <li><b>📊 팀 누적 분석</b>: 맨 위 <b>📊 팀 누적 분석</b> 배너를 누르면 팀 누적 분석만 크게 보여요(한 경기 기록·그래프·종합 분석은 <b>📝 경기 분석(수동)</b> 배너에 있어요). 먼저 <b>남자부·여자부</b>를 고르고 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 부에서 그 팀이 나온 저장 폴더만 모아(같은 이름의 팀이어도 다른 부 기록은 섞이지 않아요. 부를 아직 안 정한 예전 폴더는 "부 미지정"으로 따로 모여요) 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. <b>📋 전체 지표</b>에서는 상대팀 버튼으로 그 팀과 한 경기만 따로 볼 수 있고(점선 = 모든 경기 평균), 플레이 체제의 <b>실점 원인 순위</b>(왼쪽)는 실점의 80%를 만드는 원인을 진하게 보여주고, 오른쪽 <b>실점 원인 지도</b>는 원인마다 공이 지나간 길을 입체로 그려요(서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕ · 선 굵기 = 실점 수 · 번호 = 순위 · 빨강 = 상대가 낸 점수, 노랑 = 이 팀 범실). 지도를 좌우로 끌면 360도 돌고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 궤적이나 순위 줄에 커서를 대면(휴대폰은 누르면) 양쪽에서 같은 원인만 또렷하게 보여요(휴대폰은 순위 아래에 지도가 나와요). 원인이 많아도 15개까지는 순위 막대로 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 그래프의 상세 분석(⚔️ 공격·🧱 블로킹·📍 코트 위치)을 그 팀이 나온 모든 경기로 합쳐 봐요(🔵 그 팀 / 🔴 상대한 팀들). 위에 이미 있는 공격 위치와 토스 방향(세터 배분)은 빼고, 코트 자리는 경기마다 그 경기 명단·대형으로 정해 그 팀이 늘 아래쪽에 오게 모아요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li><b>✨ 추천(점선)</b>: 결과 버튼을 누르면 <b>랠리 토스 순서의 마지막 토스</b>와 결과로 그럴듯한 세부 상황에 점선이 둘러져요(마지막 토스를 올린 팀의 득점·범실 → 그 공격 위치, 상대 팀 득점 → 블로킹, 상대 팀 범실 → 블로킹·리시브, 토스가 없으면 → 서브·서브캐치). 세부 상황을 고르면 "자세히 기록"에도 점선이 생겨요: 🔵·🔴 선수(그 공격 자리에 서는 공격수, 맞은편 전위 블로커, 공이 간 곳 가까이 있던 수비, 경기 정보의 <b>서브 순서</b>와 앞 점수로 정한 서버), 블로킹 인원(대형에서 네트 앞에 선 수), 공격 방식(고른 🎯 공 방향으로: 앞줄 → 페인트·볼처리, 코트 밖 → 터치아웃·아웃), 🎯 공 방향(고른 방식으로: 페인트·네트인 → 때린 쪽 앞줄, 볼처리·강타 빈 곳 → 대형에서 빈 자리, 사람 쪽 → 대형 재생 때 공이 간 자리, 터치아웃 → 그쪽 코트 밖). 코트 그림에도 추천 선수는 점선 고리, 추천 공은 점선 공으로 나와요. 점선은 표시만 하고, 눌러야 골라져요. <b>✨ 추천대로</b>(자세히 기록 제목 줄 오른쪽)를 누르면 아직 고르지 않은 칸 중 추천이 하나인 것을 한 번에 채워요. 공격 기록에서 🎯 공 방향을 고르지 않고 기록하면 추천 공 방향이 <b>추천 표시</b>를 단 채 함께 남고, 코트 위치 분석의 <b>✨ 추천 공 방향 포함</b>을 끄면 직접 고른 공 방향만으로 볼 수 있어요(실점 원인 지도도 같이 바뀌어요). 마지막 토스·앞 점수와 고른 결과가 어긋나면(예: 마지막 토스가 🔴인데 🔵 공격, 앞 점수를 🔴가 냈는데 🔵 서브) 기록하기 위에 ⚠️ 한 줄이 떠요. 기록은 그대로 할 수 있어요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
@@ -3085,7 +3089,7 @@
             <div class="gh-section">
               <h4>4. 블로킹 분석 · 세터 배분 · 종합 분석</h4>
               <p><b>🧱 블로킹 분석</b>은 팀 누적 분석·🔎 상세 분석과 같은 <b>네트축 그림</b>이에요. 가운데 띠가 네트이고 🔴 상대 블로킹은 위로, 🔵 우리 블로킹은 아래로 위치(레프트·앞차·A·백차·라이트 앞)마다 막대가 자라요. 막대는 <b>누구 손에서</b>로 나뉘어서 네트 쪽부터 선수별 블로킹 득점 칸(색이 진할수록 많이 관여한 선수), 그 바깥에 선수 × <b>범실 유형</b>(빈틈·자리잡기·코트 인·블록 아웃·타이밍·네트터치) 빗금 칸이 쌓여요. 아래 칩(👤 누구 손에서 · 🧱 블로킹 범실 유형)이나 칸에 커서를 올리면(휴대폰은 누르면) 그 선수·유형 칸만 진하게 남고, 한 번 더 누르면 풀려요. 공이 손에 맞은 블로커를 고르지 않은 기록은 "선수 미지정" 칸이에요. 맨 아래에는 블로킹 득점 인원이 나와요.</p>
-              <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "🏐 랠리 토스 순서"로 계산해요. 맨 위 <b>3D 지도</b>는 한 코트에 두 팀의 토스를 세터 자리(S)에서 보낸 곳까지 공 궤적(포물선)으로 그려요. 굵을수록 많이 올린 곳, 끝 동그라미 숫자가 횟수이고, <b>↪ 2단 토스</b>는 후위 가운데에서 올린 긴 점선, <b>3구처리</b>는 짧은 점선으로 따로 그려요. 지도를 좌우로 끌면 360도 돌아가고, 궤적이나 아래 칩에 커서를 올리면(휴대폰은 누르면) 그 토스만 진하게 남고 아래 줄에 횟수·몫·그 토스가 마지막일 때 득점률이 나와요. 아래 <b>순서·결정 토스·2단 토스 표 보기</b>를 펼치면 팀별로 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>2단</b>으로 표시한 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·영상 시간(영상이 있을 때)·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
+              <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "🏐 랠리 토스 순서"로 계산해요. 맨 위 <b>3D 지도</b>는 한 코트에 두 팀의 토스를 세터 자리(S)에서 보낸 곳까지 공 궤적(포물선)으로 그려요. 굵을수록 많이 올린 곳, 끝 동그라미 숫자가 횟수이고, <b>↪ 2단 토스</b>는 후위 가운데에서 올린 긴 점선, <b>3구처리</b>는 짧은 점선으로 따로 그려요. 지도를 좌우로 끌면 360도 돌고, 위아래로 끌거나 <b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소, Shift+끌기나 <b>✥ 옮기기</b>로 옮겨 볼 수 있어요(<b>↺ 처음으로</b> = 한 번에 되돌리기). 또 궤적이나 아래 칩에 커서를 올리면(휴대폰은 누르면) 그 토스만 진하게 남고 아래 줄에 횟수·몫·그 토스가 마지막일 때 득점률이 나와요. 아래 <b>순서·결정 토스·2단 토스 표 보기</b>를 펼치면 팀별로 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>2단</b>으로 표시한 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·영상 시간(영상이 있을 때)·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
                           <p><b>종합 분석</b>은 주제마다 <b>두 팀을 나란히</b> 비교하고, 문장의 주어는 "우리"가 아니라 경기 정보에 적은 <b>팀 이름</b>이에요. 주제는 ✅ 주 득점 루트(가장 많이 점수를 낸 상황, 토스 순서를 남긴 랠리에서 세터가 마지막으로 어디로 올렸을 때 가장 많이 점수를 냈는지, 공격 위치별 성공률 = 득점 ÷ 득점+범실과 그 위치에서 점수가 가장 많이 난 지점), ⚠️ 범실, 🏐 공격 결정률(성공 ÷ 성공+범실+블로킹 당함), 🎯 서브 득실, 🛡️ 리시브 실점(상대 서브 득점 + 리시브·서브캐치 범실), 🧱 블로킹 영향력(두 팀의 블로킹 득점·범실·득실, 가장 잘 막은 위치·가장 많이 뚫린 위치, 관련 선수 기준 영향력이 큰 블로커와 상대 블록에 가장 많이 막힌 선수), 📊 세트 흐름이에요. 각 주제 아래 "→" 줄에서 어느 팀이 앞섰는지 짚어줘요.</p>
             </div>
             <div class="gh-section">
@@ -3104,7 +3108,7 @@
               <dl>
                 <dt>⚔️ 공격</dt><dd>공격 위치(레프트·A·백A …)별 득점·범실, 공격 방식별 득점·범실, 그리고 <b>강타·빈 곳 / 가볍게 볼처리 / 강타·사람 쪽</b> 점수의 팀별 비율이에요. 상대의 빈 곳 강타·가볍게 볼처리 점수가 많으면 수비 빈자리를, 사람 쪽 강타 점수가 많으면 수비 자세·위치를 먼저 점검해요. 강타를 둘로 나누기 전에 남긴 기록은 "강타 (구분 전 기록)"으로 따로 모여요.</dd>
                 <dt>🧱 블로킹</dt><dd>블로킹 위치별 득점·범실 한 그림이에요(가운데 띠가 네트, 🔴 상대 블로킹은 위로·🔵 우리 블로킹은 아래로 자라는 막대). 막대 칸이 공이 손에 맞은 선수(누구 손에서)와 범실 유형(빗금)으로 나뉘고, 칸이나 아래 칩에 커서를 올리면(휴대폰은 누르면) 그 선수·유형만 진하게 남아요. 맨 아래는 블로킹 득점 인원이에요.</dd>
-                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. <b>득점·실점·범실</b>은 <b>3D 공 궤적 지도</b>예요: 포지션마다 선수가 서 있던 자리(바닥 원·이름표 = 포지션·횟수)에서 오른쪽 <b>포지션 도넛</b>의 방식마다 공이 날아가요(색 = 도넛 칸 색, 굵기 = 횟수, 처음엔 포지션마다 많은 3가지). 공이 가는 곳은 기록할 때 고른 🎯 공 방향(없으면 함께 고른 상대 선수 자리나 그 상황 대형에서 공이 떨어진 자리, 그것도 없으면 그 방식의 보통 길)이에요. <b>강타·빈 곳</b>은 네트 위에서 내리꽂혀 바닥에 떨어지고, <b>강타·사람 쪽</b>은 그 자리에 몸을 던졌지만 못 막은 수비 사람 모양 옆으로 지나가요. <b>가볍게 볼처리</b>는 높게 띄운 긴 점선, <b>페인트·터치아웃 등</b>은 네트 바로 뒤로 떨어지는 짧은 점선, <b>서브</b>는 서브라인(끝선) 밖에서 네트를 넘어 날아가는 공, <b>블로킹</b>은 네트 위 벽에 막혀 공격한 팀 쪽으로 떨어지는 공이에요. 범실은 끝이 ✕(아웃은 코트 밖, 네트 걸림은 네트)예요. 도넛이나 이름표에 커서를 올리면(휴대폰은 누르면) 그 포지션·방식만 지도와 도넛에서 함께 진하게 남고 그 포지션의 나머지 공 길도 나와요. 도넛을 누르면 그 포지션 공 길이 지도에 남고, 위 방식 칩을 누르면 그 방식만 진하게 보여요. 지도는 좌우로 끌어 360도 돌리고 <b>↺ 처음 방향</b>으로 되돌려요. 🎯는 그 포지션 공이 주로 떨어진 곳(예: 오른쪽 뒤 · 크로스)이에요. <b>블로킹</b>은 코트 그림에 자리마다 원(크고 진할수록 많이, 숫자 = 득점/범실)으로 그려요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 세터가 토스 없이 바로 넘긴 <b>세터 2구</b>는 세터 자리(S)와 겹치지 않게 S 옆 네트 쪽에 짧은 점선으로 그려요. 블로킹·리시브처럼 공격 위치가 없는 기록은 그 랠리 토스 순서의 마지막 공격 토스 상황 대형으로 자리를 정해요. 어떤 대형 기준으로 놓였는지는 표 아래 <b>선수 자리를 정한 대형 보기</b>(블로킹은 바로 아래 표)에서 봐요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
+                <dt>📍 코트 위치</dt><dd>기록에 고른 🔵 우리·🔴 상대 선수의 포지션과, 전술 시뮬레이션에서 그 팀 이름이 든 대형(경기 정보의 <b>위치 판단 대형</b>)으로 선수가 서 있던 자리를 정해 양 팀 코트에 모아요. <b>득점·범실·블로킹</b>은 그 플레이를 한 팀 선수 자리, <b>실점</b>은 점수를 내준 쪽(상대가 득점할 때 함께 고른 우리 선수 자리, 우리가 범실하면 그 선수 자리)에 쌓여요. <b>득점·실점·범실</b>은 <b>3D 공 궤적 지도</b>예요: 포지션마다 선수가 서 있던 자리(바닥 원·이름표 = 포지션·횟수)에서 오른쪽 <b>포지션 도넛</b>의 방식마다 공이 날아가요(색 = 도넛 칸 색, 굵기 = 횟수, 처음엔 포지션마다 많은 3가지). 공이 가는 곳은 기록할 때 고른 🎯 공 방향(없으면 함께 고른 상대 선수 자리나 그 상황 대형에서 공이 떨어진 자리, 그것도 없으면 그 방식의 보통 길)이에요. <b>강타·빈 곳</b>은 네트 위에서 내리꽂혀 바닥에 떨어지고, <b>강타·사람 쪽</b>은 그 자리에 몸을 던졌지만 못 막은 수비 사람 모양 옆으로 지나가요. <b>가볍게 볼처리</b>는 높게 띄운 긴 점선, <b>페인트·터치아웃 등</b>은 네트 바로 뒤로 떨어지는 짧은 점선, <b>서브</b>는 서브라인(끝선) 밖에서 네트를 넘어 날아가는 공, <b>블로킹</b>은 네트 위 벽에 막혀 공격한 팀 쪽으로 떨어지는 공이에요. 범실은 끝이 ✕(아웃은 코트 밖, 네트 걸림은 네트)예요. 도넛이나 이름표에 커서를 올리면(휴대폰은 누르면) 그 포지션·방식만 지도와 도넛에서 함께 진하게 남고 그 포지션의 나머지 공 길도 나와요. 도넛을 누르면 그 포지션 공 길이 지도에 남고, 위 방식 칩을 누르면 그 방식만 진하게 보여요. 지도는 좌우로 끌어 360도 돌리고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 🎯는 그 포지션 공이 주로 떨어진 곳(예: 오른쪽 뒤 · 크로스)이에요. <b>블로킹</b>은 코트 그림에 자리마다 원(크고 진할수록 많이, 숫자 = 득점/범실)으로 그려요. <b>토스</b>는 세터 자리에서 보낸 곳까지 선으로 그려요. 선이 굵을수록 많이 올린 곳이고, 끝의 번호는 랠리에서 주로 몇 번째 토스였는지, 그 옆 글자는 보낸 곳 이름이에요. 세터가 토스 없이 바로 넘긴 <b>세터 2구</b>는 세터 자리(S)와 겹치지 않게 S 옆 네트 쪽에 짧은 점선으로 그려요. 블로킹·리시브처럼 공격 위치가 없는 기록은 그 랠리 토스 순서의 마지막 공격 토스 상황 대형으로 자리를 정해요. 어떤 대형 기준으로 놓였는지는 표 아래 <b>선수 자리를 정한 대형 보기</b>(블로킹은 바로 아래 표)에서 봐요. 선수를 고르지 않은 기록은 예전에 직접 고른 득실 위치가 있으면 그 자리로 넣어요.</dd>
                 <dt>🏐 토스</dt><dd>양 팀이 어디로 올렸는지(토스 방향)와 <b>점수판 × 1포인트당 토스 배분</b>이에요. 세로 한 줄이 1점이고, 윗부분 점수판에는 점수를 낸 팀 줄에 색이 채워지며 그 팀의 새 점수가 적혀요(경기 기록지와 같아요). 아랫부분에는 그 랠리에서 올라간 토스를 1번째부터 아래로 팀 색 칸에 적어요(2단은 점선 테두리). 연속 득점·실점 구간에서 어떤 토스가 이어졌는지 따라가 볼 수 있어요.</dd>
               </dl>
             </div>
@@ -6973,7 +6977,7 @@
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] },
       { title:'팀 누적 분석으로 한 팀을 모아 봐요',
-        text:'맨 위 <b>📊 팀 누적 분석</b> 배너를 눌러(한 경기 기록·그래프는 <b>📝 경기 분석(수동)</b>) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 득점·실점 구성 가로 막대, 구성 띠, 실점 원인 지도·순위, 경기별 흐름 선, 상대팀별 좌우 막대). <b>📋 전체 지표</b> 위의 상대팀 버튼(예: vs 한빛)을 누르면 그 팀과 한 경기만으로 지표를 다시 계산하고, 막대의 점선으로 모든 경기 평균과 비교해요. <b>실점 원인 지도</b>는 <b>실점 원인 순위</b> 오른쪽(휴대폰은 아래)에 있는 입체 코트(처음엔 아래 = 이 팀 코트)로, 원인마다 공이 지나간 길을 그려요. 서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕이고, 빨강은 상대가 낸 점수·노랑은 이 팀 범실이에요. 좌우로 끌면 360도 돌아가고 <b>↺ 처음 방향</b>으로 되돌려요. 궤적에 커서를 대면 순위의 같은 줄이 강조돼요. 선 굵기는 실점 수, 공이 떨어진 곳은 그 원인이 가장 많이 난 곳(기록한 공 방향(✨ 추천 공 방향은 코트 위치 분석에서 켰을 때만) → 🎯 9칸 → 상황별 대표 자리 순: 서브 범실은 끝선, 리시브는 리시브 자리, 파울·블로킹은 네트 앞, 방향이 없는 공격은 때린 자리. 공격 자리는 그 팀이 네트를 바라볼 때 왼쪽부터 레프트·앞차·A·세터·B·백A·백차·라이트 순이라 상대팀은 화면에서 좌우가 뒤집혀요)이고, 번호는 <b>실점 원인 순위</b>와 같아요. 순위는 상대가 낸 점수와 범실을 많은 순서로 놓고 선으로 누적 몫을 그려서, 실점의 80%를 만드는 원인을 진하게 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 방식·블로킹·코트 위치를 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요. <b>⭐ 우리팀</b>을 정했으면 열자마자 우리팀을 보여주고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 우리팀이 그 팀을 만났을 때 막을 것·노릴 것을 먼저 정리해요.',
+        text:'맨 위 <b>📊 팀 누적 분석</b> 배너를 눌러(한 경기 기록·그래프는 <b>📝 경기 분석(수동)</b>) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 득점·실점 구성 가로 막대, 구성 띠, 실점 원인 지도·순위, 경기별 흐름 선, 상대팀별 좌우 막대). <b>📋 전체 지표</b> 위의 상대팀 버튼(예: vs 한빛)을 누르면 그 팀과 한 경기만으로 지표를 다시 계산하고, 막대의 점선으로 모든 경기 평균과 비교해요. <b>실점 원인 지도</b>는 <b>실점 원인 순위</b> 오른쪽(휴대폰은 아래)에 있는 입체 코트(처음엔 아래 = 이 팀 코트)로, 원인마다 공이 지나간 길을 그려요. 서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕이고, 빨강은 상대가 낸 점수·노랑은 이 팀 범실이에요. 좌우로 끌면 360도 돌고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 궤적에 커서를 대면 순위의 같은 줄이 강조돼요. 선 굵기는 실점 수, 공이 떨어진 곳은 그 원인이 가장 많이 난 곳(기록한 공 방향(✨ 추천 공 방향은 코트 위치 분석에서 켰을 때만) → 🎯 9칸 → 상황별 대표 자리 순: 서브 범실은 끝선, 리시브는 리시브 자리, 파울·블로킹은 네트 앞, 방향이 없는 공격은 때린 자리. 공격 자리는 그 팀이 네트를 바라볼 때 왼쪽부터 레프트·앞차·A·세터·B·백A·백차·라이트 순이라 상대팀은 화면에서 좌우가 뒤집혀요)이고, 번호는 <b>실점 원인 순위</b>와 같아요. 순위는 상대가 낸 점수와 범실을 많은 순서로 놓고 선으로 누적 몫을 그려서, 실점의 80%를 만드는 원인을 진하게 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 방식·블로킹·코트 위치를 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요. <b>⭐ 우리팀</b>을 정했으면 열자마자 우리팀을 보여주고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 우리팀이 그 팀을 만났을 때 막을 것·노릴 것을 먼저 정리해요.',
         scene:`<div class="mk-card"><div class="mk-h">📊 팀 누적 분석</div><div class="mk-row"><span class="mk-btn k-t1">위드나인 5경기</span><span class="mk-btn">한빛 2경기</span><span class="mk-btn">다온 1경기</span></div>
           <div class="mk-col k-res" style="display:none;"><div class="mk-lbl"><b>위드나인</b> · 5경기 4승 1패 · 득점률 53%</div><div class="mk-list"><div class="mk-item">승 · 9/12 vs 한빛전 · 75:45</div><div class="mk-item">패 · 9/19 vs 새솔전 · 57:75</div></div><div class="mk-lbl">🔑 승부 열쇠: 서브 효율(이긴 경기 56% · 진 경기 29%)</div></div></div>`,
         script:[ {click:'.k-t1', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-res').style.display='flex'; }}, {wait:2200} ] }
@@ -9614,8 +9618,8 @@
     TA_LEAK[id] = {list, setter, W, H, ang:CP_ANG.toss||0, keep:'toss', draw:tossMapSVG};
     const chips = ['our','opp'].map(team=>{ const ls = list.filter(d=>d.team===team).sort((a,b)=>b.n-a.n); if(!ls.length) return '';
       return `<div class="bn-row"><span class="bn-rl" style="color:${team==='our'?'var(--own)':'var(--opp)'};">${team==='our'?'🔵':'🔴'} ${escChip(team==='our'?ourTeamName:oppTeamName)}</span>${ls.map(d=>`<button type="button" class="bn-chip ts-chip k-${d.kind}" style="--c:${team==='our'?'var(--own)':'var(--opp)'};" data-hk="${escChip(d.key)}" data-tip="${escChip(d.tip)}"><i></i>${d.kind==='2nd'?'↪ 2단 ':''}${escChip(d.to)} <b>${d.n}</b><small>${Math.round(d.n/tot[team]*100)}%${d.last?` · 결정 ${Math.round(d.win/d.last*100)}%`:''}</small></button>`).join('')}</div>`; }).join('');
-    return `<div class="hk-box"><div class="lk-wrap"><svg class="ta-leak ts-map" data-lk="${id}" viewBox="0 0 ${W} ${H}" role="img" aria-label="세터 배분 3D 지도 (좌우로 끌면 돌아가요)">${tossMapSVG(TA_LEAK[id])}</svg>
-      <div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>
+    return `<div class="hk-box"><div class="lk-wrap"><svg class="ta-leak ts-map" data-lk="${id}" ${lkVB(TA_LEAK[id])} role="img" aria-label="세터 배분 3D 지도 (끌어서 돌리고 확대·옮길 수 있어요)">${tossMapSVG(TA_LEAK[id])}</svg>
+      ${lkCtlHTML(id)}</div>
       <div class="ts-legend"><span><i class="k-n"></i>세터 토스(굵을수록 많이)</span><span><i class="k-2nd"></i>↪ 2단 토스(후위에서)</span><span><i class="k-3rd"></i>3구처리</span><span class="muted">S = 세터 자리 · 끝 숫자 = 횟수 · 결정 = 그 토스가 마지막일 때 득점률</span></div>
       ${chips}<div class="hk-info" aria-live="polite">궤적이나 칩에 커서를 올리면(휴대폰은 눌러서) 그 토스만 진하게 남아요.</div></div>`;
   }
@@ -11138,8 +11142,20 @@
   }
   // 원인 종류에 따라 지도에 그리는 모양이 달라요: 서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 네트의 ✕
   const taLeakKind = m => /서브캐치|리시브/.test(m) ? 'recv' : /서브/.test(m) ? 'serve' : /블로킹/.test(m) ? 'block' : /파울|네트/.test(m) ? 'foul' : /2단|토스/.test(m) ? 'toss' : /디그|수비/.test(m) ? 'dig' : 'atk';
-  // 실점 원인 지도: 원근 코트 위에 원인마다 공 궤적(굵기 = 실점 수)을 그 실점이 가장 많이 난 자리로 그려요. 처음엔 아래가 이 팀 코트이고, 끌면 360도 돌아가요.
+  // 실점 원인 지도: 원근 코트 위에 원인마다 공 궤적(굵기 = 실점 수)을 그 실점이 가장 많이 난 자리로 그려요. 처음엔 아래가 이 팀 코트이고, 끌면 360도 돌아가요(확대·옮기기도 돼요).
   const TA_LEAK = {}; let taLeakSeq = 0;
+  // 3D 지도 보기(확대 z·가운데 cx,cy)는 viewBox로만 바꿔요: 돌려서 다시 그려도 확대·위치가 그대로예요. keep이 있는 지도는 다시 열어도 기억해요
+  const CP_VIEW = {};
+  function lkVB(st){
+    if(st.z==null) Object.assign(st, {z:1, cx:st.W/2, cy:st.H/2}, (st.keep && CP_VIEW[st.keep]) || {});
+    const w = st.W/st.z, h = st.H/st.z;
+    return `viewBox="${(st.cx - w/2).toFixed(1)} ${(st.cy - h/2).toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}"${st.z > 1.01 ? ' data-zoomed=""' : ''}`;
+  }
+  // 지도 아래 조작 줄: 끌기 안내 + ＋/－ · ✥ 옮기기 · ↺ 처음으로
+  function lkCtlHTML(id, more){
+    return `<div class="lk-ctl"><span class="lk-hint"><span class="lk-h-pc">↔ 좌우로 끌면 360도 회전 · ↕ 위아래로 끌면 확대·축소 · Shift(또는 오른쪽 버튼)+끌기 = 옮기기${more||''}</span><span class="lk-h-tc">↔ 좌우로 밀면 회전 · 두 손가락으로 벌려 확대 · ✥ 옮기기를 켜면 한 손가락으로 옮겨요</span></span>`
+      + `<span class="lk-btns"><button type="button" class="lk-zb" data-lk="${id}" data-z="1" aria-label="확대">＋</button><button type="button" class="lk-zb" data-lk="${id}" data-z="-1" aria-label="축소">－</button><button type="button" class="lk-pan" data-lk="${id}" aria-pressed="false">✥ 옮기기</button><button type="button" class="lk-reset" data-lk="${id}">↺ 처음으로</button></span></div>`;
+  }
   function taLeak3D(rows, T, width){
     // 원인마다 가장 많이 난 칸(한쪽 코트 3×3 + 네트 앞 + 코트 밖)을 고르고, 같은 칸끼리는 조금씩 비켜 그려요
     const cellOf = ([x, y]) => { const c = Math.max(0, Math.min(2, Math.floor(x/133.34))); const r = Math.abs(y-380) < 25 ? 'n' : y < 0 ? -1 : y > 760 ? 6 : Math.floor(y/126.67); return c+'|'+r; };
@@ -11156,8 +11172,8 @@
     TA_LEAK[id] = {pil, T, W, H, ang:0};
     const leg = `<div class="ta-legend"><span><i style="background:var(--opp)"></i>상대가 낸 점수</span><span><i style="background:${TA_ERR_COL}"></i>${escChip(T)} 범실</span></div>`
       + `<div class="ta-legend lk-key"><span>⌒ 공중 궤적 = 서브·토스·공격</span><span>⌣ 바닥 가까이 = 리시브·디그</span><span>▮ 네트 위 벽 = 블로킹</span><span>✕ = 파울</span><span class="muted">선이 굵을수록 실점이 많아요 · 흐린 것 = 누적 80% 밖 · 번호 = 순위</span></div>`;
-    return `<div class="lk-wrap"><svg class="ta-leak" data-lk="${id}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="실점 원인 지도 (좌우로 끌면 돌아가요)">${taLeakSVG(TA_LEAK[id])}</svg>`
-      + `<div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요 · 궤적에 커서를 대면 왼쪽 순위에 표시돼요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>${leg}`;
+    return `<div class="lk-wrap"><svg class="ta-leak" data-lk="${id}" ${lkVB(TA_LEAK[id])} width="${W}" height="${H}" role="img" aria-label="실점 원인 지도 (끌어서 돌리고 확대·옮길 수 있어요)">${taLeakSVG(TA_LEAK[id])}</svg>`
+      + lkCtlHTML(id, ' · 궤적에 커서를 대면 왼쪽 순위에 표시돼요') + `</div>${leg}`;
   }
   // 입체 코트 공통: 바닥(상대 코트·이 팀 코트·공격선)·네트·글자를 지금 돌린 방향으로 그려요(실점 원인 지도·코트 위치 지도가 함께 써요)
   function lkScene(W, H, ang, opt){
@@ -11281,10 +11297,10 @@
   function cpMap3D(st){
     const sm = (window.innerWidth||800) < 600, W = sm ? 400 : 560, H = sm ? 500 : 660, id = 'lk' + (++taLeakSeq); // 휴대폰은 작게 그려 글자가 덜 작아지게 해요
     TA_LEAK[id] = {...st, W, H, ang:CP_ANG[st.keep]||0, draw:cpMapSVG};
-    return `<div class="lk-wrap cp-wrap"><svg class="ta-leak cp-map" data-lk="${id}" viewBox="0 0 ${W} ${H}" role="img" aria-label="포지션별 기록 3D 지도 (좌우로 끌면 돌아가요)">${cpMapSVG(TA_LEAK[id])}</svg>`
+    return `<div class="lk-wrap cp-wrap"><svg class="ta-leak cp-map" data-lk="${id}" ${lkVB(TA_LEAK[id])} role="img" aria-label="포지션별 기록 3D 지도 (끌어서 돌리고 확대·옮길 수 있어요)">${cpMapSVG(TA_LEAK[id])}</svg>`
       + `<div class="cp-info" aria-live="polite">공 궤적이나 오른쪽 도넛에 커서를 올리면(휴대폰은 눌러서) 그 기록이 함께 부각되고 그 포지션의 나머지 공 길도 나와요.</div>`
       + `<div class="ta-legend lk-key"><span>⤓ 빈 곳 강타 = 바닥에 꽂힘</span><span>🧍 사람 쪽 강타 = 못 막은 수비 옆으로</span><span>⌒ 긴 점선 = 볼처리 · 짧은 점선 = 페인트 등</span><span>▮ 네트 위 벽 = 블로킹</span><span>서브 = 서브라인 밖에서</span><span>✕ = 범실</span><span class="muted">굵을수록 많이 · 색 = 도넛 칸</span></div>`
-      + `<div class="lk-ctl"><span>↔ 좌우로 끌어 360도 돌려 봐요</span><button type="button" class="lk-reset" data-lk="${id}">↺ 처음 방향</button></div></div>`;
+      + lkCtlHTML(id) + `</div>`;
   }
   function cpMapSVG(st){
     const {pills, flows, W, H, focus, names} = st, metric = st.metric || 'score';
@@ -11433,25 +11449,81 @@
     else cpHighlight(box, '', '', '');
   });
   document.addEventListener('pointerleave', e=>{ if(e.target.classList && e.target.classList.contains('court-an')) cpHighlight(e.target, '', '', ''); }, true);
-  // 실점 원인 지도 돌리기: 좌우로 끌면 돌아가고(세로로 끌면 화면이 그대로 내려가요), ↺ 처음 방향으로 되돌려요
+  // 3D 지도 조작: 좌우로 끌면 회전, 위아래로 끌면(마우스) 확대·축소, Shift·오른쪽 버튼·✥ 옮기기 켬 = 옮기기, 두 손가락 = 벌려 확대·함께 밀어 옮기기
+  // 휴대폰에서 ✥ 옮기기가 꺼져 있으면 한 손가락 세로 밀기는 그대로 화면을 내려요
   (function(){
-    let drag = null, raf = 0;
+    let drag = null, raf = 0; const pts = new Map(); let pinch = null;
     const draw = (svg, st) => { if(raf) return; raf = requestAnimationFrame(()=>{ raf = 0; svg.innerHTML = (st.draw||taLeakSVG)(st); }); };
+    const saveV = st => { if(st.keep){ CP_ANG[st.keep] = st.ang; CP_VIEW[st.keep] = {z:st.z, cx:st.cx, cy:st.cy}; } };
+    const applyV = (svg, st) => {
+      st.z = Math.max(1, Math.min(6, st.z));
+      const w = st.W/st.z, h = st.H/st.z;
+      st.cx = Math.max(w/2, Math.min(st.W - w/2, st.cx)); st.cy = Math.max(h/2, Math.min(st.H - h/2, st.cy));
+      svg.setAttribute('viewBox', `${(st.cx - w/2).toFixed(1)} ${(st.cy - h/2).toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
+      svg.toggleAttribute('data-zoomed', st.z > 1.01); saveV(st);
+    };
+    // 화면 점(clientX,Y) → 지도 안 비율(fx,fy)과 지도 좌표(ax,ay)
+    const at = (svg, st, x, y) => { const r = svg.getBoundingClientRect(), fx = (x - r.left)/r.width, fy = (y - r.top)/r.height; return {fx, fy, ax:st.cx + (fx - .5)*st.W/st.z, ay:st.cy + (fy - .5)*st.H/st.z}; };
+    // 확대 z로 바꾸며 지도 좌표 (ax,ay)를 화면 비율 (fx,fy) 자리에 둬요
+    const zoomTo = (svg, st, z, o) => { st.z = Math.max(1, Math.min(6, z)); st.cx = o.ax - (o.fx - .5)*st.W/st.z; st.cy = o.ay - (o.fy - .5)*st.H/st.z; applyV(svg, st); };
+    const svgOf = e => e.target.closest && e.target.closest('svg.ta-leak[data-lk]');
     document.addEventListener('pointerdown', e=>{
-      const svg = e.target.closest && e.target.closest('svg.ta-leak[data-lk]'); if(!svg) return;
-      const st = TA_LEAK[svg.dataset.lk]; if(!st) return;
-      drag = {svg, st, x:e.clientX, a:st.ang, id:e.pointerId}; svg.classList.add('dragging');
+      const svg = svgOf(e); if(!svg) return;
+      const st = TA_LEAK[svg.dataset.lk]; if(!st) return; lkVB(st);
+      pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
       try{ svg.setPointerCapture(e.pointerId); }catch(err){}
+      if(pts.size === 2){ // 두 손가락: 벌리면 확대, 함께 밀면 옮겨요
+        const [p, q] = [...pts.values()], mx = (p.x+q.x)/2, my = (p.y+q.y)/2;
+        pinch = {svg, st, d0:Math.max(20, Math.hypot(p.x-q.x, p.y-q.y)), z0:st.z, o:at(svg, st, mx, my)};
+        drag = null; svg.classList.add('dragging'); return;
+      }
+      if(pts.size > 2) return;
+      const mode = (st.pan || e.shiftKey || e.button === 2) ? 'pan' : '';
+      drag = {svg, st, x:e.clientX, y:e.clientY, a:st.ang, z:st.z, cx:st.cx, cy:st.cy, o:at(svg, st, e.clientX, e.clientY), id:e.pointerId, mode, touch:e.pointerType === 'touch'};
+      svg.classList.add('dragging');
     });
     document.addEventListener('pointermove', e=>{
+      if(pts.has(e.pointerId)) pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+      if(pinch && pts.size >= 2){
+        const [p, q] = [...pts.values()], mx = (p.x+q.x)/2, my = (p.y+q.y)/2, r = pinch.svg.getBoundingClientRect();
+        zoomTo(pinch.svg, pinch.st, pinch.z0*Math.hypot(p.x-q.x, p.y-q.y)/pinch.d0, {ax:pinch.o.ax, ay:pinch.o.ay, fx:(mx - r.left)/r.width, fy:(my - r.top)/r.height});
+        window.__lkDragAt = Date.now(); return;
+      }
       if(!drag || e.pointerId!==drag.id) return;
-      const k = 360/Math.max(240, drag.svg.getBoundingClientRect().width); // 지도 폭만큼 끌면 한 바퀴
-      drag.st.ang = ((drag.a + (e.clientX - drag.x)*k) % 360 + 360) % 360; draw(drag.svg, drag.st);
-      if(Math.abs(e.clientX - drag.x) > 6) window.__lkDragAt = Date.now(); // 끈 뒤의 클릭은 기둥 누르기로 치지 않아요
-      if(drag.st.keep) CP_ANG[drag.st.keep] = drag.st.ang;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if(!drag.mode){ if(Math.hypot(dx, dy) < 6) return; drag.mode = Math.abs(dx) >= Math.abs(dy) || drag.touch ? 'rot' : 'zoom'; } // 처음 움직인 방향으로 정해요
+      window.__lkDragAt = Date.now(); // 끈 뒤의 클릭은 기둥 누르기로 치지 않아요
+      const r = drag.svg.getBoundingClientRect(), st = drag.st;
+      if(drag.mode === 'rot'){
+        const k = 360/Math.max(240, r.width); // 지도 폭만큼 끌면 한 바퀴
+        st.ang = ((drag.a + dx*k) % 360 + 360) % 360; draw(drag.svg, st); saveV(st);
+      } else if(drag.mode === 'zoom'){
+        zoomTo(drag.svg, st, drag.z*Math.exp(-dy/140), drag.o); // 위로 끌면 확대, 아래로 끌면 축소(누른 곳을 기준으로)
+      } else {
+        st.cx = drag.cx - dx*st.W/st.z/r.width; st.cy = drag.cy - dy*st.H/st.z/r.height; applyV(drag.svg, st);
+      }
     });
-    const end = ()=>{ if(drag){ drag.svg.classList.remove('dragging'); drag = null; } };
+    const end = e=>{
+      pts.delete(e.pointerId);
+      if(pinch && pts.size < 2){ pinch.svg.classList.remove('dragging'); pinch = null; drag = null; pts.clear(); return; }
+      if(drag && e.pointerId===drag.id){ drag.svg.classList.remove('dragging'); drag = null; }
+    };
     document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
+    // 두 손가락이 닿으면 화면이 대신 움직이지 않게 막아요
+    document.addEventListener('touchstart', e=>{ if(e.touches.length > 1 && svgOf(e)) e.preventDefault(); }, {passive:false});
+    document.addEventListener('touchmove', e=>{ if(e.touches.length > 1 && svgOf(e)) e.preventDefault(); }, {passive:false});
+    // Ctrl+휠·트랙패드 벌리기 = 확대·축소(그냥 휠은 화면을 내려요)
+    document.addEventListener('wheel', e=>{
+      if(!e.ctrlKey && !e.metaKey) return; const svg = svgOf(e); if(!svg) return;
+      const st = TA_LEAK[svg.dataset.lk]; if(!st) return; e.preventDefault(); lkVB(st);
+      zoomTo(svg, st, st.z*Math.exp(-e.deltaY*0.01), at(svg, st, e.clientX, e.clientY));
+    }, {passive:false});
+    // 더블클릭 = 그 자리를 크게(Shift+더블클릭 = 작게)
+    document.addEventListener('dblclick', e=>{
+      const svg = svgOf(e); if(!svg) return; const st = TA_LEAK[svg.dataset.lk]; if(!st) return; lkVB(st);
+      e.preventDefault(); zoomTo(svg, st, st.z*(e.shiftKey ? 1/1.6 : 1.6), at(svg, st, e.clientX, e.clientY));
+    });
+    document.addEventListener('contextmenu', e=>{ if(svgOf(e)) e.preventDefault(); });
     // 지도·순위에서 한 원인에 커서를 대면(휴대폰은 누르면) 양쪽에서 같은 원인을 부각해요
     const hl = (pair, r) => { pair.classList.toggle('lk-hl', !!r); pair.querySelectorAll('.lk-item').forEach(el=>el.classList.toggle('on', !!r && el.dataset.r===r)); };
     document.addEventListener('pointerover', e=>{
@@ -11461,9 +11533,11 @@
     });
     document.addEventListener('pointerout', e=>{ const pair = e.target.closest && e.target.closest('[data-lkp]'); if(pair && !pair.contains(e.relatedTarget)) hl(pair, null); });
     document.addEventListener('click', e=>{
-      const btn = e.target.closest && e.target.closest('.lk-reset'); if(!btn) return;
-      const st = TA_LEAK[btn.dataset.lk], svg = document.querySelector(`svg.ta-leak[data-lk="${btn.dataset.lk}"]`); if(!st || !svg) return;
-      st.ang = 0; if(st.keep) CP_ANG[st.keep] = 0; svg.innerHTML = (st.draw||taLeakSVG)(st);
+      const btn = e.target.closest && e.target.closest('.lk-reset, .lk-zb, .lk-pan'); if(!btn) return;
+      const st = TA_LEAK[btn.dataset.lk], svg = document.querySelector(`svg.ta-leak[data-lk="${btn.dataset.lk}"]`); if(!st || !svg) return; lkVB(st);
+      if(btn.classList.contains('lk-zb')) return zoomTo(svg, st, st.z*(btn.dataset.z > 0 ? 1.4 : 1/1.4), {fx:.5, fy:.5, ax:st.cx, ay:st.cy});
+      if(btn.classList.contains('lk-pan')){ st.pan = !st.pan; btn.setAttribute('aria-pressed', st.pan ? 'true' : 'false'); svg.classList.toggle('lk-panon', st.pan); return; }
+      st.ang = 0; st.z = 1; st.cx = st.W/2; st.cy = st.H/2; applyV(svg, st); svg.innerHTML = (st.draw||taLeakSVG)(st);
     });
   })();
   // 실점 원인 순위(파레토): 막대 = 실점 중 몫, 선 = 위에서부터 더한 누적 몫. 누적 80%까지의 원인을 진하게 보여줘요
