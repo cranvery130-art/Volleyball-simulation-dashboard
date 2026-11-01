@@ -1179,7 +1179,7 @@
   /* 경기 영상 분석 맨 위 탭: 🎬 매치 분석(한 경기) / 📊 팀 누적 분석(저장 경기 모음) — 고른 탭의 카드만 보여요 */
   /* 경기 분석(AI) 배너: 정확도를 더 높일 수 있을 때까지 흐리게 두고 준비 중으로 표시해요(TJ 2026-10-26) */
   #appModeSeg button.soon{ opacity:.45; cursor:not-allowed; filter:grayscale(.6); }
-  #appModeSeg button.soon .soon-tag{ font-size:.72em; font-weight:700; margin-left:4px; padding:1px 5px; border-radius:6px; border:1px solid currentColor; white-space:nowrap; }
+  #appModeSeg button .soon-tag{ font-size:.72em; font-weight:700; margin-left:4px; padding:1px 5px; border-radius:6px; border:1px solid currentColor; white-space:nowrap; }
   /* ---------- 경기 분석(AI) ---------- */
   #aiCol{ min-width:0; max-width:1400px; margin:20px auto 0; width:100%; padding:0 clamp(8px,2.2vw,40px); box-sizing:border-box; display:flex; flex-direction:column; gap:16px; }
   #aiCol #btnQrMode{ display:none; } /* 기록 입력은 경기 분석(수동)에서 해요 */
@@ -6506,6 +6506,28 @@
   let roomMembers = []; // cached member list for the currently open room (creator view)
 
   // opts: {member, data}(코드로 입장) | {guest:true, shareId}(경기 폴더 조회 링크)
+  // 🤖 경기 분석(AI)은 모두에게 '준비 중'으로 막아 두고, 만든 사람(TJ) 방이나 TJ 기기에서만 열어요(TJ 2026-11-01).
+  //  · 방 코드: 원문 대신 SHA-256 해시만 적어 둬요(AI_OWNER_ROOMS). 그 코드로 개설자·수정 권한으로 들어오면 열려요
+  //  · 기기: 주소 끝에 ?ai=open 을 붙여 한 번 열면 그 기기에서 계속 열려요(?ai=close 로 다시 막아요)
+  const AI_OWNER_ROOMS = [];
+  (function aiDeviceFlag(){
+    try{ const q = new URLSearchParams(location.search).get('ai');
+      if(q==='open') localStorage.setItem('vt:ai-owner','1'); else if(q==='close') localStorage.removeItem('vt:ai-owner'); }catch(err){}
+  })();
+  async function applyAiAccess(){
+    const btn = document.querySelector('#appModeSeg [data-appmode="ai"]'); if(!btn) return;
+    let open = false;
+    try{ open = localStorage.getItem('vt:ai-owner')==='1'; }catch(err){}
+    if(!open && roomCode && AI_OWNER_ROOMS.length && (accessLevel==='creator' || accessLevel==='editor') && window.crypto && crypto.subtle){
+      try{ const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('vt-ai-owner|'+String(roomCode).trim().toLowerCase()));
+        open = AI_OWNER_ROOMS.includes(Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')); }catch(err){}
+    }
+    btn.classList.toggle('soon', !open);
+    btn.setAttribute('aria-disabled', open ? 'false' : 'true');
+    btn.title = open ? '경기 분석(AI) — 이 방·기기에서만 열려 있어요(다른 사람에게는 준비 중으로 보여요)' : '경기 분석(AI)은 준비 중이에요';
+    const tag = btn.querySelector('.soon-tag'); if(tag) tag.textContent = open ? '시험 중' : '준비 중';
+  }
+  applyAiAccess();
   function enterApp(code, level, state, memberId, opts){
     opts = opts || {};
     roomCode = code; accessLevel = level; myMemberId = memberId || null;
@@ -6520,6 +6542,7 @@
     document.querySelector('.app').style.display='block';
     document.getElementById('settingsCodeLabel').textContent = code || '(로컬)';
     document.getElementById('topCodeLabel').textContent = code || (window.__guestShareView ? '조회 링크' : '로컬');
+    applyAiAccess();
     const roleLabels = {creator:'개설자', editor:'수정 권한(구성원)', view:'조회 전용'};
     document.getElementById('settingsRoleLabel').textContent = roleLabels[level] || '로컬 전용(공유 안 됨)';
     myDisplayName = (opts.member && opts.member.name) || ((level==='creator') ? '개설자' : null);
