@@ -21,6 +21,7 @@
 ## 기타
 
 - 화면 문구는 모두 한국어 해요체로 써요.
+- `index.html`을 고치면 `.claude/hooks/check-index-syntax.mjs` 훅이 안의 스크립트 문법을 자동으로 검사해요. 오류가 뜨면 그 줄을 먼저 고쳐요(수동: `node .claude/hooks/check-index-syntax.mjs index.html`).
 
 ## 작업 방식 (모든 저장소 공통)
 
