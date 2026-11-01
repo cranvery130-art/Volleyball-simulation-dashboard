@@ -9609,8 +9609,8 @@
     const tot = {our:0, opp:0}; list.forEach(d=>{ tot[d.team] += d.n; });
     list.forEach(d=>{
       const pos = TOSS_POS[d.to];
-      let to = d.kind==='3rd' ? null : spot(d.team, pos, d.to);
-      if(!to) to = mir(d.team, TOSS_FALLBACK[d.to] || [200, 450]);
+      // 토스가 가는 곳 = 그 공격을 때리는 자리(그 팀이 네트를 바라본 기준 레프트→앞차→A→세터→B→백A→백차→라이트). 대형의 선수 서 있는 자리는 리시브 대형이라 레프트가 후위에 있기도 해서 쓰지 않아요
+      let to = d.kind==='3rd' || !pos ? mir(d.team, TOSS_FALLBACK[d.to] || [200, 450]) : mir(d.team, [TA_ATK_X(d.to), pos==='CBACK' ? 600 : 410]);
       if(pos==='SETTER'){ const sx = setter[d.team]; to = [sx[0] + (sx[0] > 200 ? -56 : 56), d.team==='our' ? 398 : 362]; }
       d.from = d.kind==='2nd' ? mir(d.team, [200, 620]) : setter[d.team];
       d.to2 = to;
