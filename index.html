@@ -1267,6 +1267,23 @@
   .ta-ring{ flex:none; width:58px; height:58px; }
   .ta-ring text{ font-size:15px; font-weight:900; fill:var(--text); font-family:var(--body); }
   .ta-tsub{ font-size:10.5px; color:var(--muted); }
+  .ta-vsb{ display:inline-block; margin-left:8px; padding:1px 8px; border-radius:999px; font-size:11.5px; font-weight:800; color:var(--on-accent); background:var(--opp); vertical-align:middle; }
+  .ta-strat{ border:2px solid color-mix(in srgb, var(--accent) 55%, var(--border)); background:var(--panel); }
+  .st-few{ margin:6px 0; padding:6px 10px; border-radius:8px; background:var(--panel-2); font-size:12.5px; color:var(--text-dim); }
+  .st-key{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; } .st-k{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; padding:6px 10px; border-radius:10px; font-size:12.5px; }
+  .st-k b{ font-weight:800; margin-right:2px; } .st-k span{ padding:1px 8px; border-radius:999px; background:var(--panel); border:1px solid var(--border); font-weight:700; }
+  .st-k.good{ background:color-mix(in srgb, var(--own) 12%, var(--panel)); color:var(--own); } .st-k.bad{ background:color-mix(in srgb, var(--opp) 12%, var(--panel)); color:var(--opp); }
+  .st-rows{ display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:10px; }
+  .st-row{ padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--panel-2); border-left:5px solid var(--border-2); }
+  .st-row.good{ border-left-color:var(--own); } .st-row.bad{ border-left-color:var(--opp); }
+  .st-h{ display:flex; align-items:center; gap:8px; margin-bottom:6px; } .st-h b{ font-size:14px; } .st-no{ font-family:var(--head); font-size:12px; color:var(--accent-text); }
+  .st-v{ margin-left:auto; font-size:11px; font-weight:800; padding:1px 8px; border-radius:999px; border:1px solid var(--border-2); color:var(--text-dim); } .st-v.good{ color:var(--own); border-color:var(--own); } .st-v.bad{ color:var(--opp); border-color:var(--opp); }
+  .st-stats{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .st-n{ padding:6px 8px; border-radius:8px; background:var(--panel); display:flex; flex-direction:column; gap:1px; min-width:0; } .st-n small{ font-size:11px; color:var(--text-dim); } .st-n b{ font-size:15px; font-variant-numeric:tabular-nums; } .st-n em{ font-style:normal; font-size:10.5px; color:var(--muted); }
+  .st-n b i{ font-style:normal; margin:0 4px; color:var(--muted); } .st-n b i.up{ color:var(--own); } .st-n b i.down{ color:var(--opp); }
+  .st-them{ background:color-mix(in srgb, var(--opp) 7%, var(--panel)); }
+  .st-plan{ margin:8px 0 0; font-size:12.5px; line-height:1.65; } .st-plan > span{ display:inline-block; margin-right:6px; padding:0 6px; border-radius:6px; border:1px solid var(--accent-text); color:var(--accent-text); font-size:11px; font-weight:800; line-height:1.6; }
+  @media (max-width:600px){ .st-rows{ grid-template-columns:1fr; } }
   .ta-sec{ margin-top:12px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--panel-2); }
   .ta-sec > h4{ margin:0 0 10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-family:var(--head); font-weight:400; font-size:16px; color:var(--text); }
   .ta-sec > h4 small{ flex-basis:100%; font-family:var(--body); font-size:11.5px; color:var(--muted); margin-left:34px; margin-top:-6px; }
@@ -2371,7 +2388,7 @@
         <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요. 상대 서브는 칸 사이나 사이드라인·끝선 쪽으로도 정할 수 있어요.</li>
         <li><b>경기 분석(수동)</b>경기를 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고(마지막 토스와 결과로 정한 ✨ 추천은 점선으로 보이고 ✨ 추천대로로 한 번에 채워요), 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 요인별 분석은 득점(자력+상대 범실)·실점(범실+상대 득점)을 파레토 차트로, 블로킹 분석은 네트축 그림에 누구 손에서·범실 유형을 합쳐, 세터 배분은 3D 코트에 공 궤적(2단·3구처리 따로)으로 보여줘요. 🔎 상세 분석은 팀 누적 분석과 같은 그림(공격 방식 트리맵, 📍 코트 위치 3D 지도 + 포지션 도넛)이에요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 다른 세트로 옮기거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
-        <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 전체 성적과 지표(상대팀별로 나눠 보기 가능), 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분·실점 원인 지도와 팀별 순위), 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠, 그리고 모든 경기를 합친 상세 분석(공격 방식·블로킹·토스·코트 위치 득점/실점/범실)까지 정리해줘요. ⭐ 우리팀을 정해 두면 다른 팀은 상대 전력 분석(막을 것·노릴 것·맞대결 전적)으로 보여줘요.</li>
+        <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 전체 성적과 지표(상대팀을 고르면 그 상대 기준으로 모든 카드가 바뀌고 🧠 대비 전략이 나와요), 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분·실점 원인 지도와 팀별 순위), 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠, 그리고 모든 경기를 합친 상세 분석(공격 방식·블로킹·토스·코트 위치 득점/실점/범실)까지 정리해줘요. ⭐ 우리팀을 정해 두면 다른 팀은 상대 전력 분석(막을 것·노릴 것·맞대결 전적)으로 보여줘요.</li>
         <li><b>경기 분석(AI) · 준비 중</b>지금은 정확도를 높이는 중이라 배너를 흐리게 두고 잠시 쉬어요. 다시 열면 이렇게 동작해요: 공개된 유튜브 경기 영상 링크를 넣고 두 팀 유니폼을 적으면 AI(Google Gemini)가 영상을 구간별로 나눠 봐요. 점수판이 보이면 점수판 숫자가 바뀌는 순간으로 득실 순서·세트를 정하고, 안 보이면 0.1초 간격으로 랠리를 찾아요. 세트 결과를 적어 두면 그보다 많은 세트·점수는 걸러요. 그다음 랠리마다 네 시각(공의 흐름 / 토스·공격수 / 관련 선수 / 심판 판정)으로 따로 다시 본 뒤 겹치는 답을 골라, 수동 분석에서 누르는 칸(득실·세부 상황·방식·공 방향·토스 순서·관련 선수·블로킹 자리)을 모두 채워요. 분석은 언제나 꼼꼼히 해요. 득실은 주심이 가리킨 팀, 반칙 수신호, 선심 깃발(위로 아웃·아래로 인·깃발 끝 쓸기 터치아웃)을 먼저 따르고, 선심이 서 있는 곳 앞의 선을 경기장 라인으로 삼아요. 포지션은 전술 시뮬레이션에 놓아 둔 대형의 자리와 맞춰 정하고, 관련 선수는 경기 정보 명단의 등번호(안 보이면 포지션)로 찾아 넣고, 서브 순서를 적어 두면 누가 서브할 차례인지 계산해 서버가 다르면 ⚠️로 알려 줘요. 공격 위치는 AI가 붙인 이름보다 공을 때린 자리(왼쪽 안테나에서 거리)·토스 높이·세터 뒤인지·속공 페이크를 보고 정해서 레프트와 앞차, 백차와 라이트를 가르고, 랠리의 토스는 시각까지 적어 네 시각의 답을 합쳐 빠짐없이(2단 토스 포함) 남겨요. AI 모델은 Flash(기본)와 Pro(결제를 연결한 키만, 더 꼼꼼하지만 요금이 약 4배) 중에 고르고, 고르면 예상 요금이 바로 나와요. 점수판과 다르거나 확신이 낮은 줄은 ⚠️로 표시돼서 시간을 눌러 영상으로 확인하고 고친 뒤, 새 경기 카드에서 고른 경기 폴더에 넣으면 수동 기록과 똑같이 그래프·종합 분석·팀 누적 분석에 들어가요. 넣은 기록의 시간을 누르면 유튜브 그 장면이 열려요. AI는 쓰는 사람마다 자기 Gemini API 키(Google AI Studio에서 무료로 받아요)를 넣어 쓰고, 사용량은 그 사람 키에만 쌓여요. 무료 키의 하루 한도는 매일 오후 4시(11월 초~3월 초는 오후 5시)에 다시 채워지고, 한도에 걸려도 화면을 열어 두면 한도가 채워질 때 저절로 이어서 보고, 화면을 닫았다 열어도 진행 상황이 기기에 남아 🤖 이어서 분석으로 멈춘 곳부터 이어가요.</li>
         <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
@@ -2486,7 +2503,7 @@
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
           <li><b>🎯 빠른 기록 모드</b>는 기록 입력 칸을 촘촘하게 줄여 스크롤 없이 한 화면에서 세트 → 토스 → 결과 → 상황 → 기록하기까지 끝내요. 휴대폰·태블릿을 <b>가로</b>로 돌려도 한 화면에 맞춰져요: 휴대폰 가로는 왼쪽(세트·토스·결과)·오른쪽(상황·자세히 기록·기록하기) 두 칸으로 나뉘고, 자세히 기록을 펼치면 왼쪽 칸 위에 겹쳐 열려요(점수 기록은 위쪽 📋 기록 버튼). 태블릿 가로·PC는 오른쪽에 점수 기록 칸이 붙고 코트 그림은 그 칸 맨 아래에 나와요. 기본 화면은 접힌 경기 영상 → 종합 분석·그래프(넓은 화면은 왼쪽 종합 분석·오른쪽 그래프로 반반, 좁은 화면은 위아래) → 접힌 기록 순서로 놓이고, 접힌 칸은 제목을 누르면 펼쳐져요. 득실 위치는 고른 칸을 한 번 더 누르면 풀려요.</li>
-          <li><b>📊 팀 누적 분석</b>: 맨 위 <b>📊 팀 누적 분석</b> 배너를 누르면 팀 누적 분석만 크게 보여요(한 경기 기록·그래프·종합 분석은 <b>📝 경기 분석(수동)</b> 배너에 있어요). 먼저 <b>남자부·여자부</b>를 고르고 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 부에서 그 팀이 나온 저장 폴더만 모아(같은 이름의 팀이어도 다른 부 기록은 섞이지 않아요. 부를 아직 안 정한 예전 폴더는 "부 미지정"으로 따로 모여요) 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. <b>📋 전체 지표</b>에서는 상대팀 버튼으로 그 팀과 한 경기만 따로 볼 수 있고(점선 = 모든 경기 평균), 플레이 체제의 <b>실점 원인 순위</b>(왼쪽)는 <b>⚠️ 이 팀 범실로 내준 점수</b>와 <b>🔴 상대가 잘해서 낸 점수</b>를 따로 나눠 각각 1위부터 순위를 매기고, 묶음마다 80%를 만드는 원인을 진하게 보여줘요. 오른쪽 <b>실점 원인 지도</b>는 원인마다 공이 지나간 길을 입체로 그려요(서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕ · 선 굵기 = 실점 수 · 번호표 = 왼쪽 순위(노랑 동그라미 = 이 팀 범실, 빨강 네모 = 상대 득점)). 지도를 좌우로 끌면 360도 돌고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 궤적이나 순위 줄에 커서를 대면(휴대폰은 누르면) 양쪽에서 같은 원인만 또렷하게 보여요(휴대폰은 순위 아래에 지도가 나와요). 묶음마다 원인이 많아도 8개까지는 순위 막대로 보여주고 나머지는 "그 밖"으로 묶어요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 · 📍 코트 위치 득·실·범 네 탭으로 그 팀이 나온 모든 경기를 합쳐 봐요(🔵 그 팀 / 🔴 상대한 팀들). 🏐 토스는 세터 배분과 같은 3D 지도에 토스 기록만 모아 그리고, 📍 코트 위치는 득점·실점·범실만 골라 봐요. 코트 자리는 경기마다 그 경기 명단·대형으로 정해 그 팀이 늘 아래쪽에 오게 모아요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
+          <li><b>📊 팀 누적 분석</b>: 맨 위 <b>📊 팀 누적 분석</b> 배너를 누르면 팀 누적 분석만 크게 보여요(한 경기 기록·그래프·종합 분석은 <b>📝 경기 분석(수동)</b> 배너에 있어요). 먼저 <b>남자부·여자부</b>를 고르고 팀 이름을 적거나 팀 이름 버튼을 누르면, 그 부에서 그 팀이 나온 저장 폴더만 모아(같은 이름의 팀이어도 다른 부 기록은 섞이지 않아요. 부를 아직 안 정한 예전 폴더는 "부 미지정"으로 따로 모여요) 전체 성적·지금의 플레이 체제·경기별·상대팀별 분석과 승부 열쇠를 그래프로 보여줘요. <b>📋 전체 지표</b>에서 상대팀 버튼을 누르면 그 팀과 한 경기만으로 지표를 다시 계산하고(점선 = 모든 경기 평균), 바로 아래에 <b>🧠 vs 그 팀 대비 전략</b>이 나와요. 서브·리시브·토스(세터)·공격·블로킹·수비·범실 영역마다 이 팀 평소(모든 경기) → 그 상대전 값, 그 상대의 전력(그 팀이 나온 모든 경기: 우리와 한 경기 + 다른 팀과 한 경기), 대비책 한 줄을 정리하고 노릴 점·대비할 점을 맨 위에 모아요(상대 기록이 적으면 있는 만큼으로 계산하고 참고용이라고 알려요). 이때 아래 지금의 플레이 체제·경기별 흐름·승부 열쇠·상세 분석 누적도 모두 그 상대와 한 경기만으로 바뀌고 제목 옆에 "vs ○○ 기준"이 붙어요(상대팀별 카드는 그대로 모든 상대를 비교해요). 플레이 체제의 <b>실점 원인 순위</b>(왼쪽)는 <b>⚠️ 이 팀 범실로 내준 점수</b>와 <b>🔴 상대가 잘해서 낸 점수</b>를 따로 나눠 각각 1위부터 순위를 매기고, 묶음마다 80%를 만드는 원인을 진하게 보여줘요. 오른쪽 <b>실점 원인 지도</b>는 원인마다 공이 지나간 길을 입체로 그려요(서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕ · 선 굵기 = 실점 수 · 번호표 = 왼쪽 순위(노랑 동그라미 = 이 팀 범실, 빨강 네모 = 상대 득점)). 지도를 좌우로 끌면 360도 돌고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 궤적이나 순위 줄에 커서를 대면(휴대폰은 누르면) 양쪽에서 같은 원인만 또렷하게 보여요(휴대폰은 순위 아래에 지도가 나와요). 묶음마다 원인이 많아도 8개까지는 순위 막대로 보여주고 나머지는 "그 밖"으로 묶어요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 ⚔️ 공격 · 🧱 블로킹 · 🏐 토스 · 📍 코트 위치 득·실·범 네 탭으로 그 팀이 나온 모든 경기를 합쳐 봐요(🔵 그 팀 / 🔴 상대한 팀들). 🏐 토스는 세터 배분과 같은 3D 지도에 토스 기록만 모아 그리고, 📍 코트 위치는 득점·실점·범실만 골라 봐요. 코트 자리는 경기마다 그 경기 명단·대형으로 정해 그 팀이 늘 아래쪽에 오게 모아요. 경기별 흐름의 점은 그 경기 득점률(파랑 승·빨강 패, 점선 50%)이고, 상대팀별 막대가 오른쪽(파랑)이면 우세·왼쪽(빨강)이면 열세예요. 강했던 면(▲)·약했던 면(▼)은 그 팀의 전체 평균과 5%p 이상 차이 난 지표(공격 결정률·자력 득점 비중·서브 효율·블로킹 효율·범실 실점 비중·리시브 실점 비중)이고, 3회보다 적게 나온 지표는 빼요. 승패는 기록된 세트 점수로 판단하고, 기본 이름 "상대팀"으로 남은 경기는 "이름 없는 상대"로 모아요.</li>
           <li><b>기록하기</b>를 누르면 결과 버튼·상황 버튼 표시와 "자세히 기록"의 방식·위치·관련 선수, 토스 순서가 모두 풀려요(선택 안 함). 화면에 켜진 표시는 늘 지금 고른 것이라 헷갈리지 않아요. 결과와 상황을 둘 다 골라야 기록하기가 켜지고, 자세히 기록은 선택이라 비워둬도 돼요.</li>
           <li><b>✨ 추천(점선)</b>: 결과 버튼을 누르면 <b>랠리 토스 순서의 마지막 토스</b>와 결과로 그럴듯한 세부 상황에 점선이 둘러져요(마지막 토스를 올린 팀의 득점·범실 → 그 공격 위치, 상대 팀 득점 → 블로킹, 상대 팀 범실 → 블로킹·리시브, 토스가 없으면 → 서브·서브캐치). 세부 상황을 고르면 "자세히 기록"에도 점선이 생겨요: 🔵·🔴 선수(그 공격 자리에 서는 공격수, 맞은편 전위 블로커, 공이 간 곳 가까이 있던 수비, 경기 정보의 <b>서브 순서</b>와 앞 점수로 정한 서버), 블로킹 인원(대형에서 네트 앞에 선 수), 공격 방식(고른 🎯 공 방향으로: 앞줄 → 페인트·볼처리, 코트 밖 → 터치아웃·아웃), 🎯 공 방향(고른 방식으로: 페인트·네트인 → 때린 쪽 앞줄, 볼처리·강타 빈 곳 → 대형에서 빈 자리, 사람 쪽 → 대형 재생 때 공이 간 자리, 터치아웃 → 그쪽 코트 밖). 코트 그림에도 추천 선수는 점선 고리, 추천 공은 점선 공으로 나와요. 점선은 표시만 하고, 눌러야 골라져요. <b>✨ 추천대로</b>(자세히 기록 제목 줄 오른쪽)를 누르면 아직 고르지 않은 칸 중 추천이 하나인 것을 한 번에 채워요. 공격 기록에서 🎯 공 방향을 고르지 않고 기록하면 추천 공 방향이 <b>추천 표시</b>를 단 채 함께 남고, 코트 위치 분석의 <b>✨ 추천 공 방향 포함</b>을 끄면 직접 고른 공 방향만으로 볼 수 있어요(실점 원인 지도도 같이 바뀌어요). 마지막 토스·앞 점수와 고른 결과가 어긋나면(예: 마지막 토스가 🔴인데 🔵 공격, 앞 점수를 🔴가 냈는데 🔵 서브) 기록하기 위에 ⚠️ 한 줄이 떠요. 기록은 그대로 할 수 있어요.</li>
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 세부 상황 "세터페인트(2구 넘김)", 토스 순서에서는 "세터 2구"로 남겨요.</li>
@@ -7031,7 +7048,7 @@
           <div class="mk-lbl k-active">📂 지금 화면: vs 한빛 0907 · 기록 42줄 — 자동 저장 중</div></div><div class="mk-toast k-toast">"vs 한빛 0907 (복사본)"으로 복제했어요</div>`,
         script:[{click:'.k-copy', then:(el,sc)=>{ sc.querySelector('.k-toast').classList.add('show'); sc.querySelector('.k-active').textContent='📂 지금 화면: vs 한빛 0907 (복사본) · 기록 42줄'; }}, {wait:1200}, {fn:sc=>sc.querySelector('.k-toast').classList.remove('show')}, {wait:300}, {click:'.k-link', then:(el,sc)=>{ const t=sc.querySelector('.k-toast'); t.textContent='조회 링크를 복사했어요'; t.classList.add('show'); }}, {wait:1500} ] },
       { title:'팀 누적 분석으로 한 팀을 모아 봐요',
-        text:'맨 위 <b>📊 팀 누적 분석</b> 배너를 눌러(한 경기 기록·그래프는 <b>📝 경기 분석(수동)</b>) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 득점·실점 구성 가로 막대, 구성 띠, 실점 원인 지도·순위, 경기별 흐름 선, 상대팀별 좌우 막대). <b>📋 전체 지표</b> 위의 상대팀 버튼(예: vs 한빛)을 누르면 그 팀과 한 경기만으로 지표를 다시 계산하고, 막대의 점선으로 모든 경기 평균과 비교해요. <b>실점 원인 지도</b>는 <b>실점 원인 순위</b> 오른쪽(휴대폰은 아래)에 있는 입체 코트(처음엔 아래 = 이 팀 코트)로, 원인마다 공이 지나간 길을 그려요. 서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕이고, 빨강은 상대가 낸 점수·노랑은 이 팀 범실이에요. 좌우로 끌면 360도 돌고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 궤적에 커서를 대면 순위의 같은 줄이 강조돼요. 선 굵기는 실점 수, 공이 떨어진 곳은 그 원인이 가장 많이 난 곳(기록한 공 방향(✨ 추천 공 방향은 코트 위치 분석에서 켰을 때만) → 🎯 9칸 → 상황별 대표 자리 순: 서브 범실은 끝선, 리시브는 리시브 자리, 파울·블로킹은 네트 앞, 방향이 없는 공격은 때린 자리. 공격 자리는 그 팀이 네트를 바라볼 때 왼쪽부터 레프트·앞차·A·세터·B·백A·백차·라이트 순이라 상대팀은 화면에서 좌우가 뒤집혀요)이고, 번호표는 <b>실점 원인 순위</b>와 같아요(노랑 동그라미 = 이 팀 범실 순위, 빨강 네모 = 상대 득점 순위). 순위는 이 팀 범실과 상대가 낸 점수를 따로 나눠 각각 많은 순서로 놓고 선으로 누적 몫을 그려서, 묶음마다 80%를 만드는 원인을 진하게 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 · 블로킹 · 토스(3D 지도) · 코트 위치 득점/실점/범실을 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요. <b>⭐ 우리팀</b>을 정했으면 열자마자 우리팀을 보여주고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 우리팀이 그 팀을 만났을 때 막을 것·노릴 것을 먼저 정리해요.',
+        text:'맨 위 <b>📊 팀 누적 분석</b> 배너를 눌러(한 경기 기록·그래프는 <b>📝 경기 분석(수동)</b>) 먼저 <b>남자부·여자부</b>를 고르고, 팀 이름을 적거나 아래 팀 이름 버튼을 누르면 그 부의 저장된 폴더 중 그 팀이 나온 경기(우리팀·상대팀 어느 쪽이든)를 모두 모아 분석해요. 같은 팀 이름이어도 다른 부 기록은 섞이지 않아요. 전체 성적과 지표, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 경기별로 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표(승부 열쇠)와 어떤 상대에 강하고 약한지를 그래프로 보여줘요(득점률 원, 지표 막대, 득점·실점 구성 가로 막대, 구성 띠, 실점 원인 지도·순위, 경기별 흐름 선, 상대팀별 좌우 막대). <b>📋 전체 지표</b> 위의 상대팀 버튼(예: vs 한빛)을 누르면 그 팀과 한 경기만으로 지표를 다시 계산하고, 막대의 점선으로 모든 경기 평균과 비교해요. 그 아래 <b>🧠 대비 전략</b>은 서브·리시브·토스·공격·블로킹·범실마다 평소 → 상대전 값, 상대의 전력(그 팀이 다른 팀과 한 경기 기록까지), 대비책을 정리해요. 아래 카드들도 그 상대와 한 경기 기준으로 바뀌어요. <b>실점 원인 지도</b>는 <b>실점 원인 순위</b> 오른쪽(휴대폰은 아래)에 있는 입체 코트(처음엔 아래 = 이 팀 코트)로, 원인마다 공이 지나간 길을 그려요. 서브·토스·공격은 공중 궤적, 리시브·디그는 바닥 가까운 낮은 궤적, 블로킹은 네트 위 벽, 파울은 ✕이고, 빨강은 상대가 낸 점수·노랑은 이 팀 범실이에요. 좌우로 끌면 360도 돌고, 위아래로 끌거나 Ctrl+휠·<b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소하고, Shift+끌기나 <b>✥ 옮기기</b>를 켜고 끌어 옮겨 봐요. <b>↺ 처음으로</b>는 방향·확대·위치를 한 번에 되돌려요. 궤적에 커서를 대면 순위의 같은 줄이 강조돼요. 선 굵기는 실점 수, 공이 떨어진 곳은 그 원인이 가장 많이 난 곳(기록한 공 방향(✨ 추천 공 방향은 코트 위치 분석에서 켰을 때만) → 🎯 9칸 → 상황별 대표 자리 순: 서브 범실은 끝선, 리시브는 리시브 자리, 파울·블로킹은 네트 앞, 방향이 없는 공격은 때린 자리. 공격 자리는 그 팀이 네트를 바라볼 때 왼쪽부터 레프트·앞차·A·세터·B·백A·백차·라이트 순이라 상대팀은 화면에서 좌우가 뒤집혀요)이고, 번호표는 <b>실점 원인 순위</b>와 같아요(노랑 동그라미 = 이 팀 범실 순위, 빨강 네모 = 상대 득점 순위). 순위는 이 팀 범실과 상대가 낸 점수를 따로 나눠 각각 많은 순서로 놓고 선으로 누적 몫을 그려서, 묶음마다 80%를 만드는 원인을 진하게 보여줘요. 맨 아래 <b>🔎 상세 분석 누적</b>에서는 공격 · 블로킹 · 토스(3D 지도) · 코트 위치 득점/실점/범실을 모든 경기를 합쳐 볼 수 있어요. 팀 이름은 폴더의 📋 경기 정보에 적은 이름으로 찾아요. <b>⭐ 우리팀</b>을 정했으면 열자마자 우리팀을 보여주고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 우리팀이 그 팀을 만났을 때 막을 것·노릴 것을 먼저 정리해요.',
         scene:`<div class="mk-card"><div class="mk-h">📊 팀 누적 분석</div><div class="mk-row"><span class="mk-btn k-t1">위드나인 5경기</span><span class="mk-btn">한빛 2경기</span><span class="mk-btn">다온 1경기</span></div>
           <div class="mk-col k-res" style="display:none;"><div class="mk-lbl"><b>위드나인</b> · 5경기 4승 1패 · 득점률 53%</div><div class="mk-list"><div class="mk-item">승 · 9/12 vs 한빛전 · 75:45</div><div class="mk-item">패 · 9/19 vs 새솔전 · 57:75</div></div><div class="mk-lbl">🔑 승부 열쇠: 서브 효율(이긴 경기 56% · 진 경기 29%)</div></div></div>`,
         script:[ {click:'.k-t1', then:(el,sc)=>{ el.classList.add('on'); sc.querySelector('.k-res').style.display='flex'; }}, {wait:2200} ] }
@@ -11749,7 +11766,7 @@
     if(!key){ out.innerHTML = ''; return; }
     const dv = taDiv();
     // 경기 날짜 순서로 놓아야 경기별 흐름·최근 경기 비교가 성장 과정을 보여줘요.
-    const ms = matchFolders.map((f,i)=>taDivOf(f)===dv ? taMatch(f, i, key) : null).filter(Boolean).sort(byMatchDate);
+    let ms = matchFolders.map((f,i)=>taDivOf(f)===dv ? taMatch(f, i, key) : null).filter(Boolean).sort(byMatchDate);
     if(!ms.length){
       const hasTeam = f => { const t = taTeams(f); return taNorm(t.our)===key || taNorm(t.opp)===key; };
       const anyFolder = matchFolders.some(f=>taDivOf(f)===dv && hasTeam(f));
@@ -11758,11 +11775,11 @@
       return;
     }
     const T = escChip(ms[0].me);
-    const allEs = ms.flatMap(m=>m.es), allRecs = ms.flatMap(m=>m.recs);
+    let allEs = ms.flatMap(m=>m.es), allRecs = ms.flatMap(m=>m.recs);
     // ⭐ 우리팀을 정했으면, 다른 팀은 "상대 전력 분석"으로 보고 우리팀이 노릴 점을 맨 앞에 정리해요
     const hk = homeTeamKey(), isHome = !!hk && key===hk, scout = !!hk && !isHome;
     const base = taMetrics(allEs);
-    const W = ms.filter(m=>m.result==='W'), L = ms.filter(m=>m.result==='L'), D = ms.filter(m=>m.result==='D');
+    let W = ms.filter(m=>m.result==='W'), L = ms.filter(m=>m.result==='L'); const D = ms.filter(m=>m.result==='D');
     const sw = ms.reduce((s,m)=>s+m.sw,0), sl = ms.reduce((s,m)=>s+m.sl,0);
     const sec = (ic, title, sub, body, note) => body ? `<section class="ta-sec"><h4><span class="ta-ic">${ic}</span>${title}${sub?`<small>${sub}</small>`:''}</h4>${body}${note?`<p class="ta-note">${note}</p>`:''}</section>` : '';
     const html = [];
@@ -11780,7 +11797,19 @@
     // 2) 전체 지표: 위의 상대팀 버튼으로 그 팀과 한 경기만 따로 봐요(막대의 점선 = 모든 경기 평균) + 득점·실점 구성 가로 막대
     if(taOverallFor!==key){ taOverallFor = key; taOverallOpp = ''; }
     taOverallData = {ms, base, T, scout};
-    html.push(sec('📋', '전체 지표', '막대가 길수록 높아요 · 상대팀을 고르면 그 팀과 한 경기만 계산해요', `<div id="taOverallBody">${taOverallHTML()}</div>`));
+    html.push(sec('📋', '전체 지표', '막대가 길수록 높아요 · 상대팀을 고르면 아래 카드도 모두 그 팀과 한 경기로 바뀌어요', `<div id="taOverallBody">${taOverallHTML()}</div>`));
+    // 상대팀을 골랐으면: 🧠 대비 전략 카드를 넣고, 아래 카드(플레이 체제·경기별·승부 열쇠·상세 분석 누적)는 그 상대와 한 경기만으로 다시 계산해요
+    const selOpp = ms.some(m=>taOppKey(m)===taOverallOpp) ? taOverallOpp : '';
+    const msAll = ms;
+    let vsBadge = '';
+    if(selOpp){
+      const msVs = msAll.filter(m=>taOppKey(m)===selOpp), oppNm = taOppName(msVs[0]);
+      html.push(taStrategyHTML(T, selOpp, oppNm, msAll, msVs, dv));
+      vsBadge = `<span class="ta-vsb">vs ${escChip(oppNm)} 기준 · ${msVs.length}경기</span>`;
+      ms = msVs; allEs = ms.flatMap(m=>m.es); allRecs = ms.flatMap(m=>m.recs);
+      W = ms.filter(m=>m.result==='W'); L = ms.filter(m=>m.result==='L');
+    }
+    const sec2 = (ic, title, sub, body, note) => sec(ic, title + vsBadge, sub, body, note);
     // 3) 지금의 플레이 체제: 득점 루트 띠, 공격 위치 막대, 세터 배분 띠
     const routeObj = {}; allEs.filter(e=>e.bucket==='ourScore').forEach(e=>{ const k = e.main===FOUL_MAIN?'파울':e.main; routeObj[k]=(routeObj[k]||0)+1; });
     const pos = {};
@@ -11812,7 +11841,7 @@
       const d = Math.round(rM.rate) - Math.round(pM.rate);
       recentHTML = `<div class="ta-recent"><span class="ta-rlab">최근 2경기</span><span class="ta-arrow ${d>0?'up':d<0?'down':''}">${d>0?'▲':d<0?'▼':'＝'} 득점률 ${taP(rM.rate)} <small>이전 ${taP(pM.rate)}</small></span>${sv.strong.map(x=>taTag(x,true)).join('')}${sv.weak.map(x=>taTag(x,false)).join('')}</div>`;
     }
-    html.push(sec('🧭', '지금의 플레이 체제', '어떻게 점수를 내고 잃는지', sysBody + leakBody + recentHTML, tBest ? `마지막 토스가 <b>${escChip(tBest[0])}</b>(으)로 갔을 때 득점률이 가장 높아요 (${tBest[1].a}번 중 ${tBest[1].w}점, ${pct(tBest[1].w,tBest[1].a)}%)` : ''));
+    html.push(sec2('🧭', '지금의 플레이 체제', '어떻게 점수를 내고 잃는지', sysBody + leakBody + recentHTML, tBest ? `마지막 토스가 <b>${escChip(tBest[0])}</b>(으)로 갔을 때 득점률이 가장 높아요 (${tBest[1].a}번 중 ${tBest[1].w}점, ${pct(tBest[1].w,tBest[1].a)}%)` : ''));
     // 4) 경기별: 득점률 흐름 + 경기 줄(점수 막대)
     let matchNote = '';
     if(ms.length>=2){
@@ -11824,10 +11853,10 @@
       const rl = m.result==='W' ? '승' : m.result==='L' ? '패' : '무';
       return `<div class="ta-match ${m.result}"><span class="ta-res">${rl}</span><span class="ta-mname"><b>${escChip(m.name)}</b><small>${isDateStr(m.f.date)?fmtMatchDate(m.f.date)+' · ':''}vs ${escChip(m.opp==='상대팀'?'이름 없는 상대':m.opp)}${m.setRows.length>1?` · 세트 ${m.sw}:${m.sl}`:''} · 공격 ${taP(m.M.atk)} · 범실 ${m.M.a.errs}</small></span><span class="ta-mscore"><b>${m.M.a.pts}:${m.M.a.lost}</b><span class="ta-split"><i style="flex:${m.M.a.pts||0.001}; background:var(--own)"></i><i style="flex:${m.M.a.lost||0.001}; background:var(--opp)"></i></span></span></div>`;
     }).join('');
-    html.push(sec('🏟️', '경기별 흐름', '점 = 그 경기 득점률(파랑 승 · 빨강 패), 가운데 점선 = 50%', `${ms.length>=2?taTrendSVG(ms, out.clientWidth-30):''}${matchNote}<details class="ta-fold"><summary>경기별 기록 ${ms.length}개 보기</summary><div class="ta-matches">${rowsHTML}</div></details>`));
+    html.push(sec2('🏟️', '경기별 흐름', '점 = 그 경기 득점률(파랑 승 · 빨강 패), 가운데 점선 = 50%', `${ms.length>=2?taTrendSVG(ms, out.clientWidth-30):''}${matchNote}<details class="ta-fold"><summary>경기별 기록 ${ms.length}개 보기</summary><div class="ta-matches">${rowsHTML}</div></details>`));
     // 5) 상대팀별: 50% 기준 좌우 막대 + 강점·약점 꼬리표
     const byOpp = new Map();
-    ms.forEach(m=>{ const k = m.opp==='상대팀' ? '\u0000' : taNorm(m.opp); const g = byOpp.get(k) || {name:m.opp==='상대팀'?'이름 없는 상대':m.opp, ms:[]}; g.ms.push(m); byOpp.set(k, g); });
+    msAll.forEach(m=>{ const k = m.opp==='상대팀' ? '\u0000' : taNorm(m.opp); const g = byOpp.get(k) || {name:m.opp==='상대팀'?'이름 없는 상대':m.opp, ms:[]}; g.ms.push(m); byOpp.set(k, g); });
     const oppGroups = [...byOpp.values()].map(g=>({...g, M:taMetrics(g.ms.flatMap(m=>m.es)), w:g.ms.filter(m=>m.result==='W').length, l:g.ms.filter(m=>m.result==='L').length}));
     oppGroups.sort((a,b)=>b.M.rate-a.M.rate);
     const span = Math.max(10, ...oppGroups.map(g=>Math.abs((g.M.rate||50)-50)));
@@ -11860,13 +11889,80 @@
     const t1 = typeRow(med=>`공격이 강한 상대<small>상대 공격 결정률 ${Math.round(med)}% 이상</small>`, m=>m.M.oppAtk);
     const t2r = typeRow(med=>`서브가 강한 상대<small>세트당 상대 서브 득점 ${Math.round(med*10)/10}점 이상</small>`, m=>m.M.b.serveWin/Math.max(1,m.setRows.length));
     if(t1 || t2r) keyBody += `<div class="ta-lab">어떤 상대에 강하고 약한지 <small>막대 = 그런 상대를 만났을 때 ${T}의 득점률</small></div><div class="ta-keys">${t1}${t2r}</div>`;
-    html.push(sec('🔑', '승부 열쇠', '', keyBody));
+    html.push(sec2('🔑', '승부 열쇠', '', keyBody));
     // 7) 상세 분석 누적: 그래프의 🔎 상세 분석을 모든 경기 기록으로. 위에 이미 있는 공격 위치·세터 배분(토스 방향)은 그대로 두고 빼요.
     taDetailData = {name:ms[0].me, es:allEs.filter(e=>e.team==='our'||e.team==='opp'), items:ms.flatMap(m=>m.items), recs:ms.flatMap(m=>m.side==='our' ? m.recs : m.recs.map(r=>({...r, entries:(r.entries||[]).map(e=>{ const n = normEntry(e); return n.team ? {...e, team:TA_SWAP[n.team], outcome:n.outcome} : e; })})))};
-    html.push(sec('🔎', '상세 분석 누적', `모든 경기를 합쳐 · 🔵 ${T} / 🔴 상대한 팀들`, `<div class="seg detail-filter" id="taDetailSeg" style="margin-top:2px;">${TA_DETAIL_TABS.map(([k,l])=>`<button type="button" data-tadetail="${k}" class="${k===taDetailTab?'active':''}">${l}</button>`).join('')}</div><div id="taDetailBody">${taDetailHTML()}</div>`,
+    html.push(sec2('🔎', '상세 분석 누적', `모든 경기를 합쳐 · 🔵 ${T} / 🔴 상대한 팀들`, `<div class="seg detail-filter" id="taDetailSeg" style="margin-top:2px;">${TA_DETAIL_TABS.map(([k,l])=>`<button type="button" data-tadetail="${k}" class="${k===taDetailTab?'active':''}">${l}</button>`).join('')}</div><div id="taDetailBody">${taDetailHTML()}</div>`,
       '그래프의 🔎 상세 분석과 같은 그림을 이 팀이 나온 경기를 모두 합쳐 보여줘요. 공격 위치와 토스 방향은 위 "지금의 플레이 체제"의 공격 위치·세터 배분에서 보고, 토스는 📍 코트 위치의 토스에서 세터 자리부터 선으로 봐요. 코트 자리는 경기마다 그 경기 명단·대형으로 정하고, 이 팀이 상대팀 칸이었던 경기도 이 팀이 아래(🔵)에 오게 뒤집어 모아요. 공격 방식은 트리맵(칸이 클수록 많이 쓴 방식, 진한 부분 득점·빗금 범실)으로, 코트 위치의 득점·실점·범실은 3D 공 궤적 지도(포지션 자리에서 도넛의 방식마다 공이 날아가요: 빈 곳 강타는 바닥에, 사람 쪽 강타는 못 막은 수비 옆으로, 블로킹은 네트 위 벽, 서브는 서브라인 밖에서)로 그리고 오른쪽에 🔵·🔴 팀별 포지션 도넛을 놓아요. 궤적이나 도넛에 커서를 올리면 같은 기록이 함께 진해지고 그 포지션 나머지 공 길도 나와요. 블로킹·토스는 코트 그림에 팀마다 많은 3곳만 그려요. 블로킹은 위치별 막대를 누구 손에서·범실 유형 칸으로 나누고, 🔴 상대한 팀 선수 앞에는 그 팀 이름을 붙여 많은 12명만 칸으로 나눠요(나머지는 "그 밖").'));
     html.push(`<p class="analysis-disclaimer">※ 저장된 폴더의 기록을 모아 자동 계산한 통계예요. 막대에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요. 경기마다 기록한 양이 다르면 결과가 달라질 수 있고, 승패는 기록된 세트 점수로 판단해요. 3회보다 적게 나온 지표(공격·서브·블로킹 효율)는 빼고 계산해요.</p>`);
     out.innerHTML = html.join('');
+  }
+  // 🧠 상대팀을 고르면: 9인제 전략가 관점으로 영역(서브·리시브·토스·공격·블로킹·범실)마다
+  //   ① 이 팀 평소(모든 경기) vs 그 상대와 한 경기 ② 상대의 전력(그 팀이 나온 모든 경기 — 우리와 한 경기 + 다른 팀과 한 경기) ③ 대비책 한 줄
+  //   상대 기록이 적으면 있는 만큼으로 계산하고 "참고용"이라고 알려요. 3회보다 적은 지표는 '—'로 빼요
+  function taStrategyHTML(T, sel, oppName, msAll, msVs, dv){
+    const U = taMetrics(msAll.flatMap(m=>m.es)), V = taMetrics(msVs.flatMap(m=>m.es));
+    const vsKeys = new Set(msVs.map(m=>m.f));
+    let oms = sel!=='#noname' ? matchFolders.map((f,i)=>taDivOf(f)===dv ? taMatch(f, i, sel) : null).filter(Boolean) : [];
+    // 이름 없는 상대거나 그 팀 폴더를 못 찾으면, 우리와 한 경기 기록을 상대 쪽에서 본 값으로 써요
+    if(!oms.length) oms = msVs.map(m=>({...m, es:m.es.map(e=>({...e, team:TA_SWAP[e.team]||e.team, bucket:TA_BSWAP[e.bucket]||e.bucket, forUs:!e.forUs})), recs:m.recs.map(r=>({...r, tosses:(r.tosses||[]).map(x=>({...x, team:TA_SWAP[x.team]||x.team}))}))}));
+    const oEs = oms.flatMap(m=>m.es), O = taMetrics(oEs), vEs = msVs.flatMap(m=>m.es);
+    const nOther = oms.filter(m=>!vsKeys.has(m.f)).length, sets = arr => Math.max(1, arr.reduce((a,m)=>a+(m.setRows.length||1),0));
+    const oSets = sets(oms), uSets = sets(msAll);
+    const N = escChip(oppName), P = v => v===null || v===undefined ? '—' : Math.round(v)+'%', ps = (a,b) => (a/b).toFixed(1);
+    const cnt = (es, f, key) => { const g = {}; es.filter(f).forEach(e=>{ const k = key(e); if(k) g[k] = (g[k]||0)+1; }); return sortDesc(g); };
+    const who = e => e.pl || '';
+    const posStat = (es, team) => { const g = {}; es.filter(e=>e.team===team && ATTACK_SET.has(e.main)).forEach(e=>{ const d = g[e.main] = g[e.main] || {k:e.main.replace('(2구 넘김)',''), s:0, f:0}; d[e.outcome==='score'?'s':'f']++; }); return Object.values(g).map(d=>({...d, n:d.s+d.f, r:(d.s/(d.s+d.f))*100})).sort((a,b)=>b.n-a.n); };
+    const tossStat = ms => { const g = {}; let n = 0, n2 = 0; ms.forEach(m=>m.recs.forEach(r=>(r.tosses||[]).filter(x=>x.team==='our' && x.to!=='3구처리' && x.to!=='세터 2구').forEach(x=>{ const k = TOSS_SHORT[x.to]||x.to; g[k] = (g[k]||0)+1; n++; if(x.kind==='2nd') n2++; }))); return {list:sortDesc(g), n, n2}; };
+    const tag = v => v==='good' ? '<span class="st-v good">노릴 점</span>' : v==='bad' ? '<span class="st-v bad">대비할 점</span>' : '<span class="st-v">비슷</span>';
+    const stat = (lab, a, b, hi) => { const d = a===null||b===null||a===undefined||b===undefined ? 0 : (b-a)*(hi?1:-1); return `<div class="st-n"><small>${lab}</small><b>${P(a)}<i class="${d>=5?'up':d<=-5?'down':''}">→</i>${P(b)}</b><em>평소 → 상대전</em></div>`; };
+    const them = (lab, v, sub) => `<div class="st-n st-them"><small>${N} ${lab}</small><b>${typeof v==='string' ? v : P(v)}</b>${sub?`<em>${sub}</em>`:''}</div>`;
+    const rows = [];
+    // 서브: 우리 서브 ↔ 상대 리시브
+    { const rcvErr = cnt(oEs, e=>e.bucket==='ourError' && (e.main==='서브캐치'||e.main==='리시브'), who).filter(x=>x[0]).slice(0,2);
+      const weakR = O.recvShare!==null && O.recvShare >= 20, v = weakR && (U.srv===null || U.srv>=35) ? 'good' : (U.srv!==null && U.srv<35) ? 'bad' : 'even';
+      const plan = weakR ? `${N} 실점의 <b>${P(O.recvShare)}</b>가 리시브 관련이에요. 강서브·목적타로 흔들어요${rcvErr.length?` — 리시브가 흔들린 선수: <b>${rcvErr.map(([k,n])=>`${escChip(k)} ${n}회`).join(', ')}</b>`:''}.`
+        : `${N}의 리시브는 안정적이에요(리시브 실점 ${P(O.recvShare)}). 무리한 강서브보다 범실 없는 코스 서브(후위 사이·엔드라인 깊게)로 첫 공격을 어렵게 만들어요.`;
+      rows.push({ic:'🎯', name:'서브', v, stats:stat('우리 서브 효율', U.srv, V.srv, true) + them('리시브 실점 비중', O.recvShare, '높을수록 서브가 잘 통해요'), plan:plan + (U.srv!==null && U.srv<35 ? ` 우리 서브 효율이 ${P(U.srv)}라 서브 범실부터 줄여요.` : '')}); }
+    // 리시브: 상대 서브 ↔ 우리 리시브
+    { const aces = cnt(oEs, e=>e.bucket==='ourScore' && e.main==='서브', who).filter(x=>x[0]).slice(0,2);
+      const strongS = O.srv!==null && O.srv >= 45, v = strongS || (V.recvShare!==null && U.recvShare!==null && V.recvShare >= U.recvShare+5) ? 'bad' : (O.srv!==null && O.srv < 30) ? 'good' : 'even';
+      const plan = strongS ? `${N} 서브가 강해요(효율 ${P(O.srv)}, 세트당 서브 득점 ${ps(O.a.serveWin, oSets)}점). 후위 3명에 중위 1명이 더해 리시브 폭을 좁히고, 리시브는 높게 세터 앞으로 올려요${aces.length?` — 서브 득점이 많은 서버: <b>${aces.map(([k,n])=>`${escChip(k)} ${n}점`).join(', ')}</b>`:''}.`
+        : `${N} 서브는 위협이 크지 않아요(효율 ${P(O.srv)}). 리시브를 세터 머리 위로 정확히 올려 속공·이동 공격까지 쓰는 경기를 만들어요.`;
+      rows.push({ic:'🛡️', name:'리시브', v, stats:stat('우리 리시브 실점 비중', U.recvShare, V.recvShare, false) + them('서브 효율', O.srv, `세트당 서브 득점 ${ps(O.a.serveWin, oSets)}점`), plan}); }
+    // 토스: 상대 세터 배분 ↔ 우리 블로킹 준비, 우리 결정 토스
+    { const ot = tossStat(oms), ut = tossStat(msVs.length ? msVs : msAll);
+      const top = ot.list.slice(0,2), share = k => Math.round(k/Math.max(1,ot.n)*100);
+      const plan = ot.n >= 3 && top.length ? `${N} 세터는 <b>${top.map(([k,n])=>`${escChip(k)} ${share(n)}%`).join(' · ')}</b> 순으로 올려요. 리시브가 흔들리면 이쪽으로 몰리니 ${escChip(top[0][0])} 앞 블로킹을 먼저 2명으로 맞춰요.${ot.n2 ? ` 2단 토스가 ${share(ot.n2)}%예요 — 2단 상황은 오픈 공격뿐이라 블로킹을 늦지 않게 붙여요.` : ''}`
+        : `${N}의 토스 기록이 아직 적어요(토스 ${ot.n}회). 경기 중 "🏐 랠리 토스 순서"를 남기면 세터 배분이 쌓여요.`;
+      rows.push({ic:'🏐', name:'토스(세터)', v:ot.n>=3 && top.length && share(top[0][1])>=35 ? 'good' : 'even', stats:them('세터 배분 1순위', top.length ? `${escChip(top[0][0])} ${share(top[0][1])}%` : '—', `토스 ${ot.n}회`) + `<div class="st-n"><small>우리 배분 1순위${msVs.length?' (상대전)':''}</small><b>${ut.list.length ? `${escChip(ut.list[0][0])} ${Math.round(ut.list[0][1]/Math.max(1,ut.n)*100)}%` : '—'}</b><em>토스 ${ut.n}회</em></div>`, plan}); }
+    // 공격: 우리 공격 ↔ 상대 블로킹
+    { const mine = posStat(vEs.length ? vEs : msAll.flatMap(m=>m.es), 'our').filter(d=>d.n>=3).sort((a,b)=>b.r-a.r);
+      const best = mine[0], worst = mine.length>1 ? mine[mine.length-1] : null;
+      const strongB = O.blk!==null && O.blk >= 55, v = (V.atk!==null && U.atk!==null && V.atk < U.atk-5) || strongB ? 'bad' : (V.atk!==null && U.atk!==null && V.atk > U.atk+5) ? 'good' : 'even';
+      const plan = (strongB ? `${N} 블로킹이 강해요(효율 ${P(O.blk)}). 강타만 고집하지 말고 페인트·연타·터치아웃을 섞고, 속공(A·B)으로 블로커를 묶은 뒤 양 끝으로 빼요. ` : (O.blk===null ? `${N} 블로킹 기록은 아직 적어요(득점 ${O.blkS} · 범실 ${O.blkF}). ` : `${N} 블로킹 효율은 ${P(O.blk)}예요. `))
+        + (best ? `상대전에서 가장 잘 통한 공격은 <b>${escChip(best.k)}</b>(${best.s}/${best.n}, ${Math.round(best.r)}%)${worst && worst.r < 40 ? `, 막힌 공격은 ${escChip(worst.k)}(${worst.s}/${worst.n})` : ''}이에요 — 중요한 점수에서 ${escChip(best.k)} 쪽으로 올려요.` : '공격 위치별 기록이 3회 이상 쌓이면 잘 통한 공격을 골라 알려줘요.');
+      rows.push({ic:'⚔️', name:'공격', v, stats:stat('우리 공격 결정률', U.atk, V.atk, true) + them('블로킹 효율', O.blk, `블로킹 득점 ${O.blkS} · 범실 ${O.blkF}`), plan}); }
+    // 블로킹: 상대 공격 ↔ 우리 블로킹·수비
+    { const op = posStat(oEs, 'our').filter(d=>d.n>=2).slice(0,3);
+      const strongA = O.atk!==null && O.atk >= 50, v = strongA && (U.blk===null || U.blk < 50) ? 'bad' : (O.atk!==null && O.atk < 35) ? 'good' : 'even';
+      const netAtk = op.find(d=>NET_POSITION_OPTIONS.has(d.k) && d.k!=='다이렉트');
+      const plan = op.length ? `${N} 주 공격은 <b>${op.map(d=>`${escChip(d.k)} ${d.n}회(성공 ${Math.round(d.r)}%)`).join(' · ')}</b>예요. ${netAtk ? `${escChip(netAtk.k)} 앞 블로킹을 먼저 2명으로,` : '세터 2구·3구처리처럼 블로킹 타이밍이 없는 공이 많아 수비 위치로 대비하고,'} 블록이 막지 못하는 코스(크로스·블록 뒤)에 수비를 미리 둬요.${strongA ? ` 공격 결정률이 ${P(O.atk)}로 높아 블로킹은 손을 넘겨 길을 막는 데 집중해요(터치아웃 조심).` : ''}`
+        : `${N} 공격 위치 기록이 아직 적어요.`;
+      rows.push({ic:'🧱', name:'블로킹·수비', v, stats:stat('우리 블로킹 효율', U.blk, V.blk, true) + them('공격 결정률', O.atk, '높을수록 막기 어려워요'), plan}); }
+    // 범실
+    { const oe = taTop(oEs, 'ourError', 2), ue = taTop(vEs.length ? vEs : msAll.flatMap(m=>m.es), 'ourError', 1)[0];
+      const giver = O.errShare!==null && O.errShare >= 50, v = V.errShare!==null && U.errShare!==null && V.errShare > U.errShare+5 ? 'bad' : giver ? 'good' : 'even';
+      const plan = (giver ? `${N}은(는) 실점의 <b>${P(O.errShare)}</b>를 스스로 내줘요${oe.length?`(주로 ${oe.map(([k,n])=>`${escChip(k)} ${n}`).join(' · ')})`:''}. 무리한 공격보다 안정적인 리시브·연결로 랠리를 길게 끌어요. ` : `${N} 범실 실점 비중은 ${P(O.errShare)}예요 — 상대 실수를 기다리기보다 우리가 점수를 만들어야 해요. `)
+        + (ue ? `우리 범실 1순위는 <b>${escChip(ue[0])}</b>(${ue[1]}회)예요. 경기 전 이 상황을 먼저 연습해요.` : '');
+      rows.push({ic:'⚠️', name:'범실', v, stats:stat('우리 범실 실점 비중', U.errShare, V.errShare, false) + them('범실 실점 비중', O.errShare, '높을수록 범실이 많은 팀'), plan}); }
+    const goods = rows.filter(r=>r.v==='good'), bads = rows.filter(r=>r.v==='bad');
+    const few = oms.length < 3;
+    return `<section class="ta-sec ta-strat"><h4><span class="ta-ic">🧠</span>vs ${N} 대비 전략<small>9인제 전략 관점 · 평소(모든 경기) → 이 상대와 한 경기 · ${N} 전력은 그 팀이 나온 ${oms.length}경기(우리와 ${msVs.length} · 다른 팀과 ${nOther})</small></h4>
+      ${few ? `<p class="st-few">ℹ️ ${N} 기록이 ${oms.length}경기뿐이라 있는 기록으로만 계산했어요. 참고용으로 봐 주세요.</p>` : ''}
+      <div class="st-key">${goods.length ? `<div class="st-k good"><b>노릴 점</b>${goods.map(r=>`<span>${r.ic} ${r.name}</span>`).join('')}</div>` : ''}${bads.length ? `<div class="st-k bad"><b>대비할 점</b>${bads.map(r=>`<span>${r.ic} ${r.name}</span>`).join('')}</div>` : ''}</div>
+      <div class="st-rows">${rows.map((r,i)=>`<div class="st-row ${r.v}"><div class="st-h"><span class="st-no">${String(i+1).padStart(2,'0')}</span><b>${r.ic} ${r.name}</b>${tag(r.v)}</div><div class="st-stats">${r.stats}</div><p class="st-plan"><span>대비</span>${r.plan}</p></div>`).join('')}</div>
+      <p class="ta-note">화살표 색: 파랑 = 상대전에서 평소보다 좋았음 · 빨강 = 나빴음(5%p 이상). 숫자는 기록으로 자동 계산한 값이라 실제 선수 상태·컨디션은 코치님 판단을 더해 주세요.</p></section>`;
   }
   // 🔍 상대 전력 분석: ⭐ 우리팀이 이 팀을 만났을 때 막을 것·노릴 것·맞대결 전적
   function taScoutHTML(T, es, ms, base){
@@ -11895,7 +11991,7 @@
   }
   document.getElementById('teamAnalysisResult').addEventListener('click', e=>{
     const o = e.target.closest('[data-taopp]');
-    if(o){ taOverallOpp = o.dataset.taopp; const b = document.getElementById('taOverallBody'); if(b) b.innerHTML = taOverallHTML(); return; }
+    if(o){ taOverallOpp = o.dataset.taopp; const y = window.scrollY; renderTeamAnalysis(); window.scrollTo(0, y); return; }
     const t = e.target.closest('[data-tadetail]'), m = e.target.closest('[data-tametric]');
     if(!t && !m) return;
     if(t) taDetailTab = t.dataset.tadetail; else { taCourtMetric = m.dataset.tametric; delete courtFocusBy['data-tametric']; }
