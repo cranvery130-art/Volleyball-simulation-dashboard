@@ -8497,7 +8497,7 @@
     const hint = document.getElementById('qrMoreHint');
     if(hint){
       const extras = [];
-      if(typeof detailOptionsFor==='function' && detailOptionsFor(v, qrOutcome)) extras.push(v==='블로킹' ? (qrOutcome==='fault'?'범실 유형':'블로킹 인원') : v===FOUL_MAIN ? '파울 종류' : '공격 방식');
+      if(typeof detailOptionsFor==='function' && detailOptionsFor(v, qrOutcome)) extras.push(v==='블로킹' ? (qrOutcome==='fault'?'범실 유형':'블로킹 인원') : v===FOUL_MAIN ? '파울 종류' : ATTACK_SET.has(v) ? '공격 방식' : '범실 종류');
       extras.push('우리·상대 선수');
       extras.push('위치 자동');
       hint.textContent = extras.join('·') + ' (선택)';
@@ -8715,24 +8715,20 @@
   const ATTACK_OPTIONS = ['레프트','라이트','A','B','백A','앞차','백차','다이렉트','세터페인트(2구 넘김)','3구처리'];
   const ATTACK_SET = new Set(ATTACK_OPTIONS);
   const FOUL_MAIN = '파울(반칙)';
+  // 파울 종류 중 공격·서브·리시브·블로킹에 넣을 수 있는 것은 그 상황의 범실 종류로 옮겼어요(TJ 2026-10-30).
+  // 누가 했는지·어느 상황인지 애매한 것만 파울(반칙)에 남겨요. 예전 기록의 옮긴 파울 이름도 그대로 읽어요(FOUL_TYPES_ALL)
   const FOUL_TYPES = [
     '네트터치',
-    '오버네트(상대 코트 공 터치)',
     '센터라인 침범',
-    '안테나 반칙(터치·바깥 통과)',
     '아웃(라인 밖)',
     '포히트(터치 횟수 초과)',
-    '더블컨택(드리블)',
-    '홀딩(캐치볼)',
-    '서브 풋폴트(엔드라인 침범)',
-    '서브 순서 위반',
-    '서브 시간 초과',
     '경기 지연',
     '경고·벌칙(옐로·레드카드)'
   ];
+  const FOUL_TYPES_ALL = FOUL_TYPES.concat(['오버네트(상대 코트 공 터치)','안테나 반칙(터치·바깥 통과)','더블컨택(드리블)','홀딩(캐치볼)','서브 풋폴트(엔드라인 침범)','서브 순서 위반','서브 시간 초과']);
   // 파울 종류를 고르면 아래에 짧은 설명을 보여줘요.
   const FOUL_DESC = {
-    '네트터치':'플레이 중 몸이나 옷이 네트(안테나 사이)에 닿은 반칙이에요. 블로킹하다 닿았다면 블로킹 범실의 "네트터치"로 남겨요.',
+    '네트터치':'플레이 중 몸이나 옷이 네트(안테나 사이)에 닿은 반칙이에요. 공격하다 닿았다면 공격 범실의 "네트터치", 블로킹하다 닿았다면 블로킹 범실의 "네트터치"로 남겨요.',
     '오버네트(상대 코트 공 터치)':'네트 위로 손을 넘겨 상대 코트 쪽 공을 먼저 건드린 반칙이에요(블로킹은 상대 공격 뒤라면 허용).',
     '센터라인 침범':'발이나 몸이 센터라인을 완전히 넘어 상대 코트에 닿아 플레이를 방해한 반칙이에요.',
     '안테나 반칙(터치·바깥 통과)':'공이 안테나에 닿았거나 안테나 바깥으로 넘어간 경우예요.',
@@ -8750,7 +8746,7 @@
     const box = document.getElementById('qrFoulDesc'); if(!box) return;
     const main = document.getElementById('qrOptionSelect').value;
     const v = document.getElementById('qrDetailSelect').value;
-    const t = main===FOUL_MAIN && v ? FOUL_DESC[v] : '';
+    const t = v ? (FOUL_DESC[v] || FOUL_DESC[v.replace(/\(.*$/,'')] || '') : '';
     box.textContent = t ? '📖 '+t : '';
     box.style.display = t ? '' : 'none';
   }
@@ -8765,15 +8761,22 @@
   // 공격 방식: 득점일 때와 범실일 때 고를 수 있는 방식이 달라요. ''는 "구분 안 함".
   const ATTACK_DETAILS = {
     score: ['', '강타·빈 곳(사람 없는 쪽으로 침)', '강타·사람 쪽(사람 있는 쪽으로 침)', '가볍게 볼처리(사람 없는 쪽으로 가볍게 보냄)', '페인트', '터치아웃(블로킹 맞고 아웃)', '블로킹 맞고 네트인', '네트싸움(네트 위 힘싸움에서 이김)', '삑사리(빗맞았는데 득점)'],
-    fault: ['', '아웃', '네트 걸림', '네트싸움(네트 위 힘싸움에서 짐)', '삑사리(빗맞음)']
+    fault: ['', '아웃', '네트 걸림', '네트싸움(네트 위 힘싸움에서 짐)', '삑사리(빗맞음)', '네트터치(공격하다 네트에 닿음)', '오버네트(상대 코트 공 터치)', '안테나 반칙(터치·바깥 통과)', '홀딩(캐치볼)']
   };
+  // 서브·리시브·토스 범실 종류: 예전에 파울(반칙)에 있던 반칙 중 그 상황에서 나는 것들이에요
+  const SERVE_FAULT_TYPES = ['', '아웃', '네트 걸림', '서브 풋폴트(엔드라인 침범)', '서브 순서 위반', '서브 시간 초과'];
+  const RECV_FAULT_TYPES = ['', '더블컨택(드리블)', '홀딩(캐치볼)'];
   // 블로킹 범실은 왜 뚫렸는지 유형으로 남겨서 블로킹 분석에 써요.
-  const BLOCK_FAULT_TYPES = ['', '빈틈(블로커 사이·옆으로 빠짐)', '자리잡기(위치가 늦거나 어긋남)', '블로커 코트 인(블록 맞고 블로킹한 팀 쪽에 떨어짐)', '블록 아웃(블록 맞고 밖으로 나감)', '타이밍(점프가 빠르거나 늦음)', '네트터치(블로킹하다 네트에 닿음)'];
+  const BLOCK_FAULT_TYPES = ['', '빈틈(블로커 사이·옆으로 빠짐)', '자리잡기(위치가 늦거나 어긋남)', '블로커 코트 인(블록 맞고 블로킹한 팀 쪽에 떨어짐)', '블록 아웃(블록 맞고 밖으로 나감)', '타이밍(점프가 빠르거나 늦음)', '네트터치(블로킹하다 네트에 닿음)', '오버네트(상대 코트 공 터치)', '센터라인 침범'];
   const BLOCK_SCORE_TYPES = ['', '1인 블로킹', '2인 블로킹', '3인 블로킹', '4인 블로킹'];
   function detailOptionsFor(main, outcome){
     if(main===BLOCK_LOCATION_OPTION_NAME) return outcome==='fault' ? BLOCK_FAULT_TYPES : BLOCK_SCORE_TYPES;
     if(ATTACK_SET.has(main)) return ATTACK_DETAILS[outcome] || ATTACK_DETAILS.score;
     if(main===FOUL_MAIN) return FOUL_TYPES;
+    if(outcome==='fault'){
+      if(main==='서브') return SERVE_FAULT_TYPES;
+      if(['서브캐치','리시브','토스','2단토스','2단연결'].includes(main)) return RECV_FAULT_TYPES;
+    }
     return null;
   }
   // (team, outcome) -> 예전부터 쓰던 category 값도 함께 남겨서 이전 기록·내보내기와 호환돼요.
@@ -8817,7 +8820,7 @@
       ourError: `${ourTeamName} 범실`
     }[b] || '';
   }
-  const LEGACY_FOUL_LABELS = new Set([...FOUL_TYPES, '각종파울(네트터치, 아웃 등)']);
+  const LEGACY_FOUL_LABELS = new Set([...FOUL_TYPES_ALL, '각종파울(네트터치, 아웃 등)']);
   const LEGACY_ATTACK_DETAILS = new Set(['페인트','터치아웃(블로킹 맞고 아웃)']);
   function normEntry(e){
     let main = e.optionLabel || '', detail = e.detail || '';
@@ -9011,9 +9014,11 @@
     sel.selectedIndex = 0;
     row.style.display = '';
     const isBlock = main===BLOCK_LOCATION_OPTION_NAME;
-    document.getElementById('qrDetailLabel').textContent = main===FOUL_MAIN ? '파울 종류' : isBlock ? (qrOutcome==='fault' ? '블로킹 범실 유형' : '블로킹 인원') : '공격 방식';
+    const isAtk = ATTACK_SET.has(main);
+    document.getElementById('qrDetailLabel').textContent = main===FOUL_MAIN ? '파울 종류' : isBlock ? (qrOutcome==='fault' ? '블로킹 범실 유형' : '블로킹 인원') : isAtk ? '공격 방식' : main+' 범실 종류';
     note.textContent = main===FOUL_MAIN
-      ? '반칙한 팀의 범실 버튼(⚠️ 우리 범실 / 🎁 상대 범실)을 누르고 파울 종류를 골라요.'
+      ? '반칙한 팀의 범실 버튼(⚠️ 우리 범실 / 🎁 상대 범실)을 누르고 파울 종류를 골라요. 서브·공격·리시브·블로킹 중에 난 반칙은 그 상황을 고르고 범실 종류에서 골라요.'
+      : !isBlock && !isAtk ? (main==='서브' ? '서브 아웃·네트와 서브 반칙(풋폴트·순서 위반·시간 초과)을 여기서 골라요.' : '공을 두 번 만지거나(더블컨택) 잡았다 보낸(홀딩) 반칙이면 여기서 골라요.')
       : isBlock ? (qrOutcome==='fault' ? '블록이 왜 뚫렸는지 고르면 요약의 "블로킹 분석"에 유형별로 모여요. 아래 관련 선수에 공이 맞은 블로커를 고르면 선수별로도 모여요.' : '몇 명이 블로킹했는지 고르고, 아래 관련 선수에 공이 손에 맞은 블로커를 고르면 "블로킹 분석"에 선수별로 모여요.')
       : (qrOutcome==='score' ? '어떻게 점수를 냈는지 고르면 "레프트·페인트"처럼 함께 남아요. 네트 위에서 서로 밀어붙인 공은 "네트싸움"을 골라요.' : '어떻게 범실이 났는지 고를 수 있어요. 네트 위 힘싸움에서 진 공은 "네트싸움"을 골라요.');
     refreshChips('qrDetailSelect');
