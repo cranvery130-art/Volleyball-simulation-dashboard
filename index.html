@@ -1031,6 +1031,9 @@
   .court-an-big .court-an-table td small{ font-size:11.5px; line-height:1.45; margin-top:3px; }
   .court-an-big .cw-bar{ height:12px; min-width:120px; }
   .bn-svg{ width:100%; height:auto; display:block; max-width:760px; }
+  .bn-flex{ display:flex; gap:14px; align-items:stretch; flex-wrap:wrap; } .bn-main{ flex:1 1 520px; min-width:0; } .bn-tm{ flex:0 1 380px; min-width:0; display:flex; flex-direction:column; gap:8px; justify-content:center; }
+  .bn-tm-t{ font-size:12.5px; font-weight:800; } .bn-tm-t small{ font-weight:500; color:var(--muted); margin-left:4px; } .bn-tm-box{ aspect-ratio:16/7; } @media (max-width:600px){ .bn-tm{ flex:1 1 100%; } .bn-tm-box{ aspect-ratio:16/6; } }
+  .bn-tm .tm-tile{ border-color:var(--panel); }
   .bn-svg .bn-sl{ font-size:10px; font-weight:800; fill:var(--text); font-family:var(--body); paint-order:stroke; stroke:var(--panel); stroke-width:2.6px; stroke-linejoin:round; pointer-events:none; }
   .bn-seg, .bn-chip{ transition:opacity .15s ease-out; cursor:pointer; }
   .bn-box.bn-hl .bn-seg:not(.on), .bn-box.bn-hl .bn-chip:not(.on){ opacity:.2; }
@@ -8395,11 +8398,14 @@
   // ZONE_LABELS[0] is the only row now used for new selections (블로킹) — row 1 (back row)
   // is kept only so older saved records that still carry a row:1 zone keep rendering correctly.
   let selectedZone = null; // {row,col} or null
-  const ZONE_LABELS = [['레프트','앞차','A','백차(백A)','라이트'],['레프트백','센터백','라이트백']];
+  // 블로킹 자리(그 팀이 네트를 바라본 기준 왼쪽→오른쪽): 레프트 · 앞차 · A·백A(속공수) · 세터 · 백차 · 라이트 (TJ 2026-10-29)
+  // 칸 번호(col)는 예전 기록과 맞추려고 그대로 두고(3 = 예전 '백차(백A)'), 세터는 새 번호 5예요. 보여주는 순서는 ZONE_ORDER로 정해요
+  const ZONE_LABELS = [['레프트','앞차','A·백A','백차','라이트','세터'],['레프트백','센터백','라이트백']];
+  const ZONE_ORDER = [0,1,2,5,3,4];
   // 블로킹 위치는 드롭다운으로 골라요(예전 칸 그림은 숨겨 두고 같은 selectedZone 값을 써서 이전 기록과 호환돼요).
   (function buildBlockZoneSelect(){
     const sel = document.getElementById('blockZoneSelect');
-    sel.innerHTML = '<option value="">선택 안 함</option>' + ZONE_LABELS[0].map((t,col)=>`<option value="${col}">${t} 앞</option>`).join('');
+    sel.innerHTML = '<option value="">선택 안 함</option>' + ZONE_ORDER.map(col=>`<option value="${col}">${ZONE_LABELS[0][col]} 앞${col===2?' (속공수)':''}</option>`).join('');
     sel.addEventListener('change', ()=>{
       if(readOnlyFolderView) return;
       selectedZone = sel.value==='' ? null : {row:0, col:Number(sel.value)};
@@ -8412,10 +8418,10 @@
     refreshChips('blockZoneSelect');
     const g = document.getElementById('zoneCells');
     g.innerHTML = '';
-    const rowLabels = ZONE_LABELS[0];
+    const rowLabels = ZONE_ORDER.map(c=>ZONE_LABELS[0][c]);
     const cw = 220/rowLabels.length, y = 16, rowH = 26;
-    rowLabels.forEach((text, col)=>{
-      const x = col*cw;
+    ZONE_ORDER.forEach((col, k)=>{
+      const text = ZONE_LABELS[0][col], x = k*cw;
       const rect = document.createElementNS(svgNS,'rect');
       rect.setAttribute('x', x+2); rect.setAttribute('y', y+2);
       rect.setAttribute('width', cw-4); rect.setAttribute('height', rowH-4);
@@ -9651,6 +9657,7 @@
   // ↪ 2단 토스는 후위 가운데에서 올린 점선, 3구처리는 짧은 점선으로 따로 그리고, 궤적·칩에 커서를 올리면 그 기록만 남겨요
   const TOSS_FALLBACK = {'레프트':[40,410],'라이트':[360,410],'A':[230,410],'B':[300,410],'백A':[230,560],'앞차':[150,410],'백차':[150,560],'중앙 후위(파이프)':[200,600],'세터 2구':[310,400],'3구처리':[200,430]};
   function tossMap3DHTML(recs){
+    const NM = {our:dName('our'), opp:dName('opp')}; // 팀 누적 분석에서는 그 팀 이름 / 상대한 팀들
     const g = {}, setter = {};
     const spot = (team, pos, opt) => { const sp = pos ? formationSpot(team, pos, opt||'', team) : null; return sp ? [sp.x, sp.y] : null; };
     const mir = (team, xy) => team==='our' ? xy.slice() : [400-xy[0], 760-xy[1]];
@@ -9677,12 +9684,12 @@
       d.from = d.kind==='2nd' ? mir(d.team, [200, 620]) : setter[d.team];
       d.to2 = to;
       d.short = (TOSS_ABBR[d.to] || d.to.slice(0,2)) + (d.kind==='2nd' ? '·2단' : '');
-      d.tip = `${d.team==='our'?'🔵':'🔴'} ${d.team==='our'?ourTeamName:oppTeamName} ${d.kind==='2nd'?'↪ 2단 토스 → ':''}${d.to} ${d.n}회 (팀 토스의 ${Math.round(d.n/tot[d.team]*100)}%)` + (d.last ? ` · 마지막 토스였을 때 ${d.win}/${d.last}점 (${Math.round(d.win/d.last*100)}%)` : '');
+      d.tip = `${d.team==='our'?'🔵':'🔴'} ${NM[d.team]} ${d.kind==='2nd'?'↪ 2단 토스 → ':''}${d.to} ${d.n}회 (팀 토스의 ${Math.round(d.n/tot[d.team]*100)}%)` + (d.last ? ` · 마지막 토스였을 때 ${d.win}/${d.last}점 (${Math.round(d.win/d.last*100)}%)` : '');
     });
     const sm = (window.innerWidth||800) < 600, W = sm ? 400 : 560, H = sm ? 460 : 600, id = 'lk' + (++taLeakSeq);
-    TA_LEAK[id] = {list, setter, W, H, ang:CP_ANG.toss||0, keep:'toss', draw:tossMapSVG};
+    TA_LEAK[id] = {list, setter, W, H, ang:CP_ANG.toss||0, keep:'toss', draw:tossMapSVG, names:NM};
     const chips = ['our','opp'].map(team=>{ const ls = list.filter(d=>d.team===team).sort((a,b)=>b.n-a.n); if(!ls.length) return '';
-      return `<div class="bn-row"><span class="bn-rl" style="color:${team==='our'?'var(--own)':'var(--opp)'};">${team==='our'?'🔵':'🔴'} ${escChip(team==='our'?ourTeamName:oppTeamName)}</span>${ls.map(d=>`<button type="button" class="bn-chip ts-chip k-${d.kind}" style="--c:${team==='our'?'var(--own)':'var(--opp)'};" data-hk="${escChip(d.key)}" data-tip="${escChip(d.tip)}"><i></i>${d.kind==='2nd'?'↪ 2단 ':''}${escChip(d.to)} <b>${d.n}</b><small>${Math.round(d.n/tot[team]*100)}%${d.last?` · 결정 ${Math.round(d.win/d.last*100)}%`:''}</small></button>`).join('')}</div>`; }).join('');
+      return `<div class="bn-row"><span class="bn-rl" style="color:${team==='our'?'var(--own)':'var(--opp)'};">${team==='our'?'🔵':'🔴'} ${escChip(NM[team])}</span>${ls.map(d=>`<button type="button" class="bn-chip ts-chip k-${d.kind}" style="--c:${team==='our'?'var(--own)':'var(--opp)'};" data-hk="${escChip(d.key)}" data-tip="${escChip(d.tip)}"><i></i>${d.kind==='2nd'?'↪ 2단 ':''}${escChip(d.to)} <b>${d.n}</b><small>${Math.round(d.n/tot[team]*100)}%${d.last?` · 결정 ${Math.round(d.win/d.last*100)}%`:''}</small></button>`).join('')}</div>`; }).join('');
     return `<div class="hk-box"><div class="lk-wrap"><svg class="ta-leak ts-map" data-lk="${id}" ${lkVB(TA_LEAK[id])} role="img" aria-label="세터 배분 3D 지도 (끌어서 돌리고 확대·옮길 수 있어요)">${tossMapSVG(TA_LEAK[id])}</svg>
       ${lkCtlHTML(id)}</div>
       <div class="ts-legend"><span><i class="k-n"></i>세터 토스(굵을수록 많이)</span><span><i class="k-2nd"></i>↪ 2단 토스(후위에서)</span><span><i class="k-3rd"></i>3구처리</span><span class="muted">S = 세터 자리 · 끝 숫자 = 횟수 · 결정 = 그 토스가 마지막일 때 득점률</span></div>
@@ -9711,7 +9718,7 @@
     }).join('');
     const sMark = ['our','opp'].filter(t=>list.some(d=>d.team===t && d.kind!=='2nd')).map(t=>{ const p = P(...setter[t]); return `<g class="ts-s"><rect x="${(p[0]-10).toFixed(1)}" y="${(p[1]-10).toFixed(1)}" width="20" height="20" rx="5" fill="${col(t)}"/><text x="${p[0].toFixed(1)}" y="${(p[1]+4.5).toFixed(1)}" text-anchor="middle">S</text></g>`; }).join('')
       + ['our','opp'].filter(t=>list.some(d=>d.team===t && d.kind==='2nd')).map(t=>{ const p = P(...(t==='our' ? [200,620] : [200,140])); return `<g class="ts-s"><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="9" fill="var(--panel)" stroke="${col(t)}" stroke-width="2" stroke-dasharray="3 2"/><text x="${p[0].toFixed(1)}" y="${(p[1]+4).toFixed(1)}" text-anchor="middle" fill="${col(t)}" style="fill:${col(t)}">↪</text></g>`; }).join('');
-    return floor + net + sMark + arcs + cap(`🔴 ${escChip(oppTeamName)}`, 200, -24, 'opp') + cap(`🔵 ${escChip(ourTeamName)}`, 200, 790, 'own');
+    return floor + net + sMark + arcs + cap(`🔴 ${escChip((st.names||{}).opp||oppTeamName)}`, 200, -24, 'opp') + cap(`🔵 ${escChip((st.names||{}).our||ourTeamName)}`, 200, 790, 'own');
   }
   // 커서를 올린 칸만 남기는 공통 도우미(.hk-box 안의 같은 data-hk). 누르면 고정, 한 번 더 누르면 풀려요
   function hkHighlight(box, k, tip){
@@ -10000,7 +10007,9 @@
   }
   // ---------- 📍 코트 위치 분석: 대형으로 정한 선수 자리를 양 팀 코트 위에 색 진하기·숫자·선으로 그려요 ----------
   let courtMetric = 'score';
-  const COURT_METRICS = [['score','득점'],['lost','실점'],['fault','범실'],['block','블로킹'],['toss','토스']];
+  // 코트 위치의 블로킹 탭은 뺐어요(블로킹은 🧱 블로킹 탭의 네트 그림에서 봐요 — TJ 2026-10-29). 팀 누적은 토스도 따로 🏐 토스 탭으로 나눠요
+  const COURT_METRICS = [['score','득점'],['lost','실점'],['fault','범실'],['toss','토스']];
+  const TA_COURT_METRICS = COURT_METRICS.filter(m=>m[0]!=='toss');
   document.getElementById('graphDetailBody').addEventListener('click', e=>{
     const b = e.target.closest('[data-cmetric]'); if(!b) return;
     courtMetric = b.dataset.cmetric; delete courtFocusBy['data-cmetric']; renderGraphDetail();
@@ -10112,7 +10121,9 @@
   function courtDetailHTML(items, metric, attr){
     items = items || recordsInScope().map(r=>({r}));
     metric = metric || courtMetric; attr = attr || 'data-cmetric';
-    const seg = `<div class="seg court-metric-seg">${COURT_METRICS.map(([k,l])=>`<button type="button" ${attr}="${k}" class="${k===metric?'active':''}">${l}</button>`).join('')}</div>`;
+    const MS = attr==='data-tametric' ? TA_COURT_METRICS : COURT_METRICS;
+    if(!MS.some(m=>m[0]===metric)) metric = 'score';
+    const seg = `<div class="seg court-metric-seg">${MS.map(([k,l])=>`<button type="button" ${attr}="${k}" class="${k===metric?'active':''}">${l}</button>`).join('')}</div>`;
     const swT = (it, t) => it.swap ? (t==='our' ? 'opp' : t==='opp' ? 'our' : t) : t;
     const flip = (it, p) => p && it.swap ? {...p, x:400-p.x, y:760-p.y} : p;
     const W = 400, H = 760;
@@ -10458,13 +10469,16 @@
     g += `<text x="${pl}" y="14" class="bn-team" fill="var(--opp)">🔴 ${dEsc(dName('opp'))} 블로킹</text><text x="${pl}" y="${H-6}" class="bn-team" fill="var(--own)">🔵 ${dEsc(dName('our'))} 블로킹</text>`;
     const noneTxt = none && (none.our.s+none.our.f+none.opp.s+none.opp.f) ? `<div class="ta-etc"><b>위치 미지정</b> 🔵 득점 ${none.our.s} · 범실 ${none.our.f} / 🔴 득점 ${none.opp.s} · 범실 ${none.opp.f}</div>` : '';
     return `<div class="bf-chart"><div class="bf-title">블로킹 위치별 득점 · 범실${segOf ? ' — 누구 손에서·범실 유형' : ''}</div><svg class="bn-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="블로킹 위치별 득점 범실">${g}</svg>
-      <div class="bf-legend"><span><i class="bf-s"></i>블로킹 득점(막아서 점수)</span><span><i class="bf-f"></i>블로킹 범실(네트터치·터치아웃 등)</span><span class="muted">숫자 = 득점 / 범실 · 가운데 띠 = 네트, 양 끝 = 안테나</span></div>${noneTxt}</div>`;
+      <div class="bf-legend"><span><i class="bf-s"></i>블로킹 득점(막아서 점수)</span><span><i class="bf-f"></i>블로킹 범실(네트터치·터치아웃 등)</span><span class="muted">숫자 = 득점 / 범실 · 가운데 띠 = 네트, 양 끝 = 안테나 · A·백A = 속공수 자리</span></div>${noneTxt}</div>`;
   }
   function blockDetailHTML(entries){
     const blk = entries.filter(e=>e.main===BLOCK_LOCATION_OPTION_NAME);
     if(!blk.length) return DETAIL_EMPTY(`${dScope()}에 세부 상황을 "블로킹"으로 남긴 기록이 아직 없어요.`);
-    const zOrder = ZONE_LABELS[0].map(z=>z+' 앞').concat(['위치 미지정']);
-    const zone = tallyRows(blk, e=>e.zone ? ZONE_LABELS[e.zone.row][e.zone.col]+' 앞' : '위치 미지정', zOrder);
+    const zOrder = ZONE_ORDER.map(c=>ZONE_LABELS[0][c]+' 앞').concat(['위치 미지정']);
+    const zone0 = tallyRows(blk, e=>e.zone ? ZONE_LABELS[e.zone.row][e.zone.col]+' 앞' : '위치 미지정', zOrder);
+    // 네트 그림은 기록이 없는 자리도 늘 보여줘요(세터 자리가 A·백A와 백차 사이에 보이게)
+    const zEmpty = l => ({label:l, our:{s:0,f:0}, opp:{s:0,f:0}});
+    const zone = zOrder.slice(0,-1).map(l=>zone0.find(r=>r.label===l) || zEmpty(l)).concat(zone0.filter(r=>!zOrder.slice(0,-1).includes(r.label)));
     const ftype = tallyRows(blk.filter(e=>e.outcome==='fault'), e=>e.detail ? e.detail.replace(/\(.*\)/,'') : '유형 미지정');
     const cnt = tallyRows(blk.filter(e=>e.outcome==='score' && e.detail), e=>e.detail);
     // 누적에서는 경기마다 명단이 달라서, 기록마다 미리 붙여 둔 선수 이름(e.pl, 상대한 팀은 팀 이름을 앞에)으로 모아 많은 12명만 보여요
@@ -10497,7 +10511,27 @@
     const ft = {}; blk.filter(e=>e.outcome==='fault' && (e.team==='our'||e.team==='opp')).forEach(e=>{ const k = e.team+'|'+typeOf(e); ft[k] = (ft[k]||0)+1; });
     const tChips = ['our','opp'].map(t=>{ const list = Object.entries(ft).filter(([k])=>k.startsWith(t+'|')).sort((a,b)=>b[1]-a[1]); if(!list.length) return '';
       return `<div class="bn-row"><span class="bn-rl" style="color:${t==='our'?'var(--own)':'var(--opp)'};">${t==='our'?'🔵':'🔴'} 범실 유형</span>${list.map(([k,n])=>chip(t, `data-bt="${dEsc(k)}"`, `<i class="bn-hatch"></i>${dEsc(k.split('|')[1])} <b>${n}</b>`)).join('')}</div>`; }).join('');
-    const net = blockNetHTML(zone, segOf);
+    // 그래프 옆 빈 곳: 아래 칩(누구 손에서·범실 유형)의 득점·범실을 팀별 트리맵으로. 칸에 커서를 올리면 네트 그림의 같은 칸도 진해져요
+    const tmSide = t => {
+      const C = t==='our' ? 'var(--own)' : 'var(--opp)', it = {};
+      blk.filter(e=>e.team===t).forEach(e=>{ const sc = e.outcome==='score', w = whoKey(t, whoOf(e)), k = sc ? 's|'+w : 'f|'+typeOf(e); const x = it[k] = it[k] || {kind:sc?'s':'f', who:w, type:sc?'':typeOf(e), n:0}; x.n++; });
+      const items = Object.values(it).sort((a,b)=>(a.kind===b.kind?0:a.kind==='s'?-1:1) || b.n-a.n); if(!items.length) return '';
+      const tot = items.reduce((a,x)=>a+x.n,0), sN = items.filter(x=>x.kind==='s').reduce((a,x)=>a+x.n,0);
+      const W = 160, H = 100, grp = [items.filter(x=>x.kind==='s'), items.filter(x=>x.kind==='f')].filter(g=>g.length);
+      const top = treemapLayout(grp.map(g=>g.reduce((a,x)=>a+x.n,0)), W, H);
+      let tiles = '';
+      grp.forEach((g, gi)=>{ const R = top[gi]; treemapLayout(g.map(x=>x.n), R.w, R.h).forEach((q, j)=>{ const x = g[j], k = j;
+        const shade = x.kind==='s' ? ([100,80,64,52,42][k]||36) : ([62,50,42,36][k]||30), fill = `color-mix(in srgb, ${C} ${shade}%, var(--panel))`;
+        const bg = x.kind==='s' ? fill : `repeating-linear-gradient(45deg, ${fill} 0 5px, var(--panel) 5px 9px)`;
+        const nm = x.kind==='s' ? (x.who || '선수 미지정') : x.type, big = q.w>=34 && q.h>=24, mid = q.w>=20 && q.h>=13;
+        const tip = `${t==='our'?'🔵':'🔴'} ${dName(t)} · ${x.kind==='s' ? '블로킹 득점 · '+nm : '블로킹 범실 · '+nm} ${x.n}`;
+        const lab = big ? `<span class="tm-lab"><b>${dEsc(nm)}</b><em>${x.kind==='s'?'득점':'범실'} ${x.n}</em></span>` : mid ? `<span class="tm-lab"><b>${dEsc(nm.slice(0,5))} ${x.n}</b></span>` : '';
+        tiles += `<div class="tm-tile bn-seg" data-bp="${x.kind==='s' ? dEsc(t+'|'+(x.who||'')) : ''}" data-bt="${x.kind==='f' ? dEsc(t+'|'+x.type) : ''}" data-tip="${dEsc(tip)}" title="${dEsc(tip)}" style="left:${((R.x+q.x)/W*100).toFixed(2)}%; top:${((R.y+q.y)/H*100).toFixed(2)}%; width:${(q.w/W*100).toFixed(2)}%; height:${(q.h/H*100).toFixed(2)}%; background:${bg};">${lab}</div>`; }); });
+      return `<div class="bn-tm-side"><div class="tm-head" style="color:${C};">${t==='our'?'🔵':'🔴'} ${dEsc(dName(t))}<small>득점 ${sN} · 범실 ${tot-sN}</small></div><div class="tm-box bn-tm-box">${tiles}</div></div>`;
+    };
+    const tmHTML = tmSide('opp') + tmSide('our');
+    const net0 = blockNetHTML(zone, segOf);
+    const net = net0 && tmHTML ? net0.replace(/<svg class="bn-svg"[\s\S]*?<\/svg>/, m=>`<div class="bn-flex"><div class="bn-main">${m}</div><div class="bn-tm"><div class="bn-tm-t">득점·범실 트리맵 <small>진한 칸 = 막은 선수 · 빗금 = 범실 유형</small></div>${tmHTML}</div></div>`) : net0;
     const anyWho = blk.some(e=>whoOf(e));
     const extra = `<div class="bn-lab">👤 누구 손에서 <small>득점 / 범실 · 칸 색이 진할수록 많이 관여한 선수</small></div>${pChips}`
       + (anyWho ? '' : DETAIL_EMPTY('블로킹을 기록할 때 "자세히 기록"에서 공이 손에 맞은 블로커를 🔵 우리 선수(우리 블로킹) 또는 🔴 상대 선수(상대 블로킹) 칸에서 고르면 막대가 선수별 칸으로 나뉘어요.'))
@@ -11792,7 +11826,7 @@
     if(t1 || t2r) keyBody += `<div class="ta-lab">어떤 상대에 강하고 약한지 <small>막대 = 그런 상대를 만났을 때 ${T}의 득점률</small></div><div class="ta-keys">${t1}${t2r}</div>`;
     html.push(sec('🔑', '승부 열쇠', '', keyBody));
     // 7) 상세 분석 누적: 그래프의 🔎 상세 분석을 모든 경기 기록으로. 위에 이미 있는 공격 위치·세터 배분(토스 방향)은 그대로 두고 빼요.
-    taDetailData = {name:ms[0].me, es:allEs.filter(e=>e.team==='our'||e.team==='opp'), items:ms.flatMap(m=>m.items)};
+    taDetailData = {name:ms[0].me, es:allEs.filter(e=>e.team==='our'||e.team==='opp'), items:ms.flatMap(m=>m.items), recs:ms.flatMap(m=>m.side==='our' ? m.recs : m.recs.map(r=>({...r, entries:(r.entries||[]).map(e=>{ const n = normEntry(e); return n.team ? {...e, team:TA_SWAP[n.team], outcome:n.outcome} : e; })})))};
     html.push(sec('🔎', '상세 분석 누적', `모든 경기를 합쳐 · 🔵 ${T} / 🔴 상대한 팀들`, `<div class="seg detail-filter" id="taDetailSeg" style="margin-top:2px;">${TA_DETAIL_TABS.map(([k,l])=>`<button type="button" data-tadetail="${k}" class="${k===taDetailTab?'active':''}">${l}</button>`).join('')}</div><div id="taDetailBody">${taDetailHTML()}</div>`,
       '그래프의 🔎 상세 분석과 같은 그림을 이 팀이 나온 경기를 모두 합쳐 보여줘요. 공격 위치와 토스 방향은 위 "지금의 플레이 체제"의 공격 위치·세터 배분에서 보고, 토스는 📍 코트 위치의 토스에서 세터 자리부터 선으로 봐요. 코트 자리는 경기마다 그 경기 명단·대형으로 정하고, 이 팀이 상대팀 칸이었던 경기도 이 팀이 아래(🔵)에 오게 뒤집어 모아요. 공격 방식은 트리맵(칸이 클수록 많이 쓴 방식, 진한 부분 득점·빗금 범실)으로, 코트 위치의 득점·실점·범실은 3D 공 궤적 지도(포지션 자리에서 도넛의 방식마다 공이 날아가요: 빈 곳 강타는 바닥에, 사람 쪽 강타는 못 막은 수비 옆으로, 블로킹은 네트 위 벽, 서브는 서브라인 밖에서)로 그리고 오른쪽에 🔵·🔴 팀별 포지션 도넛을 놓아요. 궤적이나 도넛에 커서를 올리면 같은 기록이 함께 진해지고 그 포지션 나머지 공 길도 나와요. 블로킹·토스는 코트 그림에 팀마다 많은 3곳만 그려요. 블로킹은 위치별 막대를 누구 손에서·범실 유형 칸으로 나누고, 🔴 상대한 팀 선수 앞에는 그 팀 이름을 붙여 많은 12명만 칸으로 나눠요(나머지는 "그 밖").'));
     html.push(`<p class="analysis-disclaimer">※ 저장된 폴더의 기록을 모아 자동 계산한 통계예요. 막대에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요. 경기마다 기록한 양이 다르면 결과가 달라질 수 있고, 승패는 기록된 세트 점수로 판단해요. 3회보다 적게 나온 지표(공격·서브·블로킹 효율)는 빼고 계산해요.</p>`);
@@ -11817,11 +11851,11 @@
     return `<section class="ta-sec ta-scout"><h4><span class="ta-ic">🔍</span>${H}이(가) ${T}을(를) 만나면<small>이 팀이 나온 경기 기록으로 정리</small></h4><ul class="analysis-list">${li.map(x=>`<li>${x}</li>`).join('')}</ul></section>`;
   }
   let taDetailData = null, taDetailTab = 'attack', taCourtMetric = 'score';
-  const TA_DETAIL_TABS = [['attack','⚔️ 공격'],['block','🧱 블로킹'],['court','📍 코트 위치']];
+  const TA_DETAIL_TABS = [['attack','⚔️ 공격'],['block','🧱 블로킹'],['toss','🏐 토스'],['court','📍 코트 위치 득·실·범']];
   function taDetailHTML(){
     const d = taDetailData; if(!d) return '';
     return withDetailCtx({names:{our:d.name, opp:'상대한 팀들'}, scope:'누적 기록', skipPos:true}, ()=>
-      taDetailTab==='block' ? blockDetailHTML(d.es) : taDetailTab==='court' ? courtDetailHTML(d.items, taCourtMetric, 'data-tametric') : attackDetailHTML(d.es));
+      taDetailTab==='block' ? blockDetailHTML(d.es) : taDetailTab==='toss' ? (tossMap3DHTML(d.recs||[]) || DETAIL_EMPTY('이 팀이 나온 경기에 토스 순서를 남긴 점수가 아직 없어요. 결과 버튼 위 "🏐 랠리 토스 순서"에서 토스를 눌러 남겨요.')) : taDetailTab==='court' ? courtDetailHTML(d.items, taCourtMetric, 'data-tametric') : attackDetailHTML(d.es));
   }
   document.getElementById('teamAnalysisResult').addEventListener('click', e=>{
     const o = e.target.closest('[data-taopp]');
@@ -12255,7 +12289,7 @@
         const auto = entryRecordLabel(entry);
         rec.entries = [entry]; rec.category = entry.category; rec.optionLabel = main;
         rec.label = memo || auto; if(memo && memo!==auto) rec.customLabel = true;
-        if(main===BLOCK_LOCATION_OPTION_NAME){ const c = ZONE_LABELS[0].indexOf(loc); rec.zone = c>=0 ? {row:0, col:c} : null; }
+        if(main===BLOCK_LOCATION_OPTION_NAME){ const c = ({'A':2,'백A':2,'백차(백A)':3})[loc] ?? ZONE_LABELS[0].indexOf(loc); rec.zone = c>=0 ? {row:0, col:c} : null; }
         else rec.grid9 = NET_POSITION_OPTIONS.has(main) ? parseGrid9(loc) : null;
       } else {
         rec.category = null; rec.optionLabel = null; rec.label = memo; rec.customLabel = !!memo;
