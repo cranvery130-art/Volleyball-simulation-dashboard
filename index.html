@@ -1035,7 +1035,7 @@
   /* 오른쪽: 누구 손에서 표 */
   .bn-who{ flex:0 1 300px; min-width:240px; display:flex; flex-direction:column; gap:6px; } .bw-scroll{ max-height:420px; overflow:auto; border:1px solid var(--border); border-radius:10px; background:var(--panel); }
   .bw-table{ width:100%; border-collapse:collapse; font-size:12.5px; font-variant-numeric:tabular-nums; } .bw-table thead th{ position:sticky; top:0; z-index:1; background:var(--panel-2); font-size:11px; color:var(--muted); font-weight:700; padding:6px 8px; text-align:right; border-bottom:1px solid var(--border); } .bw-table thead th:first-child{ text-align:left; }
-  .bw-table td{ padding:5px 8px; border-bottom:1px solid var(--border); text-align:right; } .bw-table td:first-child{ text-align:left; display:flex; align-items:center; gap:6px; } .bw-table td i{ width:10px; height:10px; border-radius:3px; flex:none; }
+  .bw-table td{ padding:5px 8px; border-bottom:1px solid var(--border); text-align:right; } .bw-table td:first-child{ text-align:left; } .bw-table td i{ display:inline-block; vertical-align:middle; width:10px; height:10px; border-radius:3px; margin-right:6px; }
   .bw-table .bw-s{ color:var(--c); font-weight:800; } .bw-table .bw-f{ color:var(--muted); } .bw-table .bw-n{ font-weight:700; }
   .bw-team th{ text-align:left; padding:8px 8px 4px; font-size:12px; font-weight:800; background:color-mix(in srgb, var(--panel-2) 60%, var(--panel)); } .bw-team th small{ font-weight:600; color:var(--muted); margin-left:6px; }
   .bw-row{ cursor:pointer; } .bw-row:hover, .bn-box .bw-row.on{ background:var(--accent-soft); } @media (max-width:600px){ .bn-who{ flex:1 1 100%; } }
@@ -1374,7 +1374,13 @@
   .ts-legend{ display:flex; flex-wrap:wrap; gap:3px 12px; margin:4px 0 6px; font-size:11.5px; color:var(--text-dim); } .ts-legend span{ display:inline-flex; align-items:center; gap:5px; } .ts-legend .muted{ color:var(--muted); }
   .ts-legend i{ width:18px; height:4px; border-radius:2px; background:var(--text-dim); } .ts-legend i.k-2nd{ background:repeating-linear-gradient(90deg, var(--text-dim) 0 5px, transparent 5px 8px); } .ts-legend i.k-3rd{ background:repeating-linear-gradient(90deg, var(--text-dim) 0 2px, transparent 2px 5px); }
   .hk-info{ font-size:11.5px; font-weight:700; color:var(--text-dim); margin-top:6px; min-height:1.4em; }
-  .ts-map{ max-width:620px; }
+  .ts-map{ max-width:760px; }
+  /* 세터 배분: 왼쪽 3D 지도(크게) · 오른쪽 토스 기록 표 */
+  .ts-flex{ display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; } .ts-left{ flex:1 1 520px; min-width:0; } .ts-right{ flex:0 1 380px; min-width:260px; display:flex; flex-direction:column; gap:6px; } .ts-scroll{ max-height:640px; }
+  .ts-table .ts-row{ cursor:pointer; } .ts-table .ts-row:hover, .hk-box .ts-table .ts-row.on{ background:var(--accent-soft); } .hk-box.hk-hl .ts-row.on{ box-shadow:none; }
+  .ts-table td i{ width:16px !important; height:4px !important; border-radius:2px; background:var(--c); } .ts-table .k-2nd td i{ background:repeating-linear-gradient(90deg, var(--c) 0 4px, transparent 4px 6px); } .ts-table .k-3rd td i{ background:repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 4px); }
+  .ts-pc{ white-space:nowrap; } .ts-bar{ display:inline-block; width:48px; height:6px; border-radius:3px; background:var(--panel-2); margin-right:6px; vertical-align:middle; overflow:hidden; } .ts-bar b{ display:block; height:100%; background:var(--c); }
+  .ts-win small{ display:block; font-size:10.5px; color:var(--muted); } @media (max-width:600px){ .ts-right{ flex:1 1 100%; } }
   .cp-info{ min-height:2.6em; font-size:12px; font-weight:700; color:var(--text-dim); text-align:center; margin-top:2px; line-height:1.35; }
   .ta-leak .lk-cap{ font-size:11.5px; font-weight:800; font-family:var(--body); } .ta-leak .lk-cap.opp{ fill:var(--opp); } .ta-leak .lk-cap.own{ fill:var(--own); }
   .ta-pareto .ta-g{ stroke:var(--border-2); stroke-width:1; } .ta-pareto .ta-g80{ stroke:var(--text-dim); stroke-width:1; stroke-dasharray:4 4; }
@@ -3167,7 +3173,7 @@
             <div class="gh-section">
               <h4>4. 블로킹 분석 · 세터 배분 · 종합 분석</h4>
               <p><b>🧱 블로킹 분석</b>은 팀 누적 분석·🔎 상세 분석과 같은 <b>네트축 그림</b>이에요. 가운데 띠가 네트이고 🔴 상대 블로킹은 위로, 🔵 우리 블로킹은 아래로 위치(레프트·앞차·A·백차·라이트 앞)마다 막대가 자라요. 막대는 <b>누구 손에서</b>로 나뉘어서 네트 쪽부터 선수별 블로킹 득점 칸(색이 진할수록 많이 관여한 선수), 그 바깥에 선수 × <b>범실 유형</b>(빈틈·자리잡기·코트 인·블록 아웃·타이밍·네트터치) 빗금 칸이 쌓여요. 오른쪽 <b>👤 누구 손에서</b> 표 줄이나 아래 🧱 범실 유형 칩, 칸에 커서를 올리면(휴대폰은 누르면) 그 선수·유형 칸만 진하게 남고, 한 번 더 누르면 풀려요. 공이 손에 맞은 블로커를 고르지 않은 기록은 "선수 미지정" 칸이에요. 맨 아래에는 블로킹 득점 인원이 나와요.</p>
-              <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "🏐 랠리 토스 순서"로 계산해요. 맨 위 <b>3D 지도</b>는 한 코트에 두 팀의 토스를 세터 자리(S)에서 보낸 곳까지 공 궤적(포물선)으로 그려요. 굵을수록 많이 올린 곳, 끝 동그라미 숫자가 횟수이고, <b>↪ 2단 토스</b>는 후위 가운데에서 올린 긴 점선, <b>3구처리</b>는 짧은 점선으로 따로 그려요. 지도를 좌우로 끌면 360도 돌고, 위아래로 끌거나 <b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소, Shift+끌기나 <b>✥ 옮기기</b>로 옮겨 볼 수 있어요(<b>↺ 처음으로</b> = 한 번에 되돌리기). 또 궤적이나 아래 칩에 커서를 올리면(휴대폰은 누르면) 그 토스만 진하게 남고 아래 줄에 횟수·몫·그 토스가 마지막일 때 득점률이 나와요. 아래 <b>순서·결정 토스·2단 토스 표 보기</b>를 펼치면 팀별로 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>2단</b>으로 표시한 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·영상 시간(영상이 있을 때)·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
+              <p><b>🏐 세터 배분</b>은 기록할 때 함께 남긴 "🏐 랠리 토스 순서"로 계산해요. 맨 위 <b>3D 지도</b>는 한 코트에 두 팀의 토스를 세터 자리(S)에서 보낸 곳까지 공 궤적(포물선)으로 그려요. 굵을수록 많이 올린 곳, 끝 동그라미 숫자가 횟수이고, <b>↪ 2단 토스</b>는 후위 가운데에서 올린 긴 점선, <b>3구처리</b>는 짧은 점선으로 따로 그려요. 지도를 좌우로 끌면 360도 돌고, 위아래로 끌거나 <b>＋/－</b>(휴대폰은 두 손가락으로 벌려)로 확대·축소, Shift+끌기나 <b>✥ 옮기기</b>로 옮겨 볼 수 있어요(<b>↺ 처음으로</b> = 한 번에 되돌리기). 지도 오른쪽(휴대폰은 아래) <b>🏐 토스 기록</b> 표에 팀별로 보낸 곳·횟수·몫(팀 토스 중)·결정(그 토스가 마지막일 때 득점률)을 정리해요. 궤적이나 표의 줄에 커서를 올리면(휴대폰은 누르면) 그 토스만 진하게 남아요. 아래 <b>순서·결정 토스·2단 토스 표 보기</b>를 펼치면 팀별로 1번째·2번째·3번째 이후 토스에 가장 많이 간 곳(순서), 그 팀의 마지막 토스가 그 팀 득점으로 끝난 비율(결정 토스)을 보여줘요. <b>2단</b>으로 표시한 토스도 빈도·순서·결정 토스에 함께 들어가고, 따로 2단 토스가 몇 번(전체의 몇 %) 어디로 갔는지와, 랠리 마지막 토스가 정상 토스일 때와 2단 토스일 때의 득점률을 비교해 보여줘요. 토스 순서를 남긴 랠리만 계산에 들어가요. 아래 <b>📜 점수별 토스 흐름</b>에는 토스를 남긴 점수마다 세트·영상 시간(영상이 있을 때)·그때의 세트 점수, 토스가 이어진 순서(🔵 우리 / 🔴 상대), 누가 점수를 냈는지가 한 줄씩 나오고, 랠리 길이(토스 1회·2회·3회·4회 이상)별 우리 득점 비율도 보여줘요.</p>
                           <p><b>종합 분석</b>은 <b>보고서 모양</b>이에요. 맨 위 점수 머리 아래로 주제마다 번호(01, 02 …)를 붙이고, 왼쪽 팀 칸 · 오른쪽 한 문장씩 나눈 점 목록으로 <b>두 팀을 나란히</b> 비교하고(점수·횟수·%는 굵게), 문장의 주어는 "우리"가 아니라 경기 정보에 적은 <b>팀 이름</b>이에요. 주제는 ✅ 주 득점 루트(가장 많이 점수를 낸 상황, 토스 순서를 남긴 랠리에서 세터가 마지막으로 어디로 올렸을 때 가장 많이 점수를 냈는지, 공격 위치별 성공률 = 득점 ÷ 득점+범실과 그 위치에서 점수가 가장 많이 난 지점), ⚠️ 범실, 🏐 공격 결정률(성공 ÷ 성공+범실+블로킹 당함), 🎯 서브 득실, 🛡️ 리시브 실점(상대 서브 득점 + 리시브·서브캐치 범실), 🧱 블로킹 영향력(두 팀의 블로킹 득점·범실·득실, 가장 잘 막은 위치·가장 많이 뚫린 위치, 관련 선수 기준 영향력이 큰 블로커와 상대 블록에 가장 많이 막힌 선수), 📊 세트 흐름이에요. 각 주제 아래 <b>판단</b> 상자에서 어느 팀이 앞섰는지 짚어줘요.</p>
             </div>
             <div class="gh-section">
@@ -9726,14 +9732,19 @@
       d.short = (TOSS_ABBR[d.to] || d.to.slice(0,2)) + (d.kind==='2nd' ? '·2단' : '');
       d.tip = `${d.team==='our'?'🔵':'🔴'} ${NM[d.team]} ${d.kind==='2nd'?'↪ 2단 토스 → ':''}${d.to} ${d.n}회 (팀 토스의 ${Math.round(d.n/tot[d.team]*100)}%)` + (d.last ? ` · 마지막 토스였을 때 ${d.win}/${d.last}점 (${Math.round(d.win/d.last*100)}%)` : '');
     });
-    const sm = (window.innerWidth||800) < 600, W = sm ? 400 : 560, H = sm ? 460 : 600, id = 'lk' + (++taLeakSeq);
+    const sm = (window.innerWidth||800) < 600, W = sm ? 400 : 640, H = sm ? 460 : 660, id = 'lk' + (++taLeakSeq);
     TA_LEAK[id] = {list, setter, W, H, ang:CP_ANG.toss||0, keep:'toss', draw:tossMapSVG, names:NM};
-    const chips = ['our','opp'].map(team=>{ const ls = list.filter(d=>d.team===team).sort((a,b)=>b.n-a.n); if(!ls.length) return '';
-      return `<div class="bn-row"><span class="bn-rl" style="color:${team==='our'?'var(--own)':'var(--opp)'};">${team==='our'?'🔵':'🔴'} ${escChip(NM[team])}</span>${ls.map(d=>`<button type="button" class="bn-chip ts-chip k-${d.kind}" style="--c:${team==='our'?'var(--own)':'var(--opp)'};" data-hk="${escChip(d.key)}" data-tip="${escChip(d.tip)}"><i></i>${d.kind==='2nd'?'↪ 2단 ':''}${escChip(d.to)} <b>${d.n}</b><small>${Math.round(d.n/tot[team]*100)}%${d.last?` · 결정 ${Math.round(d.win/d.last*100)}%`:''}</small></button>`).join('')}</div>`; }).join('');
-    return `<div class="hk-box"><div class="lk-wrap"><svg class="ta-leak ts-map" data-lk="${id}" ${lkVB(TA_LEAK[id])} role="img" aria-label="세터 배분 3D 지도 (끌어서 돌리고 확대·옮길 수 있어요)">${tossMapSVG(TA_LEAK[id])}</svg>
+    // 오른쪽 표: 팀별 토스 기록(곳 · 횟수 · 팀 토스 중 몫 · 결정 = 그 토스가 마지막일 때 득점률). 줄에 커서를 올리면 그 궤적만 진해져요
+    const rows = ['our','opp'].map(team=>{ const ls = list.filter(d=>d.team===team).sort((a,b)=>b.n-a.n); if(!ls.length) return '';
+      const C = team==='our' ? 'var(--own)' : 'var(--opp)';
+      return `<tr class="bw-team"><th colspan="4" style="color:${C};">${team==='our'?'🔵':'🔴'} ${escChip(NM[team])}<small>토스 ${tot[team]}회</small></th></tr>`
+        + ls.map(d=>{ const pc = Math.round(d.n/tot[team]*100);
+          return `<tr class="ts-chip ts-row k-${d.kind}" style="--c:${C};" data-hk="${escChip(d.key)}" data-tip="${escChip(d.tip)}"><td><i></i>${d.kind==='2nd'?'↪ 2단 ':''}${escChip(d.to)}</td><td class="bw-s">${d.n}</td><td class="ts-pc"><span class="ts-bar"><b style="width:${pc}%"></b></span>${pc}%</td><td class="ts-win">${d.last ? `${Math.round(d.win/d.last*100)}%<small>${d.win}/${d.last}</small>` : '<small>—</small>'}</td></tr>`; }).join(''); }).join('');
+    return `<div class="hk-box"><div class="ts-flex"><div class="ts-left"><div class="lk-wrap"><svg class="ta-leak ts-map" data-lk="${id}" ${lkVB(TA_LEAK[id])} role="img" aria-label="세터 배분 3D 지도 (끌어서 돌리고 확대·옮길 수 있어요)">${tossMapSVG(TA_LEAK[id])}</svg>
       ${lkCtlHTML(id)}</div>
-      <div class="ts-legend"><span><i class="k-n"></i>세터 토스(굵을수록 많이)</span><span><i class="k-2nd"></i>↪ 2단 토스(후위에서)</span><span><i class="k-3rd"></i>3구처리</span><span class="muted">S = 세터 자리 · 끝 숫자 = 횟수 · 결정 = 그 토스가 마지막일 때 득점률</span></div>
-      ${chips}<div class="hk-info" aria-live="polite">궤적이나 칩에 커서를 올리면(휴대폰은 눌러서) 그 토스만 진하게 남아요.</div></div>`;
+      <div class="ts-legend"><span><i class="k-n"></i>세터 토스(굵을수록 많이)</span><span><i class="k-2nd"></i>↪ 2단 토스(후위에서)</span><span><i class="k-3rd"></i>3구처리</span><span class="muted">S = 세터 자리 · 끝 숫자 = 횟수</span></div></div>
+      <div class="ts-right"><div class="bn-tm-t">🏐 토스 기록 <small>몫 = 팀 토스 중 · 결정 = 그 토스가 마지막일 때 득점률</small></div><div class="bw-scroll ts-scroll"><table class="bw-table ts-table"><thead><tr><th>토스</th><th>횟수</th><th>몫</th><th>결정</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>
+      <div class="hk-info" aria-live="polite">궤적이나 표의 줄에 커서를 올리면(휴대폰은 눌러서) 그 토스만 진하게 남아요.</div></div>`;
   }
   function tossMapSVG(st){
     const {list, setter, W, H} = st;
