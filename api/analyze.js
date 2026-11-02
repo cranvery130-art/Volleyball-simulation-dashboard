@@ -4,10 +4,12 @@
    - 받는 것: 영상 주소(화면이 쓰는 사람의 키로 Gemini Files에 올린 파일, 48시간 뒤 Google이 지워요), 볼 구간(초), 1초에 볼 장면 수, 두 팀 유니폼 설명·이름. 아무것도 저장하지 않아요.
    - 영상 파일 자체는 이 함수를 거치지 않아요(Vercel 요청 크기 한도 4.5MB). 화면이 Google에 바로 올리고 주소만 보내요.
    - 한 번에 짧은 구간만 봐요(화면이 구간을 나눠 여러 번 부르고, 랠리마다 다시 자세히 봐요). */
-// Flash(기본·저렴)와 Pro(더 꼼꼼·비쌈·느림). Pro는 결제를 연결한 키만 쓸 수 있어요. 목록 앞에서부터 되는 모델을 써요.
+// Flash(기본·저렴), Pro(더 꼼꼼·비쌈·느림), Ultra(Google의 가장 높은 모델, 지금은 Gemini 4 Argon·가장 비쌈). Pro·Ultra는 결제를 연결한 키만 쓸 수 있어요.
+// 목록 앞에서부터 되는 모델을 써요(Ultra를 못 쓰면 Pro로 내려가고, 화면에 실제로 쓴 모델 이름이 나와요).
 const MODELS = {
   flash: ['gemini-3.6-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash'],
   pro: ['gemini-3.6-pro', 'gemini-3.1-pro-preview', 'gemini-3-pro-preview', 'gemini-2.5-pro'],
+  ultra: ['gemini-4-argon', 'gemini-3.6-pro', 'gemini-3.1-pro-preview'],
 };
 const okModel = {}; // 이 인스턴스에서 한 번 된 모델은 다음에 바로 써요(없는 모델을 매번 다시 묻지 않게)
 const MAX_SPAN = { scores: 300, rallies: 240, detail: 40 }; // 한 번에 볼 수 있는 최대 길이(초)
@@ -279,7 +281,7 @@ module.exports = async (req, res) => {
     ourSide: clean(raw.ourSide, 20), hint: clean(raw.hint, 300), angle: clean(raw.angle, 200), layout: clean(raw.layout, 1800), jerseys: clean(raw.jerseys, 700), serve: clean(raw.serve, 200),
   };
 
-  const tier = raw.model === 'pro' ? 'pro' : 'flash';
+  const tier = ['pro', 'ultra'].includes(raw.model) ? raw.model : 'flash';
   const models = [okModel[tier], tier === 'flash' ? process.env.GEMINI_MODEL : null, ...MODELS[tier]].filter((m, i, a) => m && a.indexOf(m) === i);
   let last = null;
   for (const m of models) {
@@ -290,8 +292,8 @@ module.exports = async (req, res) => {
     if (/\bFile\b[^"]*(permission|not exist|not found)|not in an ACTIVE state/i.test(errText)) { last = { status: 410, msg: '올린 영상을 찾지 못했어요. 다시 올릴게요.', code: 'nofile' }; break; }
     if (/API_KEY_INVALID|API key not valid|PERMISSION_DENIED/i.test(errText) || r.status === 403) { last = { status: 401, msg: 'API 키가 맞지 않거나 쓸 수 없는 키예요. 🔑 키를 다시 확인해 주세요.', code: 'badkey' }; break; }
     if (r.status === 404 || (r.status === 400 && /model/i.test(errText))) { if (okModel[tier] === m) delete okModel[tier]; last = { status: 502, msg: `모델(${m})을 쓸 수 없어요.` }; continue; }
-    // 무료 키는 Pro 한도가 0이에요: 기다려도 안 풀리니 바로 알려 줘요
-    if (r.status === 429 && tier === 'pro' && /limit: ?0\b/i.test(errText)) { last = { status: 403, code: 'nopro', msg: '이 키는 Pro 모델을 쓸 수 없어요(결제를 연결한 키만 돼요). 모델을 Flash로 바꿔 주세요.' }; break; }
+    // 무료 키는 Pro·Ultra 한도가 0이에요: 기다려도 안 풀리니 바로 알려 줘요
+    if (r.status === 429 && tier !== 'flash' && /limit: ?0\b/i.test(errText)) { last = { status: 403, code: 'nopro', msg: `이 키는 ${tier === 'ultra' ? 'Ultra' : 'Pro'} 모델을 쓸 수 없어요(결제를 연결한 키만 돼요). 모델을 Flash로 바꿔 주세요.` }; break; }
     if (r.status === 429) {
       // 하루 한도와 1분 한도를 나눠 알려 줘요(화면이 기다리는 시간이 달라요)
       const daily = /per ?day|PerDay|daily/i.test(errText);
