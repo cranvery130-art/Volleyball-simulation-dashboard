@@ -2017,6 +2017,7 @@
   body .topbar h1, body .login-card h1{ font-family:var(--head); font-weight:400; font-style:normal; letter-spacing:-0.02em; }
   body.ys-mode .qr-mode-btn{ background:#E2622B; color:#FFFDF8; box-shadow:0 10px 22px -12px rgba(226,98,43,0.8); }
   body.ys-mode .qr-mode-btn:hover{ background:#C9541F; }
+  .gate-privacy{ display:block; margin-top:10px; text-align:center; font-size:12px; color:var(--text-dim); text-decoration:underline; text-underline-offset:3px; }
 </style>
 <!-- ======================================================================
      FIREBASE 연결 설정
@@ -2422,6 +2423,7 @@
 
     <button class="btn" id="btnSkipLogin" style="width:100%; margin-top:16px;">코드 없이 계속하기 (이 기기에만 저장)</button>
     <button class="btn-link-intro" id="btnShowIntro" type="button">✨ 이 프로그램은 무엇을 할 수 있나요?</button>
+    <a class="gate-privacy" href="https://yangssaem.vercel.app/privacy/#volley" target="_blank" rel="noopener noreferrer">개인정보 안내 · 받는 정보와 지우는 법</a>
   </div>
 </div>
 
@@ -3140,7 +3142,7 @@
             </div>
         <details class="roster-fold" id="rosterFold">
         <summary><span class="field-label" style="margin:0;">🔵 우리팀 포지션 명단</span><span class="rf-count" id="rosterFoldCount"></span><span class="rf-arrow">펼치기</span></summary>
-        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">포지션과 등번호(#)·이름(선택)을 적고, <b>➕ 교체 선수 추가</b>로 교체 선수와 들어가는 자리를 적어두면 "자세히 기록"의 <b>🔵 우리팀 선수</b>에서 골라 기록에 함께 남길 수 있어요. 등번호를 적으면 🤖 경기 분석(AI)이 영상 속 등번호로 선수를 찾아요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 경기 폴더마다 따로 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요.</div>
+        <div class="field-note" style="margin-top:6px; margin-bottom:8px;">포지션과 등번호(#)·이름(선택)을 적고, <b>➕ 교체 선수 추가</b>로 교체 선수와 들어가는 자리를 적어두면 "자세히 기록"의 <b>🔵 우리팀 선수</b>에서 골라 기록에 함께 남길 수 있어요. 등번호를 적으면 🤖 경기 분석(AI)이 영상 속 등번호로 선수를 찾아요. 고른 선수는 그 기록에만 붙고, 기록하기를 누르면 "선택 안 함"으로 돌아가요. 명단은 경기 폴더마다 따로 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있으니, 실명보다는 별명이나 이니셜을 적어주세요. 저장하는 곳과 지우는 법은 <a href="https://yangssaem.vercel.app/privacy/#volley" target="_blank" rel="noopener noreferrer">개인정보 안내</a>에 있어요.</div>
         <div class="pos-grid" id="videoRosterGrid"></div>
         <div class="bench-list" id="ourBenchList"></div>
         <button type="button" class="btn" id="btnAddOurBench" style="width:100%; margin-top:6px;">➕ 교체 선수 추가</button>
@@ -3524,6 +3526,7 @@
         <li>한도에 걸려도 <b>화면을 열어 두면</b> 저절로 이어서 보고, 닫았다 열면 <b>🤖 이어서 분석</b>으로 이어가요.</li>
         <li><b>점수판·심판이 잘 보이는 영상</b>일수록 정확하고, <b>세트 결과</b>를 적으면 넘치는 기록을 걸러요.</li>
         <li><b>⚠️ 줄은 영상으로 꼭 확인</b>하고 넣어요.</li>
+        <li>보내는 것: 유튜브 링크, 볼 구간, 두 팀 유니폼 설명·이름(내 키로 Google Gemini에). 자세한 내용은 <a href="https://yangssaem.vercel.app/privacy/#volley" target="_blank" rel="noopener noreferrer">개인정보 안내</a></li>
       </ul>
       <button type="button" class="btn" id="btnAiNoticeMore" style="width:100%; margin-top:8px;">ℹ️ 참고사항 ▾</button>
       <div id="aiNoticeMore" class="note-box" style="display:none; margin-top:8px;">
