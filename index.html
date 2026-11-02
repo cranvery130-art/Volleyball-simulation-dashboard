@@ -1203,7 +1203,11 @@
   .ai-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px; }
   .ai-grid .fgroup{ margin-top:12px; }
   .ai-player-wrap{ margin-top:8px; position:relative; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#000; }
-  .ai-player-wrap iframe, .ai-player-wrap > div{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .ai-player-wrap video{ position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; }
+  .ai-src-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .ai-src-btn{ position:relative; flex:1 1 140px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+  .ai-src-input{ position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+  .ai-src-btn:focus-within{ outline:2px solid var(--accent); outline-offset:2px; }
   .ai-range{ display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap; margin-top:8px; }
   .ai-range label{ display:flex; flex-direction:column; gap:3px; font-size:12px; font-weight:700; color:var(--text-dim); flex:1 1 90px; }
   .ai-range .login-input{ margin-top:0; }
@@ -2469,7 +2473,7 @@
         <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요. 상대 서브는 칸 사이나 사이드라인·끝선 쪽으로도 정할 수 있어요.</li>
         <li><b>경기 분석(수동)</b>경기를 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고(마지막 토스와 결과로 정한 ✨ 추천은 점선으로 보이고 ✨ 추천대로로 한 번에 채워요), 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 요인별 분석은 득점(자력+상대 범실)·실점(범실+상대 득점)을 파레토 차트로, 블로킹 분석은 네트축 그림에 누구 손에서·범실 유형을 합치고 블로킹 기록 표를 그림 옆에 붙여, 세터 배분은 3D 코트에 공 궤적(2단·3구처리 따로)과 지도 위에 뜬 토스 기록 표로 보여줘요. 🔎 상세 분석은 팀 누적 분석과 같은 그림(공격 방식 트리맵, 📍 코트 위치 3D 지도 + 포지션 도넛)이에요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 다른 세트로 옮기거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
         <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 전체 성적과 지표(상대팀을 고르면 그 상대 기준으로 모든 카드가 바뀌고 🧠 대비 전략이 나와요), 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분·실점 원인 지도와 팀별 순위), 가장 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠, 그리고 모든 경기를 합친 상세 분석(공격 방식·블로킹·토스·코트 위치 득점/실점/범실)까지 정리해줘요. ⭐ 우리팀을 정해 두면 다른 팀은 상대 전력 분석(막을 것·노릴 것·맞대결 전적)으로 보여줘요.</li>
-        <li><b>경기 분석(AI) · 준비 중</b>지금은 정확도를 높이는 중이라 배너를 흐리게 두고 잠시 쉬어요. 다시 열면 이렇게 동작해요: 공개된 유튜브 경기 영상 링크를 넣고 두 팀 유니폼을 적으면 AI(Google Gemini)가 영상을 구간별로 나눠 봐요. 점수판이 보이면 점수판 숫자가 바뀌는 순간으로 득실 순서·세트를 정하고, 안 보이면 0.1초 간격으로 랠리를 찾아요. 세트 결과를 적어 두면 그보다 많은 세트·점수는 걸러요. 그다음 랠리마다 네 시각(공의 흐름 / 토스·공격수 / 관련 선수 / 심판 판정)으로 따로 다시 본 뒤 겹치는 답을 골라, 수동 분석에서 누르는 칸(득실·세부 상황·방식·공 방향·토스 순서·관련 선수·블로킹 자리)을 모두 채워요. 분석은 언제나 꼼꼼히 해요. 득실은 주심이 가리킨 팀, 반칙 수신호, 선심 깃발(위로 아웃·아래로 인·깃발 끝 쓸기 터치아웃)을 먼저 따르고, 선심이 서 있는 곳 앞의 선을 경기장 라인으로 삼아요. 포지션은 전술 시뮬레이션에 놓아 둔 대형의 자리와 맞춰 정하고, 관련 선수는 경기 정보 명단의 등번호(안 보이면 포지션)로 찾아 넣고, 서브 순서를 적어 두면 누가 서브할 차례인지 계산해 서버가 다르면 ⚠️로 알려 줘요. 공격 위치는 AI가 붙인 이름보다 공을 때린 자리(왼쪽 안테나에서 거리)·토스 높이·세터 뒤인지·속공 페이크를 보고 정해서 레프트와 앞차, 백차와 라이트를 가르고, 랠리의 토스는 시각까지 적어 네 시각의 답을 합쳐 빠짐없이(2단 토스 포함) 남겨요. AI 모델은 Flash(기본)와 Pro(결제를 연결한 키만, 더 꼼꼼하지만 요금이 약 4배) 중에 고르고, 고르면 예상 요금이 바로 나와요. 점수판과 다르거나 확신이 낮은 줄은 ⚠️로 표시돼서 시간을 눌러 영상으로 확인하고 고친 뒤, 새 경기 카드에서 고른 경기 폴더에 넣으면 수동 기록과 똑같이 그래프·종합 분석·팀 누적 분석에 들어가요. 넣은 기록의 시간을 누르면 유튜브 그 장면이 열려요. AI는 쓰는 사람마다 자기 Gemini API 키(Google AI Studio에서 무료로 받아요)를 넣어 쓰고, 사용량은 그 사람 키에만 쌓여요. 무료 키의 하루 한도는 매일 오후 4시(11월 초~3월 초는 오후 5시)에 다시 채워지고, 한도에 걸려도 화면을 열어 두면 한도가 채워질 때 저절로 이어서 보고, 화면을 닫았다 열어도 진행 상황이 기기에 남아 🤖 이어서 분석으로 멈춘 곳부터 이어가요.</li>
+        <li><b>경기 분석(AI) · 준비 중</b>지금은 정확도를 높이는 중이라 배너를 흐리게 두고 잠시 쉬어요. 다시 열면 이렇게 동작해요: 내 경기 영상 파일을 고르거나 휴대폰으로 바로 찍고 두 팀 유니폼을 적으면 AI(Google Gemini)가 영상을 구간별로 나눠 봐요. 점수판이 보이면 점수판 숫자가 바뀌는 순간으로 득실 순서·세트를 정하고, 안 보이면 0.1초 간격으로 랠리를 찾아요. 세트 결과를 적어 두면 그보다 많은 세트·점수는 걸러요. 그다음 랠리마다 네 시각(공의 흐름 / 토스·공격수 / 관련 선수 / 심판 판정)으로 따로 다시 본 뒤 겹치는 답을 골라, 수동 분석에서 누르는 칸(득실·세부 상황·방식·공 방향·토스 순서·관련 선수·블로킹 자리)을 모두 채워요. 분석은 언제나 꼼꼼히 해요. 득실은 주심이 가리킨 팀, 반칙 수신호, 선심 깃발(위로 아웃·아래로 인·깃발 끝 쓸기 터치아웃)을 먼저 따르고, 선심이 서 있는 곳 앞의 선을 경기장 라인으로 삼아요. 포지션은 전술 시뮬레이션에 놓아 둔 대형의 자리와 맞춰 정하고, 관련 선수는 경기 정보 명단의 등번호(안 보이면 포지션)로 찾아 넣고, 서브 순서를 적어 두면 누가 서브할 차례인지 계산해 서버가 다르면 ⚠️로 알려 줘요. 공격 위치는 AI가 붙인 이름보다 공을 때린 자리(왼쪽 안테나에서 거리)·토스 높이·세터 뒤인지·속공 페이크를 보고 정해서 레프트와 앞차, 백차와 라이트를 가르고, 랠리의 토스는 시각까지 적어 네 시각의 답을 합쳐 빠짐없이(2단 토스 포함) 남겨요. AI 모델은 Flash(기본)와 Pro(결제를 연결한 키만, 더 꼼꼼하지만 요금이 약 4배) 중에 고르고, 고르면 예상 요금이 바로 나와요. 점수판과 다르거나 확신이 낮은 줄은 ⚠️로 표시돼서 시간을 눌러 영상으로 확인하고 고친 뒤, 새 경기 카드에서 고른 경기 폴더에 넣으면 수동 기록과 똑같이 그래프·종합 분석·팀 누적 분석에 들어가요. 넣은 기록의 시간을 누르면 그 영상의 그 장면으로 가요. 영상은 내 키로 Google에 올라가 48시간 뒤 저절로 지워지고, 학생이 찍힌 영상은 결제를 연결한 키로 써요. AI는 쓰는 사람마다 자기 Gemini API 키(Google AI Studio에서 무료로 받아요)를 넣어 쓰고, 사용량은 그 사람 키에만 쌓여요. 무료 키의 하루 한도는 매일 오후 4시(11월 초~3월 초는 오후 5시)에 다시 채워지고, 한도에 걸려도 화면을 열어 두면 한도가 채워질 때 저절로 이어서 보고, 화면을 닫았다 열어도 진행 상황이 기기에 남아 🤖 이어서 분석으로 멈춘 곳부터 이어가요.</li>
         <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
         <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
         <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
@@ -3548,7 +3552,7 @@
   <span id="aiMatchSlot" hidden></span>
   <div class="card" id="aiCard">
     <h2>🤖 경기 분석(AI)</h2>
-    <div class="field-note" style="margin-top:0;">공개된 유튜브 경기 영상 링크를 넣으면 AI(Google Gemini)가 영상을 구간별로 나눠 보고, 랠리마다 네 시각(심판 판정 포함)으로 다시 자세히 보며 <b>누가 어떻게 점수를 냈는지</b>(공격 위치·방식·공 방향·토스 순서·관련 선수·블로킹 자리)를 읽어요. 결과를 확인·고친 뒤 위 카드에서 고른 경기 폴더에 기록으로 넣으면 📝 경기 분석(수동)의 그래프·종합 분석과 📊 팀 누적 분석에 함께 들어가요.</div>
+    <div class="field-note" style="margin-top:0;">내 경기 영상 파일을 고르거나 휴대폰으로 바로 찍으면 AI(Google Gemini)가 영상을 구간별로 나눠 보고, 랠리마다 네 시각(심판 판정 포함)으로 다시 자세히 보며 <b>누가 어떻게 점수를 냈는지</b>(공격 위치·방식·공 방향·토스 순서·관련 선수·블로킹 자리)를 읽어요. 결과를 확인·고친 뒤 위 카드에서 고른 경기 폴더에 기록으로 넣으면 📝 경기 분석(수동)의 그래프·종합 분석과 📊 팀 누적 분석에 함께 들어가요.</div>
     <div class="ai-notice" id="aiNotice">
       <div class="ai-notice-title">📌 쓰기 전에 꼭 읽어 주세요</div>
       <ul>
@@ -3556,7 +3560,7 @@
         <li>한도에 걸려도 <b>화면을 열어 두면</b> 저절로 이어서 보고, 닫았다 열면 <b>🤖 이어서 분석</b>으로 이어가요.</li>
         <li><b>점수판·심판이 잘 보이는 영상</b>일수록 정확하고, <b>세트 결과</b>를 적으면 넘치는 기록을 걸러요.</li>
         <li><b>⚠️ 줄은 영상으로 꼭 확인</b>하고 넣어요.</li>
-        <li>보내는 것: 유튜브 링크, 볼 구간, 두 팀 유니폼 설명·이름(내 키로 Google Gemini에). 자세한 내용은 <a href="https://yangssaem.vercel.app/privacy/#volley" target="_blank" rel="noopener noreferrer">개인정보 안내</a></li>
+        <li>보내는 것: 경기 영상, 볼 구간, 두 팀 유니폼 설명·이름(내 키로 Google Gemini에). 영상은 내 키로 Google에 올라가고 <b>48시간 뒤 Google이 저절로 지워요</b>. 학생이 찍힌 영상은 <b>결제를 연결한 키</b>로 써 주세요(결제를 연결하지 않은 무료 키로 보낸 내용은 Google이 서비스 개선에 쓸 수 있어요). 파일 이름은 보내지 않아요. 자세한 내용은 <a href="https://yangssaem.vercel.app/privacy/#volley" target="_blank" rel="noopener noreferrer">개인정보 안내</a></li>
       </ul>
       <button type="button" class="btn" id="btnAiNoticeMore" style="width:100%; margin-top:8px;">ℹ️ 참고사항 ▾</button>
       <div id="aiNoticeMore" class="note-box" style="display:none; margin-top:8px;">
@@ -3585,9 +3589,13 @@
     </div>
     <div class="ai-grid">
       <div class="fgroup" id="aiVideoGroup">
-        <div class="fgroup-head"><span class="fg-ic">🎬</span><span class="fg-title">경기 영상</span><span class="fg-sub">유튜브 링크(공개 영상)</span></div>
-        <input type="url" id="aiUrl" class="login-input" style="margin-top:0;" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
-        <div class="ai-player-wrap" id="aiPlayerWrap" hidden><div id="aiPlayer"></div></div>
+        <div class="fgroup-head"><span class="fg-ic">🎬</span><span class="fg-title">경기 영상</span><span class="fg-sub">내 영상 파일 · 바로 촬영</span></div>
+        <div class="ai-src-row">
+          <label class="btn ai-src-btn">📁 영상 파일 고르기<input type="file" id="aiFileInput" accept="video/*" class="ai-src-input"></label>
+          <label class="btn ai-src-btn">📹 바로 촬영하기<input type="file" id="aiCamInput" accept="video/*" capture="environment" class="ai-src-input"></label>
+        </div>
+        <div class="field-note" id="aiFileNote" style="margin-top:6px;">휴대폰으로 찍은 영상(mp4·mov)을 골라요. <b>📹 바로 촬영하기</b>는 휴대폰 카메라가 열리고, 다 찍으면 그 영상으로 분석해요. 엔드라인 뒤 높은 곳에서 코트 전체와 점수판이 함께 나오게 찍으면 더 정확해요.</div>
+        <div class="ai-player-wrap" id="aiPlayerWrap" hidden><video id="aiVideo" controls playsinline preload="metadata"></video></div>
         <div class="ai-range">
           <label>분석 시작<input type="text" id="aiFrom" class="login-input" placeholder="0:00" inputmode="numeric"></label>
           <label>분석 끝<input type="text" id="aiTo" class="login-input" placeholder="영상 끝" inputmode="numeric"></label>
@@ -7617,6 +7625,15 @@
     // note: all records are intentionally kept — switching videos doesn't erase anything.
     if(window.scheduleAutoSave) window.scheduleAutoSave();
   });
+  // 🤖 AI 분석에 쓴 영상을 수동 분석 영상으로도 열어서, 넣은 기록의 시간을 누르면 그 장면으로 가요
+  window.__useMatchVideo = file => {
+    if(currentVideoName===file.name && video.src) return;
+    if(video.src && video.src.startsWith('blob:')){ try{ URL.revokeObjectURL(video.src); }catch(err){} }
+    video.src = URL.createObjectURL(file);
+    currentVideoName = file.name;
+    document.getElementById('lastVideoHint').style.display = 'none';
+    if(window.scheduleAutoSave) window.scheduleAutoSave();
+  };
   // release the last video's blob memory when the page is closed/navigated away from
   window.addEventListener('pagehide', ()=>{
     if(video.src && video.src.startsWith('blob:')){
@@ -12739,7 +12756,7 @@
     renderAutoAnalysis();
     tryOpenSharedFolder();
   };
-  // ---------- 🤖 경기 분석(AI): 유튜브 경기 영상을 쓰는 사람 자신의 키로 서버(api/analyze.js → Google Gemini)가 여러 번 나눠 보고 기록 초안을 만들어요 ----------
+  // ---------- 🤖 경기 분석(AI): 내 경기 영상(파일·바로 촬영)을 쓰는 사람 자신의 키로 Google에 올리고, 그 영상을 쓰는 사람 자신의 키로 서버(api/analyze.js → Google Gemini)가 여러 번 나눠 보고 기록 초안을 만들어요 ----------
   // 1회차: 90초 구간마다 랠리 시작·끝·득점 팀·점수판을 찾고, 2회차: 랠리마다 짧게 잘라 더 촘촘히(1초에 5~8장) 네 시각으로 따로 다시 보며
   // 수동 기록에서 누르는 칸(득실·세부 상황·방식·공 방향·토스 순서·관련 선수·블로킹 자리)을 읽고 겹치는 답을 골라요.
   // 3회차는 여기서 해요: 점수 흐름·점수판·세트 바뀜을 맞춰 보고 어긋난 줄에 ⚠️를 붙여요. 사람이 확인한 뒤 경기 폴더에 넣어요.
@@ -12767,12 +12784,14 @@
     const aiModel = ()=> document.querySelector('#aiModelSeg [data-model="pro"].active') ? 'pro' : 'flash';
     function setModelSeg(m){ document.querySelectorAll('#aiModelSeg button').forEach(x=>x.classList.toggle('active', x.dataset.model===(m==='pro'?'pro':'flash'))); }
     try{ setModelSeg(localStorage.getItem(MODEL_LS)); }catch(e){}
-    let side = '', ytId = null, player = null, duration = 0;
+    let side = '', vidFile = null, vidKey = null, duration = 0;
+    const vid = $('aiVideo');
     let job = null; // {stop:false}
     let rows = []; // 분석 결과(사람이 고친 값 포함)
     const fmt = t => { t = Math.max(0, Math.round(t)); const h = Math.floor(t/3600), m = Math.floor(t%3600/60), s = t%60; return (h ? h+':'+String(m).padStart(2,'0') : m)+':'+String(s).padStart(2,'0'); };
     const parseT = v => { v = String(v||'').trim(); if(!v) return null; const p = v.split(':').map(Number); if(p.some(isNaN)) return null; return p.reduce((a,x)=>a*60+x, 0); };
-    const ytOf = u => { const m = String(u||'').match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|live\/|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/); return m ? m[1] : null; };
+    const mb = n => (n/1048576).toFixed(n > 1e8 ? 0 : 1);
+    const keyOf = f => `${f.name}|${f.size}|${f.lastModified}`; // 같은 영상인지(이어서 분석할지) 가려요
     const setStatus = (t, pct) => { $('aiStatus').innerHTML = t; if(pct!=null){ $('aiProgress').hidden = false; $('aiProgressBar').style.width = Math.round(pct*100)+'%'; } };
 
     function renderLevel(){
@@ -12798,30 +12817,68 @@
       $('aiTeamsNote').innerHTML = unset ? '⚠️ 팀 이름이 아직 없어요. 위 <b>📋 경기 정보</b>에서 우리팀·상대팀 이름을 적어 주세요. AI가 점수판·유니폼과 함께 이 이름으로 두 팀을 구분해요.' : '팀 이름은 위 📋 경기 정보에서 바꿔요. 우리팀이 바뀌었으면 거기서 고쳐 주세요.';
     }
     window.__aiSyncNames = ()=>syncNames();
-    window.onAiTabOpen = ()=>{ syncNames(); renderLevel(); renderRows(); if(window.__aiLoadSavedPlayer) window.__aiLoadSavedPlayer(); };
+    window.onAiTabOpen = ()=>{ syncNames(); renderLevel(); renderRows(); };
 
-    // 유튜브 플레이어: 영상 길이를 알고, 결과의 시간을 누르면 그 장면으로 가요
-    function loadPlayer(id){
-      $('aiPlayerWrap').hidden = false;
-      const make = ()=>{
-        if(player && player.loadVideoById){ player.cueVideoById(id); return; }
-        player = new YT.Player('aiPlayer', {videoId:id, playerVars:{rel:0, playsinline:1},
-          events:{onReady:()=>{ duration = player.getDuration() || 0; afterDuration(); }, onStateChange:()=>{ const d = player.getDuration && player.getDuration(); if(d && d!==duration){ duration = d; afterDuration(); } }}});
-      };
-      if(window.YT && window.YT.Player) make();
-      else {
-        const prev = window.onYouTubeIframeAPIReady;
-        window.onYouTubeIframeAPIReady = ()=>{ if(prev) prev(); make(); };
-        if(!document.getElementById('ytApiScript')){ const sc = document.createElement('script'); sc.id='ytApiScript'; sc.src='https://www.youtube.com/iframe_api'; document.head.appendChild(sc); }
-      }
-    }
+    // 내 영상: 이 기기에서 바로 재생해 영상 길이를 알고, 결과의 시간을 누르면 그 장면으로 가요
     function afterDuration(){ if(duration) $('aiTo').placeholder = fmt(duration)+' (영상 끝)'; renderLevel(); }
-    $('aiUrl').addEventListener('change', ()=>{
-      const id = ytOf($('aiUrl').value);
-      $('aiVideoNote').innerHTML = id ? '경기 앞뒤의 준비 운동·인터뷰는 빼고 <b>경기 부분만</b> 고르면 더 빠르고 정확해요(분:초로 적어요).' : '<b>유튜브 링크가 아니에요.</b> 주소창의 링크(youtube.com/watch?v=… 또는 youtu.be/…)를 붙여 주세요.';
-      if(id && id!==ytId){ ytId = id; duration = 0; loadPlayer(id); }
-    });
-    $('aiFromNow').addEventListener('click', ()=>{ if(player && player.getCurrentTime) $('aiFrom').value = fmt(player.getCurrentTime()); renderLevel(); });
+    function useFile(f){
+      if(!f) return;
+      if(job){ alert('분석하는 동안에는 영상을 바꿀 수 없어요. ⏸ 멈추기를 누른 뒤 바꿔 주세요.'); return; }
+      vidFile = f; vidKey = keyOf(f);
+      if(vid.src && vid.src.startsWith('blob:')){ try{ URL.revokeObjectURL(vid.src); }catch(e){} }
+      vid.src = URL.createObjectURL(f); duration = 0; $('aiPlayerWrap').hidden = false;
+      const same = run.state && run.state.vidKey===vidKey;
+      $('aiFileNote').innerHTML = `🎬 <b>${escChip(f.name)}</b> (${mb(f.size)}MB)` + (f.size > MAX_FILE ? ' — ⚠️ 2GB보다 커서 올릴 수 없어요. 경기 부분만 잘라서 골라 주세요.'
+        : same ? ' — 지난번에 분석하던 영상이에요.' : run.state ? ' — 새 영상이에요. 🤖 AI 분석 시작을 누르면 지난 결과 대신 이 영상으로 새로 분석해요.' : '');
+      setResumeButton();
+    }
+    ['aiFileInput','aiCamInput'].forEach(id=>$(id).addEventListener('change', e=>{ useFile(e.target.files && e.target.files[0]); e.target.value = ''; }));
+    vid.addEventListener('loadedmetadata', ()=>{ duration = isFinite(vid.duration) ? vid.duration : 0; afterDuration(); });
+    $('aiFromNow').addEventListener('click', ()=>{ if(vidFile) $('aiFrom').value = fmt(vid.currentTime); renderLevel(); });
+
+    // 영상 올리기: 영상은 이 서버를 거치지 않고(요청 크기 한도) 내 키로 Google(Gemini Files)에 바로 올려요. Google이 48시간 뒤 지워요.
+    const GF = 'https://generativelanguage.googleapis.com', MAX_FILE = 2e9, FILE_SAFE = 3600e3; // 남은 시간이 1시간보다 적으면 다시 올려요
+    async function upErr(r){
+      const j = await r.json().catch(()=>({})), t = JSON.stringify(j.error||'');
+      if(/API_KEY_INVALID|API key not valid|PERMISSION_DENIED/i.test(t) || r.status===403){ $('aiKey').focus(); return 'API 키가 맞지 않거나 쓸 수 없는 키예요. 🔑 키를 다시 확인해 주세요.'; }
+      if(r.status===429) return '내 키의 사용량 한도에 걸려 영상을 올리지 못했어요. 잠시 뒤 다시 해 주세요.';
+      return `영상을 올리지 못했어요(${r.status}${j.error && j.error.message ? ' '+j.error.message : ''}).`;
+    }
+    async function uploadVideo(file){
+      const type = file.type || 'video/mp4';
+      setStatus('📤 영상 올릴 준비 중…', 0);
+      // 파일 이름에 학생 이름이 있을 수 있어 이름은 보내지 않아요
+      const st = await fetch(GF+'/upload/v1beta/files', {method:'POST', headers:{'x-goog-api-key':apiKey(), 'X-Goog-Upload-Protocol':'resumable', 'X-Goog-Upload-Command':'start',
+        'X-Goog-Upload-Header-Content-Length':String(file.size), 'X-Goog-Upload-Header-Content-Type':type, 'Content-Type':'application/json'}, body:JSON.stringify({file:{displayName:'volleyball-match'}})});
+      if(!st.ok) throw new Error(await upErr(st));
+      const url = st.headers.get('x-goog-upload-url');
+      if(!url) throw new Error('영상을 올릴 주소를 받지 못했어요. 잠시 뒤 다시 해 주세요.');
+      let f = await new Promise((resolve, reject)=>{
+        const x = new XMLHttpRequest(); x.open('POST', url);
+        x.setRequestHeader('X-Goog-Upload-Offset', '0'); x.setRequestHeader('X-Goog-Upload-Command', 'upload, finalize');
+        x.upload.onprogress = e=>{ if(job && job.stop){ x.abort(); return; } if(e.lengthComputable) setStatus(`📤 영상 올리는 중 <b>${Math.round(e.loaded/e.total*100)}%</b> (${mb(e.loaded)} / ${mb(e.total)}MB) — 와이파이에서 올리면 빨라요`, e.loaded/e.total*0.05); };
+        x.onload = ()=>{ let j = {}; try{ j = JSON.parse(x.responseText); }catch(e){} if(x.status===200 && j.file) resolve(j.file); else reject(new Error(`영상을 올리지 못했어요(${x.status}${j.error && j.error.message ? ' '+j.error.message : ''}).`)); };
+        x.onerror = ()=>reject(new Error('영상을 올리는 중에 연결이 끊겼어요.'));
+        x.onabort = ()=>reject(new Error('stopped'));
+        x.send(file);
+      });
+      // Google이 영상을 준비하는 동안(보통 몇십 초, 긴 영상은 몇 분) 기다려요
+      for(let i=0; f.state==='PROCESSING' && i<240; i++){
+        if(job && job.stop) throw new Error('stopped');
+        setStatus('⚙️ Google이 올린 영상을 준비하는 중이에요(긴 영상은 몇 분 걸려요)…', 0.05);
+        await new Promise(res=>setTimeout(res, 5000));
+        const r = await fetch(GF+'/v1beta/'+f.name, {headers:{'x-goog-api-key':apiKey()}}).catch(()=>null);
+        if(r && r.ok) f = await r.json();
+      }
+      if(f.state!=='ACTIVE') throw new Error(f.state==='FAILED' ? 'Google이 이 영상을 읽지 못했어요. 휴대폰으로 찍은 mp4·mov 영상으로 다시 해 주세요.' : '영상 준비가 오래 걸려요. 잠시 뒤 🤖 이어서 분석을 눌러 주세요.');
+      return {uri:f.uri, mimeType:f.mimeType || type, exp: Date.parse(f.expirationTime) || Date.now()+47*3600e3};
+    }
+    async function ensureUploaded(state){
+      if(state.file && state.file.exp - Date.now() > FILE_SAFE) return;
+      if(vidFile.size > MAX_FILE) throw new Error('영상이 2GB보다 커서 올릴 수 없어요. 경기 부분만 잘라서 다시 골라 주세요.');
+      state.file = await uploadVideo(vidFile);
+      saveJob();
+    }
     ['aiFrom','aiTo'].forEach(id=>$(id).addEventListener('input', renderLevel));
     ['ourTeamNameInput','oppTeamNameInput'].forEach(id=>{ const el = document.getElementById(id); if(el) el.addEventListener('input', ()=>setTimeout(syncNames)); });
     $('aiBoardSeg').addEventListener('click', e=>{ const b = e.target.closest('[data-board]'); if(!b || job) return; document.querySelectorAll('#aiBoardSeg button').forEach(x=>x.classList.toggle('active', x===b)); renderLevel(); saveJob(); });
@@ -12918,13 +12975,13 @@
       return `${head}\n우리팀 ${ourTeamName}:\n${our.text}\n상대팀 ${oppTeamName}:\n${opp.text}`.slice(0, 1800);
     }
     async function ask(body){
-      let limitWaits = 0;
+      let limitWaits = 0, reupload = false;
       for(let attempt=0; attempt<4; attempt++){
         if(job && job.stop) throw new Error('stopped');
         let r, j;
         try{
           r = await fetch('/api/analyze', {method:'POST', headers:{'Content-Type':'application/json', 'x-gemini-key':apiKey()}, body:JSON.stringify(Object.assign({
-            url:'https://www.youtube.com/watch?v='+ytId, ourName:ourTeamName, oppName:oppTeamName,
+            fileUri:run.state.file && run.state.file.uri, mimeType:run.state.file && run.state.file.mimeType, ourName:ourTeamName, oppName:oppTeamName,
             ourDesc:$('aiOurDesc').value.trim(), oppDesc:$('aiOppDesc').value.trim(), ourSide:side, model: body.mode==='detail' ? aiModel() : 'flash'}, body))});
           j = await r.json().catch(()=>({}));
         }catch(err){ j = {error:'서버에 연결하지 못했어요.'}; r = {status:0}; }
@@ -12938,6 +12995,9 @@
         if(r.status===502 || r.status===0){ // 일시 오류는 잠깐 쉬었다가 다시 해요
           await sleepWithCountdown(5, j.error||'잠시 문제가 생겼어요.');
           continue;
+        }
+        if(j.code==='nofile' && !reupload){ // 올린 영상이 지워졌으면(48시간) 한 번 다시 올려요
+          reupload = true; attempt--; run.state.file = null; await ensureUploaded(run.state); continue;
         }
         if(j.code==='nokey' || j.code==='badkey'){ $('aiKey').focus(); $('aiKeyGroup').scrollIntoView({block:'center'}); }
         if(j.code==='nopro') $('aiModelSeg').scrollIntoView({block:'center'});
@@ -12959,7 +13019,7 @@
     function saveJob(){
       try{
         if(!run.state){ localStorage.removeItem(JOB_LS); return; }
-        localStorage.setItem(JOB_LS, JSON.stringify({v:1, url:$('aiUrl').value.trim(), ourDesc:$('aiOurDesc').value.trim(), oppDesc:$('aiOppDesc').value.trim(), side, board:boardOn(), setResults:$('aiSetResults').value.trim(), state:run.state, rows}));
+        localStorage.setItem(JOB_LS, JSON.stringify({v:2, ourDesc:$('aiOurDesc').value.trim(), oppDesc:$('aiOppDesc').value.trim(), side, board:boardOn(), setResults:$('aiSetResults').value.trim(), state:run.state, rows}));
       }catch(e){}
     }
     const boardOn = ()=> !!document.querySelector('#aiBoardSeg [data-board="1"].active');
@@ -12998,13 +13058,14 @@
     function setResumeButton(){
       const st = run.state, L = AI_LEVELS[level];
       const segCount = st ? pass1Segs(st).length : 0;
-      const left = st && (st.segDone < segCount || (L.detail.length && st.detailDone < st.found.length));
+      const left = st && (!vidKey || st.vidKey===vidKey) && (st.segDone < segCount || (L.detail.length && st.detailDone < st.found.length));
       $('aiStart').textContent = left ? '🤖 이어서 분석' : '🤖 AI 분석 시작';
       $('aiStart').dataset.resume = left ? '1' : '';
     }
     async function run(resume){
       if(!apiKey()){ alert('🔑 내 Gemini API 키를 먼저 넣어 주세요(Google AI Studio에서 무료로 받을 수 있어요).'); $('aiKey').focus(); return; }
-      if(!ytId){ alert('유튜브 영상 링크를 먼저 넣어 주세요.'); return; }
+      if(!vidFile){ alert(resume && run.state ? `지난번에 분석하던 영상(${run.state.fileName||'영상 파일'})을 📁 영상 파일 고르기로 다시 골라 주세요.` : '📁 영상 파일을 고르거나 📹 바로 촬영해 주세요.'); return; }
+      if(vidFile.size > MAX_FILE){ alert('영상이 2GB보다 커서 올릴 수 없어요. 경기 부분만 잘라서 다시 골라 주세요.'); return; }
       const from = parseT($('aiFrom').value) || 0, to = parseT($('aiTo').value) || duration;
       if(!to || to <= from){ alert('분석 끝 시간을 적어 주세요(영상 길이를 아직 못 읽었어요).'); return; }
       const L = AI_LEVELS[level];
@@ -13014,10 +13075,11 @@
       let wake = null; try{ if(navigator.wakeLock) wake = await navigator.wakeLock.request('screen'); }catch(e){}
       const rewake = async ()=>{ if(document.visibilityState==='visible' && job && navigator.wakeLock){ try{ wake = await navigator.wakeLock.request('screen'); }catch(e){} } };
       document.addEventListener('visibilitychange', rewake);
-      const state = resume && run.state && run.state.ytId===ytId ? run.state : (run.state = {ytId, from, to, level, mode: boardOn() ? 'board' : 'rally', board:[], found:[], segDone:0, detailDone:0, tokens:0});
+      const state = resume && run.state && run.state.vidKey===vidKey ? run.state : (run.state = {vidKey, fileName:vidFile.name, file:null, from, to, level, mode: boardOn() ? 'board' : 'rally', board:[], found:[], segDone:0, detailDone:0, tokens:0});
       let segs = pass1Segs(state);
       const total = segs.length + 1;
       try{
+        await ensureUploaded(state);
         for(let i=state.segDone; i<segs.length; i++){
           const P = PASS1[state.mode];
           if(state.mode==='board'){
@@ -13319,7 +13381,8 @@
     $('aiRows').addEventListener('click', e=>{
       const b = e.target.closest('[data-act="seek"]'); if(!b) return;
       const r = rows[Number(b.closest('.ai-row').dataset.i)];
-      if(player && player.seekTo){ player.seekTo(Math.max(0, r.start-1), true); player.playVideo(); $('aiPlayerWrap').scrollIntoView({block:'nearest', behavior:'smooth'}); }
+      if(!vidFile){ alert('영상 파일을 다시 골라야 그 장면을 볼 수 있어요.'); return; }
+      vid.currentTime = Math.max(0, r.start-1); vid.play().catch(()=>{}); $('aiPlayerWrap').scrollIntoView({block:'nearest', behavior:'smooth'});
     });
     $('aiRows').addEventListener('change', e=>{
       const el = e.target, row = el.closest('.ai-row'); if(!row) return;
@@ -13348,7 +13411,7 @@
         const ballTo = r.ball && ATTACK_SET.has(r.option) && Number.isInteger(r.ball.col) && Number.isInteger(r.ball.row) ? ballZoneXY(Math.min(2,Math.max(0,r.ball.col)), Math.min(2,Math.max(0,r.ball.row)), r.team) : null;
         records.push({
           time: r.end, entries:[entry], label: entryRecordLabel(entry), category: entry.category, optionLabel: r.option,
-          videoName: 'YouTube:'+ytId,
+          videoName: run.state.fileName || (vidFile && vidFile.name) || 'AI 분석 영상',
           zone: r.option==='블로킹' && Number.isInteger(r.blockZone) && r.blockZone>=0 && r.blockZone<=4 ? {row:0, col:r.blockZone} : null, grid9:null,
           player: aiPlayer('our', r.ourRole, r.ourNum), oppPlayer: aiPlayer('opp', r.oppRole, r.oppNum),
           ball: ballTo ? {from:null, to:ballTo} : undefined,
@@ -13356,32 +13419,30 @@
           set: r.set, ai: {conf: Math.round((r.conf||0)*100)/100, ourRole: r.ourRole||null, oppRole: r.oppRole||null, ourNumber: r.ourNum||null, oppNumber: r.oppNum||null, note: r.note||''}
         });
       });
-      lastPickedMatchFolder.youtube = 'https://www.youtube.com/watch?v='+ytId;
+      if(vidFile && window.__useMatchVideo) window.__useMatchVideo(vidFile); // 넣은 기록의 시간을 누르면 이 영상의 그 장면으로 가요
       afterRecordsChanged();
       $('aiApplyNote').innerHTML = `✅ "${escChip(lastPickedMatchFolder.name)}" 폴더에 기록 ${pick.length}개를 넣었어요. <b>📝 경기 분석(수동)</b>에서 그래프·종합 분석을 봐요. 관련 선수가 비어 있는 줄은 명단에 그 포지션이 없던 줄이라 기록 목록에서 골라 주세요. 잘못 넣었으면 수동 화면의 ↩️ 되돌리기로 취소해요.`;
     });
     // 지난번 분석(진행 상황·고친 결과)을 이 기기에서 다시 불러와요
     try{
       const sv = JSON.parse(localStorage.getItem(JOB_LS) || 'null');
-      if(sv && sv.v===1 && sv.state && sv.state.ytId){
-        $('aiUrl').value = sv.url || ('https://www.youtube.com/watch?v='+sv.state.ytId);
+      if(sv && sv.v===2 && sv.state && sv.state.vidKey){
         $('aiFrom').value = fmt(sv.state.from); $('aiTo').value = fmt(sv.state.to);
         if(sv.ourDesc) $('aiOurDesc').value = sv.ourDesc; if(sv.oppDesc) $('aiOppDesc').value = sv.oppDesc;
         if(sv.setResults) $('aiSetResults').value = sv.setResults;
         if(sv.board===false) document.querySelectorAll('#aiBoardSeg button').forEach(x=>x.classList.toggle('active', x.dataset.board==='0'));
         side = sv.side || ''; document.querySelectorAll('#aiSideSeg button').forEach(x=>x.classList.toggle('active', x.dataset.side===side));
-        ytId = sv.state.ytId; run.state = sv.state; rows = Array.isArray(sv.rows) ? sv.rows : [];
+        run.state = sv.state; rows = Array.isArray(sv.rows) ? sv.rows : [];
         setResumeButton(); renderRows();
         const st = sv.state;
         setStatus($('aiStart').dataset.resume==='1'
-          ? `📂 지난번 분석을 불러왔어요(랠리 ${st.found.length}개, 자세히 본 랠리 ${st.detailDone}개). <b>🤖 이어서 분석</b>을 누르면 멈춘 곳부터 이어서 봐요.`
+          ? `📂 지난번 분석을 불러왔어요(랠리 ${st.found.length}개, 자세히 본 랠리 ${st.detailDone}개). 같은 영상(${escChip(st.fileName||'')})을 <b>📁 영상 파일 고르기</b>로 다시 고른 뒤 <b>🤖 이어서 분석</b>을 누르면 멈춘 곳부터 이어서 봐요.`
           : `📂 지난번 분석 결과를 불러왔어요(랠리 ${st.found.length}개).`);
-        window.__aiLoadSavedPlayer = ()=>{ if(!player && ytId) loadPlayer(ytId); };
       }
     }catch(e){}
     renderLevel();
   })();
-  // 유튜브(AI 분석)로 남긴 기록은 시간을 누르면 유튜브 그 장면을 새 탭으로 열어요
+  // 예전에 유튜브(AI 분석)로 남긴 기록은 시간을 누르면 유튜브 그 장면을 새 탭으로 열어요(지금은 내 영상만 분석해요)
   window.__openYoutubeAt = (rec)=>{
     const m = /^YouTube:([A-Za-z0-9_-]{11})$/.exec(rec.videoName||''); if(!m) return false;
     window.open(`https://www.youtube.com/watch?v=${m[1]}&t=${Math.max(0, Math.floor(rec.time-3))}s`, '_blank', 'noopener');

@@ -1,7 +1,8 @@
-/* 경기 분석(AI) — 유튜브 경기 영상을 Google Gemini가 보고 랠리·득실을 읽어 주는 Vercel 서버리스 함수
+/* 경기 분석(AI) — 내 경기 영상(파일·바로 촬영)을 Google Gemini가 보고 랠리·득실을 읽어 주는 Vercel 서버리스 함수
    - Gemini API 키는 쓰는 사람이 자기 키를 화면에 넣어 요청 머리(x-gemini-key)로 보내요. 사용량·요금은 그 사람 계정에 쌓이고, 키는 저장하지 않아요.
    - 환경 변수: GEMINI_MODEL(선택, Flash 목록 앞에 끼워 시도). 화면에서 Pro를 고르면 Pro 목록을 차례로 시도해요.
-   - 받는 것: 공개 유튜브 링크, 볼 구간(초), 1초에 볼 장면 수, 두 팀 유니폼 설명·이름. 아무것도 저장하지 않아요.
+   - 받는 것: 영상 주소(화면이 쓰는 사람의 키로 Gemini Files에 올린 파일, 48시간 뒤 Google이 지워요), 볼 구간(초), 1초에 볼 장면 수, 두 팀 유니폼 설명·이름. 아무것도 저장하지 않아요.
+   - 영상 파일 자체는 이 함수를 거치지 않아요(Vercel 요청 크기 한도 4.5MB). 화면이 Google에 바로 올리고 주소만 보내요.
    - 한 번에 짧은 구간만 봐요(화면이 구간을 나눠 여러 번 부르고, 랠리마다 다시 자세히 봐요). */
 // Flash(기본·저렴)와 Pro(더 꼼꼼·비쌈·느림). Pro는 결제를 연결한 키만 쓸 수 있어요. 목록 앞에서부터 되는 모델을 써요.
 const MODELS = {
@@ -19,7 +20,7 @@ const TOSS_TO = ['레프트', '라이트', 'A', 'B', '백A', '앞차', '백차',
 const ROLES = { LEFT: '레프트', SETTER: '세터', RIGHT: '라이트', QA: '속공수(A)', QBACKA: '속공수(빽A)', FRONTSLIDE: '앞차', BACKSLIDE: '빽차', LBACK: '레프트백', CBACK: '센터백', RBACK: '라이트백' };
 const ROLE_TEXT = Object.entries(ROLES).map(([k, v]) => `${k}=${v}`).join(', ');
 
-const BASE = `당신은 9인제 배구(한국 생활체육) 경기 기록원입니다. 유튜브 경기 영상을 보고 사실만 기록합니다.
+const BASE = `당신은 9인제 배구(한국 생활체육) 경기 기록원입니다. 경기 영상을 보고 사실만 기록합니다.
 9인제 배구: 한 팀 9명, 로테이션 없음, 앞줄 3명·가운데 3명·뒷줄 3명. 21점 세트(듀스 가능), 3세트 중 2세트 선승이 흔합니다.
 왼쪽·오른쪽은 언제나 그 플레이를 한 팀이 네트를 바라볼 때 기준입니다.
 [공격 위치 구분] 공격 위치는 공격수가 공을 때린 네트 위 자리(hitX)와 토스 모양으로 정합니다.
@@ -203,9 +204,10 @@ const SCHEMA = {
   },
 };
 
-function youtubeId(u) {
-  const m = String(u || '').match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|live\/|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  return m ? m[1] : null;
+// 화면이 Gemini Files에 올린 영상 주소만 받아요(다른 주소는 거절)
+function fileUriOf(u) {
+  const m = String(u || '').match(/^https:\/\/generativelanguage\.googleapis\.com\/v1beta\/files\/[a-z0-9-]{1,64}$/);
+  return m ? m[0] : null;
 }
 
 function parseJson(t) {
@@ -217,7 +219,7 @@ function parseJson(t) {
   return null;
 }
 
-async function callGemini(key, model, b, id) {
+async function callGemini(key, model, b, file) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   const r = await fetch(url, {
     method: 'POST',
@@ -227,7 +229,7 @@ async function callGemini(key, model, b, id) {
       contents: [{
         role: 'user',
         parts: [
-          { fileData: { fileUri: `https://www.youtube.com/watch?v=${id}` }, videoMetadata: { startOffset: `${b.start}s`, endOffset: `${b.end}s`, fps: b.fps } },
+          { fileData: { fileUri: file.uri, mimeType: file.mimeType }, videoMetadata: { startOffset: `${b.start}s`, endOffset: `${b.end}s`, fps: b.fps } },
           { text: promptFor(b) },
         ],
       }],
@@ -261,8 +263,10 @@ module.exports = async (req, res) => {
   // 키 모양은 Google이 바뀔 수 있어서(예: 점이 들어간 새 키) 여기서는 길이·글자만 보고, 맞는지는 Google이 판단해요
   if (!/^[\x21-\x7E]{10,300}$/.test(key)) { res.status(401).json({ error: 'API 키에 빈칸이나 다른 글자가 섞였어요. AI Studio의 복사 버튼으로 다시 복사해 붙여 주세요.', code: 'badkey' }); return; }
   const raw = typeof req.body === 'string' ? (() => { try { return JSON.parse(req.body); } catch (e) { return {}; } })() : (req.body || {});
-  const id = youtubeId(raw.url);
-  if (!id) { res.status(400).json({ error: '유튜브 영상 링크를 확인해 주세요.' }); return; }
+  const uri = fileUriOf(raw.fileUri);
+  if (!uri) { res.status(400).json({ error: '영상을 먼저 올려 주세요.', code: 'nofile' }); return; }
+  const mime = /^video\/[a-z0-9.+-]{1,40}$/i.test(String(raw.mimeType || '')) ? String(raw.mimeType) : 'video/mp4';
+  const file = { uri, mimeType: mime };
   const mode = ['scores', 'detail'].includes(raw.mode) ? raw.mode : 'rallies';
   const start = Math.max(0, Math.floor(Number(raw.start) || 0));
   const end = Math.floor(Number(raw.end) || 0);
@@ -280,8 +284,10 @@ module.exports = async (req, res) => {
   let last = null;
   for (const m of models) {
     let r;
-    try { r = await callGemini(key, m, b, id); } catch (e) { last = { status: 502, msg: 'AI 서버에 연결하지 못했어요.' }; break; }
+    try { r = await callGemini(key, m, b, file); } catch (e) { last = { status: 502, msg: 'AI 서버에 연결하지 못했어요.' }; break; }
     const errText = JSON.stringify(r.j.error || '');
+    // 올린 영상이 지워졌거나(48시간) 다른 키로 올린 것이면 화면이 다시 올려요
+    if (/\bFile\b[^"]*(permission|not exist|not found)|not in an ACTIVE state/i.test(errText)) { last = { status: 410, msg: '올린 영상을 찾지 못했어요. 다시 올릴게요.', code: 'nofile' }; break; }
     if (/API_KEY_INVALID|API key not valid|PERMISSION_DENIED/i.test(errText) || r.status === 403) { last = { status: 401, msg: 'API 키가 맞지 않거나 쓸 수 없는 키예요. 🔑 키를 다시 확인해 주세요.', code: 'badkey' }; break; }
     if (r.status === 404 || (r.status === 400 && /model/i.test(errText))) { if (okModel[tier] === m) delete okModel[tier]; last = { status: 502, msg: `모델(${m})을 쓸 수 없어요.` }; continue; }
     // 무료 키는 Pro 한도가 0이에요: 기다려도 안 풀리니 바로 알려 줘요
@@ -292,7 +298,7 @@ module.exports = async (req, res) => {
       last = daily ? { status: 429, code: 'daily', msg: '내 키의 하루 AI 사용량을 다 썼어요.' } : { status: 429, code: 'minute', msg: '1분 사용량 한도에 걸렸어요.' };
       break;
     }
-    if (r.status === 400 && /video|youtube|file/i.test(errText)) { last = { status: 400, msg: '이 영상을 읽지 못했어요. 공개 영상인지 확인해 주세요.' }; break; }
+    if (r.status === 400 && /video|file|mime/i.test(errText)) { last = { status: 400, msg: '이 영상을 읽지 못했어요. 휴대폰으로 찍은 mp4·mov 영상인지 확인해 주세요.' }; break; }
     if (r.status !== 200) { last = { status: 502, msg: `AI 분석에 실패했어요(${r.status}).` }; break; }
     const cand = (r.j.candidates || [])[0];
     const text = cand && cand.content && (cand.content.parts || []).map(p => p.text || '').join('');
