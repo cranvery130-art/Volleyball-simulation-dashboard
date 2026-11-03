@@ -21,6 +21,8 @@
 ## 기타
 
 - 화면 문구는 모두 한국어 해요체로 써요.
+- 경기 영상 파일을 보고 기록·분석할 때는 `.claude/skills/video-watch`를 써요. 장면 사진은 저장소 밖(`~/.claude/video-watch/`)에 두고 커밋하지 않아요.
+- 남이 만든 스킬·플러그인을 이 저장소나 PC에 들이기 전에는 `skillspector scan <폴더> --no-llm`(NVIDIA SkillSpector)으로 먼저 검사해요. `--no-llm`이어야 파일 내용이 AI 회사로 가지 않아요. 검사기를 못 쓰는 곳(클라우드 세션 등)에서는 코드를 직접 읽어 외부 전송·비밀값 읽기·파일 삭제 같은 명령이 없는지 확인하고 보고해요. 검사 통과가 안전을 보장하지는 않아요.
 - `index.html`을 고치면 `.claude/hooks/check-index-syntax.mjs` 훅이 안의 스크립트 문법을 자동으로 검사해요. 오류가 뜨면 그 줄을 먼저 고쳐요(수동: `node .claude/hooks/check-index-syntax.mjs index.html`).
 
 ## 작업 방식 (모든 저장소 공통)
