@@ -466,6 +466,33 @@
     text-align:center; border-radius:8px; transition:background 0.2s ease;
   }
   .btn-link-intro:hover{ background:var(--accent-soft); }
+  /* 로그인 화면에 바로 뜨는 '이 프로그램을 만든 마음' 안내 */
+  .mission-card{ max-width:460px; padding:26px 22px 18px; text-align:center; }
+  .mission-eyebrow{ display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:0.02em; color:var(--accent-text); background:var(--accent-soft); padding:4px 10px; border-radius:999px; margin-bottom:10px; }
+  .modal-card .mission-title{ padding:0 28px; font-family:var(--head); font-weight:400; font-size:clamp(28px, 8.2vw, 36px); line-height:1.25; color:var(--text); margin:0 0 8px; letter-spacing:-0.02em; word-break:keep-all; }
+  .mission-title .hl{ color:var(--accent); box-shadow:inset 0 -0.32em 0 var(--accent-soft); }
+  .mission-sub{ font-size:13px; line-height:1.55; color:var(--text-dim); margin:0 0 16px; word-break:keep-all; }
+  .mission-list{ list-style:none; margin:0 0 14px; padding:0; display:flex; flex-direction:column; gap:8px; text-align:left; }
+  .mission-list li{ display:flex; gap:12px; align-items:flex-start; background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:11px 13px; }
+  .mission-ico{ flex:none; width:34px; height:34px; border-radius:10px; display:grid; place-items:center; font-size:18px; background:var(--panel); border:1px solid var(--border); }
+  .mission-list .mission-ico{ display:grid; }
+  .mission-list b{ display:block; font-size:14.5px; color:var(--text); margin-bottom:2px; word-break:keep-all; }
+  .mission-list div > span{ display:block; font-size:12.5px; line-height:1.5; color:var(--text-dim); word-break:keep-all; }
+  .mission-motto{ font-family:var(--head); font-size:18px; color:var(--text); margin:4px 0 14px; word-break:keep-all; }
+  .mission-motto em{ font-style:normal; color:var(--accent); }
+  .mission-actions{ display:flex; flex-direction:column; gap:8px; align-items:center; }
+  .mission-actions .btn{ width:100%; }
+  .mission-skip{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); cursor:pointer; }
+  #missionModal.mission-in .mission-card{ animation:missionIn 0.28s ease-out both; }
+  @keyframes missionIn{ from{ opacity:0; transform:translateY(10px) scale(0.98); } to{ opacity:1; transform:none; } }
+  @media (prefers-reduced-motion:reduce){ #missionModal.mission-in .mission-card{ animation:none; } }
+  @media (max-height:700px){
+    .mission-card{ padding:18px 16px 14px; }
+    .mission-sub{ margin-bottom:10px; }
+    .mission-list{ gap:6px; margin-bottom:10px; }
+    .mission-list li{ padding:8px 11px; }
+    .mission-motto{ margin:2px 0 10px; font-size:16.5px; }
+  }
   .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(3px); z-index:1100; display:flex; align-items:center; justify-content:center; padding:20px; }
   .modal-card{ position:relative; max-width:560px; width:100%; max-height:85vh; overflow-y:auto; background:var(--panel); border:1px solid var(--border-2); border-radius:20px; padding:28px 24px 22px; box-shadow:var(--shadow); }
   .modal-card h2{ font-family:var(--display); font-weight:800; margin:0 0 14px; font-size:19px; letter-spacing:-0.01em; }
@@ -2491,7 +2518,27 @@
 
     <button class="btn" id="btnSkipLogin" style="width:100%; margin-top:16px;">코드 없이 계속하기 (이 기기에만 저장)</button>
     <button class="btn-link-intro" id="btnShowIntro" type="button">✨ 이 프로그램은 무엇을 할 수 있나요?</button>
+    <button class="btn-link-intro" id="btnShowMission" type="button" style="margin-top:2px;">🤝 이 프로그램을 만든 마음 다시 보기</button>
     <a class="gate-privacy" href="https://yangssaem.vercel.app/privacy/#volley" target="_blank" rel="noopener noreferrer">개인정보 안내 · 받는 정보와 지우는 법</a>
+  </div>
+</div>
+
+<div id="missionModal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="missionTitle">
+  <div class="modal-card mission-card">
+    <button class="modal-close" id="btnCloseMission" type="button" aria-label="닫기">✕</button>
+    <span class="mission-eyebrow">🏐 시작하기 전에 꼭 읽어 주세요</span>
+    <h2 class="mission-title" id="missionTitle">사람이 아니라<br><span class="hl">포지션</span>을 기록해요</h2>
+    <p class="mission-sub">누구 한 명을 평가하는 프로그램이 아니에요.<br>함께 더 잘하자고 만든 프로그램이에요.</p>
+    <ul class="mission-list">
+      <li><span class="mission-ico">📍</span><div><b>기록은 포지션에 쌓여요</b><span>프로 경기 분석처럼 선수 한 명을 쪼개 보지 않고, 그 자리에서 생긴 기록을 모아요.</span></div></li>
+      <li><span class="mission-ico">🤝</span><div><b>그 자리에 서는 모두의 기록이에요</b><span>같은 포지션에 들어가는 사람은 누구나 같은 기록을 보고 함께 고민해요.</span></div></li>
+      <li><span class="mission-ico">💬</span><div><b>탓하기보다 공감해요</b><span>숫자는 객관적으로 보고, 잘한 점과 아쉬운 점은 같이 나눠요.</span></div></li>
+    </ul>
+    <p class="mission-motto">같이 보고, 같이 공감하고, <em>같이 더 열심히!</em></p>
+    <div class="mission-actions">
+      <button class="btn primary" id="btnMissionOk" type="button">알겠어요, 시작할게요</button>
+      <label class="mission-skip"><input type="checkbox" id="missionSkip"> 이 기기에서 다음부터 보지 않기</label>
+    </div>
   </div>
 </div>
 
@@ -2500,6 +2547,7 @@
     <button class="modal-close" id="btnCloseIntro">✕</button>
     <h2>9인제 배구 경기분석 전술 시뮬레이터 소개</h2>
     <div class="modal-body">
+      <p><b>먼저, 이 프로그램은 사람이 아니라 포지션을 기록해요.</b> 동호회에서 한 사람의 장단점을 세세히 따지기보다, 그 포지션에 들어가는 모두가 그 자리에서 생긴 기록을 함께 보고 공감하며 더 열심히 운동하자는 마음으로 만들었어요.</p>
       <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
       <ul class="feature-list">
         <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지와 상대 서브(우리 서브 리시브), 우리 팀 공격 시 커버 6가지, 총 13개 상황을 실제 코트 비율의 애니메이션으로 재생해요. 공격하는 선수와 여러 명의 페이크, 돌아 들어가는 길(경유점)도 정할 수 있어요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 처음에는 <b>기본 대형(3인블로킹 기준)</b> 12가지가 들어 있어 바로 볼 수 있고, 공격 상황 편집(왼쪽) → 대형 불러오기·편집·⭐ 최종 확정·대형 저장·공유(오른쪽, 불러오기와 저장은 📂 대형 보관함 한 카드) 순서로 내 대형을 만들어 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
@@ -6657,6 +6705,7 @@
     // 조회 링크로 들어온 경우엔 코드가 없어서 이 기기에 입장 기록을 남기지 않아요(링크를 닫으면 끝).
     if(code) rememberDevice(code);
     document.getElementById('loginOverlay').style.display='none';
+    { const mm=document.getElementById('missionModal'); if(mm) mm.style.display='none'; }
     document.querySelector('.app').style.display='block';
     document.getElementById('settingsCodeLabel').textContent = code || '(로컬)';
     document.getElementById('topCodeLabel').textContent = code || (window.__guestShareView ? '조회 링크' : '로컬');
@@ -6910,6 +6959,33 @@
     document.querySelectorAll('.filterStatus').forEach(cb=>cb.checked=false);
     renderMemberList();
   });
+
+  // 로그인 화면에 바로 뜨는 안내: 포지션 기준으로 기록하는 이유. '다음부터 보지 않기'는 이 기기에만 기억해요.
+  const MISSION_KEY='volley_mission_hide_v1';
+  function openMission(){
+    const m=document.getElementById('missionModal');
+    m.style.display='flex'; m.classList.remove('mission-in'); void m.offsetWidth; m.classList.add('mission-in');
+    try{ document.getElementById('missionSkip').checked = localStorage.getItem(MISSION_KEY)==='1'; }catch(e){}
+  }
+  function closeMission(){
+    const m=document.getElementById('missionModal'); if(m.style.display==='none') return;
+    try{
+      if(document.getElementById('missionSkip').checked) localStorage.setItem(MISSION_KEY,'1');
+      else localStorage.removeItem(MISSION_KEY);
+    }catch(e){}
+    m.style.display='none';
+  }
+  window.__closeMission = closeMission;
+  document.getElementById('btnMissionOk').addEventListener('click', closeMission);
+  document.getElementById('btnCloseMission').addEventListener('click', closeMission);
+  document.getElementById('missionModal').addEventListener('click', e=>{ if(e.target.id==='missionModal') closeMission(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.getElementById('missionModal').style.display!=='none') closeMission(); });
+  document.getElementById('btnShowMission').addEventListener('click', openMission);
+  (function(){
+    let hide=false; try{ hide = localStorage.getItem(MISSION_KEY)==='1'; }catch(e){}
+    // 자동 입장·조회 링크로 바로 들어가면 로그인 화면이 없으니 띄우지 않아요
+    if(!hide && document.getElementById('loginOverlay').style.display!=='none') openMission();
+  })();
 
   document.getElementById('btnSkipLogin').addEventListener('click', ()=>{
     enterApp(null, null, null);
