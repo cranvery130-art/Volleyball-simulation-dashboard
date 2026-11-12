@@ -57,7 +57,9 @@
   /* 양쌤 모드의 버튼·선택 표시: 홈페이지처럼 고른 것은 남색, 주황은 강조 선과 작은 표시에만 */
   body.ys-mode{ --grad:linear-gradient(100deg,#1D2747 0%,#2A3763 100%); --navy:#1D2747; }
   body.ys-mode .topbar h1, body.ys-mode .login-card h1{ background:none; color:var(--navy); -webkit-text-fill-color:currentColor; }
-  body.ys-mode .topbar h1 .h1-hl{ color:var(--accent); }
+  /* 다른 화면 모드도 제목은 그라데이션 글자 대신 단색으로 */
+  body:not(.ys-mode) .topbar h1, body:not(.ys-mode) .login-card h1{ background:none; color:var(--text); -webkit-text-fill-color:currentColor; }
+  .topbar h1 .h1-hl{ color:var(--accent); }
   body.ys-mode .seg{ background:var(--panel-2); }
   body.ys-mode .btn.primary, body.ys-mode .tl-btn.primary{ box-shadow:0 8px 18px -10px rgba(29,39,71,0.6); }
   body.ys-mode .btn.primary:hover{ background:#2A3763; }
@@ -452,7 +454,7 @@
   .splash-tagline{ font-size:clamp(13px,3.2vw,15.5px); color:#4B5373; margin:0 0 16px; animation:spUp .55s 1.5s ease both; }
   .splash-bar{ width:130px; height:5px; border-radius:5px; background:#EAE0CF; overflow:hidden; animation:spUp .4s 1.5s ease both; }
   .splash-bar i{ display:block; height:100%; background:linear-gradient(100deg,#E2622B,#EE8A3A 55%,#F2B33D); transform-origin:left; animation:spLoad 3.4s .2s linear both; }
-  .splash-sign{ position:absolute; left:0; right:0; bottom:max(20px, env(safe-area-inset-bottom)); text-align:center; font-family:var(--mono); font-size:11px; letter-spacing:0.18em; color:#4B5373; }
+  .splash-sign{ position:absolute; left:0; right:0; bottom:max(20px, env(safe-area-inset-bottom)); text-align:center; font-size:12px; letter-spacing:0.04em; color:#4B5373; }
   @keyframes spUp{ from{ transform:translateY(12px); opacity:0; } to{ transform:none; opacity:1; } }
   @keyframes spPop{ from{ transform:scale(.95) translateY(12px); opacity:0; } to{ transform:none; opacity:1; } }
   @keyframes spDot{ from{ transform:scale(.9); opacity:0; } to{ transform:none; opacity:1; } }
@@ -482,6 +484,9 @@
   .mission-list .mission-ico{ display:grid; }
   .mission-list b{ display:block; font-size:14.5px; color:var(--text); margin-bottom:2px; word-break:keep-all; }
   .mission-list div > span{ display:block; font-size:12.5px; line-height:1.5; color:var(--text-dim); word-break:keep-all; }
+  .mission-letter{ text-align:left; font-size:14px; line-height:1.7; color:var(--text-dim); margin:4px 0 16px; word-break:keep-all; }
+  .mission-letter p{ margin:0 0 10px; }
+  .mission-letter .mission-sign{ text-align:right; color:var(--text); font-weight:600; margin:0; }
   .mission-motto{ font-family:var(--head); font-size:18px; color:var(--text); margin:4px 0 14px; word-break:keep-all; }
   .mission-motto em{ font-style:normal; color:var(--accent); }
   .mission-actions{ display:flex; flex-direction:column; gap:8px; align-items:center; }
@@ -490,6 +495,13 @@
   #vtToast{ position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom)); transform:translate(-50%,12px); max-width:min(92vw,440px); padding:11px 16px; border-radius:12px; background:var(--text); color:var(--panel); font-size:13.5px; line-height:1.45; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .2s ease-out, transform .2s ease-out; z-index:9999; }
   #vtToast.show{ opacity:1; transform:translate(-50%,0); }
   @media (prefers-reduced-motion:reduce){ #vtToast{ transition:none; } }
+  /* 긴 안내는 두 줄만 보이고 나머지는 '자세히'를 눌러 펼쳐요 */
+  .note-more{ margin-top:4px; }
+  .note-more > summary{ cursor:pointer; font-size:12px; font-weight:600; color:var(--accent-text); list-style:none; display:inline-block; padding:2px 0; }
+  .note-more > summary::-webkit-details-marker{ display:none; }
+  .note-more > summary::after{ content:' ▾'; }
+  .note-more[open] > summary::after{ content:' ▴'; }
+  .note-more > .field-note{ margin-top:4px; }
   .only-local{ display:none; }
   body.local-mode .only-local{ display:inline; }
   body.local-mode .only-room{ display:none; }
@@ -553,7 +565,7 @@
   .gd-player{ display:flex; flex-direction:column; gap:14px; }
   .gd-stage{ position:relative; height:260px; background:var(--panel-2); border:1px solid var(--border); border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; padding:14px; }
   .gd-scene{ width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; position:relative; }
-  .gd-badge{ position:absolute; top:10px; left:12px; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; color:var(--muted); font-weight:700; }
+  .gd-badge{ position:absolute; top:10px; left:12px; font-size:11px; color:var(--muted); font-weight:700; }
   .gd-cursor{ position:absolute; left:50%; top:110%; width:22px; height:26px; pointer-events:none; z-index:20; transition:left .6s cubic-bezier(.4,0,.2,1), top .6s cubic-bezier(.4,0,.2,1); filter:drop-shadow(0 2px 3px rgba(0,0,0,.45)); }
   .gd-cursor.drag{ transition-duration:.9s; }
   .gd-ripple{ position:absolute; width:34px; height:34px; margin:-17px 0 0 -17px; border-radius:50%; border:2px solid var(--accent); pointer-events:none; z-index:19; animation:gdRipple .5s ease-out forwards; }
@@ -766,6 +778,9 @@
   .fg-ic{ width:26px; height:26px; border-radius:8px; flex:none; display:flex; align-items:center; justify-content:center; font-size:14px;
     background:var(--accent-soft); background:color-mix(in srgb, var(--fam, var(--accent)) 18%, transparent); }
   .fg-title{ font-family:var(--display); font-weight:800; font-size:14.5px; letter-spacing:-0.01em; color:var(--text); }
+  /* 카드마다 붙던 이모지 네모는 빼고 제목만 둬요(같은 모양 카드가 줄지어 보이지 않게). 묶음 색은 제목 앞 짧은 막대로 */
+  .fgroup-head .fg-ic{ display:none; }
+  .fgroup-head .fg-title{ padding-left:9px; border-left:3px solid var(--fam, var(--accent)); line-height:1.15; }
   .fg-sub{ font-size:11.5px; color:var(--muted); font-weight:500; }
   .fgroup .field-label{ font-size:13px; }
   .fgroup .field-label::before{ height:11px; }
@@ -822,7 +837,7 @@
     #cardPresets .fgroup > div[style*="align-items:flex-end"] > .btn{ flex:1 1 100% !important; }
     #presetLoadSelect{ min-width:0; }
     /* 기능 묶음 제목: 설명은 제목 아래로 맞춰서 */
-    .fg-sub{ flex-basis:100%; margin-left:34px; margin-top:-4px; }
+    .fg-sub{ flex-basis:100%; margin-left:12px; margin-top:-4px; }
     .card > h2{ font-size:16px; }
     /* 위치 미리보기처럼 제목+선택칸이 한 줄인 곳 */
     #customPanel > .fgroup > div[style*="display:flex"]{ flex-wrap:wrap; }
@@ -2570,10 +2585,10 @@
     </div>
     <h1 class="splash-title"><span>9인제</span> 배구</h1>
     <p class="splash-sub">경기분석 · 전술 시뮬레이터</p>
-    <p class="splash-tagline">생각한 순간이, 전술이 돼요</p>
+    <p class="splash-tagline">상대 공격에 맞춘 대형을 그려 보고, 경기를 기록해요</p>
     <div class="splash-bar" aria-hidden="true"><i></i></div>
   </div>
-  <div class="splash-sign">YANGSSAEM STUDIO · VOLLEYBALL</div>
+  <div class="splash-sign">양쌤스튜디오 · 배구</div>
 </div>
 <script>
   (function(){
@@ -2814,15 +2829,12 @@
 <div id="missionModal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="missionTitle">
   <div class="modal-card mission-card">
     <button class="modal-close" id="btnCloseMission" type="button" aria-label="닫기">✕</button>
-    <span class="mission-eyebrow">🏐 시작하기 전에 꼭 읽어 주세요</span>
     <h2 class="mission-title" id="missionTitle">사람이 아니라<br><span class="hl">포지션</span>을 기록해요</h2>
-    <p class="mission-sub">누구 한 명을 평가하는 프로그램이 아니에요.<br>함께 더 잘하자고 만든 프로그램이에요.</p>
-    <ul class="mission-list">
-      <li><span class="mission-ico">📍</span><div><b>기록은 포지션에 쌓여요</b><span>프로 경기 분석처럼 선수 한 명을 쪼개 보지 않고, 그 자리에서 생긴 기록을 모아요.</span></div></li>
-      <li><span class="mission-ico">🤝</span><div><b>그 자리에 서는 모두의 기록이에요</b><span>같은 포지션에 들어가는 사람은 누구나 같은 기록을 보고 함께 고민해요.</span></div></li>
-      <li><span class="mission-ico">💬</span><div><b>탓하기보다 공감해요</b><span>숫자는 객관적으로 보고, 잘한 점과 아쉬운 점은 같이 나눠요.</span></div></li>
-    </ul>
-    <p class="mission-motto">같이 보고, 같이 공감하고, <em>같이 더 열심히!</em></p>
+    <div class="mission-letter">
+      <p>이 프로그램은 선수 한 명을 평가하려고 만든 게 아니에요. 기록은 사람 이름이 아니라 레프트, 세터 같은 자리에 쌓여요.</p>
+      <p>그 자리에 서는 사람은 누구든 같은 기록을 보고 같이 고민하면 좋겠어요. 숫자는 있는 그대로 보고, 잘한 것과 아쉬운 것은 서로 이야기해 주세요.</p>
+      <p class="mission-sign">— 양쌤</p>
+    </div>
     <div class="mission-actions">
       <button class="btn primary" id="btnMissionOk" type="button">알겠어요, 시작할게요</button>
       <p class="mission-skip">처음 한 번만 떠요. 다시 보려면 로그인 화면의 '이 프로그램을 만든 마음 다시 보기'를 눌러요.</p>
@@ -2835,24 +2847,22 @@
     <button class="modal-close" id="btnCloseIntro">✕</button>
     <h2>9인제 배구 경기분석 전술 시뮬레이터 소개</h2>
     <div class="modal-body">
-      <p><b>먼저, 이 프로그램은 사람이 아니라 포지션을 기록해요.</b> 동호회에서 한 사람의 장단점을 세세히 따지기보다, 그 포지션에 들어가는 모두가 그 자리에서 생긴 기록을 함께 보고 공감하며 더 열심히 운동하자는 마음으로 만들었어요.</p>
-      <p><b>이 프로그램으로 할 수 있는 것들이에요.</b></p>
+      <p>이 프로그램은 선수 한 명이 아니라 <b>포지션</b>에 기록을 쌓아요. 그 자리에 서는 사람이 누구든 같은 기록을 보고 같이 고민하자는 뜻이에요.</p>
+      <p><b>할 수 있는 일</b></p>
       <ul class="feature-list">
-        <li><b>전술 시뮬레이션</b>상대 공격(좌/중앙/우/시간차/빽차/빽A) 6가지와 상대 서브(우리 서브 리시브), 우리 팀 공격 시 커버 6가지, 총 13개 상황을 실제 코트 비율의 애니메이션으로 재생해요. 공격하는 선수와 여러 명의 페이크, 돌아 들어가는 길(경유점)도 정할 수 있어요. 이동 동선·착지선·커버 범위가 항상 함께 보이고, 처음에는 <b>기본 대형(3인블로킹 기준)</b> 12가지가 들어 있어 바로 볼 수 있고, 공격 상황 편집(왼쪽) → 대형 불러오기·편집·⭐ 최종 확정·대형 저장·공유(오른쪽, 불러오기와 저장은 📂 대형 보관함 한 카드) 순서로 내 대형을 만들어 쓰고, 포지션 배정(이름 표시 가능)과 대형 코멘트도 남길 수 있어요.</li>
-        <li><b>정교한 블로킹 표현</b>블로킹은 자동이 아니라, 도트를 네트 앞 블로킹 존에 직접 배치해야 인식돼요. 실제로 막히는지, 살짝 터치만 되는지 물리적으로 계산되고, 블로킹 바로 뒤로 착지를 설정하면 곡선으로 넘기는 페이크성 궤적까지 표현돼요.</li>
-        <li><b>착지 방향 9칸 설정</b>공이 떨어지는 자리를 경기장 화면과 같은 방향으로 놓인 좌/중/우 × 앞/중간/뒤 9칸 중 원하는 곳으로 정밀하게 지정할 수 있어요. 상대 서브는 칸 사이나 사이드라인·끝선 쪽으로도 정할 수 있어요.</li>
-        <li><b>경기 분석(수동)</b>경기를 보며 결과 버튼(득점 줄: 우리·상대 / 범실 줄: 우리·상대) → 상황 버튼 → 기록하기로 1점씩 남겨요. 원하면 결과 버튼 위의 랠리 및 토스 순서 칸에서 랠리를 보며 양 팀 토스(2단 토스 포함)를 바로바로 눌러 남겨요. 공격 방식(네트싸움 포함)·블로킹 유형·파울 종류·관련 선수는 "자세히 기록"에서 버튼을 바로 눌러 더하고, 공격이면 공격 방식 위 <b>🎯 공 방향</b> 9칸(전술 시뮬레이션의 공 착지 방향과 같은 기준)이나 코트 그림의 빈 곳을 눌러 공이 향한 곳도 남기고(마지막 토스와 결과로 정한 ✨ 추천은 점선으로 보이고 ✨ 추천대로로 한 번에 채워요), 기록하기를 누르면 결과·상황 버튼 표시까지 모두 풀려 다음 점수를 새로 골라요. 자력 득점과 상대 실수를 나눠 집계하고 세트별 점수·주요 지표·추세·블로킹 분석·세터 배분·점수별 토스 흐름을 보여주고, 🔎 상세 분석에서 공격·블로킹·토스를 양 팀 나란히 비교해요(강타는 빈 곳/사람 쪽, 가볍게 볼처리로 나눠 분석). 요인별 분석은 득점(자력+상대 범실)·실점(범실+상대 득점)을 파레토 차트로, 블로킹 분석은 네트축 그림에 누구 손에서·범실 유형을 합치고 블로킹 기록 표를 그림 옆에 붙여, 세터 배분은 3D 코트에 공 궤적(2단·3구처리 따로)과 지도 위에 뜬 토스 기록 표로 보여줘요. 🔎 상세 분석은 팀 누적 분석과 같은 그림(공격 방식 트리맵, 📍 코트 위치 3D 지도 + 포지션 도넛)이에요. 🎯 빠른 기록 모드를 누르면 화면 전체가 기록 입력이 되고(PC는 올린 영상도 함께 보여요), 📋 점수 기록에서 1점씩 고치거나 끼워 넣거나 다른 세트로 옮기거나 지워요. 점수와 상관없는 장면은 🔴 자유 기록 메모로 남기고, 폴더 없이 기록했다면 📁 폴더에 저장으로 담고, 내보낸 파일은 📥 기록 불러오기로 되살려요. 기록·팀 이름·분석·코치 의견을 경기별 폴더로 저장해 다시 보거나, 받는 사람이 비밀번호 없이 바로 여는 조회 링크로 공유할 수 있어요(링크에는 코드가 없고 경기 분석만 보여서 방에는 들어갈 수 없어요. 링크는 방마다 하나라 이 방의 다른 경기 폴더도 보이고, 새 링크로 바꾸거나 끄면 모든 폴더의 예전 링크가 끊겨요).</li>
-        <li><b>팀 누적 분석</b>남자부·여자부를 고르고 팀 이름만 적으면 그 부의 저장된 경기 폴더에서 그 팀이 나온 경기를 모두 모아(같은 팀 이름이어도 부별 기록은 섞이지 않아요), 맨 위 한눈에(전적·세트·득점률) 아래를 두 탭으로 나눠 보여줘요. <b>🏐 우리팀 분석</b> 탭은 지금 이 팀의 모습이에요: 전체 지표(상대팀을 고르면 그 상대 기준으로 두 탭의 카드가 모두 바뀌고 🧠 대비 전략이 나와요), 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분)와 그 오른쪽(휴대폰은 아래)의 처음 vs 지금 레이더(처음 3경기와 최근 3경기의 지표 모양), 그 아래 실점 원인 카드(가운데 실점 원인 지도, 왼쪽 이 팀 범실로 내준 점수 순위, 오른쪽 상대가 잘해서 낸 점수 순위), 모든 경기를 합친 상세 분석(공격 방식·블로킹·토스·코트 위치 득점/실점/범실). <b>📈 누적 경기 분석</b> 탭은 경기가 쌓이며 달라진 것이에요: 성장 분석(지표별 성장 곡선, 득점률이 바뀐 이유 폭포), 경기별 흐름(최근 2경기와 이전 비교, 가장 강했던·약했던 경기), 경기별 지표 온도표(칸을 누르면 어떤 기록으로 계산했는지), 위기 관리(3점 연속 실점·20점 이후 득점률), 실점 구성 변화, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 승부 열쇠. ⭐ 우리팀을 정해 두면 다른 팀은 상대 전력 분석(막을 것·노릴 것·맞대결 전적)으로 보여줘요.</li>
-        <li><b>경기 분석(AI) · 준비 중</b>지금은 정확도를 높이는 중이라 탭을 흐리게 두고 잠시 쉬어요. 다시 열면 이렇게 동작해요: 내 경기 영상 파일을 고르거나 휴대폰으로 바로 찍고 두 팀 유니폼을 적으면 AI(Google Gemini)가 영상을 구간별로 나눠 봐요. 점수판이 보이면 점수판 숫자가 바뀌는 순간으로 득실 순서·세트를 정하고, 안 보이면 0.1초 간격으로 랠리를 찾아요. 세트 결과를 적어 두면 그보다 많은 세트·점수는 걸러요. 그다음 랠리마다 네 시각(공의 흐름 / 토스·공격수 / 관련 선수 / 심판 판정)으로 따로 다시 본 뒤 겹치는 답을 골라, 수동 분석에서 누르는 칸(득실·세부 상황·방식·공 방향·토스 순서·관련 선수·블로킹 자리)을 모두 채워요. 분석은 언제나 꼼꼼히 해요. 득실은 주심이 가리킨 팀, 반칙 수신호, 선심 깃발(위로 아웃·아래로 인·깃발 끝 쓸기 터치아웃)을 먼저 따르고, 선심이 서 있는 곳 앞의 선을 경기장 라인으로 삼아요. 포지션은 전술 시뮬레이션에 놓아 둔 대형의 자리와 맞춰 정하고, 관련 선수는 경기 정보 명단의 등번호(안 보이면 포지션)로 찾아 넣고, 서브 순서를 적어 두면 누가 서브할 차례인지 계산해 서버가 다르면 ⚠️로 알려 줘요. 공격 위치는 AI가 붙인 이름보다 공을 때린 자리(왼쪽 안테나에서 거리)·토스 높이·세터 뒤인지·속공 페이크를 보고 정해서 레프트와 앞차, 백차와 라이트를 가르고, 랠리의 토스는 시각까지 적어 네 시각의 답을 합쳐 빠짐없이(2단 토스 포함) 남겨요. AI 모델은 Flash(기본), Pro(결제를 연결한 키만, 더 꼼꼼하지만 요금이 약 4배), Ultra(결제를 연결한 키만, Google의 가장 높은 모델로 가장 비쌈) 중에 고르고, 고르면 예상 요금이 바로 나와요. 점수판과 다르거나 확신이 낮은 줄은 ⚠️로 표시돼서 시간을 눌러 영상으로 확인하고 고친 뒤, 새 경기 카드에서 고른 경기 폴더에 넣으면 수동 기록과 똑같이 그래프·종합 분석·팀 누적 분석에 들어가요. 넣은 기록의 시간을 누르면 그 영상의 그 장면으로 가요. 영상은 내 키로 Google에 올라가 48시간 뒤 저절로 지워지고, 학생이 찍힌 영상은 결제를 연결한 키로 써요. AI는 쓰는 사람마다 자기 Gemini API 키(Google AI Studio에서 무료로 받아요)를 넣어 쓰고, 사용량은 그 사람 키에만 쌓여요. 무료 키의 하루 한도는 매일 오후 4시(11월 초~3월 초는 오후 5시)에 다시 채워지고, 한도에 걸려도 화면을 열어 두면 한도가 채워질 때 저절로 이어서 보고, 화면을 닫았다 열어도 진행 상황이 기기에 남아 🤖 이어서 분석으로 멈춘 곳부터 이어가요.</li>
-        <li><b>눈이 편한 화면</b>양쌤스튜디오의 밝은 체육관 화면(기본), 어두운 화면, 밝고 또렷한 화면, 오래 봐도 눈이 덜 피로한 눈 보호 화면 중에서 고를 수 있어요.</li>
-        <li><b>대형 정리와 최종 확정</b>우리팀·상대팀·의견·디테일 머리말로 폴더를 정리하고, 대형마다 의도·우발 상황 대처를 코멘트로 남겨요. 개설자는 의견들을 비교해 공격 상황별 ⭐ 최종 대형을 확정할 수 있어요.</li>
-        <li><b>링크·GIF 공유</b>보기 전용 링크(코멘트 포함)나 GIF로 대형을 보내요. PC 카톡은 GIF를 저장해 대화창에 끌어다 놓으면 돼요.</li>
-        <li><b>팀과 함께 사용</b>코드를 만들어 팀원들과 공유하면, 같은 대형·기록을 함께 보고 수정할 수 있어요. 구성원별로 포지션·대회 출전 여부를 관리하고, 누가 언제 무엇을 수정했는지 활동 로그로 확인할 수 있어요.</li>
+        <li><b>전술 시뮬레이션</b>상대 공격·서브와 우리 공격 커버까지 13가지 상황에서 대형이 어떻게 움직이는지 코트 비율 그대로 재생해요. 기본 대형 12가지로 시작해서 공격 위치·템포·페이크·공 떨어지는 곳을 바꾸고, 내 대형으로 저장해요.</li>
+        <li><b>블로킹</b>도트를 네트 앞 블로킹 칸에 놓아야 블로커로 쳐요. 공이 네트를 넘는 자리에 블로커가 2명 이상 있으면 막힘, 1명이면 터치로 그려요.</li>
+        <li><b>경기 분석(수동)</b>경기를 보며 결과 → 상황 → 기록하기 순서로 1점씩 남겨요. 토스 순서·공격 방식·공 방향·관련 선수는 필요할 때만 더해요. 세트별 점수, 득점·실점 원인, 블로킹, 세터 배분을 그래프로 보여 주고, 경기마다 폴더로 저장해요.</li>
+        <li><b>팀 누적 분석</b>저장한 경기 폴더에서 한 팀의 경기를 모아 지금의 모습(우리팀 분석)과 경기가 쌓이며 달라진 것(누적 경기 분석)을 보여 줘요. 우리팀을 정해 두면 다른 팀은 상대 전력 분석으로 바뀌어요.</li>
+        <li><b>경기 분석(AI)</b>정확도를 높이는 중이라 잠시 쉬어요.</li>
+        <li><b>공유</b>대형은 보기 전용 링크나 GIF로, 경기 분석은 조회 링크로 보내요.</li>
+        <li><b>팀과 함께 쓰기</b>코드를 만들어 팀원과 나누면 같은 대형·기록을 함께 보고 고쳐요. 누가 언제 무엇을 고쳤는지 활동 로그에 남아요.</li>
+        <li><b>화면 모드</b>기본(양쌤)·어두운·또렷한·눈 보호 중에서 골라요.</li>
       </ul>
       <p><b>코드는 이렇게 만들어요.</b></p>
       <ol>
         <li>"새 코드 만들기" 탭에서 원하는 코드 이름을 정해요.</li>
-        <li><b>개설자 비밀번호</b>와 <b>조회 비밀번호</b>를 서로 다르게 하나씩 정해요.</li>
+        <li><b>개설자 비밀번호</b>와 <b>조회 비밀번호</b>를 서로 다르게, 6자 이상으로 하나씩 정해요.</li>
         <li>완성된 코드와 조회 비밀번호를 팀원들에게 공유하면, 팀원들이 이름을 적고 들어와서 함께 볼 수 있어요.</li>
       </ol>
       <p><b>개설자 비밀번호</b>로 들어온 사람은 모든 기능을 다 쓸 수 있는 개설자가 돼요. <b>조회 비밀번호</b>로 들어온 사람은 처음엔 보기만 할 수 있고, 이후 개설자가 수정 권한을 줄 수 있어요. 두 비밀번호 모두 설정 화면에서 언제든 바꿀 수 있고요. 비밀번호는 되돌릴 수 없는 암호(해시)로만 저장되고, 누가 개설자·수정 권한·조회인지는 서버가 직접 확인해요. 한 번 들어온 기기는 다음부터 비밀번호 없이 자동으로 들어오고, 다른 기기에서는 비밀번호로 다시 들어와요.</p>
@@ -2887,9 +2897,9 @@
     <h2>🏐 기능 설명 &amp; 사용 설명</h2>
     <div class="modal-body">
       <div class="guide-intro">
-        <p style="margin:0 0 8px;">탭에서 기능을 고르고 <b>다음 ▶</b>으로 넘겨보세요. 위쪽 데모가 실제 사용하는 모습을 보여줘요.</p>
+        <p style="margin:0 0 8px;">탭에서 기능을 고르고 <b>다음 ▶</b>으로 넘겨요. 위쪽 미리 보기가 실제로 쓰는 모습을 보여 줘요.</p>
         <div class="guide-legend"><span><i style="background:var(--accent)"></i>전술 시뮬레이션</span><span><i style="background:var(--accent-2)"></i>경기 분석(수동)·팀 누적 분석</span><span><i style="background:var(--good)"></i>설정</span></div>
-        <p style="margin:8px 0 0;">카드 위 색 띠가 탭을, 카드 안 아이콘이 붙은 칸 하나가 기능 하나를 뜻해요.</p>
+        <p style="margin:8px 0 0;">카드 위 색 띠가 탭을, 카드 안에서 제목 앞에 색 막대가 있는 칸 하나가 기능 하나예요.</p>
       </div>
       <div class="seg" id="guideTabSeg">
         <button data-guide="sim" class="active">🏐 전술 시뮬레이션</button>
@@ -3076,7 +3086,7 @@
         <button class="tl-btn primary" id="btnPlay" aria-label="재생">▶</button>
         <button class="tl-btn" id="btnReset" aria-label="리셋">⟲</button>
         <div class="tl-mid">
-          <div class="tl-phase" id="phaseLabel">대기 중 — 재생을 눌러보세요</div>
+          <div class="tl-phase" id="phaseLabel">대기 중 — ▶ 재생</div>
           <input type="range" id="timeline" min="0" max="100" value="0" />
         </div>
       </div>
@@ -3450,7 +3460,8 @@
         <button class="btn primary" id="btnTeamAnalysis" type="button">📊 분석하기</button>
       </div>
       <div class="chip-pick ta-chips" id="teamAnalysisChips"></div>
-      <div class="field-note" style="margin-top:6px;">위에서 고른 부(남자부·여자부)의 저장된 경기 폴더 중 📋 경기 정보에 이 팀 이름(우리팀·상대팀 어느 쪽이든)이 적힌 경기만 모아 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 실점 원인(지도와 범실·상대 득점 순위), 경기별로 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표를 막대·띠·점 그래프로 보여줘요. 아래 팀 이름을 눌러도 바로 분석하고, 그래프에 손가락을 대거나 마우스를 올리면 정확한 수가 나와요. 저장된 폴더 카드에서 <b>⭐ 우리팀</b>을 정했으면 이 화면을 열자마자 우리팀을 분석하고, 다른 팀은 <b>🔍 상대 전력 분석</b>으로 바뀌어 맨 앞에 우리팀이 그 팀을 만났을 때 막을 것·유도할 범실·잘 통한 공격·맞대결 전적을 정리해요.</div>
+      <div class="field-note" style="margin-top:6px;">고른 부에서 이 팀 이름이 적힌 경기만 모아 성적·플레이 체제·실점 원인·경기별 흐름을 그래프로 보여 줘요. 그래프를 누르거나 마우스를 올리면 정확한 수가 나와요.</div>
+      <details class="note-more"><summary>자세히</summary><div class="field-note">우리팀·상대팀 어느 쪽에 적혔든 모아요. 보여 주는 것: 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 실점 원인(지도와 범실·상대 득점 순위), 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표. 경기 폴더에서 <b>⭐ 우리팀</b>을 정했으면 이 화면을 열자마자 우리팀을 분석하고, 다른 팀은 <b>🔍 상대 전력 분석</b>(막을 것·유도할 범실·잘 통한 공격·맞대결 전적)으로 보여 줘요.</div></details>
       <div id="teamAnalysisResult"></div>
   </div>
   <span id="matchSaveHome" hidden></span>
@@ -3482,7 +3493,8 @@
       <input type="text" id="newOurNameInput" class="login-input" style="margin-top:0; flex:1; min-width:0;" placeholder="우리팀">
     </div>
     <button class="btn primary" id="btnNewMatchFolder" style="width:100%; margin-top:10px;" title="적은 경기 정보로 경기 폴더를 만들고, 이후 기록을 그 폴더에 자동 저장해요">🆕 새 경기 시작</button>
-    <div class="field-note" style="margin-top:6px;">경기 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 누르면 화면이 비워지고, 이후 기록이 그 폴더에 자동으로 저장돼요(따로 저장 버튼을 누를 필요 없어요). 부는 지금 경기 것이, 우리팀 이름은 아래 <b>⭐ 우리팀</b>(정하지 않았으면 지금 경기의 우리팀)이 미리 들어가 있어요. 포지션 명단과 시작 뒤 고칠 내용은 아래 📋 경기 정보에서 바꿔요. 폴더 없이 남긴 기록이 화면에 있으면 그 기록을 새 폴더에 담을지 먼저 물어봐요.</div>
+    <div class="field-note" style="margin-top:6px;"><b>🆕 새 경기 시작</b>을 누르면 화면이 비워지고, 이후 기록은 그 폴더에 저절로 저장돼요.</div>
+    <details class="note-more"><summary>자세히</summary><div class="field-note">부는 지금 경기 것이, 우리팀 이름은 <b>⭐ 우리팀</b>(정하지 않았으면 지금 경기의 우리팀)이 미리 들어가 있어요. 포지션 명단과 시작 뒤 고칠 내용은 📋 경기 정보에서 바꿔요. 폴더 없이 남긴 기록이 화면에 있으면 그 기록을 새 폴더에 담을지 먼저 물어봐요.</div></details>
     </div>
     <div class="fgroup">
       <div class="fgroup-head"><span class="fg-ic">📂</span><span class="fg-title">저장된 폴더 불러오기</span><span class="fg-sub">다시 보거나 조회 링크로 공유해요</span></div>
@@ -3499,7 +3511,7 @@
         <label for="homeTeamSelect">⭐ 우리팀</label>
         <select id="homeTeamSelect"><option value="">정하지 않음 (모든 경기를 한 목록에)</option></select>
       </div>
-      <div class="field-note" style="margin-top:4px;">우리팀을 정하면 목록이 <b>⭐ 우리팀 경기</b>와 <b>기타</b>(우리팀이 안 나온 다른 팀끼리의 경기)로 나뉘어요. 팀 이름은 각 폴더 📋 경기 정보에 적은 우리팀·상대팀 이름에서 골라요. 정해 두면 새 경기의 우리팀 칸, 📊 팀 누적 분석, 기타 경기의 종합 분석, 위치 판단 대형 자동 고르기도 이 팀 기준으로 맞춰져요.</div>
+      <div class="field-note" style="margin-top:4px;">우리팀을 정하면 목록이 <b>⭐ 우리팀 경기</b>와 <b>기타</b>로 나뉘고, 새 경기·팀 누적 분석·위치 판단 대형 고르기도 이 팀 기준으로 맞춰져요.</div>
       <div class="active-folder-bar" id="activeFolderBar" style="display:none;">
         <div class="active-folder-text" id="overwriteHint"></div>
       </div>
@@ -3511,7 +3523,8 @@
         <div class="orphan-text" id="homeSideText"></div>
         <button class="btn primary" id="btnSwapSides" type="button">⇄ 🔵 우리 쪽으로 바꾸기</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기의 기록·경기 정보(부·팀 이름·명단)·그래프·코치 의견으로 화면이 바뀌고(부를 안 정한 예전 폴더는 📋 경기 정보가 펼쳐져서 바로 고를 수 있어요), 이후 기록은 그 폴더에 자동 저장돼요. 고를 때마다 서버의 최신 내용을 받아 와서, 휴대폰·PC를 함께 써도 다른 기기에서 저장한 폴더와 기록이 그대로 불러와져요(명단이 없는 예전 폴더는 명단이 비어 있어요). ✏️ 이름 바꾸기 · 📄 다른 이름으로 복제 · 🗑️ 삭제 · 🔗 조회 링크(받는 사람은 비밀번호 없이 바로 열어 보지만, 경기 분석만 보이고 방에는 들어갈 수 없어요). 조회 링크는 방마다 하나라서, 받은 사람은 이 방의 다른 경기 폴더와 포지션 명단도 볼 수 있어요. 🔄 새 링크로 바꾸기·🚫 링크 끄기를 하면 모든 폴더의 예전 링크가 함께 끊겨요(개설자·수정 권한 구성원만 할 수 있어요).</div>
+      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기로 화면이 바뀌고, 이후 기록은 그 폴더에 저장돼요. ✏️ 이름 바꾸기 · 📄 복제 · 🗑️ 삭제</div>
+      <details class="note-more"><summary>자세히</summary><div class="field-note">고를 때마다 서버의 최신 내용을 받아 와서, 휴대폰·PC를 함께 써도 다른 기기에서 저장한 기록이 그대로 불러와져요. 부를 안 정한 예전 폴더는 📋 경기 정보가 펼쳐져서 바로 고를 수 있어요. 🔗 조회 링크를 받은 사람은 비밀번호 없이 열어 경기 분석만 보고 방에는 들어올 수 없어요. 링크는 방마다 하나라서 이 방의 다른 경기 폴더와 포지션 명단도 보여요. 🔄 새 링크로 바꾸기·🚫 링크 끄기를 하면 모든 폴더의 예전 링크가 함께 끊겨요(개설자·수정 권한 구성원만).</div></details>
       <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
         <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
         <button class="btn" id="btnCopyFolderLink" style="margin-top:6px;">링크 복사</button>
@@ -3681,7 +3694,7 @@
         </div>
         <div class="card" id="analysisCard">
           <h2>종합 분석</h2>
-          <div class="field-note" style="margin-top:0;">아래 세트 버튼으로 고른 범위(전체·세트)의 기록으로 강점, 줄일 수 있는 실점, 상대의 주 득점 루트를 자동으로 정리해요. 세트 버튼은 그래프 카드와 함께 움직여요. 실제 경기 흐름은 코치님이 가장 잘 아시니, 아래에 의견을 더해 완성해보세요.</div>
+          <div class="field-note" style="margin-top:0;">아래 세트 버튼으로 고른 범위(전체·세트)의 기록으로 강점, 줄일 수 있는 실점, 상대의 주 득점 루트를 자동으로 정리해요. 세트 버튼은 그래프 카드와 함께 움직여요. 자동 정리는 기록만 보고 쓴 것이라, 경기 흐름은 아래 코치 의견에 직접 더해 주세요.</div>
           <div class="graph-set-row" style="margin-bottom:10px;">
             <span class="graph-set-label">세트</span>
             <div class="seg set-scope-seg" id="analysisSetSeg">
@@ -3693,7 +3706,7 @@
           </div>
           <div id="autoAnalysis" style="margin-bottom:12px;"></div>
           <label class="field-label">코치 의견 (직접 작성)</label>
-          <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어보세요."></textarea>
+          <textarea id="coachNotes" class="login-input" style="margin-top:0; min-height:120px; resize:vertical; font-family:inherit;" placeholder="잘한 점, 보완할 점, 다음 훈련에서 강조할 부분 등을 자유롭게 적어요."></textarea>
           <div class="field-note" style="margin-top:4px;"><span class="only-room">코치 의견은 서버에 저장되고 🔗 조회 링크를 받은 사람도 볼 수 있어요.</span><span class="only-local">코드 없이 쓰는 중이라 코치 의견은 이 기기에만 저장돼요.</span> 선수 실명이나 부상·건강 상태는 적지 말아 주세요.</div>
         </div>
       </div>
@@ -3926,7 +3939,7 @@
         <p style="margin:0 0 8px;"><b>서브 순서</b> — 📋 경기 정보 명단 아래에 두 팀 서브 순서(등번호)를 적어 두면, 앞 랠리 득점 팀이 서브하고 서브권이 넘어올 때마다 다음 사람이 서브하는 흐름으로 서버를 계산해 AI에게 알려 줘요. AI가 본 서버가 순서와 다르거나, 서브한 팀이 앞 랠리 득점 팀과 다르면 ⚠️로 알려 줘요(득실 순서가 틀렸는지 찾는 단서예요). 세트마다 첫 서버는 AI가 본 번호로 맞춰요.</p>
         <p style="margin:0 0 8px;"><b>채우는 칸</b> — 수동 분석처럼 랠리마다 득실·세부 상황·방식·공 방향·토스 순서(2단 토스 포함)·관련 선수·블로킹 자리를 모두 채워요. 토스는 시각까지 적게 해서 네 시각의 답을 맞춰 합치니, 한 시각이 놓친 토스도 다른 시각이 보면 들어가요.</p>
         <p style="margin:0 0 8px;"><b>공격 위치</b> — AI가 붙인 이름보다 공을 때린 자리를 믿어요. 공격하는 팀이 네트를 볼 때 왼쪽 안테나 2m 안에서 높은 토스면 레프트, 그보다 안쪽에서 낮은 토스나 속공 페이크가 있으면 앞차, 세터 뒤 1.5~3.5m에서 낮고 빠르면 백차, 오른쪽 안테나 2m 안에서 높은 토스면 라이트예요. 마지막 토스와 공격수 포지션도 함께 맞춰 보고, 갈리면 ⚠️로 알려 줘요.</p>
-        <p style="margin:0 0 8px;"><b>AI 모델</b> — 점수판 읽기·랠리 찾기는 늘 Flash로 하고, 랠리 자세히 보기만 고른 모델로 봐요. <b>Pro</b>는 결제를 연결한 키(Tier 1 이상)만 쓸 수 있고, 더 꼼꼼한 대신 요금이 Flash의 약 4배이고 느려요. <b>Ultra</b>는 Google의 가장 높은 모델(지금은 Gemini 4 Argon)로 봐요. 역시 결제를 연결한 키만 되고, 요금이 Flash의 약 4배(12월 1일부터 약 8배)로 가장 비싸요. 내 키로 Ultra를 못 쓰면 Pro로 보고, 끝나면 실제로 쓴 모델 이름이 나와요. Gemini 앱의 <b>Google AI Ultra 구독</b>과는 따로라서, 구독해도 API 키 요금은 따로 나가요. 예상 요금은 분석 방법 아래에 나와요(1달러 1,400원, 대략).</p>
+        <p style="margin:0 0 8px;"><b>AI 모델</b> — 점수판 읽기·랠리 찾기는 늘 Flash로 하고, 랠리 자세히 보기만 고른 모델로 봐요. <b>Pro</b>는 결제를 연결한 키(Tier 1 이상)만 쓸 수 있고, 더 꼼꼼한 대신 요금이 Flash의 약 4배이고 느려요. <b>Ultra</b>는 Google의 최상위 모델(지금은 Gemini 4 Argon)로 봐요. 역시 결제를 연결한 키만 되고, 요금이 Flash의 약 4배(12월 1일부터 약 8배)로 가장 비싸요. 내 키로 Ultra를 못 쓰면 Pro로 보고, 끝나면 실제로 쓴 모델 이름이 나와요. Gemini 앱의 <b>Google AI Ultra 구독</b>과는 따로라서, 구독해도 API 키 요금은 따로 나가요. 예상 요금은 분석 방법 아래에 나와요(1달러 1,400원, 대략).</p>
         <p style="margin:0 0 8px;"><b>득실 정하는 법</b> — 기록원처럼 마지막 터치 팀과 끝난 방식(인·아웃·네트·반칙)을 먼저 보고, 득점·범실은 기록 규칙으로 정해요. 공격이 라인 밖이면 공격 팀 범실(아웃), 블로커에 맞고 나가면 공격 팀 득점(터치아웃), 네트에 걸리면 그 팀 범실이에요.</p>
         <p style="margin:0;"><b>포지션</b> — 등번호가 보이면 명단의 그 번호로 정하고, 안 보이면 전술 시뮬레이션에 놓아 둔 대형(팀 이름과 같은 대형 폴더가 있으면 그 폴더, 없으면 기본 대형)의 자리와 맞춰 정해요. 관련 선수는 📋 경기 정보 명단에서 찾아 넣어요. 명단에 포지션·등번호를 적어 두면 더 많이 채워져요.</p>
       </div>
@@ -3970,7 +3983,7 @@
         </div>
       </div>
       <div class="fgroup" id="aiHowGroup">
-        <div class="fgroup-head"><span class="fg-ic">🔍</span><span class="fg-title">분석 방법</span><span class="fg-sub">언제나 꼼꼼히 봐요</span></div>
+        <div class="fgroup-head"><span class="fg-ic">🔍</span><span class="fg-title">분석 방법</span><span class="fg-sub">랠리마다 네 번 나눠 봐요</span></div>
         <label class="field-label" style="margin-top:0;">📺 영상에 점수판이 보이나요?</label>
         <div class="seg" id="aiBoardSeg">
           <button type="button" data-board="1" class="active">보여요</button><button type="button" data-board="0">안 보여요</button>
@@ -5216,7 +5229,7 @@
   function phaseText(){
     if(isOur(scenario)){
       const atk=OUR_ATTACKS[scenario];
-      if(progress<=0.02) return '대기 중 — 재생을 눌러보세요';
+      if(progress<=0.02) return '대기 중 — ▶ 재생';
       if(progress<atk.phase.pass) return '리시브(패스)';
       if(progress<atk.phase.toss) return '토스';
       if(progress<atk.phase.hit) return '공격(스파이크)';
@@ -5224,7 +5237,7 @@
       return '완료';
     }
     const atk=ATTACKS[scenario], T=atk.timing;
-    if(progress<=0.02) return '대기 중 — 재생을 눌러보세요';
+    if(progress<=0.02) return '대기 중 — ▶ 재생';
     if(atk.serve){
       if(progress<T.approach) return '서버 준비';
       if(progress<T.ballEnd) return '서브';
@@ -5653,7 +5666,7 @@
     const url = shareBaseUrl() + '#vshare=' + await encodeShare(buildSharePayload(title, items));
     document.getElementById('shareFormationLinkInput').value = url;
     document.getElementById('shareLinkResult').style.display = 'block';
-    document.getElementById('shareLinkMeta').textContent = `대형 ${items.length}개 · 링크 길이 ${url.length.toLocaleString()}자` + (url.length>8000 ? ' — 메신저에 따라 너무 긴 링크는 잘릴 수 있어요. 폴더 대신 대형 하나씩 공유해보세요.' : '');
+    document.getElementById('shareLinkMeta').textContent = `대형 ${items.length}개 · 링크 길이 ${url.length.toLocaleString()}자` + (url.length>8000 ? ' — 메신저에 따라 너무 긴 링크는 잘릴 수 있어요. 폴더 대신 대형을 하나씩 공유해 주세요.' : '');
   });
   document.getElementById('btnCopyFormationLink').addEventListener('click', ()=>{
     const inp = document.getElementById('shareFormationLinkInput');
@@ -5906,7 +5919,7 @@
     const box = document.getElementById('presetSearchBox');
     if(box.style.display==='none') return; // collapsed — don't render anything until the user opens the search
     const query = document.getElementById('presetSearchInput').value.trim().toLowerCase();
-    if(!query){ list.innerHTML='<span class="preset-empty">폴더 이름을 입력해서 검색해보세요.</span>'; return; }
+    if(!query){ list.innerHTML='<span class="preset-empty">폴더나 대형 이름을 적으면 찾아 줘요.</span>'; return; }
     if(presets.length===0){ list.innerHTML='<span class="preset-empty">저장된 시작 대형이 없어요</span>'; return; }
 
     const groups = {}; const order = [];
@@ -7604,7 +7617,7 @@
   function buildGuidePlayers(){
     GUIDE_ORDER.forEach(sec=>{
       const el = guidePlayerEl(sec);
-      el.innerHTML = `<div class="gd-stage"><span class="gd-badge">DEMO</span><div class="gd-scene"></div><svg class="gd-cursor" viewBox="0 0 22 26"><path d="M2 2 L2 21 L7 16.5 L10.5 24 L14 22.5 L10.5 15 L17 15 Z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+      el.innerHTML = `<div class="gd-stage"><span class="gd-badge">미리 보기</span><div class="gd-scene"></div><svg class="gd-cursor" viewBox="0 0 22 26"><path d="M2 2 L2 21 L7 16.5 L10.5 24 L14 22.5 L10.5 15 L17 15 Z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
         <div class="gd-text"><div class="gd-step-meta"></div><h3 class="gd-step-title"></h3><p class="gd-step-text"></p></div>
         <div class="gd-nav"><button class="btn gd-prev" type="button">◀ 이전</button><div class="gd-dots"></div><button class="btn primary gd-next" type="button">다음 ▶</button></div>`;
       el.querySelector('.gd-prev').addEventListener('click', ()=>goGuideStep(guideState.step-1));
@@ -7635,7 +7648,7 @@
     i = Math.max(0, Math.min(steps.length-1, i));
     guideState.step = i;
     const el = guidePlayerEl(guideState.section), st = steps[i];
-    el.querySelector('.gd-step-meta').textContent = `STEP ${i+1} / ${steps.length}`;
+    el.querySelector('.gd-step-meta').textContent = `${i+1} / ${steps.length}`;
     el.querySelector('.gd-step-title').textContent = st.title;
     el.querySelector('.gd-step-text').innerHTML = st.text;
     el.querySelector('.gd-prev').disabled = i===0;
@@ -11517,7 +11530,7 @@
     const el = document.getElementById('autoAnalysis');
     const entries = allEntries();
     if(!entries.length){
-      el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어서 자동 요약을 만들 수 없어요. 🎯 빠른 기록 모드에서 득점·실점을 기록해보세요.' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
+      el.innerHTML = `<span class="field-note" style="margin:0;">${graphSet==='all' ? '아직 기록이 없어서 자동 요약을 만들 수 없어요. 🎯 빠른 기록 모드에서 득점·실점을 기록하면 여기에 정리돼요.' : scopeLabel()+' 기록이 아직 없어요.'}</span>`;
       return;
     }
     const topByMain = bucket=>{
@@ -11554,21 +11567,21 @@
     // 1) 주 득점 루트(자력 득점 TOP + 세터 배분 + 공격 위치 성공률)
     const route = t => { const top = topByMain(S[t].me.score); if(!top) return ''; const d = routeDetails(t); return `${tag(t)} — 자력 득점 ${S[t].self}점 중 "${top.name}" ${top.n}회(${pct(top.n,S[t].self)}%)${top.det}로 가장 많아요.${d?` ${d}.`:''}`; };
     lines.push(topic('✅ 주 득점 루트 <span class="aa-sub">— 가장 많이 점수를 낸 상황, 세터 배분, 공격 위치별 성공률</span>', [route('our'), route('opp')],
-      (o.self!==p.self ? `자력 득점은 <b>${NAME[o.self>p.self?'our':'opp']}</b>이(가) ${Math.abs(o.self-p.self)}점 많아요. ` : '') + (scout ? `${H}이(가) 두 팀을 만나면 위 주 득점 루트부터 막도록 블로킹·수비 위치를 준비해요.` : '상대의 주 득점 루트에 맞춰 수비 대형·블로킹 위치를 점검해보세요.')));
+      (o.self!==p.self ? `자력 득점은 <b>${NAME[o.self>p.self?'our':'opp']}</b>이(가) ${Math.abs(o.self-p.self)}점 많아요. ` : '') + (scout ? `${H}이(가) 두 팀을 만나면 위 주 득점 루트부터 막도록 블로킹·수비 위치를 준비해요.` : '상대의 주 득점 루트에 맞춰 수비 대형·블로킹 위치를 점검해 보세요.')));
     // 2) 범실
     const err = t => { const top = topByMain(S[t].me.err); if(!top) return `${tag(t)} — 범실이 없어요.`; const lostTot = S[t].lost; return `${tag(t)} — 범실 ${S[t].errs}회 중 "${top.name}" ${top.n}회${top.det}로 가장 많아요. 내준 점수의 ${pct(S[t].errs,lostTot)}%가 ${NAME[t]} 실수였어요.`; };
     lines.push(topic('⚠️ 범실 <span class="aa-sub">— 줄일 수 있는 실점</span>', [err('our'), err('opp')],
       scout ? `두 팀이 자주 범실한 상황이 나오도록 ${H}의 서브·공격 코스를 정하면 점수로 이어질 수 있어요.`
         : o.errs!==p.errs ? `범실은 <b>${NAME[o.errs<p.errs?'our':'opp']}</b>이(가) ${Math.abs(o.errs-p.errs)}회 적어요. 가장 많은 범실 상황부터 훈련하면 바로 점수로 이어져요.` : ''));
     // 3) 공격 결정률
-    const atk = t => S[t].atkTotal ? `${tag(t)} — 공격 결정률 ${S[t].atkRate}% (성공 ${S[t].atkWin} · 범실 ${S[t].atkErr} · 블로킹 당함 ${S[t].atkBlocked})${S[t].atkBlocked>=Math.max(2,S[t].atkWin/2)?' — 블로킹에 막힌 공격이 많아요. 공격 코스나 페인트·가볍게 볼처리를 섞어보세요':''}` : '';
+    const atk = t => S[t].atkTotal ? `${tag(t)} — 공격 결정률 ${S[t].atkRate}% (성공 ${S[t].atkWin} · 범실 ${S[t].atkErr} · 블로킹 당함 ${S[t].atkBlocked})${S[t].atkBlocked>=Math.max(2,S[t].atkWin/2)?' — 블로킹에 막힌 공격이 많아요. 공격 코스나 페인트·가볍게 볼처리를 섞어 보세요':''}` : '';
     if(o.atkTotal + p.atkTotal >= 3) lines.push(topic('🏐 공격 결정률 <span class="aa-sub">— 성공 ÷ (성공 + 범실 + 블로킹 당함)</span>', [atk('our'), atk('opp')], better(o.atkRate, p.atkRate, true, '%p', '공격 결정률')));
     // 4) 서브
     const srv = t => (S[t].serveWin+S[t].serveErr) ? `${tag(t)} — 서브 득점 ${S[t].serveWin} · 서브 범실 ${S[t].serveErr} (득실 ${S[t].serveWin-S[t].serveErr>0?'+':''}${S[t].serveWin-S[t].serveErr})` : '';
     if(o.serveWin+o.serveErr+p.serveWin+p.serveErr) lines.push(topic('🎯 서브', [srv('our'), srv('opp')], better(o.serveWin-o.serveErr, p.serveWin-p.serveErr, true, '점', '서브 득실')));
     // 5) 리시브
     const rcv = t => `${tag(t)} — 리시브 관련 실점 ${S[t].recvLoss}점 (${NAME[t==='our'?'opp':'our']} 서브 득점 + ${NAME[t]} 리시브·서브캐치 범실)`;
-    if(o.recvLoss + p.recvLoss) lines.push(topic('🛡️ 리시브', [rcv('our'), rcv('opp')], (o.recvLoss!==p.recvLoss ? `리시브는 <b>${NAME[o.recvLoss<p.recvLoss?'our':'opp']}</b>이(가) ${Math.abs(o.recvLoss-p.recvLoss)}점 덜 내줬어요. ${scout ? `리시브 실점이 많은 <b>${NAME[o.recvLoss>p.recvLoss?'our':'opp']}</b>을(를) 만나면 서브로 흔들어 보세요.` : '리시브 실점이 많은 팀은 리시브 대형을 다시 확인해보세요.'}` : '')));
+    if(o.recvLoss + p.recvLoss) lines.push(topic('🛡️ 리시브', [rcv('our'), rcv('opp')], (o.recvLoss!==p.recvLoss ? `리시브는 <b>${NAME[o.recvLoss<p.recvLoss?'our':'opp']}</b>이(가) ${Math.abs(o.recvLoss-p.recvLoss)}점 덜 내줬어요. ${scout ? `리시브 실점이 많은 <b>${NAME[o.recvLoss>p.recvLoss?'our':'opp']}</b>을(를) 만나면 서브로 흔들어 보세요.` : '리시브 실점이 많은 팀은 리시브 대형을 다시 확인해 보세요.'}` : '')));
     // 6) 블로킹
     const blkInf = blockInfluenceHTML();
     if(blkInf) lines.push(blkInf);
