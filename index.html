@@ -200,7 +200,7 @@
   .preset-folder-tools .preset-load-actions{ grid-template-columns:repeat(3, minmax(0,1fr)); }
   select:focus, button:focus-visible, input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
   optgroup{ color:var(--text-dim); font-style:normal; }
-  .field-note{ font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.5; }
+  .field-note{ font-size:12px; color:var(--muted); margin-top:8px; line-height:1.55; }
 
   .seg{ display:flex; flex-wrap:wrap; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:3px; gap:2px; }
   .seg button{ flex:1; min-width:44px; border:none; background:transparent; color:var(--text-dim); padding:10px 2px; border-radius:999px; font-size:11.5px; font-weight:600; font-family:inherit; cursor:pointer; }
@@ -861,6 +861,12 @@
   .note-box p + p{ margin-top:8px; }
   .feature-list{ list-style:none; padding-left:0 !important; }
   .feature-list li{ padding:10px 12px; margin-bottom:8px !important; background:var(--panel-2); border:1px solid var(--border); border-radius:10px; line-height:1.6; }
+  /* 줄글 속 키워드(굵은 글자): 본문보다 진한 글자색·조금 큰 크기에 옅은 형광 밑줄을 깔아 한눈에 보이게 */
+  .field-note b, .field-note strong, .modal-body p b, .feature-list li > b:not(:first-child), .feature-list li span b,
+  .guide-note-box b, .gd-step-text b, .tl-note b, .mission-letter b, .login-sub b{
+    color:var(--text); font-weight:700; font-size:1.06em;
+    background:linear-gradient(transparent 60%, var(--accent-soft) 60%); padding:0 1px; border-radius:2px;
+  }
   .feature-list li > b:first-child{ display:block; margin-bottom:3px; font-size:13.5px; color:var(--text); }
   .guide-legend{ display:flex; flex-wrap:wrap; gap:6px 14px; }
   .guide-legend span{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--text); }
@@ -2831,8 +2837,8 @@
     <button class="modal-close" id="btnCloseMission" type="button" aria-label="닫기">✕</button>
     <h2 class="mission-title" id="missionTitle">사람이 아니라<br><span class="hl">포지션</span>을 기록해요</h2>
     <div class="mission-letter">
-      <p>이 프로그램은 선수 한 명을 평가하려고 만든 게 아니에요. 기록은 사람 이름이 아니라 레프트, 세터 같은 자리에 쌓여요.</p>
-      <p>그 자리에 서는 사람은 누구든 같은 기록을 보고 같이 고민하면 좋겠어요. 숫자는 있는 그대로 보고, 잘한 것과 아쉬운 것은 서로 이야기해 주세요.</p>
+      <p>이 프로그램은 <b>선수 한 명을 평가하려고</b> 만든 게 아니에요. 기록은 사람 이름이 아니라 레프트, 세터 같은 <b>자리</b>에 쌓여요.</p>
+      <p>그 자리에 서는 사람은 누구든 <b>같은 기록을 보고 같이 고민</b>하면 좋겠어요. 숫자는 있는 그대로 보고, 잘한 것과 아쉬운 것은 <b>서로 이야기</b>해 주세요.</p>
       <p class="mission-sign">— 양쌤</p>
     </div>
     <div class="mission-actions">
@@ -2850,13 +2856,13 @@
       <p>이 프로그램은 선수 한 명이 아니라 <b>포지션</b>에 기록을 쌓아요. 그 자리에 서는 사람이 누구든 같은 기록을 보고 같이 고민하자는 뜻이에요.</p>
       <p><b>할 수 있는 일</b></p>
       <ul class="feature-list">
-        <li><b>전술 시뮬레이션</b>상대 공격·서브와 우리 공격 커버까지 13가지 상황에서 대형이 어떻게 움직이는지 코트 비율 그대로 재생해요. 기본 대형 12가지로 시작해서 공격 위치·템포·페이크·공 떨어지는 곳을 바꾸고, 내 대형으로 저장해요.</li>
-        <li><b>블로킹</b>도트를 네트 앞 블로킹 칸에 놓아야 블로커로 쳐요. 공이 네트를 넘는 자리에 블로커가 2명 이상 있으면 막힘, 1명이면 터치로 그려요.</li>
-        <li><b>경기 분석(수동)</b>경기를 보며 결과 → 상황 → 기록하기 순서로 1점씩 남겨요. 토스 순서·공격 방식·공 방향·관련 선수는 필요할 때만 더해요. 세트별 점수, 득점·실점 원인, 블로킹, 세터 배분을 그래프로 보여 주고, 경기마다 폴더로 저장해요.</li>
-        <li><b>팀 누적 분석</b>저장한 경기 폴더에서 한 팀의 경기를 모아 지금의 모습(우리팀 분석)과 경기가 쌓이며 달라진 것(누적 경기 분석)을 보여 줘요. 우리팀을 정해 두면 다른 팀은 상대 전력 분석으로 바뀌어요.</li>
+        <li><b>전술 시뮬레이션</b>상대 공격·서브와 우리 공격 커버까지 <b>13가지 상황</b>에서 대형이 어떻게 움직이는지 코트 비율 그대로 재생해요. <b>기본 대형 12가지</b>로 시작해서 공격 위치·템포·페이크·공 떨어지는 곳을 바꾸고, 내 대형으로 저장해요.</li>
+        <li><b>블로킹</b>도트를 <b>네트 앞 블로킹 칸</b>에 놓아야 블로커로 쳐요. 공이 네트를 넘는 자리에 블로커가 <b>2명 이상이면 막힘</b>, <b>1명이면 터치</b>로 그려요.</li>
+        <li><b>경기 분석(수동)</b>경기를 보며 <b>결과 → 상황 → 기록하기</b> 순서로 1점씩 남겨요. 토스 순서·공격 방식·공 방향·관련 선수는 필요할 때만 더해요. 세트별 점수, 득점·실점 원인, 블로킹, 세터 배분을 그래프로 보여 주고, <b>경기마다 폴더</b>로 저장해요.</li>
+        <li><b>팀 누적 분석</b>저장한 경기 폴더에서 <b>한 팀의 경기</b>를 모아 지금의 모습(<b>우리팀 분석</b>)과 경기가 쌓이며 달라진 것(<b>누적 경기 분석</b>)을 보여 줘요. 우리팀을 정해 두면 다른 팀은 상대 전력 분석으로 바뀌어요.</li>
         <li><b>경기 분석(AI)</b>정확도를 높이는 중이라 잠시 쉬어요.</li>
-        <li><b>공유</b>대형은 보기 전용 링크나 GIF로, 경기 분석은 조회 링크로 보내요.</li>
-        <li><b>팀과 함께 쓰기</b>코드를 만들어 팀원과 나누면 같은 대형·기록을 함께 보고 고쳐요. 누가 언제 무엇을 고쳤는지 활동 로그에 남아요.</li>
+        <li><b>공유</b>대형은 <b>보기 전용 링크나 GIF</b>로, 경기 분석은 <b>조회 링크</b>로 보내요.</li>
+        <li><b>팀과 함께 쓰기</b><b>코드</b>를 만들어 팀원과 나누면 같은 대형·기록을 함께 보고 고쳐요. 누가 언제 무엇을 고쳤는지 활동 로그에 남아요.</li>
         <li><b>화면 모드</b>기본(양쌤)·어두운·또렷한·눈 보호 중에서 골라요.</li>
       </ul>
       <p><b>코드는 이렇게 만들어요.</b></p>
@@ -3460,7 +3466,7 @@
         <button class="btn primary" id="btnTeamAnalysis" type="button">📊 분석하기</button>
       </div>
       <div class="chip-pick ta-chips" id="teamAnalysisChips"></div>
-      <div class="field-note" style="margin-top:6px;">고른 부에서 이 팀 이름이 적힌 경기만 모아 성적·플레이 체제·실점 원인·경기별 흐름을 그래프로 보여 줘요. 그래프를 누르거나 마우스를 올리면 정확한 수가 나와요.</div>
+      <div class="field-note" style="margin-top:6px;">고른 부에서 <b>이 팀 이름이 적힌 경기</b>만 모아 <b>성적·플레이 체제·실점 원인·경기별 흐름</b>을 그래프로 보여 줘요. 그래프를 누르거나 마우스를 올리면 정확한 수가 나와요.</div>
       <details class="note-more"><summary>자세히</summary><div class="field-note">우리팀·상대팀 어느 쪽에 적혔든 모아요. 보여 주는 것: 전체 성적, 지금의 플레이 체제(주 득점 루트·공격 위치·세터 배분), 실점 원인(지도와 범실·상대 득점 순위), 강했던·약했던 경기, 상대팀별 강했던 면·약했던 면, 이긴 경기와 진 경기를 가른 지표. 경기 폴더에서 <b>⭐ 우리팀</b>을 정했으면 이 화면을 열자마자 우리팀을 분석하고, 다른 팀은 <b>🔍 상대 전력 분석</b>(막을 것·유도할 범실·잘 통한 공격·맞대결 전적)으로 보여 줘요.</div></details>
       <div id="teamAnalysisResult"></div>
   </div>
@@ -3493,7 +3499,7 @@
       <input type="text" id="newOurNameInput" class="login-input" style="margin-top:0; flex:1; min-width:0;" placeholder="우리팀">
     </div>
     <button class="btn primary" id="btnNewMatchFolder" style="width:100%; margin-top:10px;" title="적은 경기 정보로 경기 폴더를 만들고, 이후 기록을 그 폴더에 자동 저장해요">🆕 새 경기 시작</button>
-    <div class="field-note" style="margin-top:6px;"><b>🆕 새 경기 시작</b>을 누르면 화면이 비워지고, 이후 기록은 그 폴더에 저절로 저장돼요.</div>
+    <div class="field-note" style="margin-top:6px;"><b>🆕 새 경기 시작</b>을 누르면 화면이 비워지고, 이후 기록은 <b>그 폴더에 저절로 저장</b>돼요.</div>
     <details class="note-more"><summary>자세히</summary><div class="field-note">부는 지금 경기 것이, 우리팀 이름은 <b>⭐ 우리팀</b>(정하지 않았으면 지금 경기의 우리팀)이 미리 들어가 있어요. 포지션 명단과 시작 뒤 고칠 내용은 📋 경기 정보에서 바꿔요. 폴더 없이 남긴 기록이 화면에 있으면 그 기록을 새 폴더에 담을지 먼저 물어봐요.</div></details>
     </div>
     <div class="fgroup">
@@ -3523,7 +3529,7 @@
         <div class="orphan-text" id="homeSideText"></div>
         <button class="btn primary" id="btnSwapSides" type="button">⇄ 🔵 우리 쪽으로 바꾸기</button>
       </div>
-      <div class="field-note" style="margin-top:4px;">폴더를 고르면 그 경기로 화면이 바뀌고, 이후 기록은 그 폴더에 저장돼요. ✏️ 이름 바꾸기 · 📄 복제 · 🗑️ 삭제</div>
+      <div class="field-note" style="margin-top:4px;">폴더를 고르면 <b>그 경기로 화면이 바뀌고</b>, 이후 기록은 그 폴더에 저장돼요. ✏️ 이름 바꾸기 · 📄 복제 · 🗑️ 삭제</div>
       <details class="note-more"><summary>자세히</summary><div class="field-note">고를 때마다 서버의 최신 내용을 받아 와서, 휴대폰·PC를 함께 써도 다른 기기에서 저장한 기록이 그대로 불러와져요. 부를 안 정한 예전 폴더는 📋 경기 정보가 펼쳐져서 바로 고를 수 있어요. 🔗 조회 링크를 받은 사람은 비밀번호 없이 열어 경기 분석만 보고 방에는 들어올 수 없어요. 링크는 방마다 하나라서 이 방의 다른 경기 폴더와 포지션 명단도 보여요. 🔄 새 링크로 바꾸기·🚫 링크 끄기를 하면 모든 폴더의 예전 링크가 함께 끊겨요(개설자·수정 권한 구성원만).</div></details>
       <div id="shareFolderLinkBox" style="display:none; margin-top:8px;">
         <input type="text" id="shareFolderLinkInput" class="login-input" style="margin-top:0;" readonly>
