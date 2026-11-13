@@ -15,6 +15,10 @@ service cloud.firestore {
     //    개설자·수정 권한·조회 권한 구분도 이 구성원 문서로 서버가 직접 지켜요.
     //  - 경기 폴더 조회 링크는 방과 따로 떨어진 vtShares/{무작위 번호} 문서만 읽어요.
     //    링크에는 코드가 없고, 그 문서에는 경기 분석 자료만 들어 있어서 방에는 들어갈 수 없어요.
+    //  - 복구 코드(2026-11): 개설자 비밀번호를 잊었을 때 쓰는 12자리 코드예요. 이것도 해시만
+    //    meta/secret의 recovery에 둬요. 복구 코드 해시를 claims/{uid}의 r에 내면, 같은 묶음으로 새 개설자
+    //    비밀번호와 "새" 복구 코드를 정하고 개설자가 될 수 있어요(한 번 쓴 복구 코드는 바로 바뀌어요).
+    //    조회 비밀번호는 이때 바꿀 수 없어요.
     //  - 예전 방식(kv/vt:room:코드 문서 하나에 비밀번호 원문이 든 방)은 개설자가 한 번 로그인하면
     //    새 방식으로 옮겨지고 예전 문서는 지워져요. 옮기기 전에도 예전 문서는 개설자 말고는 읽을 수 없어요.
     // ───────────────────────────────────────────────────────────────
@@ -101,6 +105,21 @@ service cloud.firestore {
         && myClaim(code).v == getAfter(secretPath(code)).data.view;
     }
 
+    // 복구 코드: 이 요청 직전의 secret.recovery와 내가 낸 해시(r)가 같은지(아직 복구 코드가 없으면 거절)
+    function recoveryOk(code) {
+      return hasClaim(code)
+        && exists(secretPath(code))
+        && get(secretPath(code)).data.get('recovery', '') != ''
+        && myClaim(code).get('r', '') == get(secretPath(code)).data.recovery;
+    }
+    // 복구 코드를 쓴 묶음: 복구 코드가 새것으로 바뀌고, 조회 비밀번호는 그대로
+    function recoveryRotated(code) {
+      return recoveryOk(code)
+        && existsAfter(secretPath(code))
+        && getAfter(secretPath(code)).data.get('recovery', '') != get(secretPath(code)).data.recovery
+        && getAfter(secretPath(code)).data.view == get(secretPath(code)).data.view;
+    }
+
     function memberShapeOk(d) {
       return d.keys().hasOnly(['role', 'name', 'position', 'status', 'gender', 'joinedAt', 'enteredAt'])
         && d.role in ['creator', 'editor', 'view']
@@ -110,9 +129,11 @@ service cloud.firestore {
         && d.get('gender', '') is string && d.get('gender', '').size() <= 4;
     }
     function secretShapeOk(d) {
-      return d.keys().hasOnly(['creator', 'view'])
+      return d.keys().hasOnly(['creator', 'view', 'recovery'])
         && d.creator is string && d.creator.size() == 64
-        && d.view is string && d.view.size() == 64;
+        && d.view is string && d.view.size() == 64
+        && d.get('recovery', '') is string
+        && (d.get('recovery', '') == '' || d.get('recovery', '').size() == 64);
     }
     function blobShapeOk(d) {
       return d.keys().hasOnly(['value', 'updatedAt'])
@@ -138,7 +159,9 @@ service cloud.firestore {
       allow create: if validCode(code) && signedIn() && secretShapeOk(request.resource.data)
         && !exists(roomPath(code)) && existsAfter(roomPath(code))
         && (!exists(legacyPath(code)) || isCreator(code));
-      allow update: if isCreator(code) && secretShapeOk(request.resource.data);
+      // 개설자, 또는 복구 코드가 맞는 기기(새 복구 코드로 바꾸는 경우만)
+      allow update: if secretShapeOk(request.resource.data)
+        && (isCreator(code) || recoveryRotated(code));
       allow delete: if isCreator(code);
     }
 
@@ -163,9 +186,10 @@ service cloud.firestore {
     match /vtRooms/{code}/claims/{uid} {
       allow read: if false;
       allow create, update: if validCode(code) && signedIn() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['c', 'v', 'legacy', 'legacyRe', 'at'])
+        && request.resource.data.keys().hasOnly(['c', 'v', 'r', 'legacy', 'legacyRe', 'at'])
         && request.resource.data.c is string && request.resource.data.c.size() <= 64
         && request.resource.data.v is string && request.resource.data.v.size() <= 64
+        && request.resource.data.get('r', '') is string && request.resource.data.get('r', '').size() <= 64
         && request.resource.data.get('legacy', '') is string && request.resource.data.get('legacy', '').size() <= 300
         && request.resource.data.get('legacyRe', '') is string && request.resource.data.get('legacyRe', '').size() <= 700
         && request.resource.data.at == request.time
@@ -178,16 +202,16 @@ service cloud.firestore {
     match /vtRooms/{code}/members/{uid} {
       allow get: if signedIn() && (request.auth.uid == uid || isCreator(code));
       allow list: if isCreator(code);
-      // 본인만 만들 수 있고, 개설자는 개설자 비밀번호, 조회는 조회 비밀번호가 맞아야 해요(수정 권한은 개설자만 줘요)
+      // 본인만 만들 수 있고, 개설자는 개설자 비밀번호(또는 복구 코드), 조회는 조회 비밀번호가 맞아야 해요(수정 권한은 개설자만 줘요)
       allow create: if validCode(code) && signedIn() && request.auth.uid == uid
         && memberShapeOk(request.resource.data)
-        && ((request.resource.data.role == 'creator' && creatorOk(code))
+        && ((request.resource.data.role == 'creator' && (creatorOk(code) || recoveryRotated(code)))
             || (request.resource.data.role == 'view' && viewOk(code)));
       allow update: if validCode(code) && signedIn() && memberShapeOk(request.resource.data) && (
         // 본인: 다시 입장(비밀번호 확인)하거나 이름을 적을 때. 역할은 개설자 비밀번호로만 올릴 수 있어요.
         (request.auth.uid == uid
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'name', 'enteredAt'])
-          && ((request.resource.data.role == 'creator' && creatorOk(code))
+          && ((request.resource.data.role == 'creator' && (creatorOk(code) || recoveryRotated(code)))
               || (request.resource.data.role == resource.data.role && (creatorOk(code) || viewOk(code)))))
         // 개설자: 다른 구성원의 권한·포지션·출전 상태·성별을 정해요
         || (request.auth.uid != uid && isCreator(code))
