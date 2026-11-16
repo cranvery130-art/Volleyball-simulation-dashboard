@@ -475,6 +475,58 @@
     text-align:center; border-radius:8px; transition:background 0.2s ease;
   }
   .btn-link-intro:hover{ background:var(--accent-soft); }
+
+  /* 설정 > 구성원 관리 · 활동 로그 */
+  .mm-note{ margin:0 0 12px; font-size:12px; line-height:1.6; color:var(--muted); word-break:keep-all; }
+  .mm-filters{ display:flex; flex-direction:column; gap:8px; padding-bottom:12px; margin-bottom:4px; border-bottom:1px solid var(--border); }
+  .mm-frow{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .mm-flabel{ flex:none; width:34px; font-size:12px; font-weight:600; color:var(--text-dim); }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:6px; flex:1 1 auto; }
+  .chip{ position:relative; display:inline-flex; align-items:center; min-height:34px; padding:0 13px; border:1px solid var(--border-2); border-radius:999px; background:var(--panel); color:var(--text-dim); font-size:13px; cursor:pointer; user-select:none; transition:background .15s ease-out, color .15s ease-out; }
+  .chip input{ position:absolute; opacity:0; width:1px; height:1px; pointer-events:none; }
+  .chip:has(input:checked){ background:color-mix(in srgb, var(--text) 8%, var(--panel)); border-color:var(--text-dim); color:var(--text); font-weight:600; }
+  .chip:not(:has(input:checked)){ background:transparent; border-style:dashed; color:var(--muted); }
+  .chip:has(input:focus-visible){ outline:2px solid var(--accent); outline-offset:2px; }
+  .mm-all{ flex:none; margin-left:auto; min-height:34px; padding:0 6px; background:none; border:none; color:var(--accent-text); font:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+  .mm-list{ display:flex; flex-direction:column; }
+  .mm-group{ display:flex; align-items:baseline; gap:6px; margin:14px 0 6px; font-size:12px; font-weight:700; color:var(--text-dim); }
+  .mm-gcount{ font-family:var(--mono); font-weight:500; color:var(--muted); }
+  .mm-rows{ display:flex; flex-direction:column; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-md); }
+  .mm-row{ padding:11px 12px; }
+  .mm-row + .mm-row{ border-top:1px solid var(--border); }
+  .mm-top{ display:flex; align-items:center; gap:8px; min-height:30px; }
+  .mm-name{ font-size:14.5px; font-weight:700; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .mm-role{ flex:none; font-size:11px; font-weight:600; padding:2px 7px; border-radius:6px; background:var(--panel-2); color:var(--text-dim); border:1px solid var(--border); }
+  .mm-role.r-editor{ color:var(--accent-text); border-color:color-mix(in srgb, var(--accent) 40%, var(--border)); }
+  .mm-role.r-creator{ color:var(--panel); background:var(--text); border-color:var(--text); }
+  .mm-fields{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; margin-top:8px; }
+  .mm-field{ display:flex; flex-direction:column; gap:3px; min-width:0; font-size:11px; color:var(--muted); }
+  .fgroup .mm-field select{ width:100%; padding:7px 8px; font-size:13px; background:var(--panel-2); }
+  .mm-del{ flex:none; min-height:30px; padding:0 4px; background:none; border:none; color:#C9354F; font:inherit; font-size:12.5px; font-weight:600; cursor:pointer; }
+  .mm-del:hover{ text-decoration:underline; }
+  .mm-empty{ padding:16px 4px; font-size:12.5px; color:var(--muted); }
+  .log-list{ display:flex; flex-direction:column; }
+  .log-row{ display:grid; gap:10px; align-items:baseline; padding:9px 2px; font-size:13px; line-height:1.45; color:var(--text-dim); }
+  .log-row + .log-row{ border-top:1px solid var(--border); }
+  .log-row b{ color:var(--text); font-weight:700; margin-right:4px; }
+  .log-time{ font-family:var(--mono); font-size:12px; color:var(--muted); white-space:nowrap; }
+  @media (max-width:520px){
+    .mm-fields{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .fgroup .mm-field select{ font-size:16px; min-height:44px; }
+    .chip, .mm-all{ min-height:44px; }
+    .mm-del{ min-height:44px; padding:0 8px; }
+  }
+
+  .log-row{ grid-template-columns:44px 1fr; }
+  .log-day{ margin:12px 0 2px; font-size:12px; font-weight:700; color:var(--text-dim); }
+  .log-day:first-child{ margin-top:0; }
+
+  .mission-cta{ display:flex; align-items:center; gap:12px; width:100%; margin-top:16px; padding:13px 14px; text-align:left; background:var(--panel); border:1px solid var(--border-2); border-left:3px solid var(--accent); border-radius:var(--radius-md); font-family:inherit; color:var(--text); cursor:pointer; transition:border-color .2s ease-out; }
+  .mission-cta:hover{ border-color:var(--accent); }
+  .mission-cta .mc-body{ flex:1; min-width:0; }
+  .mission-cta .mc-k{ display:block; font-size:11.5px; font-weight:600; color:var(--accent-text); }
+  .mission-cta .mc-t{ display:block; margin-top:2px; font-family:var(--head); font-size:17px; line-height:1.3; word-break:keep-all; }
+  .mission-cta .mc-go{ flex:none; font-size:12.5px; font-weight:600; color:var(--text-dim); }
   /* 로그인 화면에 바로 뜨는 '이 프로그램을 만든 마음' 안내 */
   .mission-card{ max-width:460px; padding:26px 22px 18px; text-align:center; }
   .mission-eyebrow{ display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:0.02em; color:var(--accent-text); background:var(--accent-soft); padding:4px 10px; border-radius:999px; margin-bottom:10px; }
@@ -2793,8 +2845,8 @@
     </div>
 
     <button class="btn" id="btnSkipLogin" style="width:100%; margin-top:16px;">코드 없이 계속하기 (이 기기에만 저장)</button>
-    <button class="btn-link-intro" id="btnShowIntro" type="button">✨ 이 프로그램은 무엇을 할 수 있나요?</button>
-    <button class="btn-link-intro" id="btnShowMission" type="button" style="margin-top:2px;">🤝 이 프로그램을 만든 마음 다시 보기</button>
+    <button class="mission-cta" id="btnShowMission" type="button"><span class="mc-body"><span class="mc-k">이 프로그램을 만든 마음</span><span class="mc-t">사람이 아니라 포지션을 기록해요</span></span><span class="mc-go">읽기 →</span></button>
+    <button class="btn-link-intro" id="btnShowIntro" type="button">이 프로그램은 무엇을 할 수 있나요?</button>
     <a class="gate-privacy" href="https://yangssaem.vercel.app/privacy/#volley" target="_blank" rel="noopener noreferrer">개인정보 안내 · 받는 정보와 지우는 법</a>
   </div>
 </div>
@@ -2957,7 +3009,7 @@
     </div>
     <div class="mission-actions">
       <button class="btn primary" id="btnMissionOk" type="button">알겠어요, 시작할게요</button>
-      <p class="mission-skip">처음 한 번만 떠요. 다시 보려면 로그인 화면의 '이 프로그램을 만든 마음 다시 보기'를 눌러요.</p>
+      <p class="mission-skip">처음 한 번만 떠요. 다시 보려면 입장 화면의 '이 프로그램을 만든 마음'을 눌러요.</p>
     </div>
   </div>
 </div>
@@ -4190,32 +4242,13 @@
         </div>
 
         <div id="memberManageSection" class="fgroup">
-          <div class="fgroup-head"><span class="fg-ic">👥</span><span class="fg-title">구성원 관리</span><span class="fg-sub">포지션·출전 상태·권한을 정해요</span></div>
-          <div class="field-note" style="margin-top:0;">조회 비밀번호로 들어와서 이름을 적고 가입한 구성원(기기마다 하나씩)과, 나 말고 개설자 비밀번호로 들어온 기기 목록이에요. 권한은 서버가 이 목록으로 확인해요. 포지션과 대회 출전 여부를 지정할 수 있고, 포지션별로 묶어서 보여줘요.</div>
-          <div id="memberFilters" style="margin-top:10px;">
-            <label class="field-label" style="margin-top:0;">성별 필터</label>
-            <div class="check-list" id="filterGenderRow">
-              <div class="check-row"><input type="checkbox" class="filterGender" value="남" checked><label>남</label></div>
-              <div class="check-row"><input type="checkbox" class="filterGender" value="여" checked><label>여</label></div>
-              <div class="check-row"><input type="checkbox" class="filterGender" value="" checked><label>미지정</label></div>
-            </div>
-            <div class="btn-row" style="margin-top:6px;">
-              <button class="btn" id="btnFilterGenderSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
-              <button class="btn" id="btnFilterGenderDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
-            </div>
-            <label class="field-label">대회 출전 상태 필터</label>
-            <div class="check-list" id="filterStatusRow">
-              <div class="check-row"><input type="checkbox" class="filterStatus" value="코치" checked><label>코치</label></div>
-              <div class="check-row"><input type="checkbox" class="filterStatus" value="주전" checked><label>주전</label></div>
-              <div class="check-row"><input type="checkbox" class="filterStatus" value="후보" checked><label>후보</label></div>
-              <div class="check-row"><input type="checkbox" class="filterStatus" value="무관" checked><label>무관</label></div>
-            </div>
-            <div class="btn-row" style="margin-top:6px;">
-              <button class="btn" id="btnFilterStatusSelectAll" style="font-size:11.5px; padding:5px 10px;">전체 선택</button>
-              <button class="btn" id="btnFilterStatusDeselectAll" style="font-size:11.5px; padding:5px 10px;">전체 해제</button>
-            </div>
+          <div class="fgroup-head"><span class="fg-title">구성원 관리</span><span class="fg-sub" id="memberCount"></span></div>
+          <p class="mm-note">조회 비밀번호로 가입한 기기와, 나 말고 개설자 비밀번호로 들어온 기기예요. 같은 사람도 기기마다 따로 보여요. 서버는 이 목록으로 권한을 확인해요.</p>
+          <div id="memberFilters" class="mm-filters">
+            <div class="mm-frow"><span class="mm-flabel">성별</span><div class="chip-row" id="filterGenderRow"><label class="chip"><input type="checkbox" class="filterGender" value="남" checked><span>남</span></label><label class="chip"><input type="checkbox" class="filterGender" value="여" checked><span>여</span></label><label class="chip"><input type="checkbox" class="filterGender" value="" checked><span>미지정</span></label></div><button type="button" class="mm-all" id="btnFilterGenderSelectAll">모두</button></div>
+            <div class="mm-frow"><span class="mm-flabel">출전</span><div class="chip-row" id="filterStatusRow"><label class="chip"><input type="checkbox" class="filterStatus" value="코치" checked><span>코치</span></label><label class="chip"><input type="checkbox" class="filterStatus" value="주전" checked><span>주전</span></label><label class="chip"><input type="checkbox" class="filterStatus" value="후보" checked><span>후보</span></label><label class="chip"><input type="checkbox" class="filterStatus" value="무관" checked><span>무관</span></label></div><button type="button" class="mm-all" id="btnFilterStatusSelectAll">모두</button></div>
           </div>
-          <div id="memberList" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;"></div>
+          <div id="memberList" class="mm-list"></div>
         </div>
 
         <div class="fgroup fgroup-danger">
@@ -4229,9 +4262,9 @@
 
       <div id="settingsRightCol" class="settings-col">
         <div id="activityLogSection" class="fgroup" style="margin-top:0;">
-          <div class="fgroup-head"><span class="fg-ic">🕘</span><span class="fg-title">수정·저장 활동 로그</span></div>
-          <div class="field-note" style="margin-top:0;">누가 마지막에 대형이나 공격 상황을 수정·저장했는지 최근 순서로 보여줘요.</div>
-          <div id="activityLogList" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
+          <div class="fgroup-head"><span class="fg-title">활동 로그</span><span class="fg-sub">최근 30개</span></div>
+          <p class="mm-note">누가 언제 대형·공격 상황·기록을 고치고 저장했는지 최근 것부터 보여줘요.</p>
+          <div id="activityLogList" class="log-list"></div>
         </div>
       </div>
     </div>
@@ -7242,13 +7275,32 @@
     const wrap = document.getElementById('activityLogList');
     if(!wrap) return;
     wrap.innerHTML = '';
-    if(!log || !log.length){ wrap.innerHTML = '<span class="preset-empty">아직 수정·저장 기록이 없어요.</span>'; return; }
+    if(!log || !log.length){ wrap.innerHTML = '<div class="mm-empty">아직 고치거나 저장한 기록이 없어요.</div>'; return; }
+    const pad = n => String(n).padStart(2,'0');
+    const hm = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    const full = d => d.toLocaleString('ko-KR', {month:'long', day:'numeric', weekday:'short', hour:'2-digit', minute:'2-digit'});
+    const makeRow = (entry, timeText, d) => {
+      const row = document.createElement('div'); row.className = 'log-row';
+      const t = document.createElement('span'); t.className = 'log-time'; t.textContent = timeText; t.title = full(d);
+      const m = document.createElement('span');
+      const who = document.createElement('b'); who.textContent = entry.name || '이름 없음';
+      m.appendChild(who); m.appendChild(document.createTextNode(entry.action || ''));
+      return [row, t, m];
+    };
+    const dayKey = d => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const today = new Date(); const yest = new Date(Date.now() - 864e5);
+    const dayLabel = d => dayKey(d)===dayKey(today) ? '오늘' : dayKey(d)===dayKey(yest) ? '어제'
+      : d.toLocaleDateString('ko-KR', {month:'long', day:'numeric', weekday:'short'});
+    let lastDay = '';
     log.slice().reverse().forEach(entry=>{
-      const row = document.createElement('div'); row.className='record-row';
-      const label = document.createElement('span'); label.style.flex='1';
-      const time = new Date(entry.at).toLocaleString('ko-KR', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'});
-      label.textContent = `${time} · ${entry.name} — ${entry.action}`;
-      row.appendChild(label);
+      const d = new Date(entry.at);
+      if(dayKey(d)!==lastDay){
+        lastDay = dayKey(d);
+        const head = document.createElement('div'); head.className = 'log-day'; head.textContent = dayLabel(d);
+        wrap.appendChild(head);
+      }
+      const [row, t, m] = makeRow(entry, hm(d), d);
+      row.appendChild(t); row.appendChild(m);
       wrap.appendChild(row);
     });
   }
@@ -7282,95 +7334,93 @@
     return {genders, statuses};
   }
 
+  const MEMBER_ROLE_OPTIONS = [['view','조회'],['editor','수정 권한'],['creator','개설자']];
+  const memberOpenIds = new Set(); // 편집을 펼쳐 둔 구성원(다시 그려도 그대로 펼쳐 둬요)
+
+  function memberSelect(label, options, value, onChange){
+    const field = document.createElement('label'); field.className = 'mm-field';
+    const cap = document.createElement('span'); cap.textContent = label; field.appendChild(cap);
+    const sel = document.createElement('select');
+    options.forEach(([val,text])=>{
+      const opt = document.createElement('option'); opt.value = val; opt.textContent = text;
+      if(value===val) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', ()=> onChange(sel));
+    field.appendChild(sel);
+    return field;
+  }
+
+  function memberFields(m){
+    const fields = document.createElement('div'); fields.className = 'mm-fields';
+    fields.appendChild(memberSelect('성별', [['','미지정'],['남','남'],['여','여']], m.gender||'', sel=> updateMember(m.id, {gender: sel.value})));
+    fields.appendChild(memberSelect('포지션', [['','없음']].concat(Object.keys(POS_LABEL).map(c=>[c, POS_LABEL[c]])), m.position||'', sel=> updateMember(m.id, {position: sel.value})));
+    fields.appendChild(memberSelect('출전', MEMBER_STATUS_OPTIONS.map(s=>[s,s]), m.status||'무관', sel=> updateMember(m.id, {status: sel.value})));
+    if(accessLevel==='creator'){
+      fields.appendChild(memberSelect('권한', MEMBER_ROLE_OPTIONS, m.role, sel=>{
+        if(sel.value==='creator' && !confirm(`'${m.name}'님에게 개설자 권한을 줄까요? 설정을 바꾸고 다른 구성원을 내보낼 수 있게 돼요.`)){ sel.value = m.role; return; }
+        grantRole(m.id, sel.value);
+      }));
+    }
+    return fields;
+  }
+
+  function memberDeleteButton(m){
+    const delBtn = document.createElement('button'); delBtn.type = 'button'; delBtn.className = 'mm-del'; delBtn.textContent = '삭제';
+    delBtn.addEventListener('click', ()=>{
+      if(confirm(`'${m.name}'님을 구성원 목록에서 삭제할까요? 이 사람이 가진 권한도 함께 사라져요.`)) removeMember(m.id);
+    });
+    return delBtn;
+  }
+
   function renderMemberList(){
     const wrap = document.getElementById('memberList');
+    const countEl = document.getElementById('memberCount');
     if(!wrap) return;
     wrap.innerHTML = '';
-    if(!roomMembers.length){ wrap.innerHTML = '<span class="preset-empty">아직 링크로 들어와서 이름을 적은 구성원이 없어요.</span>'; return; }
+    if(!roomMembers.length){
+      if(countEl) countEl.textContent = '';
+      wrap.innerHTML = '<div class="mm-empty">아직 가입 링크로 들어와 이름을 적은 구성원이 없어요.</div>'; return;
+    }
 
     const filter = getMemberFilter();
     const visibleMembers = roomMembers.filter(m=>
       filter.genders.includes(m.gender||'') && filter.statuses.includes(m.status||'무관')
     );
-    if(!visibleMembers.length){ wrap.innerHTML = '<span class="preset-empty">필터에 해당하는 구성원이 없어요.</span>'; return; }
+    if(countEl) countEl.textContent = visibleMembers.length===roomMembers.length ? `${roomMembers.length}명` : `${roomMembers.length}명 중 ${visibleMembers.length}명`;
+    if(!visibleMembers.length){ wrap.innerHTML = '<div class="mm-empty">고른 조건에 맞는 구성원이 없어요.</div>'; return; }
 
-    // group members by their assigned position (position label, or "포지션 미지정")
+    // 포지션별로 묶어요(포지션 순서대로, 미지정은 맨 아래).
+    const posOrder = Object.keys(POS_LABEL);
     const groups = {};
-    const order = [];
     visibleMembers.forEach(m=>{
       const key = m.position && POS_LABEL[m.position] ? m.position : '';
-      const label = key ? POS_LABEL[key] : '포지션 미지정';
-      if(!groups[label]){ groups[label]=[]; order.push(label); }
-      groups[label].push(m);
+      (groups[key] = groups[key] || []).push(m);
     });
-    order.sort((a,b)=> a==='포지션 미지정' ? 1 : b==='포지션 미지정' ? -1 : 0);
+    const order = Object.keys(groups).sort((a,b)=> (a==='' ? 99 : posOrder.indexOf(a)) - (b==='' ? 99 : posOrder.indexOf(b)));
 
-    order.forEach(groupLabel=>{
-      const groupDiv = document.createElement('div');
-      const heading = document.createElement('div'); heading.className='field-label'; heading.style.marginTop='0';
-      heading.textContent = `${groupLabel} (${groups[groupLabel].length}명)`;
-      groupDiv.appendChild(heading);
-      const list = document.createElement('div'); list.style.display='flex'; list.style.flexDirection='column'; list.style.gap='8px'; list.style.marginTop='6px';
-      groups[groupLabel].forEach(m=>{
-        const row = document.createElement('div'); row.className='record-row';
-        const label = document.createElement('span'); label.style.flex='1 1 100px'; label.textContent = `${m.name}${m.gender?' ('+m.gender+')':''} — ${roleLabel(m.role)} · ${m.status||'무관'}`;
-        row.appendChild(label);
-
-        const genderSel = document.createElement('select'); genderSel.style.width='auto'; genderSel.style.flex='0 0 auto';
-        [['','미지정'],['남','남'],['여','여']].forEach(([val,text])=>{
-          const opt=document.createElement('option'); opt.value=val; opt.textContent=text;
-          if((m.gender||'')===val) opt.selected=true;
-          genderSel.appendChild(opt);
-        });
-        genderSel.addEventListener('change', ()=> updateMember(m.id, {gender: genderSel.value}));
-        row.appendChild(genderSel);
-
-        const posSel = document.createElement('select'); posSel.style.width='auto'; posSel.style.flex='0 0 auto';
-        const noneOpt=document.createElement('option'); noneOpt.value=''; noneOpt.textContent='포지션 없음'; posSel.appendChild(noneOpt);
-        Object.keys(POS_LABEL).forEach(code=>{
-          const opt=document.createElement('option'); opt.value=code; opt.textContent=POS_LABEL[code];
-          if((m.position||'')===code) opt.selected=true;
-          posSel.appendChild(opt);
-        });
-        posSel.addEventListener('change', ()=> updateMember(m.id, {position: posSel.value}));
-        row.appendChild(posSel);
-
-        const statusSel = document.createElement('select'); statusSel.style.width='auto'; statusSel.style.flex='0 0 auto';
-        MEMBER_STATUS_OPTIONS.forEach(s=>{
-          const opt=document.createElement('option'); opt.value=s; opt.textContent=s;
-          if((m.status||'무관')===s) opt.selected=true;
-          statusSel.appendChild(opt);
-        });
-        statusSel.addEventListener('change', ()=> updateMember(m.id, {status: statusSel.value}));
-        row.appendChild(statusSel);
-
-        if(accessLevel==='creator'){
-          if(m.role!=='editor'){
-            const b1=document.createElement('button'); b1.className='btn'; b1.textContent='수정권한 부여';
-            b1.addEventListener('click', ()=>grantRole(m.id,'editor'));
-            row.appendChild(b1);
-          }
-          if(m.role!=='creator'){
-            const b2=document.createElement('button'); b2.className='btn'; b2.textContent='개설자 권한 부여';
-            b2.addEventListener('click', ()=>grantRole(m.id,'creator'));
-            row.appendChild(b2);
-          }
-          if(m.role!=='view'){
-            const b3=document.createElement('button'); b3.className='btn'; b3.textContent='조회로';
-            b3.addEventListener('click', ()=>grantRole(m.id,'view'));
-            row.appendChild(b3);
-          }
-          const delBtn=document.createElement('button'); delBtn.className='btn'; delBtn.style.background='#D92D4A'; delBtn.style.borderColor='#D92D4A'; delBtn.style.color='#fff'; delBtn.textContent='삭제';
-          delBtn.addEventListener('click', ()=>{
-            if(confirm(`'${m.name}'님을 구성원 목록에서 삭제할까요? 이 사람이 가진 권한도 함께 사라져요.`)) removeMember(m.id);
-          });
-          row.appendChild(delBtn);
-        }
-        list.appendChild(row);
-      });
-      groupDiv.appendChild(list);
-      wrap.appendChild(groupDiv);
+    order.forEach(key=>{
+      const head = document.createElement('div'); head.className = 'mm-group';
+      const t = document.createElement('span'); t.textContent = key ? POS_LABEL[key] : '포지션 미지정';
+      const c = document.createElement('span'); c.className = 'mm-gcount'; c.textContent = groups[key].length;
+      head.appendChild(t); head.appendChild(c);
+      wrap.appendChild(head);
+      const rows = document.createElement('div'); rows.className = 'mm-rows';
+      groups[key].forEach(m=> rows.appendChild(memberRow(m)));
+      wrap.appendChild(rows);
     });
+  }
+
+  function memberRow(m){
+    const row = document.createElement('div'); row.className = 'mm-row';
+    const top = document.createElement('div'); top.className = 'mm-top';
+    const name = document.createElement('span'); name.className = 'mm-name'; name.textContent = m.name;
+    top.appendChild(name);
+    const spacer = document.createElement('span'); spacer.style.flex = '1'; top.appendChild(spacer);
+    if(accessLevel==='creator') top.appendChild(memberDeleteButton(m));
+    row.appendChild(top);
+    row.appendChild(memberFields(m));
+    return row;
   }
 
   async function grantRole(memberId, role){
@@ -7443,16 +7493,8 @@
     document.querySelectorAll('.filterGender').forEach(cb=>cb.checked=true);
     renderMemberList();
   });
-  document.getElementById('btnFilterGenderDeselectAll').addEventListener('click', ()=>{
-    document.querySelectorAll('.filterGender').forEach(cb=>cb.checked=false);
-    renderMemberList();
-  });
   document.getElementById('btnFilterStatusSelectAll').addEventListener('click', ()=>{
     document.querySelectorAll('.filterStatus').forEach(cb=>cb.checked=true);
-    renderMemberList();
-  });
-  document.getElementById('btnFilterStatusDeselectAll').addEventListener('click', ()=>{
-    document.querySelectorAll('.filterStatus').forEach(cb=>cb.checked=false);
     renderMemberList();
   });
 
@@ -7770,11 +7812,11 @@
         scene:`<div class="mk-card"><div class="mk-h">처음 오셨네요!</div><div class="mk-row"><div class="mk-input k-name" data-ph="이름"></div><span class="mk-btn big k-go">입장</span></div></div><div class="mk-toast k-toast">구성원으로 등록됐어요</div>`,
         script:[ {type:'.k-name', text:'민수'}, {click:'.k-go', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1600} ] },
       { title:'구성원과 권한을 관리해요',
-        text:'개설자는 구성원마다 포지션과 <b>출전 상태</b>(코치·주전·후보·무관)를 정하고, 필요하면 <b>수정 권한</b>을 줄 수 있어요.',
-        scene:`<div class="mk-card"><div class="mk-row"><b style="font-size:13px;color:var(--text);min-width:40px;">민수</b><span class="mk-btn">레프트 ▾</span></div>
-          <div class="mk-row"><span class="mk-btn">코치</span><span class="mk-btn k-main">주전</span><span class="mk-btn">후보</span><span class="mk-btn">무관</span></div>
-          <div class="mk-row"><span class="mk-lbl">수정 권한</span><div class="mk-toggle k-tog"></div></div></div>`,
-        script:[ {click:'.k-main', then:el=>el.classList.add('on')}, {click:'.k-tog', then:el=>el.classList.add('on')}, {wait:1600} ] },
+        text:'개설자는 구성원마다 성별·포지션·<b>출전 상태</b>(코치·주전·후보·무관)·<b>권한</b>(조회·수정 권한·개설자)을 칸에서 바로 골라요. 위의 성별·출전 버튼으로 걸러 볼 수 있고, 개설자 권한을 줄 때는 한 번 더 물어요.',
+        scene:`<div class="mk-card"><div class="mk-row"><b style="font-size:13px;color:var(--text);min-width:40px;">민수</b></div>
+          <div class="mk-row"><span class="mk-lbl">포지션</span><span class="mk-btn">레프트 ▾</span><span class="mk-lbl">출전</span><span class="mk-btn k-main">무관 ▾</span></div>
+          <div class="mk-row"><span class="mk-lbl">권한</span><span class="mk-btn k-role">조회 ▾</span></div></div>`,
+        script:[ {click:'.k-main', then:el=>{ el.textContent='주전 ▾'; el.classList.add('on'); }}, {click:'.k-role', then:el=>{ el.textContent='수정 권한 ▾'; el.classList.add('on'); }}, {wait:1600} ] },
       { title:'비밀번호를 관리해요',
         text:'비밀번호는 되돌릴 수 없는 암호로만 저장돼서 <b>지금 비밀번호는 보이지 않아요</b>. 바꿀 때만 새 비밀번호를 적고 <b>변경</b>을 눌러요. 빈 칸으로 두면 기존 비밀번호가 그대로예요. 개설자 비밀번호를 잊으면 입장 화면의 <b>개설자 비밀번호를 잊었어요</b>에서 <b>복구 코드</b>로 새로 정해요.',
         scene:`<div class="mk-card"><div class="mk-h">비밀번호 변경</div>
@@ -7784,7 +7826,7 @@
         script:[ {click:'.k-pw', then:el=>{ el.classList.add('focus'); }}, {type:'.k-pw', text:'••••••••'},
                  {click:'.k-chg', then:(el,sc)=>{ const p=sc.querySelector('.k-pw'); p.classList.remove('focus'); p.textContent=''; sc.querySelector('.k-toast').classList.add('show'); }}, {wait:1600} ] },
       { title:'활동 로그를 확인해요',
-        text:'수정 권한이 있는 사람은 누가 언제 무엇을 수정·저장했는지 <b>최근 순서</b>로 볼 수 있어요.',
+        text:'수정 권한이 있는 사람은 누가 언제 무엇을 고치고 저장했는지 <b>오늘·어제처럼 날짜별</b>로, 최근 것부터 볼 수 있어요.',
         scene:`<div class="mk-card"><div class="mk-h">활동 로그</div><div class="mk-list k-list"></div></div>`,
         script:[ {wait:300},
                  ...[['09:12','개설자 · \'블로킹 2인 대형\'을 저장했어요'],['09:20','민수 · \'상대 중앙(C) 속공\'을 수정했어요'],['09:31','지훈 · 포지션 배정을 바꿨어요']]
