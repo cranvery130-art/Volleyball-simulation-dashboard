@@ -2162,6 +2162,21 @@
   .qs-list.dense .qs-no, .qs-list.dense .qs-who{ display:none; }
   .qs-who{ font-style:normal; }
   .qs-list .field-note{ grid-row:1; }
+  .qs-head-r{ display:flex; align-items:center; gap:6px; }
+  .qs-pick-btn{ min-height:36px; padding:4px 10px; border-radius:8px; border:1px solid var(--border-2); background:var(--panel); color:var(--text-dim); font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+  .qs-pick-btn[aria-pressed="true"]{ border-color:var(--accent); color:var(--text); background:color-mix(in srgb, var(--accent) 18%, var(--panel)); }
+  .qs-all{ display:flex; align-items:center; gap:6px; margin:0 10px 6px; padding:6px 8px; min-height:40px; border-radius:8px; background:var(--panel-2); font-size:13px; cursor:pointer; }
+  .qs-all[hidden]{ display:none; }
+  .qs-all input, .qs-chk{ width:18px; height:18px; flex:none; accent-color:var(--accent); margin:0; }
+  .qs-all span{ margin-left:auto; color:var(--text-dim); font-size:12px; }
+  .qs-chk{ display:inline-flex; align-items:center; justify-content:center; border:2px solid var(--border-2); border-radius:4px; background:var(--panel); font-size:12px; font-weight:900; color:var(--on-accent); line-height:1; }
+  .qs-row.picked{ background:color-mix(in srgb, var(--accent) 16%, var(--panel)); border-color:var(--accent); }
+  .qs-row.picked .qs-chk{ background:var(--accent); border-color:var(--accent); }
+  .qs-pick-acts{ display:grid; grid-template-columns:2fr 1fr; gap:5px; }
+  .qs-pick-acts[hidden]{ display:none; }
+  .qs-pick-acts button{ min-height:46px; border-radius:9px; border:1px solid var(--border-2); background:var(--panel); color:var(--text); font-family:inherit; font-size:13px; font-weight:800; cursor:pointer; }
+  .qs-pick-acts .qs-pick-del:not(:disabled){ border-color:var(--opp); color:var(--opp); }
+  .qs-pick-acts button:disabled{ opacity:.4; cursor:default; }
   .qs-actbar{ flex:none; padding:6px 8px 10px; border-top:1px solid var(--border); }
   .qs-sel{ font-size:12px; color:var(--text-dim); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .qs-sel b{ color:var(--text); }
@@ -3135,7 +3150,7 @@
           </table>
         </div>
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
-          <li><b>🎯 빠른 기록 모드</b>: 경기 정보 옆 버튼을 누르면 화면 전체가 빠른 기록 화면이 되고, 맨 위에 세트별 점수(지금 세트 강조)와 방금 남긴 기록이 보여요. 오른쪽 <b>📋 점수 기록</b>(휴대폰은 위쪽 "📋 기록" 버튼)에는 세트를 고르면 1점씩 점수 흐름이 스크롤 없이 한 화면에 모두 보여요(점수가 많아지면 줄을 낮추고 2~4묶음으로 나눠 담아요). 점수 줄을 누르고 아래 큰 버튼으로 <b>✏️ 고치기</b>(아래 입력 칸에 그 기록이 채워지고 기록하기를 누르면 바뀌어요) · <b>➕ 끼워 넣기</b>(그 점수 바로 뒤에) · <b>🔀 세트 옮기기</b>(다른 세트에 잘못 넣은 기록을 맞는 세트로. 그 점수 뒤의 같은 세트 기록도 함께 옮길 수 있고, 지금 세트의 마지막 기록까지 옮기면 다음 기록도 옮긴 세트로 이어져요. ↩️ 되돌리기 가능) · <b>🗑️ 지우기</b>를 해요. 다 기록하면 <b>✅ 기록 종료</b> 버튼으로 원래 화면에 돌아와요(Esc는 토스 지우기라서 기록을 끝내지 않아요). PC·휴대폰·태블릿 모두 기본 화면에는 빠른 기록 화면이 없고 종합 분석·그래프를 크게 보여주니(PC·태블릿 가로처럼 넓은 화면은 좌우 반반, 휴대폰은 위아래), 기록은 이 모드에서 해요. PC에서 경기 영상을 올렸다면 이 모드의 기록 입력 위에 영상이 함께 나와서 보면서 기록할 수 있어요(종료하면 경기 영상 칸으로 돌아가고 재생 위치는 그대로예요).</li>
+          <li><b>🎯 빠른 기록 모드</b>: 경기 정보 옆 버튼을 누르면 화면 전체가 빠른 기록 화면이 되고, 맨 위에 세트별 점수(지금 세트 강조)와 방금 남긴 기록이 보여요. 오른쪽 <b>📋 점수 기록</b>(휴대폰은 위쪽 "📋 기록" 버튼)에는 세트를 고르면 1점씩 점수 흐름이 스크롤 없이 한 화면에 모두 보여요(점수가 많아지면 줄을 낮추고 2~4묶음으로 나눠 담아요). 점수 줄을 누르고 아래 큰 버튼으로 <b>✏️ 고치기</b>(아래 입력 칸에 그 기록이 채워지고 기록하기를 누르면 바뀌어요) · <b>➕ 끼워 넣기</b>(그 점수 바로 뒤에) · <b>🔀 세트 옮기기</b>(다른 세트에 잘못 넣은 기록을 맞는 세트로. 그 점수 뒤의 같은 세트 기록도 함께 옮길 수 있고, 지금 세트의 마지막 기록까지 옮기면 다음 기록도 옮긴 세트로 이어져요. ↩️ 되돌리기 가능) · <b>🗑️ 지우기</b>를 해요. 여러 개를 한 번에 지우려면 위쪽 <b>☑️ 골라 지우기</b>를 누르고 줄마다 체크하거나 <b>이 세트 전체 선택</b>을 고른 뒤 <b>🗑️ 고른 n개 지우기</b>를 눌러요(↩️ 되돌리기 한 번이면 모두 돌아와요). 다 기록하면 <b>✅ 기록 종료</b> 버튼으로 원래 화면에 돌아와요(Esc는 토스 지우기라서 기록을 끝내지 않아요). PC·휴대폰·태블릿 모두 기본 화면에는 빠른 기록 화면이 없고 종합 분석·그래프를 크게 보여주니(PC·태블릿 가로처럼 넓은 화면은 좌우 반반, 휴대폰은 위아래), 기록은 이 모드에서 해요. PC에서 경기 영상을 올렸다면 이 모드의 기록 입력 위에 영상이 함께 나와서 보면서 기록할 수 있어요(종료하면 경기 영상 칸으로 돌아가고 재생 위치는 그대로예요).</li>
           <li>폴더를 만들지 않고 기록했다면 경기 폴더 칸에 <b>⚠️ 폴더 없이 남긴 기록</b> 알림과 <b>📁 폴더에 저장</b> 버튼이 나와요. 새 이름을 적으면 새 폴더로, 기존 폴더 이름을 적으면 그 폴더 뒤에 덧붙여 저장해요.</li>
           <li><b>📥 기록 불러오기</b>: <b>📊 기록 내보내기</b>로 받은 CSV 파일을 다시 읽어 기록(세트·팀·결과·상황·방식·위치·선수·메모·토스 순서)을 되살려요. 파일의 팀 이름이 다르면 어느 쪽이 우리팀인지 물어보고, 지금 기록을 바꿀지 뒤에 덧붙일지 고를 수 있어요. 엑셀에서 고쳤다면 "CSV" 형식으로 저장해 불러와요.</li>
           <li>점수 계산: 우리 점수 = 우리팀 득점 + 상대팀 범실, 상대 점수 = 상대팀 득점 + 우리팀 범실이에요. 팀·결과 없이 남긴 "🔴 자유 기록"은 점수에 들어가지 않아요. 기록 입력 아래 메모 칸에 적고(예: 상대 작전타임, 교체) Enter나 🔴 자유 기록을 누르면 그 메모가 바로 기록 목록에 남아요.</li>
@@ -3898,13 +3913,15 @@
         <div class="qr-video-slot" id="qrVideoSlot"></div>
         <div class="qs-editbar" id="qsEditBar"></div>
         <aside class="qm-side" id="qmSide" aria-label="점수 기록">
-          <div class="qs-head"><b>📋 점수 기록</b><button type="button" class="qs-close" id="qsClose" aria-label="닫기">✕</button></div>
+          <div class="qs-head"><b>📋 점수 기록</b><span class="qs-head-r"><button type="button" class="qs-pick-btn" id="qsPickBtn" aria-pressed="false" title="체크박스로 여러 기록을 골라 한 번에 지워요">☑️ 골라 지우기</button><button type="button" class="qs-close" id="qsClose" aria-label="닫기">✕</button></span></div>
           <div class="qs-sets" id="qsSets"></div>
+          <label class="qs-all" id="qsAll" hidden><input type="checkbox" id="qsAllChk"> <b>이 세트 전체 선택</b> <span id="qsAllN"></span></label>
           <div class="qs-list" id="qsList"></div>
           <div class="qs-actbar" id="qsActBar">
             <div class="qs-sel" id="qsSel">점수 줄을 누르면 고치거나 지울 수 있어요</div>
             <div class="qs-acts"><button type="button" data-act="edit" disabled>✏️ 고치기</button><button type="button" data-act="ins" disabled>➕ 끼워 넣기</button><button type="button" data-act="move" disabled title="다른 세트에 잘못 넣은 기록을 맞는 세트로 옮겨요">🔀 세트 옮기기</button><button type="button" data-act="del" disabled>🗑️ 지우기</button></div>
             <div class="qs-move" id="qsMove" hidden></div>
+            <div class="qs-pick-acts" id="qsPickActs" hidden><button type="button" class="qs-pick-del" id="qsPickDel" disabled>🗑️ 고른 기록 지우기</button><button type="button" id="qsPickCancel">취소</button></div>
           </div>
         </aside>
         <div class="field-note qr-card-note" style="margin-top:0;"><b>결과 버튼 → 상황 버튼 → 기록하기</b>로 1점씩 남겨요(시간·세트 함께 저장). 랠리 중 토스 순서는 결과 버튼 위 칸에서 보면서 바로 누르고, 방식·위치·관련 선수는 <b>➕ 자세히 기록</b>을 열어 선택으로 남겨요. 점선 버튼은 마지막 토스와 결과로 정한 <b>✨ 추천</b>이에요. 기록하기를 누르면 결과·상황 버튼까지 모든 선택이 풀려요. 팀 이름과 명단은 위쪽 <b>📋 경기 정보</b>에서 정해요.</div>
@@ -10307,7 +10324,7 @@
     if(on && currentVideoName && video.getAttribute('src')) slot.appendChild(video);
     else if(!on && video.parentElement===slot) document.getElementById('lastVideoHint').after(video);
     if(on){
-      qsSet = null; qsEdit = null; qsSel = null;
+      qsSet = null; qsEdit = null; qsSel = null; qsPick = null;
       updateQrModeScore(); renderQsSide();
       window.scrollTo(0,0); document.getElementById('quickRecordCard').scrollTop = 0;
       // 휴대폰·태블릿에서 되면 전체 화면으로(안 되는 브라우저는 그냥 넘어가요)
@@ -10327,6 +10344,7 @@
   let qsSet = null;    // 오른쪽 목록에서 보고 있는 세트(없으면 지금 기록 중인 세트)
   let qsSel = null;    // 오른쪽 목록에서 눌러 고른 기록(아래 ✏️➕🔀🗑️ 버튼이 이 기록에 적용돼요)
   let qsMoving = false; // 🔀 세트 옮기기: 옮길 세트 고르는 칸을 열었는지
+  let qsPick = null;   // ☑️ 골라 지우기: 켜면 체크한 기록 묶음(Set), 끄면 null
   // 세트의 점수가 아무리 많아도 스크롤 없이 다 보이게: 줄이 너무 낮아지면 2·3·4줄 묶음으로 나눠 담아요.
   function fitQsList(){
     const el = document.getElementById('qsList'); if(!el) return;
@@ -10353,6 +10371,18 @@
       sel.innerHTML = n && n.bucket ? `고른 점수: <b>${sc.u}:${sc.o}</b> ${escChip(n.label)}` : `고른 기록: <b>📝 ${escChip(r.label||'자유 기록')}</b>`;
     } else sel.textContent = '점수 줄을 누르면 고치거나 지울 수 있어요';
     document.querySelectorAll('#qsActBar button[data-act]').forEach(b=>b.disabled = !r || readOnlyFolderView);
+    // ☑️ 골라 지우기: 아래 버튼을 '고른 기록 지우기·취소'로 바꿔요
+    const pa = document.getElementById('qsPickActs'), pb = document.getElementById('qsPickBtn');
+    if(readOnlyFolderView) qsPick = null;
+    pb.hidden = readOnlyFolderView; pb.setAttribute('aria-pressed', qsPick ? 'true' : 'false');
+    pa.hidden = !qsPick;
+    if(qsPick){
+      const k = qsPick.size;
+      sel.innerHTML = k ? `<b>${k}개</b> 골랐어요 · 줄을 누르면 넣거나 빼요` : '지울 기록 줄을 눌러 체크해요';
+      const del = document.getElementById('qsPickDel'); del.disabled = !k; del.textContent = k ? `🗑️ 고른 ${k}개 지우기` : '🗑️ 고른 기록 지우기';
+      document.querySelector('#qsActBar .qs-acts').style.display = 'none'; document.getElementById('qsMove').hidden = true;
+      return;
+    }
     // 🔀 세트 옮기기: 다른 세트 버튼 + '이 점수부터 이 세트 끝까지 함께'
     const mv = document.getElementById('qsMove'), acts = document.querySelector('#qsActBar .qs-acts');
     if(!r || readOnlyFolderView) qsMoving = false;
@@ -10382,13 +10412,17 @@
       const lb = scored ? `${n.bucket==='ourError'?'⚠️ ':n.bucket==='oppError'?'🎁 ':''}${n.label}` : `📝 ${r.label||'자유 기록'}`;
       const who = scored ? `<i class="qs-who">${n.forUs?'🔵':'🔴'}</i> ` : '';
       const idx = records.indexOf(r);
-      const editing = (qsEdit && qsEdit.rec===r ? ' editing' : '') + (qsSel===r ? ' sel' : '');
-      return `<div class="qs-row ${cls}${editing}" data-idx="${idx}" role="button" tabindex="0">
-        <span class="qs-no">${scored?no:'·'}</span>
+      const picked = qsPick && qsPick.has(r);
+      const editing = (qsEdit && qsEdit.rec===r ? ' editing' : '') + (!qsPick && qsSel===r ? ' sel' : '') + (picked ? ' picked' : '');
+      return `<div class="qs-row ${cls}${editing}" data-idx="${idx}" role="${qsPick?'checkbox':'button'}"${qsPick?` aria-checked="${picked?'true':'false'}"`:''} tabindex="0">
+        ${qsPick ? `<span class="qs-chk" aria-hidden="true">${picked?'✓':''}</span>` : ''}<span class="qs-no">${scored?no:'·'}</span>
         <span class="qs-sc">${scored?`<b class="u">${sc.u}</b>:<b class="o">${sc.o}</b>`:''}</span>
         <span class="qs-lb" title="${escChip(r.label||'')}">${who}${escChip(lb)}</span>
       </div>`; }).join('') : '<div class="field-note" style="margin:8px 4px;">이 세트에는 아직 기록이 없어요.</div>';
     if(qsSel && !list.includes(qsSel)) qsSel = null;
+    if(qsPick) [...qsPick].forEach(r=>{ if(!list.includes(r)) qsPick.delete(r); }); // 다른 세트를 보면 그 세트 것만 남겨요
+    const all = document.getElementById('qsAll'); all.hidden = !qsPick || !list.length;
+    if(qsPick){ const k = qsPick.size, chk = document.getElementById('qsAllChk'); chk.checked = !!list.length && k===list.length; chk.indeterminate = k>0 && k<list.length; document.getElementById('qsAllN').textContent = `${k} / ${list.length}`; }
     renderQsActBar(); fitQsList();
     const bar = document.getElementById('qsEditBar');
     if(qsEdit && records.includes(qsEdit.rec)){
@@ -10419,7 +10453,24 @@
   document.getElementById('qsList').addEventListener('click', e=>{
     const row = e.target.closest('.qs-row'); if(!row) return;
     const rec = records[Number(row.dataset.idx)]; if(!rec) return;
+    if(qsPick){ if(qsPick.has(rec)) qsPick.delete(rec); else qsPick.add(rec); renderQsSide(); return; }
     qsSel = qsSel===rec ? null : rec; qsMoving = false; renderQsSide();
+  });
+  document.getElementById('qsList').addEventListener('keydown', e=>{ if((e.key===' '||e.key==='Enter') && e.target.closest('.qs-row')){ e.preventDefault(); e.target.closest('.qs-row').click(); } });
+  // ☑️ 골라 지우기: 체크박스로 여러 기록(또는 세트 전체)을 골라 한 번에 지워요(↩️ 되돌리기 한 번이면 모두 돌아와요)
+  const qsCurList = () => { const cur = qsSet || selectedSet; return records.filter(r=>(r.set||1)===cur); };
+  document.getElementById('qsPickBtn').addEventListener('click', ()=>{ if(readOnlyFolderView) return; qsPick = qsPick ? null : new Set(); qsSel = null; qsMoving = false; renderQsSide(); });
+  document.getElementById('qsPickCancel').addEventListener('click', ()=>{ qsPick = null; renderQsSide(); });
+  document.getElementById('qsAllChk').addEventListener('change', e=>{ if(!qsPick) return; qsPick = e.target.checked ? new Set(qsCurList()) : new Set(); renderQsSide(); });
+  document.getElementById('qsPickDel').addEventListener('click', ()=>{
+    if(!qsPick || !qsPick.size || readOnlyFolderView) return;
+    const list = [...qsPick].filter(r=>records.includes(r)); if(!list.length) return;
+    const set = list[0].set||1;
+    if(!confirm(`고른 기록 ${list.length}개를 지울까요?\n(${set}세트 · ↩️ 되돌리기로 한 번에 돌릴 수 있어요)`)) return;
+    pushUndo(`기록 ${list.length}개 삭제 (${set}세트)`);
+    list.forEach(r=>{ records.splice(records.indexOf(r),1); if(qsEdit && qsEdit.rec===r) qsEdit = null; });
+    qsPick = null; qsSel = null;
+    afterRecordsChanged(); renderQsSide();
   });
   document.getElementById('qsActBar').addEventListener('click', e=>{
     const btn = e.target.closest('button[data-act]'); if(!btn || btn.disabled || readOnlyFolderView) return;
