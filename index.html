@@ -1879,6 +1879,11 @@
   #graphTabSeg button, #videoCol .detail-filter button, #teamAnalysisBox .detail-filter button{ font-size:13.5px; font-weight:800; color:var(--text); padding:11px 4px; }
   #graphTabSeg button:not(.active):hover, #videoCol .detail-filter button:not(.active):hover, #teamAnalysisBox .detail-filter button:not(.active):hover{ background:color-mix(in srgb, var(--accent) 12%, var(--panel)); }
   #graphTabSeg button.active, #videoCol .detail-filter button.active, #teamAnalysisBox .detail-filter button.active{ color:var(--on-accent); box-shadow:0 4px 12px -6px color-mix(in srgb, var(--accent) 80%, transparent); }
+  /* 좁은 화면(휴대폰): 상세 분석 탭 4개를 한 줄에 억지로 넣으면 마지막 탭 글자가 카드 밖으로 나가서 2×2 칸으로 나눠요 */
+  @media (max-width:560px){
+    #videoCol .detail-filter, #teamAnalysisBox .detail-filter{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-radius:16px; }
+    #videoCol .detail-filter button, #teamAnalysisBox .detail-filter button{ border-radius:12px; min-height:44px; padding:10px 6px; white-space:normal; word-break:keep-all; line-height:1.25; }
+  }
   #graphSummary [data-nav] > .field-label:first-child, #graphSummary .gs-card-h{ display:block; margin:0 0 10px !important; padding:7px 10px; font-size:14.5px; font-weight:800; color:var(--text); background:color-mix(in srgb, var(--accent) 10%, var(--panel)); border-left:5px solid var(--accent); border-radius:0 8px 8px 0; }
   #graphSummary [data-nav] > .field-label:first-child::before{ display:none; }
   /* 오른쪽 가장자리에 붙은 아이콘 줄(레일): 아이콘 + 짧은 이름, 마우스를 올리면 전체 이름 */
