@@ -1359,6 +1359,11 @@
   .tm-lab b{ font-size:12px; font-weight:800; color:var(--text); }
   .tm-lab em{ font-style:normal; font-size:11px; font-weight:800; color:var(--text); }
   .tm-lab small{ font-size:10.5px; color:var(--text-dim); }
+  /* 공격 방식 트리맵: 칸 크기에 맞춰 글자를 키워요(작은 칸은 12px 그대로, 넘치면 … 처리) */
+  .tm-scale .tm-tile{ container-type:size; }
+  .tm-scale .tm-lab{ font-size:clamp(12px, min(10cqh, 8cqw), 28px); left:clamp(5px, 3cqmin, 12px); top:clamp(5px, 3cqmin, 12px); right:clamp(5px, 3cqmin, 12px); gap:.15em; }
+  .tm-scale .tm-lab > *{ padding:.08em .4em; border-radius:.4em; white-space:normal; word-break:keep-all; overflow-wrap:break-word; } /* 좁은 칸은 잘리지 않고 두 줄로 */
+  .tm-scale .tm-lab b{ font-size:1em; } .tm-scale .tm-lab em{ font-size:.9em; } .tm-scale .tm-lab small{ font-size:.875em; }
   .cw-legend{ display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin:0 0 6px; }
   .cw-chip{ display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:999px; border:1px solid var(--border-2); background:var(--panel); color:var(--text); font:inherit; font-size:11.5px; font-weight:700; cursor:pointer; }
   .cw-chip svg{ width:30px; height:12px; flex:none; }
@@ -11646,7 +11651,7 @@
           : mid ? `<span class="tm-lab"><b>${dEsc(x.label)} · ${x.n}</b></span>` : '';
         return `<div class="tm-tile" style="left:${(r.x/W*100).toFixed(2)}%; top:${(r.y/H*100).toFixed(2)}%; width:${(r.w/W*100).toFixed(2)}%; height:${(r.h/H*100).toFixed(2)}%;" title="${dEsc(`${x.label} ${x.n}회 (${Math.round(x.n/tot*100)}%) · 득점 ${x.s} · 범실 ${x.f}`)}"><div class="tm-fill" style="flex-direction:${tall?'column':'row'};">${x.s?`<i style="flex:${x.s}; background:${fill};"></i>`:''}${x.f?`<i style="flex:${x.f}; background:repeating-linear-gradient(45deg, ${fill} 0 4px, var(--panel) 4px 8px);"></i>`:''}</div>${lab}</div>`;
       }).join('');
-      return `<div class="tm-side">${head}<div class="tm-box">${tiles}</div></div>`;
+      return `<div class="tm-side">${head}<div class="tm-box tm-scale">${tiles}</div></div>`;
     };
     return `<div class="bf-chart"><div class="bf-title">${title}</div><div class="tm-grid">${side('our')}${side('opp')}</div>
       <div class="bf-legend"><span class="muted">칸이 클수록 많이 쓴 방식이에요. 범실은 상대 범실이 아니라 그 팀이 직접 한 공격 범실이에요.</span></div>${note?`<div class="field-note" style="margin-top:4px;">${note}</div>`:''}</div>`;
