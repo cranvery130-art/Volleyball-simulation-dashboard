@@ -3236,6 +3236,7 @@
           <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·재생 카드(▶ 재생·✋ 편집)·포지션 배정, <b>오른쪽</b> 📂 대형 보관함(불러오기·저장) → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
           <li><b>📂 대형 보관함</b>: 맨 위 폴더 칸 하나가 <b>불러올 목록이자 저장할 곳</b>이에요. 폴더를 고르면 그 폴더의 대형이 버튼으로 나오고, 누르면 바로 코트에 불러와요(지금 코트의 대형은 테두리로 표시돼요). 🔍 찾기 칸에 적으면 모든 폴더에서 대형·폴더 이름으로 찾아요. 폴더 이름 바꾸기·복사·삭제와 💡 폴더 이름 Tip은 폴더 칸 옆 <b>⋯ 폴더</b>에 있고, 새 폴더는 폴더 칸 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요. 불러온 대형은 목록 아래에서 <b>✏️ 이름</b>을 바꾸거나 <b>🗑️ 삭제</b>해요. 공격 옵션(레프트·A 속공 등)이나 공격 상황을 바꿔도 지금 고른 폴더를 그대로 지켜요: 그 폴더에 그 상황 대형이 있으면 그것을 불러오고, 없으면 지금 대형을 그대로 둬요(기본 대형 폴더일 때만 기본 대형으로 바뀌어요). 맨 아래 저장 줄은 위 <b>공격 옵션 목록</b>에서 이름을 고르거나(+ 새 공격 옵션 추가로 목록에 넣을 수 있어요) 칸에 적어요. 이름이 불러온 대형과 같으면 <b>💾 덮어쓰기</b>, 다르면 <b>💾 새로 저장</b>이 되고, <b>➕ 새 이름으로</b>는 불러온 대형은 그대로 두고 하나 더 저장해요. 도트를 고치면 '● 고쳤어요'가 뜨고, 저장하지 않고 다른 대형을 누르면 한 번 물어봐요. 편집 모드를 켜면 코트 아래 재생 카드에도 같은 💾 저장 버튼이 나와서 위로 올라가지 않아도 돼요.</li>
           <li>처음 쓰는 사람(코드 없이 계속하기·새 코드 만들기)은 <b>기본 대형(3인블로킹 기준)</b> 폴더의 대형 12가지로 시작해요. 고쳐서 저장하면 그 방에서는 내 대형이 기준이 되고, 이미 대형을 저장해 둔 방은 그대로예요.</li>
+          <li><b>기본 시작 대형</b>: 기본 대형 폴더의 12가지 상황은 모두 같은 자리에서 출발해요. 실제 경기에서 서브가 들어가고 공이 세터에게 가기 전 양 팀이 서 있는 자리예요(서브 상황은 서버만 끝선에서 시작해요). 공격 옵션을 고르면 이 자리에서 공격이 펼쳐지니, 도착 위치만 조금씩 고치면 돼요. 내가 따로 저장한 폴더의 대형은 바뀌지 않아요. 시작 위치 편집의 <b>현재 모드 초기화</b>를 누르면 이 자리로 돌아와요.</li>
           <li>이동 동선·착지 이동선·커버리지·블로킹 범위는 항상 코트에 함께 표시돼요.</li>
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
           <li>왼쪽·오른쪽 기준: <b>공격 위치</b>는 공격하는 팀, <b>공 착지 칸</b>은 공을 받는 팀이 네트를 바라볼 때 기준이에요.</li>
@@ -4451,6 +4452,17 @@
     d:[80,200], e:[200,200], f:[320,200],
     g:[80,80],  h:[200,80],  i:[320,80]
   };
+  // ---------- 기본 시작 대형(모든 공격 상황의 공통 출발 자리) ----------
+  // 실제 경기에서 서브가 들어가고 공이 세터에게 가기 전, 양 팀이 서 있는 자리예요(TJ가 정한 사진 그대로).
+  // 포지션 이름으로 적어 두고, 포지션 배정(번호↔포지션)에 맞춰 번호별 자리로 바꿔 써요. 서브는 서버만 끝선에서 시작해요.
+  const START_OWN = {
+    LEFT:[41,534], FRONTSLIDE:[131,519], QA:[144,453], SETTER:[260,418], BACKSLIDE:[277,536], RIGHT:[359,509],
+    LBACK:[83,605], CBACK:[208,617], RBACK:[331,606]
+  };
+  const START_OPP = {
+    LEFT:[359,213], FRONTSLIDE:[249,213], QA:[273,292], SETTER:[172,317], BACKSLIDE:[125,213], RIGHT:[41,228],
+    LBACK:[314,157], CBACK:[208,123], RBACK:[73,151]
+  };
 
   let CUSTOM_BASE = {}; IDS.forEach(id=> CUSTOM_BASE[id]=ORIGINAL_BASE[id].slice());
   let CUSTOM_OPP_BASE = {}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=> CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice());
@@ -4783,7 +4795,9 @@
   // landing spot passes through a blocker's reach at the net. One blocker in range -> the ball
   // is touched and deflected onward. Two or more overlapping -> the ball is stopped outright.
   function computeBlockOutcome(f, atk, rawLanding){
-    const blockers = isOur(scenario) ? f.oppBlockerIds : f.blockerIds;
+    // softOppBlock: 기본 시작 대형으로 옮기면서 예전 자리(네트 앞)로 들어가게 한 상대 선수예요. 예전처럼 손 모양만 보이고 공은 막지 않아요(공 결과가 바뀌지 않게)
+    const soft = isOur(scenario) && Array.isArray(atk.softOppBlock) ? atk.softOppBlock : [];
+    const blockers = ((isOur(scenario) ? f.oppBlockerIds : f.blockerIds) || []).filter(id=>!soft.includes(id));
     if(!blockers || !blockers.length) return null;
     const contact = isOur(scenario) ? [atk.x, (atk.attackDepthY!=null?atk.attackDepthY:415)] : atk.contact;
     if((contact[1]-NET_Y)*(rawLanding[1]-NET_Y) >= 0) return null; // path doesn't cross the net between these points
@@ -5201,6 +5215,7 @@
         if(!store[key]) store[key]={};
         store[key][draggingId]=[x,y];
         if(!isOppDrag) current[draggingId]=[x,y];
+        if(isOppDrag && overridePhase!=='fake' && isOur(scenario)){ const oa = OUR_ATTACKS[scenario]; if(oa && Array.isArray(oa.softOppBlock)) oa.softOppBlock = oa.softOppBlock.filter(id=>id!==draggingId); } // 직접 옮긴 상대 블로커는 진짜로 막아요
       }
       render();
       return;
@@ -6396,7 +6411,7 @@
     else if(overrideMode) hint='재생이 끝난 <b>도착 위치(수비 완료 대형)</b>의 우리 팀·상대팀 도트를 드래그해 동선의 도착 지점을 바꿀 수 있어요. 상대 공격수(와 페이크 공격수)의 동선은 공격 상황 편집의 공격 과정으로 정해요. 지금 선택된 공격 상황에만 저장돼요.';
     else if(editMode){
       const teamWord = editTeamFilter==='own' ? '아군' : editTeamFilter==='opp' ? '상대팀' : '아군·상대팀 전체';
-      hint = `코트 위 ${teamWord} 점을 드래그해 <b>시작 위치</b>를 바꿀 수 있어요. 재생하면 이 위치에서 이동이 시작돼요.`;
+      hint = `코트 위 ${teamWord} 점을 드래그해 <b>시작 위치</b>를 바꿀 수 있어요. 재생하면 이 위치에서 이동이 시작돼요. 현재 모드 초기화를 누르면 기본 시작 대형으로 돌아가요.`;
     }
     else hint = '편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.';
     document.getElementById('editHintText').innerHTML = hint;
@@ -6404,8 +6419,10 @@
 
   document.getElementById('btnResetCurrent').addEventListener('click', ()=>{
     if(editMode){
-      IDS.forEach(id=>{ CUSTOM_BASE[id]=ORIGINAL_BASE[id].slice(); current[id]=ORIGINAL_BASE[id].slice(); });
-      Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ CUSTOM_OPP_BASE[id]=ORIGINAL_OPP_BASE[id].slice(); });
+      // 시작 위치 초기화 = 기본 시작 대형(사진 속 자리)으로 되돌려요
+      const sb = startOwnBase(), so = startOppBase(scenario);
+      IDS.forEach(id=>{ CUSTOM_BASE[id]=sb[id].slice(); current[id]=sb[id].slice(); });
+      Object.keys(ORIGINAL_OPP_BASE).forEach(id=>{ CUSTOM_OPP_BASE[id]=so[id].slice(); });
     } else if(overrideMode){
       if(overridePhase==='fake'){ delete FAKE_TARGET_OVERRIDES[comboKey()]; }
       else{ delete TARGET_OVERRIDES[comboKey()]; }
@@ -6553,8 +6570,8 @@
     let target = (activePreset && activePreset.name===name && (activePreset.folder||'')===folder) ? activePreset : null;
     if(!target) target = presets.find(p=>p.name===name && (p.folder||'')===folder);
     const tactic = tacticSnap(scenario); // 이 대형의 도착 위치·공격 과정도 함께 저장해요(같은 공격 옵션의 다른 전술과 따로)
-    if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; target.scenario=scenario; target.tactic=tactic; activePreset=target; }
-    else { const created={name, folder, base:baseCopy, oppBase:oppCopy, scenario, tactic}; presets.push(created); activePreset=created; }
+    if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; target.scenario=scenario; target.tactic=tactic; target.startV=START_V; activePreset=target; }
+    else { const created={name, folder, base:baseCopy, oppBase:oppCopy, scenario, tactic, startV:START_V}; presets.push(created); activePreset=created; }
     if(pendingComment.trim() && !activePreset.comment){
       activePreset.comment = pendingComment; activePreset.commentAt = Date.now();
       let who = null; try{ who = myDisplayName; }catch(err){}
@@ -7254,6 +7271,7 @@
         else window.__pendingVideoAnalysis = state.videoAnalysis; // 영상 분석 스크립트가 아직 안 읽혔으면, 읽힌 직후에 적용해요
       }
     }catch(err){ console.error('applyRoomState failed', err); }
+    try{ moveDefaultToStart(); }catch(err){ console.error('moveDefaultToStart failed', err); }
   }
 
   function lockForViewOnly(){
@@ -8312,6 +8330,59 @@
     if(atk && t.atk){ Object.keys(atk).forEach(k=>delete atk[k]); Object.assign(atk, JSON.parse(JSON.stringify(t.atk))); }
   }
   const sameTactic = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+  // ---------- 기본 시작 대형 적용 ----------
+  const START_V = 1; // 기본 대형 폴더를 기본 시작 대형으로 옮겼다는 표시(저장한 대형에도 붙여서 다시 옮기지 않아요)
+  function startBaseFor(posMap, table, fallback){
+    const out = {}, used = new Set();
+    Object.keys(fallback).forEach(id=>{
+      let role = posMap[id]; if(role==='QBACKA') role = 'QA'; // 빽A 속공수도 A 자리에서 시작해요
+      const spot = table[role] && !used.has(role) ? table[role] : null;
+      if(spot) used.add(role);
+      out[id] = (spot || fallback[id]).slice();
+    });
+    return out;
+  }
+  function startOwnBase(){ return startBaseFor(POSITIONS, START_OWN, ORIGINAL_BASE); }
+  function startOppBase(scen){
+    const b = startBaseFor(OPP_POSITIONS, START_OPP, ORIGINAL_OPP_BASE);
+    const atk = ATTACKS[scen];
+    if(atk && atk.serve && atk.approachFrom){ const sid = oppAttackerId(atk); if(b[sid]) b[sid] = atk.approachFrom.slice(); } // 서버만 끝선에서
+    return b;
+  }
+  // '기본 대형' 폴더의 대형들을 기본 시작 대형에서 출발하게 바꿔요(한 번만). 다른 폴더(직접 저장한 대형)는 건드리지 않아요.
+  // 예전 시작 자리는 prevBase·prevOppBase로 남겨요. 우리 공격 상황에서는 상대 선수의 예전 시작 자리(블로킹·수비 자리)를
+  // 도착 위치로 옮겨서, 재생하면 사진 대형 → 상대 블로킹·수비 대형으로 움직여요.
+  function moveDefaultToStart(){
+    presets.forEach(p=>{
+      if((p.folder||'')!==DEFAULT_FOLDER || (p.startV||0)>=START_V || !p.base) return;
+      const scen = resolveScenarioForPreset(p);
+      const atk0 = ATTACKS[scen] || OUR_ATTACKS[scen];
+      if(!atk0) return;
+      const prevOpp = p.oppBase ? JSON.parse(JSON.stringify(p.oppBase)) : null;
+      p.prevBase = JSON.parse(JSON.stringify(p.base));
+      if(prevOpp) p.prevOppBase = prevOpp;
+      p.base = startOwnBase();
+      p.oppBase = startOppBase(scen);
+      if(prevOpp && isOur(scen)){ // 우리 공격 때 상대는 수비(블로킹·뒤 수비)로 움직여야 해서 예전 자리를 도착 위치로 써요
+        const t = (p.tactic && p.tactic.scen===scen) ? p.tactic : tacticSnap(scen);
+        const atk = t.atk || atk0;
+        t.to = t.to || {};
+        const to = t.to[scen] = t.to[scen] || {};
+        const soft = [];
+        Object.keys(prevOpp).forEach(id=>{
+          if(to[id] || !p.oppBase[id]) return;
+          if(dist(prevOpp[id], p.oppBase[id]) > 8){
+            to[id] = prevOpp[id].slice();
+            if(isOur(scen) && prevOpp[id][1]>=345 && prevOpp[id][1]<=382) soft.push(id);
+          }
+        });
+        if(soft.length){ t.atk = JSON.parse(JSON.stringify(atk)); t.atk.softOppBlock = soft; }
+        p.tactic = t;
+      }
+      p.startV = START_V;
+    });
+  }
   function arrivalFor(base, oppBase, scen, tactic){
     if(!(ATTACKS[scen] || OUR_ATTACKS[scen])) return null;
     const tc = tactic && tactic.scen===scen ? tactic : null;
