@@ -68,16 +68,16 @@
   body.ys-mode .btn.primary:hover{ background:#2A3763; }
   body.ys-mode .card{ box-shadow:0 14px 34px -26px rgba(29,39,71,0.45); }
   body.ys-mode .scenario-title{ color:var(--navy); }
-  /* 양쌤 모드의 코트: 실제 배구 경기장처럼 주황 코트에 남색 바깥 띠, 흰 선, 남색 네트 */
-  body.ys-mode #courtGrad stop:first-child{ stop-color:#FF8A2B; }
-  body.ys-mode #courtGrad stop:last-child{ stop-color:#F57718; }
+  /* 양쌤 모드의 코트: 실제 배구 경기장처럼 밝고 따뜻한 주황 코트(종이색 배경·남색과 어울리게)에 남색 바깥 띠, 흰 선, 남색 네트 */
+  body.ys-mode #courtGrad stop:first-child{ stop-color:#FF9C4F; }
+  body.ys-mode #courtGrad stop:last-child{ stop-color:#FA8A3C; }
   body.ys-mode #sceneGroup > rect[stroke="#C97456"]{ stroke:#2A3763; }
   body.ys-mode #sceneGroup [stroke="#E8ECF2"]{ stroke:#FFFDF8; }
   body.ys-mode #sceneGroup [fill="#E8ECF2"]{ fill:#FFFDF8; }
   body.ys-mode #net rect[fill="#08090B"]{ fill:#1D2747; }
   body.ys-mode #sceneGroup [stroke="#FF9570"]{ stroke:#FFFDF8; }
   body.ys-mode .court-wrap{ background:#F2EADC; }
-  body.ys-mode .mk-court{ background:linear-gradient(90deg,#FF8A2B,#F57718); border-color:#2A3763; }
+  body.ys-mode .mk-court{ background:linear-gradient(90deg,#FF9C4F,#FA8A3C); border-color:#2A3763; }
   body.eye-mode .mk-court{ background:linear-gradient(90deg,#7A8E6C,#62755A); border-color:#A9775A; }
   /* 눈 보호 모드 — 오래 봐도 눈이 덜 피로하도록 설계한 팔레트.
      · 순백·순흑 대신 따뜻한 종이색 배경과 짙은 갈색 글자: 눈부심(글레어)과 과한 대비를 줄여요(본문 대비 약 11:1, 회색 글씨도 4.5:1 이상 유지).
@@ -3366,8 +3366,8 @@
         <svg id="court" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="courtGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#F27E22"/>
-              <stop offset="100%" stop-color="#E06A12"/>
+              <stop offset="0%" stop-color="#F98E3E"/>
+              <stop offset="100%" stop-color="#EB7A2C"/>
             </linearGradient>
             <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 Z" fill="#A3A8B1"/>
