@@ -68,16 +68,16 @@
   body.ys-mode .btn.primary:hover{ background:#2A3763; }
   body.ys-mode .card{ box-shadow:0 14px 34px -26px rgba(29,39,71,0.45); }
   body.ys-mode .scenario-title{ color:var(--navy); }
-  /* 양쌤 모드의 코트: 체육관 마루색 바닥에 흰 선, 남색 네트 */
-  body.ys-mode #courtGrad stop:first-child{ stop-color:#E2B47A; }
-  body.ys-mode #courtGrad stop:last-child{ stop-color:#D29E62; }
-  body.ys-mode #sceneGroup > rect[stroke="#C97456"]{ stroke:#E2622B; }
+  /* 양쌤 모드의 코트: 실제 배구 경기장처럼 주황 코트에 남색 바깥 띠, 흰 선, 남색 네트 */
+  body.ys-mode #courtGrad stop:first-child{ stop-color:#EC8A43; }
+  body.ys-mode #courtGrad stop:last-child{ stop-color:#DD7632; }
+  body.ys-mode #sceneGroup > rect[stroke="#C97456"]{ stroke:#2A3763; }
   body.ys-mode #sceneGroup [stroke="#E8ECF2"]{ stroke:#FFFDF8; }
   body.ys-mode #sceneGroup [fill="#E8ECF2"]{ fill:#FFFDF8; }
   body.ys-mode #net rect[fill="#08090B"]{ fill:#1D2747; }
-  body.ys-mode #sceneGroup [stroke="#FF9570"]{ stroke:#C24B16; }
+  body.ys-mode #sceneGroup [stroke="#FF9570"]{ stroke:#FFFDF8; }
   body.ys-mode .court-wrap{ background:#F2EADC; }
-  body.ys-mode .mk-court{ background:linear-gradient(90deg,#E2B47A,#D29E62); border-color:#E2622B; }
+  body.ys-mode .mk-court{ background:linear-gradient(90deg,#EC8A43,#DD7632); border-color:#2A3763; }
   body.eye-mode .mk-court{ background:linear-gradient(90deg,#7A8E6C,#62755A); border-color:#A9775A; }
   /* 눈 보호 모드 — 오래 봐도 눈이 덜 피로하도록 설계한 팔레트.
      · 순백·순흑 대신 따뜻한 종이색 배경과 짙은 갈색 글자: 눈부심(글레어)과 과한 대비를 줄여요(본문 대비 약 11:1, 회색 글씨도 4.5:1 이상 유지).
@@ -114,7 +114,7 @@
   .shared-banner{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 14px; margin-bottom:14px; border:1px solid var(--accent); background:var(--accent-soft); border-radius:var(--radius-md); }
   .shared-banner-text{ flex:1 1 260px; font-size:13px; color:var(--text); line-height:1.5; }
   .shared-banner-text span{ display:block; font-size:11.5px; color:var(--text-dim); }
-  body.shared-view #appModeSeg button[data-appmode="video"], body.shared-view #appModeSeg button[data-appmode="team"], body.shared-view #appModeSeg button[data-appmode="ai"], body.guest-view #appModeSeg button[data-appmode="ai"], body.shared-view #btnFeatureGuide, body.shared-view #topCodePill, body.shared-view #shareFormationSection, body.shared-view #sceneMapSection{ display:none !important; }
+  body.shared-view #appModeSeg button[data-appmode="video"], body.shared-view #appModeSeg button[data-appmode="team"], body.shared-view #appModeSeg button[data-appmode="ai"], body.guest-view #appModeSeg button[data-appmode="ai"], body.shared-view #btnFeatureGuide, body.shared-view #topCodePill, body.shared-view #shareFormationSection{ display:none !important; }
   #themeSeg{ flex:none; }
   #themeSeg button{ padding:9px 12px; font-size:12px; white-space:nowrap; }
   #btnThemeToggle{
@@ -201,6 +201,10 @@
   .vault-save-note{ margin-top:4px; }
   .vault-save-note.dirty{ color:var(--warn); font-weight:700; }
   .preset-folder-tools .preset-load-actions{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+  /* ⋯ 폴더 메뉴: 버튼 세 개가 세 칸을 나눠 쓰고, 좁으면 글자를 두 줄로 접어 칸 안에 넣어요 */
+  #vaultMenu .preset-load-actions{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+  #vaultMenu .preset-load-actions .btn{ min-height:44px; padding:8px 6px; white-space:normal; word-break:keep-all; line-height:1.25; }
+  .vault-menu-btn{ min-height:44px; }
   select:focus, button:focus-visible, input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
   optgroup{ color:var(--text-dim); font-style:normal; }
   .field-note{ font-size:12px; color:var(--muted); margin-top:8px; line-height:1.55; }
@@ -407,10 +411,22 @@
   .tl-mid{ flex:1; min-width:0; }
   .tl-note{ font-size:11.5px; color:var(--text-dim); margin:6px 4px 0; line-height:1.45; transition:color .2s ease-out; }
   .tl-note.warn{ color:var(--accent); font-weight:600; }
-  /* 편집 모드 카드가 코트에서 멀리 아래에 있어서, 코트 바로 아래에 같은 버튼을 하나 더 둬요(두 곳은 늘 같이 움직여요) */
-  #quickEditSeg{ display:flex; align-items:center; gap:4px; margin:8px 4px 0; max-width:520px; }
+  /* 재생 카드 안 두 번째 줄: 편집 모드(끔 = 재생·다시보기) — 재생 줄과 같은 폭 */
+  .timeline-bar{ flex-wrap:wrap; row-gap:10px; }
+  .timeline-bar #quickEditSeg{ flex:1 1 100%; display:flex; align-items:center; gap:4px; margin:0; max-width:none; }
+  .timeline-bar #playNote{ flex:1 1 100%; margin:-4px 4px 0; }
+  .timeline-bar .edit-tools{ flex:1 1 100%; padding-top:8px; border-top:1px dashed var(--border); }
+  .timeline-bar .edit-tools[hidden]{ display:none; }
+  .edit-tools .edit-hint{ margin:0 2px 6px; }
+  .edit-tools .edit-tools-btns{ margin-top:6px; }
+  .edit-tools .edit-tools-btns{ display:flex; gap:6px; }
+  .edit-tools .edit-tools-btns .btn{ min-height:44px; flex:1 1 0; min-width:0; white-space:normal; word-break:keep-all; line-height:1.3; }
+  #quickEditSeg button[data-mode="off"]{ flex:1.35; }
+  @media (max-width:520px){ #quickEditSeg .qe-label{ padding:0 2px; font-size:11.5px; } #quickEditSeg .qe-sub{ font-size:10px; } }
   #quickEditSeg .qe-label{ font-size:12px; font-weight:700; color:var(--text-dim); padding:0 6px; white-space:nowrap; }
-  #quickEditSeg button{ flex:1; min-height:40px; }
+  #quickEditSeg button{ flex:1; min-height:44px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; line-height:1.2; }
+  #quickEditSeg .qe-main{ font-size:12.5px; }
+  #quickEditSeg .qe-sub{ font-size:10.5px; font-weight:600; opacity:.85; white-space:nowrap; }
   .tl-phase{ font-family:var(--mono); font-size:11px; letter-spacing:0.06em; color:var(--accent); font-weight:600; margin-bottom:4px; }
   input[type=range]{ width:100%; appearance:none; height:5px; border-radius:3px; background:linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct,0%), var(--border-2) var(--pct,0%), var(--border-2) 100%); cursor:pointer; }
   input[type=range]::-webkit-slider-thumb{ appearance:none; width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); cursor:pointer; }
@@ -822,8 +838,6 @@
     #cardSave .preset-input-row, #cardPresets .preset-input-row{ flex-direction:column; }
     #cardSave .preset-input-row input[type=text], #cardPresets .preset-input-row input[type=text]{ flex:none !important; width:100%; }
     #cardSave .preset-input-row button, #cardPresets .preset-input-row button{ width:100%; }
-    #cardPresets #editModeSeg{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; border-radius:12px; }
-    #cardPresets #editModeSeg button{ border-radius:8px; flex:none; }
     #customXSeg{ display:grid; grid-template-columns:repeat(5,1fr); gap:4px; border-radius:12px; padding:4px; }
     #customXSeg button{ white-space:normal; word-break:keep-all; line-height:1.25; border-radius:8px; flex:none; padding:8px 2px; font-size:11px; }
     .nine-zone-grid button{ padding:9px 3px; font-size:10.5px; }
@@ -2426,27 +2440,15 @@
   .match-info[open] > summary .fg-title::after{ content:' ▴'; }
   .match-info:not([open]) > summary{ border-bottom:none; padding-bottom:0; }
 
-  /* ---------- 사용 순서: 왼쪽(공격 상황 편집) → 오른쪽(📂 대형 보관함 → 편집 → 최종 → 기록 상황별 대형 → 공유) ---------- */
+  /* ---------- 사용 순서: 왼쪽(공격 상황 편집) → 오른쪽(📂 대형 보관함 → 최종 → 공유) · ✋ 편집은 코트 아래 재생 카드 안 ---------- */
   .side-left{ display:flex; flex-direction:column; gap:14px; }
   #cardPresets{ display:flex; flex-direction:column; }
-  #presetEditControls, #editModeSection{ display:contents; }
+  #presetEditControls{ display:contents; }
   #cardPresets > h2{ order:0; }
   #grpPresetLoad, #autoSaveStatus, #presetSearchBox{ order:1; }
-  #grpEdit{ order:2; }
   #finalFormationSection{ order:4; }
   #btnPresetInfoToggle, #presetInfoPanel{ order:5; }
   #shareFormationSection{ order:7; }
-  #sceneMapSection{ order:7; } /* 대형 공유 바로 위(같은 order면 HTML 순서대로) */
-  .scene-map-fold > summary{ list-style:none; cursor:pointer; }
-  .scene-map-fold > summary::-webkit-details-marker{ display:none; }
-  .scene-map-fold > summary .fgroup-head{ margin-bottom:0; }
-  .scene-map-fold[open] > summary .fgroup-head{ margin-bottom:8px; }
-  .scene-map-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:6px 8px; align-items:center; margin-top:8px; }
-  .scene-map-grid > span{ font-size:12.5px; font-weight:700; color:var(--text); line-height:1.3; }
-  .scene-map-grid > span small{ display:block; font-weight:500; font-size:11px; color:var(--muted); }
-  .scene-map-grid select{ width:100%; margin:0; font-size:13px; }
-  .scene-map-grid select.set{ border-color:var(--accent); }
-  .scene-map-sub{ font-size:13px; font-weight:800; color:var(--text); margin:12px 0 4px; padding-top:10px; border-top:1px dashed var(--border-2); }
   .adv-opts{ margin-top:8px; border:1px dashed var(--border-2); border-radius:10px; padding:6px 10px; background:var(--panel); }
   .adv-opts > summary{ cursor:pointer; font-size:12.5px; font-weight:700; color:var(--text-dim); list-style:none; }
   .adv-opts > summary::-webkit-details-marker{ display:none; }
@@ -3245,14 +3247,13 @@
         <button class="btn gd-more-btn" type="button">⚠️ 참고사항 더 보기 ▾</button>
         <div class="gd-more" style="display:none;">
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
-          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·포지션 배정, <b>오른쪽</b> 📂 대형 보관함(불러오기·저장) → 편집 모드 → ⭐ 최종 대형 → 기록 상황별 대형 → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
-          <li><b>📂 대형 보관함</b>: 맨 위 폴더 칸 하나가 <b>불러올 목록이자 저장할 곳</b>이에요. 폴더를 고르면 그 폴더의 대형이 버튼으로 나오고, 누르면 바로 코트에 불러와요(지금 코트의 대형은 테두리로 표시돼요). 🔍 찾기 칸에 적으면 모든 폴더에서 대형·폴더 이름으로 찾아요. 폴더 이름 바꾸기·복사·삭제와 💡 폴더 이름 Tip은 폴더 칸 옆 <b>⋯ 폴더</b>에 있고, 새 폴더는 폴더 칸 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요. 불러온 대형은 목록 아래에서 <b>✏️ 이름</b>을 바꾸거나 <b>🗑️ 삭제</b>해요. 공격 옵션(레프트·A 속공 등)이나 공격 상황을 바꿔도 지금 고른 폴더를 그대로 지켜요: 그 폴더에 그 상황 대형이 있으면 그것을 불러오고, 없으면 지금 대형을 그대로 둬요(기본 대형 폴더일 때만 기본 대형으로 바뀌어요). 맨 아래 저장 줄은 위 <b>공격 옵션 목록</b>에서 이름을 고르거나(+ 새 공격 옵션 추가로 목록에 넣을 수 있어요) 칸에 적어요. 이름이 불러온 대형과 같으면 <b>💾 덮어쓰기</b>, 다르면 <b>💾 새로 저장</b>이 되고, <b>➕ 새 이름으로</b>는 불러온 대형은 그대로 두고 하나 더 저장해요. 도트를 고치면 '● 고쳤어요'가 뜨고, 저장하지 않고 다른 대형을 누르면 한 번 물어봐요. 편집 모드를 켜거나 고친 내용이 있으면 편집 모드 카드에도 같은 💾 저장 버튼이 나와서 위로 올라가지 않아도 돼요.</li>
+          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·재생 카드(▶ 재생·✋ 편집)·포지션 배정, <b>오른쪽</b> 📂 대형 보관함(불러오기·저장) → ⭐ 최종 대형 → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
+          <li><b>📂 대형 보관함</b>: 맨 위 폴더 칸 하나가 <b>불러올 목록이자 저장할 곳</b>이에요. 폴더를 고르면 그 폴더의 대형이 버튼으로 나오고, 누르면 바로 코트에 불러와요(지금 코트의 대형은 테두리로 표시돼요). 🔍 찾기 칸에 적으면 모든 폴더에서 대형·폴더 이름으로 찾아요. 폴더 이름 바꾸기·복사·삭제와 💡 폴더 이름 Tip은 폴더 칸 옆 <b>⋯ 폴더</b>에 있고, 새 폴더는 폴더 칸 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요. 불러온 대형은 목록 아래에서 <b>✏️ 이름</b>을 바꾸거나 <b>🗑️ 삭제</b>해요. 공격 옵션(레프트·A 속공 등)이나 공격 상황을 바꿔도 지금 고른 폴더를 그대로 지켜요: 그 폴더에 그 상황 대형이 있으면 그것을 불러오고, 없으면 지금 대형을 그대로 둬요(기본 대형 폴더일 때만 기본 대형으로 바뀌어요). 맨 아래 저장 줄은 위 <b>공격 옵션 목록</b>에서 이름을 고르거나(+ 새 공격 옵션 추가로 목록에 넣을 수 있어요) 칸에 적어요. 이름이 불러온 대형과 같으면 <b>💾 덮어쓰기</b>, 다르면 <b>💾 새로 저장</b>이 되고, <b>➕ 새 이름으로</b>는 불러온 대형은 그대로 두고 하나 더 저장해요. 도트를 고치면 '● 고쳤어요'가 뜨고, 저장하지 않고 다른 대형을 누르면 한 번 물어봐요. 편집 모드를 켜면 코트 아래 재생 카드에도 같은 💾 저장 버튼이 나와서 위로 올라가지 않아도 돼요.</li>
           <li>처음 쓰는 사람(코드 없이 계속하기·새 코드 만들기)은 <b>기본 대형(3인블로킹 기준)</b> 폴더의 대형 12가지로 시작해요. 고쳐서 저장하면 그 방에서는 내 대형이 기준이 되고, 이미 대형을 저장해 둔 방은 그대로예요.</li>
           <li>이동 동선·착지 이동선·커버리지·블로킹 범위는 항상 코트에 함께 표시돼요.</li>
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
           <li>왼쪽·오른쪽 기준: <b>공격 위치</b>는 공격하는 팀, <b>공 착지 칸</b>은 공을 받는 팀이 네트를 바라볼 때 기준이에요.</li>
           <li>⭐ 최종 대형은 개설자만 확정·교체·해제할 수 있어요. 수정 권한자는 의견을 "의견 · 내 이름" 폴더에 저장해 주세요.</li>
-          <li><b>📤 대형 공유</b> 바로 위 <b>📋 기록 상황별 대형</b>(선택)에서 블로킹·리시브·다이렉트·2구처리 등 공격 위치가 없는 기록에 쓸 공격 상황을 정할 수 있어요. 비워 두면 경기 분석 코트 그림이 랠리 및 토스 순서의 마지막 공격 토스로 자동으로 골라요. 같은 카드의 <b>🔵 우리 팀 전술 대형</b>에서는 상대 공격(레프트·속공·라이트·시간차·빽차·빽A·서브)과 우리 공격마다 우리 팀이 쓸 저장된 전술 대형을 고를 수 있어요.</li>
           <li><b>공격하는 선수·페이크 선수·경유점</b>은 공격 상황 편집 카드에서 누르는 즉시 적용돼요. 페이크는 여러 명 고를 수 있고, 페이크가 있으면 세터 토스가 한 박자 늦게 나가요. 고른 포지션 선수가 없으면 빠른 조합이 그 선수를 건너뛰어요(포지션 배정에서 먼저 정해 주세요).</li>
           <li>같은 공격 옵션이라도 <b>이름을 달리해 저장</b>하면 대형마다 시작 위치뿐 아니라 <b>도착 위치·공격 과정</b>(위치·템포·착지·공격하는 선수·페이크·경유점)도 따로 저장돼요. 불러오면 그 전술의 설정이 그대로 돌아와요(예전에 저장한 대형은 공격 옵션에 하나뿐인 설정을 써요).</li>
           <li>대형 코멘트는 대형마다 하나예요. 여러 사람이 동시에 고치면 마지막에 저장된 내용만 남아요.</li>
@@ -3307,7 +3308,7 @@
           <li>세터 배분을 보려면 랠리 중 토스가 올라갈 때마다 결과 버튼 위 "🏐 랠리 및 토스 순서"에서 그 팀 칸(🔵 우리 / 🔴 상대)의 보낸 곳을 눌러요. 팀을 따로 고를 필요가 없고, 다음 차례인 팀 칸이 살짝 밝아져요. 기록하기를 누르면 그 점수에 함께 저장되고, 요약의 "점수별 토스 흐름"에서 점수마다 토스가 어떻게 이어졌는지 볼 수 있어요. 세터가 토스 대신 바로 넘긴 공은 한 일 "2구"(세부 상황 이름은 2구처리), 토스 순서에서도 "2구"로 남겨요. 공격 없이 첫 터치·두 번째 터치로 바로 넘어간 공은 토스 순서의 "다이렉트"로 남겨요.</li>
           <li><b>⌨️ PC 키보드 단축키</b>(PC 브라우저의 빠른 기록 모드에서만): 양 팀 칸이 키보드 배치 한 장으로 바뀌어요. 윗줄 <b>Q</b> 레프트 · <b>W</b> 앞차 · <b>E</b> A(<b>빠르게 두 번</b> 누르면 B), 가운데 줄 <b>A</b> 백A · <b>S</b> 백차 · <b>D</b> 라이트(네트를 바라보고 선 공격 위치), 아랫줄 <b>Z</b> 2구 · <b>X</b> 3구처리 · <b>C</b> 다이렉트 · <b>V</b> 서브, <b>Space</b>는 토스를 올리는 팀 바꾸기예요(가운데 막대에 지금 팀이 색으로 보여요). E가 아닌 토스 키를 <b>빠르게 두 번</b> 누르면 그 토스가 2단 토스가 되고(A·B의 2단 토스는 <b>↪ 2단</b>이나 칩으로 표시해요), <b>Esc</b>는 가장 최근 것을 지워요. 한/영 상태와 상관없이 키 자리로 알아듣고, 메모처럼 글자를 쓰는 칸에 있을 때는 동작하지 않아요. <b>서브</b>는 토스가 아니라 이번 랠리를 서브한 팀으로 따로 남아서 세터 배분에는 섞이지 않아요. 결과는 숫자 <b>1</b> 우리 득점 · <b>2</b> 상대 득점 · <b>3</b> 우리 범실 · <b>4</b> 상대 범실로 고르고, <b>Enter</b>로 기록해요(버튼에 초점이 있으면 Enter는 그 버튼을 눌러요). 휴대폰·태블릿 터치 화면은 지금처럼 팀 칸과 결과 버튼을 눌러요.</li>
           <li>리시브가 흔들려 세터가 아닌 선수가 올린 토스는 <b>↪ 2단</b>을 먼저 누르고 보낸 곳을 누르거나, 넣은 뒤 그 토스 칩을 눌러 바꿔요. 그 토스 하나만 "2단"으로 표시되고 세터 배분에 함께 들어가요. 2단 토스가 실수로 바로 실점이 됐다면 한 일은 "2단 토스"(범실)로 골라요.</li>
-          <li>득실 위치는 따로 고르지 않아요. 결과 버튼 바로 아래 <b>코트 그림</b>에는 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형을 그 상황으로 재생했을 때 명단 선수가 <b>도착한 자리</b>가 실제 코트 비율 그대로 나와요(왼쪽 🔴 상대·오른쪽 🔵 우리, 가운데 네트. 서로 붙은 선수는 겹치지 않게 살짝 벌려 보여줘요). 대형은 <b>🏐 랠리 및 토스 순서의 마지막 공격 토스</b>를 따라가서 그 대형을 재생했을 때 <b>도착한 자리</b>로 보여줘요. 레프트·A 같은 공격 상황을 골랐어도 토스 순서에 공격 토스가 있으면 그 마지막 토스 대형이에요(앞차 = 시간차 대형, 토스를 안 남겼으면 고른 공격 상황 대형). 공격 위치가 없는 상황은 이렇게 따라가요: 블로킹·리시브는 상대가 마지막으로 올린 공격(예: 🔴 라이트 → 우리 팀은 상대 라이트 공격 수비 대형), 다이렉트·2구처리·3구처리·토스 실수는 그 팀이 마지막으로 올린 공격, 파울이나 아직 결과를 안 골랐을 때는 토스 순서의 마지막 공격이에요. 서브는 그 팀이 서브할 때, 서브캐치와 토스 없이 고른 리시브는 상대가 서브할 때이고, 이때는 공이 넘어간 뒤 자리가 아니라 <b>서브 대형의 시작 자리</b>(서브하는 팀은 서브 때 서는 자리, 받는 팀은 서브 리시브 대형)로 보여줘요. 2구·3구처리·다이렉트 토스는 공격 위치가 없어서 그 앞 토스를 봐요. 그림 아래에 "🏐 마지막 토스 🔴라이트 기준 대형"처럼 무엇을 따랐는지 나와요. 자동 대신 정해 두고 싶으면 전술 시뮬레이션의 <b>📋 기록 상황별 대형</b>에서 상황마다 공격 상황을 고르고, 상대·우리 공격 종류마다 우리 팀이 쓸 전술 대형도 골라요. 공격 상황(레프트·A 등)에서 선수를 고르면 <b>공이 간 방향 화살표</b>가 나와요: 공격한 팀 선수 → 고른 상대 선수, 상대 선수를 안 골랐으면 그 대형을 재생했을 때 공이 떨어진 자리(흰 공)까지예요. 공격이면 코트 그림의 <b>빈 곳을 눌러</b> 공이 향한 곳을 남겨요(분석에서는 앞·중간·뒤 × 왼쪽·중앙·오른쪽으로 읽어요. 페인트·볼처리도 같아요. 아웃은 한 일에서 아웃을 고르고 공이 나간 쪽 코트 선 밖을 눌러요). 그림 아래에 "오른쪽 뒤 · 크로스"처럼 공이 간 곳 이름이 나오고, 같은 곳을 한 번 더 누르면 지워요. <b>서브</b>(서브 범실·서브 에이스)도 코트 그림을 눌러요: 경기장 밖(코트 선 바깥)을 누르면 <b>아웃</b>, 가운데 네트를 누르면 그 자리에서 <b>네트에 맞은</b> 것으로 남고, 서브 범실이면 범실 종류(아웃·네트 걸림)도 같이 골라져요. 서버를 골랐으면 서버에서 그 자리까지 화살표가 나오고, 코트 위치 분석에도 그 길로 그려져요. 왼쪽·오른쪽은 전술 시뮬레이션처럼 <b>공격하는 팀이 네트를 바라볼 때</b> 기준이고, 레프트·라이트처럼 끝에서 때린 공이 같은 쪽으로 가면 직선, 반대쪽이면 크로스예요. 선수를 안 골라도 그 상황에서 때리는 자리부터 화살표를 그려요. 범실에서 방식을 <b>네트 걸림·네트싸움</b>으로 고르면 화살표가 네트에서 멈추고(✕), <b>아웃</b>이면 코트 밖까지 가요(코트를 눌러 고르면 그 방향 그대로 코트 밖까지 나가고, 고른 자리는 작은 흰 점으로 남아요). 화살표는 공격 상황에서만 나오고, 블로킹·리시브·서브·파울은 선수 자리만 보여줘요. 코트 위치 분석의 화살표도 같은 규칙이에요. 동그라미 안은 등번호(명단에 등번호가 없으면 명단 번호), 아래는 포지션이에요. 동그라미를 눌러 🔵·🔴 선수를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요(대형의 시작 위치가 아니라 그 상황을 재생했을 때 도착한 자리예요). 실제 경기에서 선수가 대형과 다르게 서 있었으면 코트 그림의 🔵·🔴 <b>동그라미를 끌어 옮겨요</b>(손가락으로도 돼요. 자기 팀 코트 쪽에서만 움직이고, 살짝 누르기만 하면 지금처럼 선수 고르기예요). 옮긴 선수는 바깥 고리가 하나 더 생기고, 그림 위 <b>↺ 대형 자리로</b>를 누르면 모두 대형 자리로 돌아가요. 옮긴 자리는 <b>기록하기</b>를 누를 때 그 기록에만 함께 남아, 코트 위치 분석의 선수 자리와 공 화살표 시작점도 그 자리로 그려요. 다음 기록은 다시 대형 자리부터 시작하고, ✏️ 고치기로 불러오면 옮긴 자리도 함께 돌아와요. 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
+          <li>득실 위치는 따로 고르지 않아요. 결과 버튼 바로 아래 <b>코트 그림</b>에는 지금 고른 상황(레프트·A 등)과 공격 팀에 맞는 양 팀 대형을 그 상황으로 재생했을 때 명단 선수가 <b>도착한 자리</b>가 실제 코트 비율 그대로 나와요(왼쪽 🔴 상대·오른쪽 🔵 우리, 가운데 네트. 서로 붙은 선수는 겹치지 않게 살짝 벌려 보여줘요). 대형은 <b>🏐 랠리 및 토스 순서의 마지막 공격 토스</b>를 따라가서 그 대형을 재생했을 때 <b>도착한 자리</b>로 보여줘요. 레프트·A 같은 공격 상황을 골랐어도 토스 순서에 공격 토스가 있으면 그 마지막 토스 대형이에요(앞차 = 시간차 대형, 토스를 안 남겼으면 고른 공격 상황 대형). 공격 위치가 없는 상황은 이렇게 따라가요: 블로킹·리시브는 상대가 마지막으로 올린 공격(예: 🔴 라이트 → 우리 팀은 상대 라이트 공격 수비 대형), 다이렉트·2구처리·3구처리·토스 실수는 그 팀이 마지막으로 올린 공격, 파울이나 아직 결과를 안 골랐을 때는 토스 순서의 마지막 공격이에요. 서브는 그 팀이 서브할 때, 서브캐치와 토스 없이 고른 리시브는 상대가 서브할 때이고, 이때는 공이 넘어간 뒤 자리가 아니라 <b>서브 대형의 시작 자리</b>(서브하는 팀은 서브 때 서는 자리, 받는 팀은 서브 리시브 대형)로 보여줘요. 2구·3구처리·다이렉트 토스는 공격 위치가 없어서 그 앞 토스를 봐요. 그림 아래에 "🏐 마지막 토스 🔴라이트 기준 대형"처럼 무엇을 따랐는지 나와요. 공격 상황(레프트·A 등)에서 선수를 고르면 <b>공이 간 방향 화살표</b>가 나와요: 공격한 팀 선수 → 고른 상대 선수, 상대 선수를 안 골랐으면 그 대형을 재생했을 때 공이 떨어진 자리(흰 공)까지예요. 공격이면 코트 그림의 <b>빈 곳을 눌러</b> 공이 향한 곳을 남겨요(분석에서는 앞·중간·뒤 × 왼쪽·중앙·오른쪽으로 읽어요. 페인트·볼처리도 같아요. 아웃은 한 일에서 아웃을 고르고 공이 나간 쪽 코트 선 밖을 눌러요). 그림 아래에 "오른쪽 뒤 · 크로스"처럼 공이 간 곳 이름이 나오고, 같은 곳을 한 번 더 누르면 지워요. <b>서브</b>(서브 범실·서브 에이스)도 코트 그림을 눌러요: 경기장 밖(코트 선 바깥)을 누르면 <b>아웃</b>, 가운데 네트를 누르면 그 자리에서 <b>네트에 맞은</b> 것으로 남고, 서브 범실이면 범실 종류(아웃·네트 걸림)도 같이 골라져요. 서버를 골랐으면 서버에서 그 자리까지 화살표가 나오고, 코트 위치 분석에도 그 길로 그려져요. 왼쪽·오른쪽은 전술 시뮬레이션처럼 <b>공격하는 팀이 네트를 바라볼 때</b> 기준이고, 레프트·라이트처럼 끝에서 때린 공이 같은 쪽으로 가면 직선, 반대쪽이면 크로스예요. 선수를 안 골라도 그 상황에서 때리는 자리부터 화살표를 그려요. 범실에서 방식을 <b>네트 걸림·네트싸움</b>으로 고르면 화살표가 네트에서 멈추고(✕), <b>아웃</b>이면 코트 밖까지 가요(코트를 눌러 고르면 그 방향 그대로 코트 밖까지 나가고, 고른 자리는 작은 흰 점으로 남아요). 화살표는 공격 상황에서만 나오고, 블로킹·리시브·서브·파울은 선수 자리만 보여줘요. 코트 위치 분석의 화살표도 같은 규칙이에요. 동그라미 안은 등번호(명단에 등번호가 없으면 명단 번호), 아래는 포지션이에요. 동그라미를 눌러 🔵·🔴 선수를 고르면, 경기 정보의 명단 포지션과 전술 시뮬레이션에 저장된 그 팀 대형(팀 이름이 들어간 폴더, 없으면 경기 정보의 <b>위치 판단 대형</b>에서 고른 폴더나 기본 대형)으로 코트 위치를 자동으로 정해요(대형의 시작 위치가 아니라 그 상황을 재생했을 때 도착한 자리예요). 실제 경기에서 선수가 대형과 다르게 서 있었으면 코트 그림의 🔵·🔴 <b>동그라미를 끌어 옮겨요</b>(손가락으로도 돼요. 자기 팀 코트 쪽에서만 움직이고, 살짝 누르기만 하면 지금처럼 선수 고르기예요). 옮긴 선수는 바깥 고리가 하나 더 생기고, 그림 위 <b>↺ 대형 자리로</b>를 누르면 모두 대형 자리로 돌아가요. 옮긴 자리는 <b>기록하기</b>를 누를 때 그 기록에만 함께 남아, 코트 위치 분석의 선수 자리와 공 화살표 시작점도 그 자리로 그려요. 다음 기록은 다시 대형 자리부터 시작하고, ✏️ 고치기로 불러오면 옮긴 자리도 함께 돌아와요. 예전에 직접 고른 위치는 기록에 그대로 남아요.</li>
           <li>폴더를 고르면 화면이 그 폴더의 기록과 그 경기 정보(남자부·여자부, 우리팀·상대팀 이름, 포지션 명단)로 바뀌고, 이후 기록은 그 폴더에 자동 저장돼요. 다른 경기를 새로 기록할 땐 새 경기 카드에 이름·날짜·부·팀 이름을 적고 <b>🆕 새 경기 시작</b>을 눌러요. 폴더 목록과 📊 팀 누적 분석은 경기 날짜 순서로 놓여요. 폴더 없이 남긴 기록이 있으면 새 폴더에 담을지 물어봐요.</li>
           <li>예전 버전에서 한 줄에 여러 점수가 합쳐진 기록은 "✂️ 나누기"로 1점씩 나눈 뒤 세트를 확인해주세요.</li>
           <li>방금 한 기록을 <b>↩️ 되돌리기</b>하면 그 기록의 결과·고른 선수와 한 일(관련 선수 포함)·토스 순서가 다시 골라진 채로 돌아와서, 고쳐서 바로 다시 기록할 수 있어요. 되돌리기는 지금 열린 화면에서만 기억해요. 새로고침하거나 다른 폴더를 불러오면 초기화돼요.</li>
@@ -3381,8 +3382,8 @@
         <svg id="court" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="courtGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#1B4A3E"/>
-              <stop offset="100%" stop-color="#0D241E"/>
+              <stop offset="0%" stop-color="#C9682C"/>
+              <stop offset="100%" stop-color="#A9531F"/>
             </linearGradient>
             <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 Z" fill="#A3A8B1"/>
@@ -3425,14 +3426,39 @@
           <div class="tl-phase" id="phaseLabel">대기 중 — ▶ 재생</div>
           <input type="range" id="timeline" min="0" max="100" value="0" />
         </div>
+        <div class="seg" id="quickEditSeg" aria-label="편집 모드 바로가기">
+          <span class="qe-label">✋ 편집</span>
+          <button data-mode="off" class="active" title="편집을 끄면 ▶ 재생·⟲ 다시보기를 할 수 있어요"><span class="qe-main">끔</span><span class="qe-sub">▶ 재생 · ⟲ 다시보기</span></button>
+          <button data-mode="edit">시작 위치</button>
+          <button data-mode="override">도착 위치</button>
+        </div>
+        <div id="editModeSection" class="edit-tools" hidden>
+        <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
+        <details class="adv-opts" id="editAdv" style="display:none;">
+          <summary>⚙️ 고급 옵션 <span>편집 대상·반응 위치</span></summary>
+        <div id="editTeamRow" style="display:none;">
+          <label class="field-label" style="margin-top:8px;">편집 대상</label>
+          <div class="seg" id="editTeamSeg">
+            <button data-team="all" class="active">전체</button>
+            <button data-team="own">아군</button>
+            <button data-team="opp">상대팀</button>
+          </div>
+        </div>
+        <div id="overridePhaseRow" style="display:none; margin-top:8px;">
+          <label class="field-label" style="margin-top:0;">어느 시점을 편집할까요?</label>
+          <div class="seg" id="overridePhaseSeg">
+            <button data-phase="final" class="active">최종 도착 위치</button>
+            <button data-phase="fake">반응(페이크) 위치</button>
+          </div>
+        </div>
+        </details>
+        <div class="btn-row edit-tools-btns">
+          <button class="btn" id="btnResetCurrent" disabled>현재 모드 초기화</button>
+          <button class="btn primary" id="btnEditQuickSave" type="button" hidden title="위 📂 대형 보관함의 저장과 같아요">💾 저장</button>
+        </div>
+        </div>
+        <div class="tl-note" id="playNote" style="display:none;">편집 중에는 재생할 수 없어요. ✋ 편집 모드를 <b>끔 (▶ 재생 · ⟲ 다시보기)</b>으로 바꿔요.</div>
       </div>
-      <div class="seg" id="quickEditSeg" aria-label="편집 모드 바로가기">
-        <span class="qe-label">✋ 편집</span>
-        <button data-mode="off" class="active">끔</button>
-        <button data-mode="edit">시작 위치</button>
-        <button data-mode="override">도착 위치</button>
-      </div>
-      <div class="tl-note" id="playNote" style="display:none;">편집 중에는 재생할 수 없어요. ✋ 편집 모드를 <b>끔</b>으로 바꿔요.</div>
       <div class="legend stage-legend">
         <div class="row"><span class="dot" style="background:var(--own);"></span>우리 팀 (1~9)</div>
         <div class="row"><span class="dot" style="background:var(--opp);"></span>상대 팀 (1~9, 포지션 배정 순서)</div>
@@ -3473,7 +3499,7 @@
           <div class="fgroup">
           <div class="fgroup-head"><span class="fg-ic">⚡</span><span class="fg-title">공격 동작</span><span class="fg-sub">어디서·얼마나 빠르게·누가 공격할지 정해요</span></div>
           <label class="field-label" style="margin-top:0;">공격 위치</label>
-          <div class="field-note" style="margin-top:0; margin-bottom:6px;">공격 위치는 <b>공격하는 팀의 공격수 도트가 네트 앞에서 공을 때리는 점</b>이에요. 이 점에서 아래 <b>공 착지</b> 칸으로 공이 날아가서 공격 방향이 정해지고, 수비 팀은 이 점을 보고 블로킹·수비 자리를 잡아요(서브는 서버가 끝선 뒤에서 서브하는 자리예요). 왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. <span id="attackSideHint"></span></div>
+          <div class="field-note" style="margin-top:0; margin-bottom:6px;">공격 위치는 <b>공격하는 팀의 공격수 도트가 네트 앞에서 공을 때리는 점</b>이에요. 이 점에서 아래 <b>공 착지</b> 칸으로 공이 날아가서 공격 방향이 정해지고, 수비 팀은 이 점을 보고 블로킹·수비 자리를 잡아요(서브는 서버가 끝선 뒤에서 서브하는 자리예요). 왼쪽·오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요. 버튼을 누르면 바로 적용되고, 코트에 <b>파란 점선 띠</b>로 때리는 자리를 잠깐 보여준 뒤 처음부터 다시 재생해요. <span id="attackSideHint"></span></div>
           <div class="seg" id="customXSeg">
             <button data-x="30">왼쪽 끝</button>
             <button data-x="145">왼쪽 중간</button>
@@ -3512,7 +3538,7 @@
           <div class="chip-pick atk-combo-row" id="atkComboRow"></div>
           </details>
           <label class="field-label" style="margin-top:10px;">공격하는 선수</label>
-          <div class="field-note" style="margin-top:0; margin-bottom:6px;">이 공격을 누가 때릴지 골라요. 예) 빽A를 빽차나 라이트가 때리게 할 수 있어요. 누르면 바로 적용돼요.</div>
+          <div class="field-note" style="margin-top:0; margin-bottom:6px;">이 공격을 누가 때릴지 골라요. 예) 빽A를 빽차나 라이트가 때리게 할 수 있어요. 뒤쪽 수비수(레백·센백·라백)는 공격·페이크 목록에 없어요. 누르면 바로 적용돼요.</div>
           <div class="chip-pick" id="atkWhoChips"></div>
           <label class="field-label" style="margin-top:10px;">페이크(속이는 동작) 선수 <span class="fg-sub">여러 명 고를 수 있어요</span></label>
           <div class="field-note" style="margin-top:0; margin-bottom:6px;">고른 선수는 먼저 네트 앞 자리로 뛰어 들어가 공격하는 척 점프해요. 블로커는 가까운 페이크에 먼저 반응했다가 진짜 공격수 쪽으로 다시 따라가요. 페이크가 있으면 세터 토스가 한 박자 늦게 나가요.</div>
@@ -3621,7 +3647,6 @@
         <div id="presetInfoPanel" class="note-box" style="display:none; margin-top:8px;">
           <p style="margin:0 0 8px;"><b>공격 상황 바꾸기</b> — 코트 위 제목을 누르거나 공격 상황 편집의 <b>공격 옵션</b>(상대 공격·우리 공격 → 레프트·A 속공·라이트·시간차·빽차·빽A, 상대 공격 쪽에는 서브도 있어요)을 고르면 그 상황의 ⭐ 최종 대형(없으면 "시나리오별 대형" 폴더의 저장본, 그것도 없으면 "기본 대형(3인블로킹 기준)" 폴더의 대형)이 자동으로 불러와져요.</p>
           <p style="margin:0 0 8px;"><b>📂 대형 보관함</b> — 폴더 칸 하나가 불러올 목록이자 저장할 곳이에요. 대형 버튼을 누르면 바로 불러오고, 고친 뒤 이름을 그대로 두면 <b>💾 덮어쓰기</b>, 하나 더 남기려면 <b>➕ 새 이름으로</b>를 눌러요. 폴더째 이름 바꾸기·복사·삭제와 💡 Tip은 <b>⋯ 폴더</b>에 있어요. 이름은 Tip의 머리말로 정리하면 찾기 쉬워요.</p>
-          <p style="margin:0 0 8px;"><b>📋 기록 상황별 대형</b> — 경기 분석 코트 그림에서 블로킹·리시브·다이렉트처럼 공격 위치가 없는 기록에 어떤 공격 상황 대형을 쓸지 골라요(선택). 비워 두면 랠리 및 토스 순서의 마지막 공격 토스를 따라가요. 아래 <b>🔵 우리 팀 전술 대형</b>에서는 상대 공격·우리 공격 종류마다 우리 팀이 쓸 전술 대형을 골라요(비우면 자동).</p>
           <p style="margin:0 0 8px;"><b>전술별 대형</b> — 같은 공격 옵션이라도 이름을 달리해 저장하면 대형마다 도착 위치·공격 과정이 따로 저장돼요. 고친 뒤 저장하지 않고 다른 전술을 불러오면 저장할지 물어봐요.</p>
           <p style="margin:0;"><b>⭐ 최종 대형</b> — 개설자가 공격 상황마다 하나씩 확정해요. 시나리오를 고르면 가장 먼저 불러와지고, 수정 권한자는 불러오기만 할 수 있어요.</p>
         </div>
@@ -3664,7 +3689,7 @@
         <input type="hidden" id="presetFolder">
         <select id="presetNamePick" class="vault-name-pick" aria-label="저장할 대형 이름(공격 옵션) 고르기"></select>
         <div class="vault-save-row">
-          <input type="text" id="presetName" placeholder="이름 고치기 (위에서 고르면 채워져요)" maxlength="20" aria-label="저장할 대형 이름">
+          <input type="text" id="presetName" class="login-input" placeholder="이름 고치기 (위에서 고르면 채워져요)" maxlength="20" aria-label="저장할 대형 이름">
           <button class="btn primary" id="btnSavePreset" type="button" style="white-space:nowrap;">💾 저장</button>
           <button class="btn" id="btnSaveAsNew" type="button" style="white-space:nowrap;" hidden title="지금 코트의 대형을 다른 이름으로 하나 더 저장해요(불러온 대형은 그대로)">➕ 새 이름으로</button>
         </div>
@@ -3680,54 +3705,6 @@
       <div class="edit-hint" id="autoSaveStatus"></div>
       <div class="edit-hint" id="roomSizeNote" style="display:none;"></div>
 
-      <div id="editModeSection">
-        <div class="fgroup" id="grpEdit">
-        <div class="fgroup-head"><span class="fg-ic">✋</span><span class="fg-title">편집 모드</span><span class="fg-sub">코트의 도트를 끌어서 위치를 바꿔요</span></div>
-        <div class="seg" id="editModeSeg">
-          <button data-mode="off" class="active">끔</button>
-          <button data-mode="edit">시작 위치</button>
-          <button data-mode="override">도착 위치</button>
-        </div>
-
-
-
-        <details class="adv-opts" id="editAdv" style="display:none;">
-          <summary>⚙️ 고급 옵션 <span>편집 대상·반응 위치</span></summary>
-        <div id="editTeamRow" style="display:none;">
-          <label class="field-label" style="margin-top:8px;">편집 대상</label>
-          <div class="seg" id="editTeamSeg">
-            <button data-team="all" class="active">전체</button>
-            <button data-team="own">아군</button>
-            <button data-team="opp">상대팀</button>
-          </div>
-        </div>
-        <div id="overridePhaseRow" style="display:none; margin-top:8px;">
-          <label class="field-label" style="margin-top:0;">어느 시점을 편집할까요?</label>
-          <div class="seg" id="overridePhaseSeg">
-            <button data-phase="final" class="active">최종 도착 위치</button>
-            <button data-phase="fake">반응(페이크) 위치</button>
-          </div>
-        </div>
-        </details>
-        <div class="btn-row" style="margin-top:10px;">
-          <button class="btn" id="btnResetCurrent" disabled>현재 모드 초기화</button>
-          <button class="btn primary" id="btnEditQuickSave" type="button" hidden title="위 📂 대형 보관함의 저장과 같아요">💾 저장</button>
-        </div>
-
-        <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
-        </div>
-
-        <div class="fgroup" id="sceneMapSection">
-          <details class="scene-map-fold" id="sceneMapFold">
-            <summary><div class="fgroup-head"><span class="fg-ic">📋</span><span class="fg-title">기록 상황별 대형 <span class="qr-opt-tag">선택</span></span><span class="fg-sub">경기 분석 코트 그림에 쓸 공격 상황 ▾</span></div></summary>
-            <div class="field-note" style="margin-top:0;">경기 분석(수동)의 코트 그림은 레프트·A처럼 공격 위치를 고른 기록은 그 공격으로, 그 밖의 기록은 <b>랠리 및 토스 순서의 마지막 공격 토스</b>로 대형을 자동으로 골라요. 아래에서 상황을 골라 두면 자동 대신 <b>그 공격 상황 대형</b>을 써요(누가 공격했는지는 그대로: 블로킹·리시브는 상대 공격, 다이렉트·2구처리는 그 팀 공격). 비워 두면 자동이에요.</div>
-            <div class="scene-map-grid" id="sceneMapGrid"></div>
-            <div class="scene-map-sub">🔵 우리 팀 전술 대형 (상대 공격 · 우리 공격)</div>
-            <div class="field-note" style="margin-top:0;">같은 공격 옵션이라도 이름을 달리해 저장한 여러 전술 대형 중에서, 공격 종류마다 우리 팀이 쓸 대형을 골라요. 대형마다 저장한 <b>도착 위치·공격 과정</b>까지 그대로 써요. 그 대형의 <b>우리 팀(아래쪽) 자리</b>로 그 공격을 재생해 도착한 자리를 써요(서브는 시작 자리). 비워 두면 위치 판단 대형 폴더에서 같은 상황 대형을 자동으로 찾아요.</div>
-            <div class="scene-map-grid" id="defMapGrid"></div>
-            <button class="btn" id="btnSceneMapReset" type="button" style="width:100%; margin-top:6px;">모두 자동으로 되돌리기</button>
-          </details>
-        </div>
 
         <div class="fgroup share-formation" id="shareFormationSection">
           <div class="fgroup-head"><span class="fg-ic">📤</span><span class="fg-title">대형 공유</span><span class="fg-sub">링크나 GIF로 팀원에게 보내요</span></div>
@@ -6402,6 +6379,22 @@
     rect.setAttribute('stroke-width','1.5');
     rect.setAttribute('stroke-dasharray','4 3');
     layer.appendChild(rect);
+    if(zoneFlashLabel){ // 공격 위치 버튼을 눌렀을 때: 네트 앞 때리는 쪽에 이름을 잠깐 띄워요
+      const t = document.createElementNS(svgNS,'text');
+      const tx = clip(dispX, 52, 348), ty = isOur(scenario) ? 462 : 298;
+      t.setAttribute('x', tx); t.setAttribute('y', ty); t.setAttribute('dominant-baseline','middle');
+      if(landscape) t.setAttribute('transform', `rotate(90 ${tx} ${ty})`); // 가로 코트는 장면을 돌려 그려서 글자만 다시 바로 세워요
+      t.setAttribute('text-anchor','middle'); t.setAttribute('font-size','15'); t.setAttribute('font-weight','800');
+      t.setAttribute('fill','#fff'); t.setAttribute('stroke','rgba(13,40,80,0.85)'); t.setAttribute('stroke-width','3.5'); t.setAttribute('paint-order','stroke');
+      t.textContent = '🏐 ' + zoneFlashLabel;
+      layer.appendChild(t);
+    }
+  }
+  let zoneFlashLabel = '', zoneFlashTimer = null;
+  function flashAttackZone(perspX, label){
+    clearTimeout(zoneFlashTimer);
+    activeAttackZoneX = perspX; zoneFlashLabel = label || ''; drawZoneHighlights();
+    zoneFlashTimer = setTimeout(()=>{ activeAttackZoneX = null; zoneFlashLabel = ''; drawZoneHighlights(); }, 2600);
   }
   document.getElementById('attackZonePreviewSelect').addEventListener('change', e=>{
     activeAttackZoneX = e.target.value==='' ? null : Number(e.target.value);
@@ -6462,12 +6455,12 @@
     playing=false; updatePlayBtn();
     if(editMode){ progress=0; IDS.forEach(id=>current[id]=CUSTOM_BASE[id].slice()); }
     if(overrideMode){ overridePhase='final'; document.querySelectorAll('#overridePhaseSeg button').forEach(b=>b.classList.toggle('active', b.dataset.phase==='final')); applyOverridePhase(); }
-    document.querySelectorAll('#editModeSeg button, #quickEditSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
+    document.querySelectorAll('#quickEditSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
     document.getElementById('editTeamRow').style.display = editMode ? 'block' : 'none';
     document.getElementById('btnResetCurrent').disabled = (mode==='off');
     setModeUI(); render();
   }
-  document.querySelectorAll('#editModeSeg button, #quickEditSeg button').forEach(btn=>{
+  document.querySelectorAll('#quickEditSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=> setEditMode(btn.dataset.mode));
   });
 
@@ -6496,6 +6489,7 @@
     document.getElementById('timeline').disabled = anyMode;
     document.getElementById('playNote').classList.toggle('warn', anyMode);
     document.getElementById('playNote').style.display = anyMode ? '' : 'none'; // 편집 중일 때만 보여요
+    document.getElementById('editModeSection').hidden = !anyMode; // 편집 도구(안내·초기화·저장)도 편집 중에만
     const showPhaseRow = overrideMode && currentHasFake();
     document.getElementById('overridePhaseRow').style.display = showPhaseRow ? 'block' : 'none';
     document.getElementById('editAdv').style.display = (editMode || showPhaseRow) ? '' : 'none';
@@ -6723,8 +6717,22 @@
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#customXSeg button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
+      applyAttackXNow(btn);
     });
   });
+  // 공격 위치를 고르면 적용 버튼을 누르지 않아도 지금 공격 상황에 바로 넣고, 코트에 때리는 자리를 잠깐 띄운 뒤 처음부터 다시 재생해요.
+  function applyAttackXNow(btn){
+    if(document.getElementById('customTargetSelect').value!==scenario) return;
+    const atk = isOur(scenario) ? OUR_ATTACKS[scenario] : ATTACKS[scenario];
+    if(!atk || atk.serve) return;
+    const useLanding = document.getElementById('customLandingToggle').checked;
+    if(useLanding && !document.querySelector('#landingNineZone button.active')) return;
+    const label = btn.textContent.trim();
+    document.getElementById('btnSaveCustom').click();
+    progress = 0; ballCurrent = null; playing = true; updatePlayBtn();
+    flashAttackZone(Number(btn.dataset.x), label);
+    document.getElementById('customStatus').textContent = `공격 위치를 '${label}'(으)로 바로 적용했어요. 코트에 파란 띠로 때리는 자리를 보여줘요.`;
+  }
   document.querySelectorAll('#customTempoSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#customTempoSeg button').forEach(b=>b.classList.remove('active'));
@@ -6875,14 +6883,15 @@
   // ---------- 공격하는 선수·페이크 선수·빠른 조합·경유점 (누르면 바로 적용) ----------
   const curAtk = () => isOur(scenario) ? OUR_ATTACKS[scenario] : ATTACKS[scenario];
   // 공격하는 팀 선수 목록(세터·리베로는 빼요): [{id, pos, label}]
-  function attackTeamPlayers(our){
+  // 공격하는 선수·페이크 목록: 뒤쪽 수비수(레백·센백·라백)는 빼요(TJ). all이면 모두(예전에 저장된 선택을 찾을 때)
+  function attackTeamPlayers(our, all){
     const ids = our ? IDS.map(String) : Object.keys(ORIGINAL_OPP_BASE);
     return ids.map(id=>{
       const pos = our ? POSITIONS[id] : OPP_POSITIONS[id];
       const name = our ? PLAYER_NAMES[id] : OPP_PLAYER_NAMES[id];
       const num = our ? id : OPP_NUM[id];
       return {id, pos, label:(POS_DOT[pos]||pos||'')+(name?` · ${name}`:''), num};
-    }).filter(pl=>pl.pos && pl.pos!=='SETTER' && pl.pos!=='LIBERO');
+    }).filter(pl=>pl.pos && pl.pos!=='SETTER' && pl.pos!=='LIBERO' && (all || !BACK_TYPES.includes(pl.pos)));
   }
   function currentAttackerId(atk, our){
     if(our){ const f = getFormation(); return String(f.attackerId); }
@@ -6987,10 +6996,11 @@
     const atk = curAtk(), our = isOur(scenario);
     box.style.display = (!atk || atk.serve) ? 'none' : '';
     if(!atk || atk.serve) return;
-    const players = attackTeamPlayers(our);
     const atkId = currentAttackerId(atk, our);
     const fakes = fakesOf(atk, our);
     const fakeIds = fakes.map((fk,i)=>fakePlayerId(fk, our, i));
+    // 예전에 뒤쪽 수비수를 공격·페이크로 저장해 뒀으면 그 선수만 남겨 보여줘요(눌러서 끌 수 있게)
+    const players = attackTeamPlayers(our, true).filter(pl=>!BACK_TYPES.includes(pl.pos) || pl.id===atkId || fakeIds.includes(pl.id));
     const chip = (pl, on, kind) => `<button type="button" class="chip-btn${on?' on':''}" data-kind="${kind}" data-id="${pl.id}">${pl.label}<small>${our?'':'상대 '}${pl.num}번</small></button>`;
     const cf = document.querySelector('#atkComboFold .rf-count'); if(cf) cf.textContent = ATK_COMBOS.filter(c=>!c.clear).length+'개 + 끄기';
     document.getElementById('atkComboRow').innerHTML = ATK_COMBOS.map((c,i)=>`<button type="button" class="chip-btn${c.clear?' none':''}" data-combo="${i}">${c.label}</button>`).join('');
@@ -7011,7 +7021,7 @@
     if(cb){ applyCombo(ATK_COMBOS[Number(cb.dataset.combo)]); return; }
     const b = e.target.closest('button[data-kind]'); if(!b) return;
     const atk = curAtk(), our = isOur(scenario);
-    const pl = attackTeamPlayers(our).find(q=>q.id===b.dataset.id); if(!pl) return;
+    const pl = attackTeamPlayers(our, true).find(q=>q.id===b.dataset.id); if(!pl) return;
     if(b.dataset.kind==='atk'){
       if(pl.id===currentAttackerId(atk, our)) return;
       setAttacker(atk, our, pl);
@@ -7800,7 +7810,7 @@
                     const b=sc.querySelector('.k-ball'); setTimeout(()=>{ b.style.left='80%'; b.style.top='66%'; }, 500); }},
                  {wait:2600}, {fn:sc=>{ sc.querySelector('.k-play').textContent='▶'; }}, {wait:900} ] },
       { title:'공격 상황을 편집해요',
-        text:'먼저 <b>공격 상황 편집</b>의 <b>공격 옵션</b>(레프트·A 속공 …)으로 공격 상황을 고르고 위치·템포·<b>공 착지 칸</b>으로 공격 과정을 정해 <b>적용</b>하면 <b>지금 코트의 공격 상황</b>이 바뀌어요. 공격 위치는 공격하는 팀, 착지 칸은 공을 받는 팀 기준이에요.',
+        text:'먼저 <b>공격 상황 편집</b>의 <b>공격 옵션</b>(레프트·A 속공 …)으로 공격 상황을 고르고 위치·템포·<b>공 착지 칸</b>으로 공격 과정을 정해 <b>적용</b>하면 <b>지금 코트의 공격 상황</b>이 바뀌어요. 공격 위치와 착지 칸은 누르면 바로 적용돼요(공격 위치는 코트에 파란 띠로 잠깐 보여줘요). 공격 위치는 공격하는 팀, 착지 칸은 공을 받는 팀 기준이에요.',
         scene:`<div class="mk-card">
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격 위치</span><span class="mk-btn on k-x1">왼쪽</span><span class="mk-btn k-x2">중앙</span><span class="mk-btn">오른쪽</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">템포</span><span class="mk-btn k-t1">빠름</span><span class="mk-btn on k-t2">보통</span><span class="mk-btn">느림</span></div>
@@ -7822,7 +7832,7 @@
         script:[ {click:'.k-combo', then:(el,sc)=>{ sc.querySelector('.k-a1').classList.remove('on'); sc.querySelector('.k-a2').classList.add('on'); sc.querySelector('.k-f1').classList.add('on'); sc.querySelector('.k-f2').classList.add('on'); sc.querySelector('.k-toast').classList.add('show'); }},
                  {wait:1800} ] },
       { title:'폴더를 정해서 저장해요',
-        text:'공격 과정을 정하고 도트 위치를 고쳤으면 <b>📂 대형 보관함</b> 맨 아래 저장 줄에서 저장해요(편집 중이면 편집 모드 카드의 💾 저장도 같아요). 새 폴더는 폴더 칸의 <b>+ 새 폴더 만들기</b>를 고르고, <b>⋯ 폴더 → 💡 폴더 이름 정하는 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)을 누르면 이름이 바로 채워져요. 저장 줄 위 목록에서 <b>공격 옵션</b>(레프트·A 속공·시간차(앞차)·빽A 등과 공격 상황 이름)을 고르면 대형 이름이 채워지고(필요하면 아래 칸에서 더 고쳐요, 목록에 없으면 <b>+ 새 공격 옵션 추가</b>로 넣어 두면 다음에도 고를 수 있어요) <b>💾 새로 저장</b>을 누르면 그 폴더 목록에 버튼으로 생겨요. 처음에는 기본 대형(3인블로킹 기준) 폴더가 들어 있어요.',
+        text:'공격 과정을 정하고 도트 위치를 고쳤으면 <b>📂 대형 보관함</b> 맨 아래 저장 줄에서 저장해요(편집 중이면 코트 아래 재생 카드의 💾 저장도 같아요). 새 폴더는 폴더 칸의 <b>+ 새 폴더 만들기</b>를 고르고, <b>⋯ 폴더 → 💡 폴더 이름 정하는 Tip</b>의 머리말(우리팀·상대팀·의견·디테일)을 누르면 이름이 바로 채워져요. 저장 줄 위 목록에서 <b>공격 옵션</b>(레프트·A 속공·시간차(앞차)·빽A 등과 공격 상황 이름)을 고르면 대형 이름이 채워지고(필요하면 아래 칸에서 더 고쳐요, 목록에 없으면 <b>+ 새 공격 옵션 추가</b>로 넣어 두면 다음에도 고를 수 있어요) <b>💾 새로 저장</b>을 누르면 그 폴더 목록에 버튼으로 생겨요. 처음에는 기본 대형(3인블로킹 기준) 폴더가 들어 있어요.',
         scene:`<div class="mk-card"><div class="mk-lbl">💡 폴더 이름 정하는 Tip</div>
           <div class="mk-row"><span class="mk-btn">우리팀 · </span><span class="mk-btn">상대팀 · </span><span class="mk-btn k-op">의견 · 민수</span><span class="mk-btn">디테일 · </span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:40px;">폴더</span><div class="mk-input k-folder" data-ph="새 폴더 이름"></div></div>
@@ -7832,8 +7842,8 @@
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'불러와서 고쳐요',
-        text:'<b>📂 대형 보관함</b>에서 폴더를 고르고 대형 버튼을 눌러 불러오고(<b>⋯ 폴더</b>에서 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 <b>편집 모드</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요(상대팀 도트도 우리 팀처럼 옮겨져요. 상대 공격수 동선만 공격 과정으로 정해요). 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 편집 모드를 <b>끔</b>으로 돌려야 ▶ 재생 버튼이 눌러져요. 고친 대형은 편집 모드 카드의 <b>💾 덮어쓰기</b>로 바로 저장하거나, 보관함의 <b>➕ 새 이름으로</b> 하나 더 남겨요.',
-        scene:`<div class="mk-row"><span class="mk-lbl">편집 모드</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
+        text:'<b>📂 대형 보관함</b>에서 폴더를 고르고 대형 버튼을 눌러 불러오고(<b>⋯ 폴더</b>에서 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 코트 아래 재생 카드의 <b>✋ 편집</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요(상대팀 도트도 우리 팀처럼 옮겨져요. 상대 공격수 동선만 공격 과정으로 정해요). 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 <b>끔 (▶ 재생 · ⟲ 다시보기)</b>으로 돌려야 ▶ 재생 버튼이 눌러져요. 고친 대형은 같은 카드의 <b>💾 덮어쓰기</b>로 바로 저장하거나, 보관함의 <b>➕ 새 이름으로</b> 하나 더 남겨요.',
+        scene:`<div class="mk-row"><span class="mk-lbl">✋ 편집</span><span class="mk-btn">끔 ▶⟲</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
                  {wait:1500} ] },
@@ -8800,18 +8810,6 @@
     const folder = formFolderFor(side, ctx);
     const top = !!folder && /^\s*상대팀/.test(folder); // "상대팀 ·" 폴더는 위쪽(oppBase) 팀 대형이에요
     const k = OPT_SCEN[option];
-    // 📋 상대 공격 때 우리 대형을 골라 뒀으면 그 대형의 아래쪽(우리) 자리로 그 상대 공격을 재생해요
-    const dk = side==='our' && k ? (attackTeam==='opp' ? k : k!=='SERVE' ? 'OUR_'+k : null) : null;
-    const dp = dk ? defPreset(dk) : null;
-    if(dp && dp.base){
-      const posMap = (T.posNow && T.posNow()) || T.pos;
-      const id = Object.keys(posMap).find(i=>posMap[i]===posCode) || Object.keys(T.pos).find(i=>T.pos[i]===posCode);
-      const serve = dk==='SERVE', arr = !serve && T.arrival ? T.arrival(dp.base, dp.oppBase, dk, dp.tactic) : null;
-      const raw = ((arr ? arr.base : dp.base) || {})[id] || T.base[id];
-      if(!raw) return null;
-      return {x: raw[0], y: raw[1], folder: `${dp.folder ? dp.folder+' · ' : ''}${dp.name||''}`, scen: dk, exact: true,
-        scenLabel: serve ? '서브 리시브 대형(시작 자리)' : (T.scenLabel[dk]||''), pos: posCode, ball: arr && arr.ball ? {from: arr.ball.from.slice(), to: arr.ball.to.slice()} : null};
-    }
     // 서브·서브캐치(서브 리시브)는 공이 넘어가기 전의 시작 자리가 맞아서, 서브 상황 대형의 처음 자리를 그대로 써요.
     // 그 대형의 위쪽 팀이 서브하는 팀, 아래쪽 팀이 서브 리시브하는 팀이에요.
     if(option==='서브'){
@@ -8864,39 +8862,12 @@
   //  · 서브 → 그 팀 서브   · 서브캐치 → 상대 서브 리시브   · 다이렉트·세터페인트·3구처리·토스·2단 → 그 팀이 마지막으로 올린 공격
   //  · 파울·아직 안 고름 → 토스 순서의 마지막 공격
   // 세터 2구·3구처리처럼 공격 위치가 없는 토스는 건너뛰고 그 앞 토스를 봐요. 맞는 장면이 없으면 opt는 ''(그 폴더의 첫 대형)이에요.
-  // 전술 시뮬레이션 "📋 기록 상황별 대형"에서 골라 둔 값(비어 있으면 자동): {세부 상황 또는 'toss:토스 이름': 'L'|'C'|'R'|'TIMEDIFF'|'BACKSLIDE'|'BACKA'|'SERVE'}
-  const FOUL_MAIN_NAME = '파울(반칙)'; // 아래 FOUL_MAIN과 같은 값(그쪽이 더 뒤에 정의돼요)
-  const SCENE_MAP_ROWS = [
-    ['블로킹', '블로킹', '상대 공격을 막음'], ['리시브', '리시브·디그', '상대 공격·서브를 받음'], ['서브캐치', '서브캐치', '상대 서브를 받음'],
-    ['다이렉트', '다이렉트', '그 팀이 바로 넘김'], ['세터페인트(2구 넘김)', '2구처리', '그 팀 세터가 2구로 넘김'], ['3구처리', '3구처리', '그 팀이 3구로 넘김'],
-    ['토스', '토스·2단 실수', '그 팀 연결 중 실수'], [FOUL_MAIN_NAME, '파울(반칙)', '마지막 토스 팀 기준'],
-    ['toss:세터 2구', '토스 순서: 2구', '마지막 토스가 2구(세터가 넘김)일 때'], ['toss:3구처리', '토스 순서: 3구처리', '마지막 토스가 3구처리일 때'], ['toss:다이렉트', '토스 순서: 다이렉트', '마지막 토스가 다이렉트일 때']
-  ];
-  const SCENE_MAP_OPTS = [['', '자동'], ['L', '레프트(L) 오픈'], ['C', '중앙(C) 속공'], ['R', '라이트(R)'], ['TIMEDIFF', '시간차(앞차)'], ['BACKSLIDE', '빽차'], ['BACKA', '빽A'], ['SERVE', '서브 대형(시작 자리)']];
-  const SCEN_OPT = {L:'레프트', C:'A', R:'라이트', TIMEDIFF:'앞차', BACKSLIDE:'백차', BACKA:'백A', SERVE:'서브'};
-  let sceneMap = {};
-  // 상대 공격 때 우리 대형: {L|C|R|TIMEDIFF|BACKSLIDE|BACKA|SERVE: '폴더\n대형 이름'} — 그 저장된 대형의 아래쪽(우리) 자리를 써요
-  const DEF_MAP_ROWS = [['L','상대 레프트(L) 오픈'], ['C','상대 중앙(C) 속공','A·B'], ['R','상대 라이트(R)'], ['TIMEDIFF','상대 시간차(앞차)'], ['BACKSLIDE','상대 빽차'], ['BACKA','상대 빽A'], ['SERVE','상대 서브 → 우리 리시브','시작 자리'],
-    ['OUR_L','우리 레프트(L) 공격','커버'], ['OUR_C','우리 중앙(C) 속공','A·B'], ['OUR_R','우리 라이트(R) 공격'], ['OUR_TIMEDIFF','우리 시간차(앞차)'], ['OUR_BACKSLIDE','우리 빽차'], ['OUR_BACKA','우리 빽A']];
-  let defMap = {};
-  const presetKey = p => (p.folder||'') + '\n' + (p.name||'');
-  const cleanDefMap = m => { const o = {}; if(m && typeof m==='object') DEF_MAP_ROWS.forEach(([k])=>{ if(typeof m[k]==='string' && m[k]) o[k] = m[k].slice(0, 200); }); return o; };
-  function defPreset(k){ let m; try{ m = defMap; }catch(err){ return null; } const v = m[k], T = window.__tacticsFormations; return v && T ? T.presets().find(p=>presetKey(p)===v) || null : null; }
-  const cleanSceneMap = m => { const o = {}; if(m && typeof m==='object') SCENE_MAP_ROWS.forEach(([k])=>{ if(SCEN_OPT[m[k]]) o[k] = m[k]; }); return o; };
-  function formScene(main, team, tosses, map){
-    const other = team==='our' ? 'opp' : 'our', seq = tosses || [], mp = map || sceneMap;
+  function formScene(main, team, tosses){
+    const other = team==='our' ? 'opp' : 'our', seq = tosses || [];
     const lastAtk = t => { for(let i=seq.length-1;i>=0;i--){ const x = seq[i]; if(t && x.team!==t) continue;
-      const fixed = SCEN_OPT[mp['toss:'+x.to]]; // 세터 2구·3구처리 토스는 골라 둔 상황이 있을 때만 공격으로 봐요
-      if(fixed) return {opt:fixed, team:x.team, from:'map'};
       if(OPT_SCEN[x.to] && x.to!=='서브') return {opt:x.to, team:x.team, from:'toss'}; } return null; };
     // 공격 상황을 골랐어도 랠리 및 토스 순서에 공격 토스가 있으면 그 마지막 토스의 대형(도착 위치)을 따라가요(앞차 = 시간차 대형)
     if(OPT_SCEN[main] && main!=='서브') return lastAtk(null) || {opt:main, team, from:'option'};
-    const mk = ['토스','2단토스','2단연결'].includes(main) ? '토스' : main, fixed = SCEN_OPT[mp[mk]];
-    if(fixed){ // 골라 둔 상황: 공격한 팀은 아래 자동 규칙과 같아요
-      const byOther = mk==='블로킹' || mk==='리시브' || mk==='서브캐치';
-      const t = byOther ? other : mk===FOUL_MAIN_NAME ? ((seq[seq.length-1]||{}).team || team) : team;
-      return {opt:fixed, team:t, from:'map'};
-    }
     let sc = null;
     if(main==='서브') sc = {opt:'서브', team, from:'option'};
     else if(main==='서브캐치') sc = {opt:'서브', team:other, from:'option'};
@@ -8907,43 +8878,6 @@
     return sc || {opt:'', team, from:''};
   }
   window.__formScene = formScene;
-  // 📋 기록 상황별 대형(전술 시뮬레이션): 고르면 바로 저장되고 경기 분석 코트 그림·코트 위치 분석에 쓰여요
-  function renderSceneMap(){
-    const g = document.getElementById('sceneMapGrid'); if(!g) return;
-    g.innerHTML = SCENE_MAP_ROWS.map(([k, l, sub])=>`<span>${escChip(l)}<small>${escChip(sub)}</small></span><select data-k="${escChip(k)}" class="${sceneMap[k]?'set':''}" aria-label="${escChip(l)} 대형"${readOnlyView()?' disabled':''}>${SCENE_MAP_OPTS.map(([v, t])=>`<option value="${v}"${(sceneMap[k]||'')===v?' selected':''}>${t}</option>`).join('')}</select>`).join('');
-    const dg = document.getElementById('defMapGrid');
-    if(dg){
-      const T = window.__tacticsFormations, ps = T ? T.presets() : [], byF = new Map();
-      ps.forEach(p=>{ const f = p.folder||''; if(!byF.has(f)) byF.set(f, []); byF.get(f).push(p); });
-      const fs = [...byF.keys()].sort((a,b)=>a.localeCompare(b,'ko'));
-      dg.innerHTML = DEF_MAP_ROWS.map(([k, l, sub])=>{
-        const cur = defMap[k] || '', has = !cur || ps.some(p=>presetKey(p)===cur);
-        const opts = `<option value="">자동</option>` + (has ? '' : `<option value="${escChip(cur)}" selected>${escChip(cur.split('\n').pop())} (지금은 없음)</option>`)
-          + fs.map(f=>`<optgroup label="${escChip(f ? '📁 '+f : '(폴더 없음)')}">${byF.get(f).map(p=>`<option value="${escChip(presetKey(p))}"${presetKey(p)===cur?' selected':''}>${escChip(p.name||'')}</option>`).join('')}</optgroup>`).join('');
-        return `<span>${escChip(l)}${sub?`<small>${escChip(sub)}</small>`:''}</span><select data-k="${k}" class="${cur?'set':''}" aria-label="${escChip(l)} 때 우리 대형"${readOnlyView()?' disabled':''}>${opts}</select>`;
-      }).join('');
-    }
-    const rb = document.getElementById('btnSceneMapReset'); if(rb) rb.disabled = readOnlyView() || !(Object.keys(sceneMap).length || Object.keys(defMap).length);
-  }
-  const readOnlyView = () => { try{ return readOnlyFolderView; }catch(err){ return false; } };
-  document.getElementById('sceneMapGrid').addEventListener('change', e=>{
-    const sl = e.target.closest('select'); if(!sl || readOnlyView()) return;
-    if(sl.value) sceneMap[sl.dataset.k] = sl.value; else delete sceneMap[sl.dataset.k];
-    renderSceneMap(); updateAutoSpotNote();
-    if(window.scheduleAutoSave) window.scheduleAutoSave();
-  });
-  document.getElementById('defMapGrid').addEventListener('change', e=>{
-    const sl = e.target.closest('select'); if(!sl || readOnlyView()) return;
-    if(sl.value) defMap[sl.dataset.k] = sl.value; else delete defMap[sl.dataset.k];
-    renderSceneMap(); updateAutoSpotNote();
-    if(window.scheduleAutoSave) window.scheduleAutoSave();
-  });
-  document.getElementById('btnSceneMapReset').addEventListener('click', ()=>{
-    if(readOnlyView() || !(Object.keys(sceneMap).length || Object.keys(defMap).length)) return;
-    sceneMap = {}; defMap = {}; renderSceneMap(); updateAutoSpotNote();
-    if(window.scheduleAutoSave) window.scheduleAutoSave();
-  });
-  document.getElementById('sceneMapFold').addEventListener('toggle', renderSceneMap);
   const curTosses = () => { try{ return tossSeq; }catch(err){ return []; } }; // 토스 칸이 아직 준비되기 전에도 그릴 수 있게
   // 한 기록에 붙은 우리·상대 선수의 자리(팀 명단은 ctx로 바꿔 쓸 수 있어요: 저장된 다른 경기 폴더 분석용)
   function recordSpots(rec, ctx){
@@ -9406,7 +9340,6 @@
     }
     // 공격 위치를 고르지 않은 상황(블로킹·리시브·파울 등)은 대형이 어느 토스를 따랐는지 같은 줄에 알려줘요
     if(sc.opt==='서브') ballCap = `🏐 ${sc.team==='our'?'🔵':'🔴'} 서브 — 양 팀 <b>서브 대형 시작 자리</b>`;
-    else if(!isAtk && sc.from==='map') ballCap = `🏐 📋 기록 상황별 대형: <b>${escChip(sc.opt)}</b> <small>(${sc.team==='our'?escChip(ourTeamName)+' 공격':escChip(ourTeamName)+' 수비'})</small>`;
     else if(!isAtk && sc.from==='toss') ballCap = `🏐 마지막 토스 ${sc.team==='our'?'🔵':'🔴'}<b>${escChip(sc.opt)}</b> 기준 대형 <small>(${sc.team==='our'?escChip(ourTeamName)+' 공격':escChip(ourTeamName)+' 수비'})</small>`;
     // 범실 방식이 네트 걸림·네트싸움이면 공이 네트에서 멈추고, 아웃이면 코트 밖까지 가요(코트 위치 분석과 같은 규칙)
     const det = isAtk && qrOutcome==='fault' ? (document.getElementById('qrDetailSelect').value || '') : '';
@@ -14528,9 +14461,7 @@
     ourTeamName,
     division: matchDivision,
     date: matchDate,
-    homeTeam,
-    sceneMap,
-    defMap
+    homeTeam
   });
   window.applyVideoAnalysisState = (vs) => {
     clearUndo(); // 다른 경기·화면으로 바뀌면 이전 화면의 되돌리기 기록은 지워요
@@ -14541,7 +14472,6 @@
     matchFolders = vs.matchFolders || [];
     deletedFolders = Array.isArray(vs.deletedFolders) ? vs.deletedFolders.filter(d=>d && d.name) : [];
     homeTeam = typeof vs.homeTeam==='string' ? vs.homeTeam.trim().slice(0,40) : '';
-    sceneMap = cleanSceneMap(vs.sceneMap); defMap = cleanDefMap(vs.defMap); renderSceneMap();
     // 이전 화면(다른 코드 등)의 폴더 번호가 남아 있으면 엉뚱한 폴더에 기록이 덮어써질 수 있어서, 저장된 활성 폴더 이름으로 다시 찾아요
     lastPickedMatchFolderIdx = null; lastPickedMatchFolder = null;
     const activeIdx = vs.activeFolderName ? matchFolders.findIndex(f=>f.name===vs.activeFolderName) : -1;
