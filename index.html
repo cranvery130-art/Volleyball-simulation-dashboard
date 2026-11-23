@@ -68,16 +68,16 @@
   body.ys-mode .btn.primary:hover{ background:#2A3763; }
   body.ys-mode .card{ box-shadow:0 14px 34px -26px rgba(29,39,71,0.45); }
   body.ys-mode .scenario-title{ color:var(--navy); }
-  /* 양쌤 모드의 코트: 실제 배구 경기장처럼 주황 코트에 남색 바깥 띠, 흰 선, 남색 네트 */
-  body.ys-mode #courtGrad stop:first-child{ stop-color:#EC8A43; }
-  body.ys-mode #courtGrad stop:last-child{ stop-color:#DD7632; }
+  /* 양쌤 모드의 코트: 실제 배구 경기장처럼 밝고 따뜻한 주황 코트(종이색 배경·남색과 어울리게)에 남색 바깥 띠, 흰 선, 남색 네트 */
+  body.ys-mode #courtGrad stop:first-child{ stop-color:#FF9C4F; }
+  body.ys-mode #courtGrad stop:last-child{ stop-color:#FA8A3C; }
   body.ys-mode #sceneGroup > rect[stroke="#C97456"]{ stroke:#2A3763; }
   body.ys-mode #sceneGroup [stroke="#E8ECF2"]{ stroke:#FFFDF8; }
   body.ys-mode #sceneGroup [fill="#E8ECF2"]{ fill:#FFFDF8; }
   body.ys-mode #net rect[fill="#08090B"]{ fill:#1D2747; }
   body.ys-mode #sceneGroup [stroke="#FF9570"]{ stroke:#FFFDF8; }
   body.ys-mode .court-wrap{ background:#F2EADC; }
-  body.ys-mode .mk-court{ background:linear-gradient(90deg,#EC8A43,#DD7632); border-color:#2A3763; }
+  body.ys-mode .mk-court{ background:linear-gradient(90deg,#FF9C4F,#FA8A3C); border-color:#2A3763; }
   body.eye-mode .mk-court{ background:linear-gradient(90deg,#7A8E6C,#62755A); border-color:#A9775A; }
   /* 눈 보호 모드 — 오래 봐도 눈이 덜 피로하도록 설계한 팔레트.
      · 순백·순흑 대신 따뜻한 종이색 배경과 짙은 갈색 글자: 눈부심(글레어)과 과한 대비를 줄여요(본문 대비 약 11:1, 회색 글씨도 4.5:1 이상 유지).
@@ -1200,7 +1200,6 @@
   /* 공격 동작: 공격하는 선수·페이크 선수 칩, 페이크 자리 고르기 */
   #atkWhoChips .chip-btn, #fakeWhoChips .chip-btn{ min-height:34px; padding:5px 9px; font-size:12px; }
   #fakeWhoChips .chip-btn.on{ border-color:#C7A23A; background:color-mix(in srgb, #F3DFA2 30%, var(--panel)); }
-  .atk-combo-row .chip-btn{ min-height:34px; padding:6px 9px; font-size:11.5px; }
   .fake-spot-row{ display:flex; align-items:center; gap:6px; margin-top:6px; font-size:12px; }
   .fake-spot-row b{ min-width:64px; }
   .fake-spot-row select{ flex:1; min-width:0; }
@@ -1767,7 +1766,6 @@
   .roster-fold .rf-arrow{ margin-left:auto; font-size:12px; font-weight:700; color:var(--text-dim); }
   .roster-fold .rf-arrow::after{ content:' ▾'; }
   .roster-fold[open] .rf-arrow{ font-size:0; } .roster-fold[open] .rf-arrow::after{ content:'접기 ▴'; font-size:12px; }
-  .combo-fold{ margin-top:6px; } .combo-fold > summary{ padding:4px 0; }
   .ta-fold{ margin-top:10px; } .ta-fold > summary{ cursor:pointer; font-size:12.5px; font-weight:700; color:var(--text-dim); }
   .ta-fold[open] > summary{ margin-bottom:6px; }
   .ta-matches{ display:flex; flex-direction:column; gap:4px; }
@@ -3240,7 +3238,7 @@
           <li>이동 동선·착지 이동선·커버리지·블로킹 범위는 항상 코트에 함께 표시돼요.</li>
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
           <li>왼쪽·오른쪽 기준: <b>공격 위치</b>는 공격하는 팀, <b>공 착지 칸</b>은 공을 받는 팀이 네트를 바라볼 때 기준이에요.</li>
-          <li><b>공격하는 선수·페이크 선수·경유점</b>은 공격 상황 편집 카드에서 누르는 즉시 적용돼요. 페이크는 여러 명 고를 수 있고, 페이크가 있으면 세터 토스가 한 박자 늦게 나가요. 고른 포지션 선수가 없으면 빠른 조합이 그 선수를 건너뛰어요(포지션 배정에서 먼저 정해 주세요).</li>
+          <li><b>공격하는 선수·페이크 선수·경유점</b>은 공격 상황 편집 카드에서 누르는 즉시 적용돼요. 페이크는 여러 명 고를 수 있고, 페이크가 있으면 세터 토스가 한 박자 늦게 나가요. <b>⚡ 빠른 조합</b>은 📂 대형 보관함 저장 줄 위 <b>공격 옵션 목록</b>에서 골라요. 고르면 공격 상황·공격하는 선수·페이크가 한 번에 정해지고 대형 이름도 채워져요. 고른 포지션 선수가 없으면 그 선수를 건너뛰어요(포지션 배정에서 먼저 정해 주세요).</li>
           <li>같은 공격 옵션이라도 <b>이름을 달리해 저장</b>하면 대형마다 시작 위치뿐 아니라 <b>도착 위치·공격 과정</b>(위치·템포·착지·공격하는 선수·페이크·경유점)도 따로 저장돼요. 불러오면 그 전술의 설정이 그대로 돌아와요(예전에 저장한 대형은 공격 옵션에 하나뿐인 설정을 써요).</li>
           <li>대형 코멘트는 대형마다 하나예요. 여러 사람이 동시에 고치면 마지막에 저장된 내용만 남아요.</li>
           <li>도트 크기는 실제 9인제 코트(21m×10.5m) 비율에 맞춰져 있어요. 포지션 아래 칸에 이름을 적으면 도트에 이름이 보여요.</li>
@@ -3368,8 +3366,8 @@
         <svg id="court" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="courtGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#C9682C"/>
-              <stop offset="100%" stop-color="#A9531F"/>
+              <stop offset="0%" stop-color="#F98E3E"/>
+              <stop offset="100%" stop-color="#EB7A2C"/>
             </linearGradient>
             <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 Z" fill="#A3A8B1"/>
@@ -3511,17 +3509,14 @@
             <button data-tempo="slow">느림</button>
           </div>
           <div id="atkWhoBox">
-          <details class="roster-fold combo-fold" id="atkComboFold">
-          <summary><span class="field-label" style="margin:0;">빠른 조합</span><span class="rf-count">6개 + 끄기</span><span class="rf-arrow">펼치기</span></summary>
-          <div class="field-note" style="margin-top:0; margin-bottom:6px;">누르면 공격 옵션·공격하는 선수·페이크·돌아 들어가는 길이 한 번에 정해지고 바로 재생돼요. 그다음 아래에서 고쳐도 돼요.</div>
-          <div class="chip-pick atk-combo-row" id="atkComboRow"></div>
-          </details>
+          <div class="field-note" style="margin-top:4px; margin-bottom:0;">⚡ 빠른 조합(A·빽A 페이크 → 앞차 시간차 등)은 <b>📂 대형 보관함</b>의 <b>공격 옵션 목록</b>에서 골라요. 고른 뒤 아래에서 공격하는 선수·페이크를 고쳐요.</div>
           <label class="field-label" style="margin-top:10px;">공격하는 선수</label>
           <div class="field-note" style="margin-top:0; margin-bottom:6px;">이 공격을 누가 때릴지 골라요. 예) 빽A를 빽차나 라이트가 때리게 할 수 있어요. 뒤쪽 수비수(레백·센백·라백)는 공격·페이크 목록에 없어요. 누르면 바로 적용돼요.</div>
           <div class="chip-pick" id="atkWhoChips"></div>
           <label class="field-label" style="margin-top:10px;">페이크(속이는 동작) 선수 <span class="fg-sub">여러 명 고를 수 있어요</span></label>
           <div class="field-note" style="margin-top:0; margin-bottom:6px;">고른 선수는 먼저 네트 앞 자리로 뛰어 들어가 공격하는 척 점프해요. 블로커는 가까운 페이크에 먼저 반응했다가 진짜 공격수 쪽으로 다시 따라가요. 페이크가 있으면 세터 토스가 한 박자 늦게 나가요.</div>
           <div class="chip-pick" id="fakeWhoChips"></div>
+          <button class="btn" id="btnAtkClearFakes" type="button" style="margin-top:6px;">페이크·경유점 모두 끄기</button>
           <div id="fakeSpotList"></div>
           <label class="field-label" style="margin-top:10px;">돌아 들어가는 길(경유점)</label>
           <div class="btn-row"><button class="btn" id="btnViaToggle" type="button">↪️ 경유점 넣기</button></div>
@@ -3595,7 +3590,7 @@
         <div id="attackInfoPanel" class="note-box" style="display:none; margin-top:8px;">
           <p style="margin:0 0 8px;"><b>공격 위치</b>의 왼쪽/오른쪽은 <b>공격하는 팀</b>이 네트를 바라볼 때 기준이에요(상대 공격은 화면 위쪽, 우리 공격은 화면 아래쪽이 왼쪽). <b>공 착지 칸</b>은 화면과 같은 방향으로 놓여 있고, 좌우는 <b>공을 받는 팀</b> 기준이에요.</p>
           <p style="margin:0 0 8px;">착지는 정해진 코트 9구역 중 하나로 고정돼요 — 오른쪽 계열은 레프트·앞차·레프트백 구역, 왼쪽 계열은 라이트·빽차·라이트백 구역이에요. 포지션 배정을 바꾸거나 선수를 드래그해도 이 구역 자체는 달라지지 않아요.</p>
-          <p style="margin:0 0 8px;"><b>빠른 조합·공격하는 선수·페이크 선수·경유점</b>은 저장 버튼 없이 바로 적용돼요. 페이크 선수는 고른 자리(A·빽A·앞차 자리 …)로 먼저 들어가 공격하는 척 점프하고, 블로커는 가장 가까운 페이크에 먼저 반응했다가 진짜 공격수 쪽으로 따라가요. 경유점 ◆는 공격하는 팀 코트 안에서만 움직여요.</p>
+          <p style="margin:0 0 8px;"><b>공격하는 선수·페이크 선수·경유점</b>은 저장 버튼 없이 바로 적용돼요. <b>⚡ 빠른 조합</b>은 📂 대형 보관함의 공격 옵션 목록에서 골라요. 페이크 선수는 고른 자리(A·빽A·앞차 자리 …)로 먼저 들어가 공격하는 척 점프하고, 블로커는 가장 가까운 페이크에 먼저 반응했다가 진짜 공격수 쪽으로 따라가요. 경유점 ◆는 공격하는 팀 코트 안에서만 움직여요.</p>
           <p style="margin:0;">저장 버튼을 누르면 선택한 공격 상황의 위치·속도·착지가 지금 값으로 덮어써지고(공격하는 선수·페이크·경유점은 그대로), 이름은 그대로 유지돼요.</p>
         </div>
               </details>
@@ -5658,9 +5653,10 @@
     const cur = document.getElementById('presetName').value.trim();
     const short = Object.values(ATTACK_OPT_LABEL), base = Object.keys(SCEN_LABEL).map(k=>SCEN_LABEL[k]).concat(short);
     const opt = (v, l) => `<option value="${escChip(v)}"${v===cur?' selected':''}>${escChip(l||v)}</option>`;
-    const known = base.includes(cur) || customAtkNames.includes(cur);
+    const known = base.includes(cur) || customAtkNames.includes(cur) || (window.__atkCombos||[]).some(c=>c.label===cur);
     sel.innerHTML = `<option value=""${cur && !known ? '' : cur ? '' : ' selected'} disabled>${cur && !known ? `📄 지금 이름: ${escChip(cur)} (바꾸려면 여기서 고르기)` : '공격 옵션 고르기 ▾'}</option>`
       + `<optgroup label="공격 옵션">${short.map(n=>opt(n)).join('')}</optgroup>`
+      + ((window.__atkCombos||[]).length ? `<optgroup label="⚡ 빠른 조합 (공격 선수·페이크까지 정해져요)">${window.__atkCombos.map((c,i)=>`<option value="__combo:${i}"${c.label===cur?' selected':''}>⚡ ${escChip(c.label)}</option>`).join('')}</optgroup>` : '')
       + `<optgroup label="상대 공격 → 우리 수비">${Object.keys(ATTACKS).map(k=>opt(SCEN_LABEL[k])).join('')}</optgroup>`
       + `<optgroup label="우리 공격 → 커버">${Object.keys(OUR_ATTACKS).map(k=>opt(SCEN_LABEL[k])).join('')}</optgroup>`
       + (customAtkNames.length ? `<optgroup label="추가한 공격 옵션">${customAtkNames.map(n=>opt(n)).join('')}</optgroup>` : '')
@@ -5673,6 +5669,15 @@
     if(v==='__add__'){
       const nm = (prompt('추가할 공격 옵션 이름을 적어주세요. 목록에 남아서 다음에도 고를 수 있어요. (예: 파이프 공격, 레프트 페인트)', '') || '').trim().slice(0,20);
       if(nm){ if(!customAtkNames.includes(nm) && !Object.values(SCEN_LABEL).includes(nm) && !Object.values(ATTACK_OPT_LABEL).includes(nm)){ customAtkNames.push(nm); saveAtkNames(); } input.value = nm; }
+    } else if(v.startsWith('__combo:')){
+      // 빠른 조합: 공격 상황·공격하는 선수·페이크·경유점을 한 번에 정하고, 저장 이름도 조합 이름으로 채워요. 고칠 건 공격 상황 편집에서
+      const c = (window.__atkCombos||[])[Number(v.slice(8))];
+      if(c && window.__applyCombo){
+        window.__applyCombo(c);
+        input.value = c.label;
+        const st = document.getElementById('customStatus');
+        if(st && /적용했어요/.test(st.textContent)) st.textContent = `'${c.label}' 조합을 적용했어요. 공격하는 선수·페이크는 공격 상황 편집에서 고칠 수 있어요.`;
+      }
     } else if(v==='__del__'){
       customAtkNames = customAtkNames.filter(n=>n!==input.value.trim()); saveAtkNames();
     } else if(v) input.value = v;
@@ -6820,16 +6825,16 @@
     const mid = lerpPt(base, contact, 0.5);
     return our ? [clip(mid[0],20,380), clip(Math.max(mid[1], contact[1]+70),395,735)] : [clip(mid[0],20,380), clip(Math.min(mid[1], contact[1]-70),25,365)];
   }
-  // 빠른 조합: 공격하는 팀의 포지션으로 찾아요(없는 포지션은 건너뛰어요)
+  // 빠른 조합: 공격하는 팀의 포지션으로 찾아요(없는 포지션은 건너뛰어요). 📂 대형 보관함의 공격 옵션 목록에서 골라요
   const ATK_COMBOS = [
     {label:'A·빽A 페이크 → 앞차 시간차', opt:'TIMEDIFF', atk:['FRONTSLIDE'], x:120, fakes:[[['QA'],'QA'], [['BACKSLIDE','RIGHT'],'QBACKA']]},
     {label:'앞차가 빽A 뒤로 돌아 시간차', opt:'TIMEDIFF', atk:['FRONTSLIDE'], x:305, fakes:[[['QA'],'QA'], [['BACKSLIDE','RIGHT'],'QBACKA']], viaBehind:'QBACKA'},
     {label:'빽A (속공수 빽A)', opt:'BACKA', atk:['QBACKA','QA'], fakes:[]},
     {label:'A 페이크 → 빽A', opt:'BACKA', atk:['QBACKA','BACKSLIDE'], fakes:[[['QA'],'QA']]},
     {label:'빽A를 빽차가', opt:'BACKA', atk:['BACKSLIDE'], fakes:[]},
-    {label:'빽A를 라이트가', opt:'BACKA', atk:['RIGHT'], fakes:[]},
-    {label:'페이크·경유점 모두 끄기', clear:true}
+    {label:'빽A를 라이트가', opt:'BACKA', atk:['RIGHT'], fakes:[]}
   ];
+  window.__atkCombos = ATK_COMBOS; window.__applyCombo = applyCombo; // 📂 대형 보관함 공격 옵션 목록에서 써요
   function applyCombo(c){
     if(c.clear){
       const atk = curAtk(); if(atk.serve) return;
@@ -6854,12 +6859,6 @@
     }
     afterAttackEdit(`'${c.label}' 조합을 적용했어요.`);
   }
-  // 빠른 조합 칸은 접었다 펼 수 있고, 마지막 상태를 기억해요
-  (function(){
-    const fold = document.getElementById('atkComboFold'); if(!fold) return;
-    try{ if(localStorage.getItem('vt:combo-open')==='1') fold.open = true; }catch(err){}
-    fold.addEventListener('toggle', ()=>{ try{ localStorage.setItem('vt:combo-open', fold.open?'1':'0'); }catch(err){} });
-  })();
   function renderAttackWho(){
     try{ renderAttackWhoInner(); } catch(err){} // 처음 불러오는 동안(포지션 이름 등이 아직 없을 때)은 건너뛰어요
   }
@@ -6874,8 +6873,6 @@
     // 예전에 뒤쪽 수비수를 공격·페이크로 저장해 뒀으면 그 선수만 남겨 보여줘요(눌러서 끌 수 있게)
     const players = attackTeamPlayers(our, true).filter(pl=>!BACK_TYPES.includes(pl.pos) || pl.id===atkId || fakeIds.includes(pl.id));
     const chip = (pl, on, kind) => `<button type="button" class="chip-btn${on?' on':''}" data-kind="${kind}" data-id="${pl.id}">${pl.label}<small>${our?'':'상대 '}${pl.num}번</small></button>`;
-    const cf = document.querySelector('#atkComboFold .rf-count'); if(cf) cf.textContent = ATK_COMBOS.filter(c=>!c.clear).length+'개 + 끄기';
-    document.getElementById('atkComboRow').innerHTML = ATK_COMBOS.map((c,i)=>`<button type="button" class="chip-btn${c.clear?' none':''}" data-combo="${i}">${c.label}</button>`).join('');
     document.getElementById('atkWhoChips').innerHTML = players.map(pl=>chip(pl, pl.id===atkId, 'atk')).join('');
     document.getElementById('fakeWhoChips').innerHTML = players.filter(pl=>pl.id!==atkId).map(pl=>chip(pl, fakeIds.includes(pl.id), 'fake')).join('');
     const spotOpts = sel => Object.keys(FAKE_SPOTS).map(k=>`<option value="${k}"${k===sel?' selected':''}>${FAKE_SPOTS[k].label}</option>`).join('');
@@ -6889,8 +6886,7 @@
     vb.classList.toggle('primary', !!atk.via);
   }
   document.getElementById('atkWhoBox').addEventListener('click', e=>{
-    const cb = e.target.closest('button[data-combo]');
-    if(cb){ applyCombo(ATK_COMBOS[Number(cb.dataset.combo)]); return; }
+    if(e.target.closest('#btnAtkClearFakes')){ applyCombo({clear:true}); return; }
     const b = e.target.closest('button[data-kind]'); if(!b) return;
     const atk = curAtk(), our = isOur(scenario);
     const pl = attackTeamPlayers(our, true).find(q=>q.id===b.dataset.id); if(!pl) return;
@@ -7695,9 +7691,9 @@
                  {click:'.k-cell', then:el=>el.classList.add('on')},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'누가 때리고 누가 속일지 정해요',
-        text:'같은 카드의 <b>빠른 조합</b>(처음엔 접혀 있어요. 제목 줄을 누르면 펼쳐지고, 펼친 상태를 기억해요. 예: A·빽A 페이크 → 앞차 시간차, 앞차가 빽A 뒤로 돌아 시간차, 빽A(속공수), A 페이크 → 빽A, 빽A를 빽차가·라이트가)을 누르면 공격 옵션·공격하는 선수·페이크가 한 번에 정해져요. <b>공격하는 선수</b>와 <b>페이크 선수</b>(여러 명) 칩으로 고칠 수 있고, <b>↪️ 경유점 넣기</b>를 누르면 코트의 노란 ◆를 끌어 공격수가 돌아 들어갈 길을 정해요. 모두 누르는 즉시 적용되고, 대형을 저장하면 그 전술에 함께 저장돼요.',
-        scene:`<div class="mk-card"><div class="mk-lbl">빠른 조합</div>
-          <div class="mk-row"><span class="mk-btn k-combo">A·빽A 페이크 → 앞차 시간차</span><span class="mk-btn">빽A를 빽차가</span></div>
+        text:'<b>📂 대형 보관함</b>의 <b>공격 옵션 목록</b>에서 <b>⚡ 빠른 조합</b>(예: A·빽A 페이크 → 앞차 시간차, 앞차가 빽A 뒤로 돌아 시간차, 빽A(속공수), A 페이크 → 빽A, 빽A를 빽차가·라이트가)을 고르면 공격 상황·공격하는 선수·페이크가 한 번에 정해지고 대형 이름도 채워져요. 그다음 공격 상황 편집의 <b>공격하는 선수</b>와 <b>페이크 선수</b>(여러 명) 칩으로 고칠 수 있고, <b>↪️ 경유점 넣기</b>를 누르면 코트의 노란 ◆를 끌어 공격수가 돌아 들어갈 길을 정해요. 모두 누르는 즉시 적용되고, 대형을 저장하면 그 전술에 함께 저장돼요.',
+        scene:`<div class="mk-card"><div class="mk-lbl">📂 공격 옵션 목록 · ⚡ 빠른 조합</div>
+          <div class="mk-row"><span class="mk-btn k-combo">⚡ A·빽A 페이크 → 앞차 시간차</span><span class="mk-btn">⚡ 빽A를 빽차가</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격</span><span class="mk-btn on k-a1">레프트</span><span class="mk-btn k-a2">앞차</span><span class="mk-btn">라이트</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">페이크</span><span class="mk-btn k-f1">A</span><span class="mk-btn k-f2">빽차</span><span class="mk-btn">레프트</span></div></div>
           <div class="mk-toast k-toast">조합을 적용했어요</div>`,
