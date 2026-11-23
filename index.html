@@ -187,7 +187,6 @@
   .vault-item small{ font-size:11px; color:var(--muted); line-height:1.25; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .vault-item:hover{ border-color:var(--accent); }
   .vault-item.active{ border:2px solid var(--accent); background:var(--accent-soft, var(--panel-2)); padding:6px 8px; }
-  .vault-item.final b::before{ content:'⭐ '; }
   .vault-empty{ grid-column:1/-1; font-size:12px; color:var(--muted); padding:6px 2px; }
   .vault-item-actions{ display:flex; align-items:center; gap:6px; margin-top:8px; }
   .vault-item-actions .vault-cur{ flex:1 1 auto; min-width:0; font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -348,12 +347,6 @@
   .folder-tip-row em{ font-style:normal; color:var(--muted); margin-left:4px; }
   .folder-tip-chip{ flex:none; border:1px solid var(--accent); background:var(--panel); color:var(--accent-text); border-radius:999px; padding:3px 10px; font-size:12px; font-weight:700; font-family:inherit; cursor:pointer; }
   .folder-tip-chip:hover{ background:var(--accent-soft); }
-  .final-box{ border:1px solid rgba(255,210,63,0.45); background:var(--warn-soft); border-radius:var(--radius-md); padding:10px 12px; }
-  .final-head{ font-family:var(--display); font-weight:800; font-size:13.5px; color:var(--text); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .final-scen{ font-weight:600; font-size:11.5px; color:var(--text-dim); }
-  .final-status{ font-size:12px; color:var(--text-dim); margin-top:4px; line-height:1.5; }
-  .final-status b{ color:var(--text); }
-  .preset-chip.final{ border-color:var(--warn); }
   .preset-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .preset-chip{ display:flex; align-items:center; gap:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; font-size:12px; cursor:pointer; }
   .preset-chip.active{ border-color:var(--accent); }
@@ -373,9 +366,6 @@
   .scenario-title-pick{ position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; font-size:16px; appearance:none; -webkit-appearance:none; border:0; }
   .scenario-title-wrap:focus-within{ outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
   /* 공격 상황 편집의 공격 옵션: 상대 공격·우리 공격을 고르고 옵션을 누르면 그 공격 상황으로 바뀌어요 */
-  .attack-opt-side{ margin-bottom:4px; }
-  .attack-opt-seg{ display:grid; grid-template-columns:repeat(3,1fr); border-radius:12px; }
-  .attack-opt-seg button{ border-radius:8px; padding:8px 4px; white-space:nowrap; }
   .stage-top .scenario-tag{ font-family:var(--mono); font-size:11px; letter-spacing:0.04em; color:var(--on-accent); background:var(--grad); padding:3px 10px; border-radius:999px; font-weight:700; }
 
   .court-wrap{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; }
@@ -868,8 +858,6 @@
   .fgroup .pos-item select, .fgroup .pos-item input{ background:var(--panel-2); }
   /* 저장·기록처럼 결과가 남는 묶음은 테두리로 강조 */
   .fgroup-save{ border-color:color-mix(in srgb, var(--fam, var(--accent)) 45%, var(--border)); }
-  .fgroup.final-box{ background:var(--warn-soft); border-color:rgba(255,210,63,0.45); }
-  .fgroup.final-box .final-head{ font-size:14.5px; }
   .fgroup-danger{ background:transparent; border-style:dashed; }
   .fgroup-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:stretch; }
   .fgroup-row > .fgroup{ flex:1 1 320px; min-width:0; }
@@ -2440,13 +2428,12 @@
   .match-info[open] > summary .fg-title::after{ content:' ▴'; }
   .match-info:not([open]) > summary{ border-bottom:none; padding-bottom:0; }
 
-  /* ---------- 사용 순서: 왼쪽(공격 상황 편집) → 오른쪽(📂 대형 보관함 → 최종 → 공유) · ✋ 편집은 코트 아래 재생 카드 안 ---------- */
+  /* ---------- 사용 순서: 왼쪽(공격 상황 편집) → 오른쪽(📂 대형 보관함 → 공유) · ✋ 편집은 코트 아래 재생 카드 안 ---------- */
   .side-left{ display:flex; flex-direction:column; gap:14px; }
   #cardPresets{ display:flex; flex-direction:column; }
   #presetEditControls{ display:contents; }
   #cardPresets > h2{ order:0; }
   #grpPresetLoad, #autoSaveStatus, #presetSearchBox{ order:1; }
-  #finalFormationSection{ order:4; }
   #btnPresetInfoToggle, #presetInfoPanel{ order:5; }
   #shareFormationSection{ order:7; }
   .adv-opts{ margin-top:8px; border:1px dashed var(--border-2); border-radius:10px; padding:6px 10px; background:var(--panel); }
@@ -2473,7 +2460,7 @@
     .match-save-card .fgroup > div:has(> #matchFolderSelect) > .btn{ flex:1 1 0; }
   }
   /* 제목은 화면 모드와 상관없이 양쌤스튜디오 홈페이지와 같은 Jua 글꼴로 */
-  body h1, body h2, body h3, body .card h2, body .modal-card h2, body .gd-step-title, body .field-label, body .final-head, body .fg-title, body .quick-record-row .qr-label, body .stage-top .scenario-title, body .mk-title, body .feature-guide-block h3, body .qr-mode-btn b{ font-family:var(--head); font-weight:400; font-style:normal; letter-spacing:-0.01em; }
+  body h1, body h2, body h3, body .card h2, body .modal-card h2, body .gd-step-title, body .field-label, body .fg-title, body .quick-record-row .qr-label, body .stage-top .scenario-title, body .mk-title, body .feature-guide-block h3, body .qr-mode-btn b{ font-family:var(--head); font-weight:400; font-style:normal; letter-spacing:-0.01em; }
   body .topbar h1, body .login-card h1{ font-family:var(--head); font-weight:400; font-style:normal; letter-spacing:-0.02em; }
   body.ys-mode .qr-mode-btn{ background:#E2622B; color:#FFFDF8; box-shadow:0 10px 22px -12px rgba(226,98,43,0.8); }
   body.ys-mode .qr-mode-btn:hover{ background:#C9541F; }
@@ -3247,13 +3234,12 @@
         <button class="btn gd-more-btn" type="button">⚠️ 참고사항 더 보기 ▾</button>
         <div class="gd-more" style="display:none;">
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
-          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·재생 카드(▶ 재생·✋ 편집)·포지션 배정, <b>오른쪽</b> 📂 대형 보관함(불러오기·저장) → ⭐ 최종 대형 → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
+          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·재생 카드(▶ 재생·✋ 편집)·포지션 배정, <b>오른쪽</b> 📂 대형 보관함(불러오기·저장) → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
           <li><b>📂 대형 보관함</b>: 맨 위 폴더 칸 하나가 <b>불러올 목록이자 저장할 곳</b>이에요. 폴더를 고르면 그 폴더의 대형이 버튼으로 나오고, 누르면 바로 코트에 불러와요(지금 코트의 대형은 테두리로 표시돼요). 🔍 찾기 칸에 적으면 모든 폴더에서 대형·폴더 이름으로 찾아요. 폴더 이름 바꾸기·복사·삭제와 💡 폴더 이름 Tip은 폴더 칸 옆 <b>⋯ 폴더</b>에 있고, 새 폴더는 폴더 칸 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요. 불러온 대형은 목록 아래에서 <b>✏️ 이름</b>을 바꾸거나 <b>🗑️ 삭제</b>해요. 공격 옵션(레프트·A 속공 등)이나 공격 상황을 바꿔도 지금 고른 폴더를 그대로 지켜요: 그 폴더에 그 상황 대형이 있으면 그것을 불러오고, 없으면 지금 대형을 그대로 둬요(기본 대형 폴더일 때만 기본 대형으로 바뀌어요). 맨 아래 저장 줄은 위 <b>공격 옵션 목록</b>에서 이름을 고르거나(+ 새 공격 옵션 추가로 목록에 넣을 수 있어요) 칸에 적어요. 이름이 불러온 대형과 같으면 <b>💾 덮어쓰기</b>, 다르면 <b>💾 새로 저장</b>이 되고, <b>➕ 새 이름으로</b>는 불러온 대형은 그대로 두고 하나 더 저장해요. 도트를 고치면 '● 고쳤어요'가 뜨고, 저장하지 않고 다른 대형을 누르면 한 번 물어봐요. 편집 모드를 켜면 코트 아래 재생 카드에도 같은 💾 저장 버튼이 나와서 위로 올라가지 않아도 돼요.</li>
           <li>처음 쓰는 사람(코드 없이 계속하기·새 코드 만들기)은 <b>기본 대형(3인블로킹 기준)</b> 폴더의 대형 12가지로 시작해요. 고쳐서 저장하면 그 방에서는 내 대형이 기준이 되고, 이미 대형을 저장해 둔 방은 그대로예요.</li>
           <li>이동 동선·착지 이동선·커버리지·블로킹 범위는 항상 코트에 함께 표시돼요.</li>
           <li>블로킹 인원은 숫자로 정하는 게 아니라, 네트 앞 블로킹 존에 놓인 도트 수로 판단해요.</li>
           <li>왼쪽·오른쪽 기준: <b>공격 위치</b>는 공격하는 팀, <b>공 착지 칸</b>은 공을 받는 팀이 네트를 바라볼 때 기준이에요.</li>
-          <li>⭐ 최종 대형은 개설자만 확정·교체·해제할 수 있어요. 수정 권한자는 의견을 "의견 · 내 이름" 폴더에 저장해 주세요.</li>
           <li><b>공격하는 선수·페이크 선수·경유점</b>은 공격 상황 편집 카드에서 누르는 즉시 적용돼요. 페이크는 여러 명 고를 수 있고, 페이크가 있으면 세터 토스가 한 박자 늦게 나가요. 고른 포지션 선수가 없으면 빠른 조합이 그 선수를 건너뛰어요(포지션 배정에서 먼저 정해 주세요).</li>
           <li>같은 공격 옵션이라도 <b>이름을 달리해 저장</b>하면 대형마다 시작 위치뿐 아니라 <b>도착 위치·공격 과정</b>(위치·템포·착지·공격하는 선수·페이크·경유점)도 따로 저장돼요. 불러오면 그 전술의 설정이 그대로 돌아와요(예전에 저장한 대형은 공격 옵션에 하나뿐인 설정을 써요).</li>
           <li>대형 코멘트는 대형마다 하나예요. 여러 사람이 동시에 고치면 마지막에 저장된 내용만 남아요.</li>
@@ -3492,7 +3478,7 @@
 <div id="sideLeft" class="side-left">
 <div class="card" id="cardAttack">
         <details class="attack-fold" id="attackFold" open>
-        <summary><h2>공격 상황 편집</h2><span class="attack-fold-sub">① 공격 상황을 고르고 공격 과정(위치·템포·공격 선수·페이크·착지)을 정해요 → 📂 대형 보관함에서 저장</span></summary>
+        <summary><h2>공격 상황 편집</h2><span class="attack-fold-sub">① 코트 위 제목(▾)에서 공격 상황을 고르고 공격 과정(위치·템포·공격 선수·페이크·착지)을 정해요 → 📂 대형 보관함에서 저장</span></summary>
 
         <div id="attackCustomControls">
         <div id="customPanel">
@@ -3507,13 +3493,6 @@
             <button data-x="255">오른쪽 중간</button>
             <button data-x="370">오른쪽 끝</button>
           </div>
-          <label class="field-label" style="margin-top:8px;">공격 옵션</label>
-          <div class="field-note" style="margin-top:0; margin-bottom:6px;">고르면 코트가 그 공격 상황으로 바뀌고, 아래에서 저장하는 대형도 그 상황에 저장돼요(코트 위 제목을 눌러도 바꿀 수 있어요).</div>
-          <div class="seg attack-opt-side" id="attackOptSide">
-            <button data-side="opp">🔴 상대 공격 → 우리 수비</button>
-            <button data-side="our">🔵 우리 공격 → 커버</button>
-          </div>
-          <div class="seg attack-opt-seg" id="attackOptSeg"></div>
           <div style="display:none;">
             <label class="field-label" style="margin-top:0; white-space:nowrap;">위치 미리보기</label>
             <select id="attackZonePreviewSelect" style="flex:1;">
@@ -3632,23 +3611,11 @@
         </div>
 
 
-        <div id="finalFormationSection" class="fgroup final-box">
-          <div class="final-head">⭐ 최종 대형 <span class="final-scen" id="finalScenLabel"></span></div>
-          <div class="final-status" id="finalStatusText"></div>
-          <div class="btn-row" style="margin-top:6px;">
-            <button class="btn" id="btnLoadFinal" style="display:none;">⭐ 최종 대형 불러오기</button>
-            <button class="btn primary" id="btnFinalize" style="display:none;">⭐ 지금 대형을 최종으로 확정</button>
-            <button class="btn" id="btnUnfinalize" style="display:none;">확정 해제</button>
-          </div>
-          <div class="field-note" id="finalNote" style="margin-top:6px;"></div>
-        </div>
-
         <button class="btn" id="btnPresetInfoToggle" style="width:100%; margin-top:10px;">ℹ️ 참고사항 ▾</button>
         <div id="presetInfoPanel" class="note-box" style="display:none; margin-top:8px;">
-          <p style="margin:0 0 8px;"><b>공격 상황 바꾸기</b> — 코트 위 제목을 누르거나 공격 상황 편집의 <b>공격 옵션</b>(상대 공격·우리 공격 → 레프트·A 속공·라이트·시간차·빽차·빽A, 상대 공격 쪽에는 서브도 있어요)을 고르면 그 상황의 ⭐ 최종 대형(없으면 "시나리오별 대형" 폴더의 저장본, 그것도 없으면 "기본 대형(3인블로킹 기준)" 폴더의 대형)이 자동으로 불러와져요.</p>
+          <p style="margin:0 0 8px;"><b>공격 상황 바꾸기</b> — 코트 위 <b>제목</b>(▾)을 눌러 공격 상황(상대 공격·우리 공격 → 레프트·A 속공·라이트·시간차·빽차·빽A, 상대 공격 쪽에는 서브도 있어요)을 고르면 지금 고른 폴더의 그 상황 대형(없으면 "시나리오별 대형" 폴더의 저장본, 그것도 없으면 "기본 대형(3인블로킹 기준)" 폴더의 대형)이 자동으로 불러와져요.</p>
           <p style="margin:0 0 8px;"><b>📂 대형 보관함</b> — 폴더 칸 하나가 불러올 목록이자 저장할 곳이에요. 대형 버튼을 누르면 바로 불러오고, 고친 뒤 이름을 그대로 두면 <b>💾 덮어쓰기</b>, 하나 더 남기려면 <b>➕ 새 이름으로</b>를 눌러요. 폴더째 이름 바꾸기·복사·삭제와 💡 Tip은 <b>⋯ 폴더</b>에 있어요. 이름은 Tip의 머리말로 정리하면 찾기 쉬워요.</p>
           <p style="margin:0 0 8px;"><b>전술별 대형</b> — 같은 공격 옵션이라도 이름을 달리해 저장하면 대형마다 도착 위치·공격 과정이 따로 저장돼요. 고친 뒤 저장하지 않고 다른 전술을 불러오면 저장할지 물어봐요.</p>
-          <p style="margin:0;"><b>⭐ 최종 대형</b> — 개설자가 공격 상황마다 하나씩 확정해요. 시나리오를 고르면 가장 먼저 불러와지고, 수정 권한자는 불러오기만 할 수 있어요.</p>
         </div>
       </div>
       <div class="fgroup" id="grpPresetLoad">
@@ -3667,7 +3634,7 @@
           <button class="btn" id="btnPresetCopyFolder" title="고른 폴더를 통째로 복사">📄 폴더 복사</button>
           <button class="btn" id="btnFolderDelete" title="고른 폴더와 그 안의 대형 모두 삭제">🗑️ 폴더 삭제</button>
         </div>
-        <div class="field-note" style="margin-top:4px;">고른 폴더를 폴더째 바꿔요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때는 복사가 좋아요). 새 폴더는 위 목록 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요. ⭐ 최종 대형 폴더는 여기서 바꿀 수 없어요.</div>
+        <div class="field-note" style="margin-top:4px;">고른 폴더를 폴더째 바꿔요(다른 팀 대형을 바탕으로 새 팀 폴더를 만들 때는 복사가 좋아요). 새 폴더는 위 목록 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요.</div>
         <button class="btn" id="btnFolderTipToggle" type="button" style="width:100%; margin-top:6px;">💡 폴더 이름 정하는 Tip ▾</button>
         <div id="folderTipPanel" class="note-box folder-tip" style="display:none; margin-top:8px;">
           <p style="margin:0 0 8px;">폴더는 <b>용도별 머리말</b>로 시작하면 여러 사람이 써도 정리가 잘 돼요. 아래 머리말을 누르면 새 폴더 이름 칸에 바로 들어가요.</p>
@@ -3675,7 +3642,6 @@
           <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="상대팀 · ">상대팀 · </button><span>상대 팀별로 분석한 대형 <em>예: 상대팀 · 한빛고</em></span></div>
           <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="의견 · " id="folderTipOpinion">의견 · 내 이름</button><span>팀원 각자 제안하는 대형(자기 이름을 붙여요) <em>예: 의견 · 민수</em></span></div>
           <div class="folder-tip-row"><button type="button" class="folder-tip-chip" data-prefix="디테일 · ">디테일 · </button><span>블로킹·시간차·커버 등 세부 상황 <em>예: 디테일 · 블로킹 2인</em></span></div>
-          <p style="margin:8px 0 0;"><b>⭐ 최종 대형</b> 폴더는 개설자가 위 폴더들의 의견을 모아 확정한 대형이 저장되는 곳이라, 개설자만 저장·수정할 수 있어요.</p>
         </div>
       </div>
       <input type="search" id="vaultSearch" class="login-input vault-search" placeholder="🔍 대형·폴더 이름으로 찾기 (모든 폴더)" aria-label="대형 찾기">
@@ -5086,16 +5052,9 @@
   Object.keys(OUR_ATTACKS).forEach(k=>SCEN_LABEL[k]=OUR_ATTACKS[k].label);
 
   const PRESET_SCENARIO_FOLDER = '시나리오별 대형';
-  // 개설자가 여러 폴더의 의견을 모아 확정한 "최종 대형" — 공격 상황마다 하나씩, 개설자만 저장·수정·삭제할 수 있어요.
-  const FINAL_FOLDER = '⭐ 최종 대형';
-  const isFinalPreset = p => !!p && (p.final===true || (p.folder||'')===FINAL_FOLDER);
   // 코드 없이 쓰는 로컬 모드는 혼자 쓰니 개설자와 같아요. (accessLevel/roomCode는 더 아래에서 선언돼서, 시작 직후 첫 그리기 때는 아직 접근할 수 없어요)
+  // 대형 코멘트를 누가 남겼는지 적을 때 써요(개설자·구성원)
   const canFinalize = () => { try{ return accessLevel==='creator' || !roomCode; }catch(err){ return true; } };
-  const finalFor = key => presets.find(p=>isFinalPreset(p) && p.scenario===key);
-  function guardFinal(p, what){
-    if(isFinalPreset(p) && !canFinalize()){ alert(`⭐ 최종 대형은 개설자만 ${what}할 수 있어요.`); return false; }
-    return true;
-  }
 
   function pickScenario(key){
     switchScenario(key);
@@ -5110,7 +5069,7 @@
       const st = document.getElementById('customStatus'); if(st) st.textContent = `📁 ${curFolder}에 '${SCEN_LABEL[key]}' 대형이 없어서 지금 대형을 그대로 두었어요. 고친 뒤 저장하면 이 폴더에 생겨요.`;
       return;
     }
-    const existing = finalFor(key) || presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER) || defaultFor(key);
+    const existing = presets.find(p=>p.name===SCEN_LABEL[key] && (p.folder||'')===PRESET_SCENARIO_FOLDER) || defaultFor(key);
     if(existing){
       loadPreset(existing);
     } else {
@@ -5143,30 +5102,11 @@
     if(e.target.value && e.target.value!==scenario) pickScenario(e.target.value);
   });
 
-  // 공격 옵션 버튼: 경기 영상 분석의 세부 상황 이름(레프트·A·라이트 …)으로 공격 상황을 골라요
+  // 공격 상황 짧은 이름(저장 줄 '공격 옵션 목록'에서도 써요)
   const ATTACK_OPT_LABEL = {L:'레프트', C:'A 속공', R:'라이트', TIMEDIFF:'시간차(앞차)', BACKSLIDE:'빽차', BACKA:'빽A', SERVE:'서브'};
-  let attackOptSide = null; // 버튼으로 고른 쪽('opp'|'our'). 상황을 고르기 전에는 지금 코트 상황의 쪽을 따라요
-  function renderAttackOpts(){
-    const side = attackOptSide || (isOur(scenario) ? 'our' : 'opp');
-    document.querySelectorAll('#attackOptSide button').forEach(b=>b.classList.toggle('active', b.dataset.side===side));
-    document.getElementById('attackOptSeg').innerHTML = Object.keys(ATTACK_OPT_LABEL).filter(k=>SCEN_LABEL[side==='our' ? 'OUR_'+k : k]).map(k=>{
-      const key = side==='our' ? 'OUR_'+k : k;
-      return `<button type="button" data-scen="${key}" class="${key===scenario?'active':''}" title="${SCEN_LABEL[key]}">${ATTACK_OPT_LABEL[k]}</button>`;
-    }).join('');
-  }
-  document.getElementById('attackOptSide').addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b) return;
-    attackOptSide = b.dataset.side; renderAttackOpts();
-  });
-  document.getElementById('attackOptSeg').addEventListener('click', e=>{
-    const b = e.target.closest('button[data-scen]'); if(!b || b.dataset.scen===scenario) return;
-    attackOptSide = null; pickScenario(b.dataset.scen);
-  });
-
   function updateTexts(){
     document.getElementById('scenarioTitle').textContent = SCEN_LABEL[scenario];
     document.getElementById('scenarioTitlePick').value = scenario;
-    attackOptSide = null; renderAttackOpts();
   }
 
   // ---------- DOM element creation ----------
@@ -5658,10 +5598,10 @@
     loadSelect.innerHTML = '<option value="">불러올 대형 선택...</option>';
     const byFolder = {};
     presets.forEach((p,idx)=>{ const f=p.folder||'(폴더 없음)'; if(!byFolder[f]) byFolder[f]=[]; byFolder[f].push(idx); });
-    Object.keys(byFolder).sort((a,b)=>a===FINAL_FOLDER?-1:b===FINAL_FOLDER?1:a==='(폴더 없음)'?1:b==='(폴더 없음)'?-1:a.localeCompare(b)).forEach(folderName=>{
-      const grp = document.createElement('optgroup'); grp.label = folderName===FINAL_FOLDER ? folderName : '📁 '+folderName;
+    Object.keys(byFolder).sort((a,b)=>a==='(폴더 없음)'?1:b==='(폴더 없음)'?-1:a.localeCompare(b)).forEach(folderName=>{
+      const grp = document.createElement('optgroup'); grp.label = '📁 '+folderName;
       byFolder[folderName].forEach(idx=>{
-        const opt=document.createElement('option'); opt.value=idx; opt.textContent=(isFinalPreset(presets[idx])?'⭐ ':'')+presets[idx].name;
+        const opt=document.createElement('option'); opt.value=idx; opt.textContent=presets[idx].name;
         grp.appendChild(opt);
       });
       loadSelect.appendChild(grp);
@@ -5671,7 +5611,7 @@
     renderFolderPick();
 
     const folderSelect=document.getElementById('presetFolderSelect');
-    const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f && f!==FINAL_FOLDER))).sort((a,b)=>a.localeCompare(b));
+    const folderNames = Array.from(new Set(presets.map(p=>p.folder||'').filter(f=>f))).sort((a,b)=>a.localeCompare(b));
     const currentFolderValue = document.getElementById('presetFolder').value;
     const newFolderInput = document.getElementById('presetFolderNew');
     const isCreatingNew = newFolderInput.style.display!=='none';
@@ -5686,7 +5626,6 @@
     if(presets.length===0){ /* nothing saved yet — search results function will show its own empty message */ }
     renderPresetSearchResults();
     renderShareTargets();
-    renderFinalSection();
     renderFormationComment();
   }
 
@@ -5747,7 +5686,7 @@
     btn.textContent = t ? '💾 덮어쓰기' : '💾 새로 저장';
     document.getElementById('btnSaveAsNew').hidden = !t;
     const note = document.getElementById('vaultSaveNote');
-    const where = folder ? (folder===FINAL_FOLDER ? '⭐ 최종 대형' : '📁 '+folder) : '(폴더 없음)';
+    const where = folder ? '📁 '+folder : '(폴더 없음)';
     note.classList.toggle('dirty', dirty);
     note.textContent = dirty ? `● '${activePreset.name}'을(를) 고쳤어요. 저장하지 않고 다른 대형을 불러오면 고친 내용이 사라져요.`
       : t ? `'${name}'에 지금 코트의 대형을 덮어써요(${where}).`
@@ -5766,11 +5705,11 @@
     else items = presets.filter(p=>(p.folder||'')===folder);
     list.innerHTML = items.length ? items.map(p=>{
       const sc = scenName(p), scen = sc && sc!==p.name ? sc : ''; // 이름이 공격 상황과 같으면 한 번만 보여줘요
-      const sub = q ? `${p.folder ? (p.folder===FINAL_FOLDER ? '⭐ 최종' : '📁 '+p.folder) : '폴더 없음'}${scen ? ' · '+scen : ''}` : scen;
-      return `<button type="button" class="vault-item${p===activePreset?' active':''}${isFinalPreset(p)?' final':''}" data-i="${presets.indexOf(p)}" title="${vEsc((p.folder?p.folder+' / ':'')+p.name)} — 누르면 불러와요"><b>${vEsc(p.name)}</b>${sub ? `<small>${vEsc(sub)}</small>` : ''}</button>`;
+      const sub = q ? `${p.folder ? '📁 '+p.folder : '폴더 없음'}${scen ? ' · '+scen : ''}` : scen;
+      return `<button type="button" class="vault-item${p===activePreset?' active':''}" data-i="${presets.indexOf(p)}" title="${vEsc((p.folder?p.folder+' / ':'')+p.name)} — 누르면 불러와요"><b>${vEsc(p.name)}</b>${sub ? `<small>${vEsc(sub)}</small>` : ''}</button>`;
     }).join('') : `<div class="vault-empty">${q ? '찾는 대형이 없어요.' : creating ? '새 폴더예요. 아래에 이름을 적고 저장하면 이 폴더에 들어가요.' : '이 폴더에는 대형이 없어요. 코트를 맞춘 뒤 아래에서 저장해요.'}</div>`;
     const a = activePreset && presets.includes(activePreset) ? activePreset : null;
-    document.getElementById('vaultCur').textContent = a ? `불러온 대형: ${a.folder ? (a.folder===FINAL_FOLDER ? '⭐ ' : a.folder+' / ') : ''}${a.name}` : '불러온 대형 없음';
+    document.getElementById('vaultCur').textContent = a ? `불러온 대형: ${a.folder ? a.folder+' / ' : ''}${a.name}` : '불러온 대형 없음';
     document.getElementById('vaultItemActions').hidden = !a;
     updateVaultSave();
   }
@@ -5812,42 +5751,20 @@
   const vaultSoon = () => { cancelAnimationFrame(vaultRaf); vaultRaf = requestAnimationFrame(updateVaultSave); };
   ['pointerup','change','click','keyup'].forEach(ev=>document.addEventListener(ev, vaultSoon, true));
 
-  function renderFinalSection(){
-    const sec = document.getElementById('finalFormationSection');
-    if(!sec) return;
-    const fin = finalFor(scenario), owner = canFinalize();
-    document.getElementById('finalScenLabel').textContent = '· ' + (SCEN_LABEL[scenario]||'');
-    const when = fin && fin.finalizedAt ? new Date(fin.finalizedAt).toLocaleDateString('ko-KR') : '';
-    const status = document.getElementById('finalStatusText');
-    if(fin){
-      status.innerHTML = '확정됨' + (when ? ` · ${when}` : '') + (fin.basedOn ? ` · 바탕: <b></b>` : '');
-      if(fin.basedOn) status.querySelector('b').textContent = fin.basedOn;
-    } else {
-      status.textContent = '아직 이 공격 상황의 최종 대형이 없어요.';
-    }
-    const showingFinal = activePreset===fin && !!fin;
-    document.getElementById('btnLoadFinal').style.display = fin && !showingFinal ? '' : 'none';
-    document.getElementById('btnFinalize').style.display = owner ? '' : 'none';
-    document.getElementById('btnFinalize').textContent = fin ? '⭐ 지금 대형으로 최종 교체' : '⭐ 지금 대형을 최종으로 확정';
-    document.getElementById('btnUnfinalize').style.display = owner && fin ? '' : 'none';
-    document.getElementById('finalNote').textContent = owner
-      ? '의견·디테일 폴더의 대형을 불러와 비교한 뒤, 코트에 보이는 대형을 이 공격 상황의 최종 대형으로 확정해요. 시나리오를 고르면 최종 대형이 가장 먼저 불러와져요.'
-      : '최종 대형은 개설자가 팀원들의 의견을 모아 확정해요. 의견이 있으면 "의견 · 내 이름" 폴더에 저장해 주세요.';
-  }
   // ---------- 대형 코멘트: 불러온(저장된) 대형마다 만든 사람의 의도·우발 상황 메모를 남겨요 ----------
   let pendingComment = ''; // 아직 저장 안 한 대형에 적은 코멘트 — 저장하면 그 대형에 붙어요
   function commentReadOnly(p){
     if(sharedViewMode) return true;
     let level = null; try{ level = accessLevel; }catch(err){}
     if(level==='view') return true;
-    return isFinalPreset(p) && !canFinalize();
+    return false;
   }
   function renderFormationComment(){
     const ta = document.getElementById('formationComment');
     if(!ta) return;
     const p = activePreset && presets.includes(activePreset) ? activePreset : null;
     const target = document.getElementById('commentTarget'), meta = document.getElementById('commentMeta');
-    target.textContent = p ? `· ${isFinalPreset(p) ? '⭐ ' : ''}${p.folder && !isFinalPreset(p) ? p.folder+' / ' : ''}${p.name}` : '· 저장 전 대형';
+    target.textContent = p ? `· ${p.folder ? p.folder+' / ' : ''}${p.name}` : '· 저장 전 대형';
     const value = p ? (p.comment||'') : pendingComment;
     if(document.activeElement!==ta || ta.dataset.for!==(p ? String(presets.indexOf(p)) : 'pending')) ta.value = value;
     ta.dataset.for = p ? String(presets.indexOf(p)) : 'pending';
@@ -5869,26 +5786,6 @@
     scheduleAutoSave();
   });
   document.getElementById('formationComment').addEventListener('blur', renderFormationComment);
-
-  function finalizeCurrent(){
-    if(!canFinalize()) return;
-    const fin = finalFor(scenario);
-    const src = activePreset && !isFinalPreset(activePreset) ? `${activePreset.folder ? activePreset.folder+' / ' : ''}${activePreset.name}` : (fin ? fin.basedOn||'' : '직접 배치');
-    if(fin && !confirm(`'${SCEN_LABEL[scenario]}'의 최종 대형을 지금 코트의 대형으로 바꿀까요?`)) return;
-    const baseCopy={}; IDS.forEach(id=>baseCopy[id]=CUSTOM_BASE[id].slice());
-    const oppCopy={}; Object.keys(ORIGINAL_OPP_BASE).forEach(id=>oppCopy[id]=CUSTOM_OPP_BASE[id].slice());
-    const data = {name:SCEN_LABEL[scenario], folder:FINAL_FOLDER, final:true, scenario, base:baseCopy, oppBase:oppCopy, tactic: tacticSnap(scenario),
-      basedOn: src, finalizedAt: Date.now(), finalizedBy: myDisplayName || '개설자'};
-    const srcComment = activePreset && !isFinalPreset(activePreset) ? activePreset.comment : (fin ? fin.comment : pendingComment);
-    if(srcComment){ data.comment = srcComment; data.commentBy = myDisplayName || '개설자'; data.commentAt = Date.now(); }
-    let target = fin;
-    if(target) Object.assign(target, data); else { target = data; presets.push(target); }
-    activePreset = target;
-    document.getElementById('presetName').value = target.name;
-    document.getElementById('presetFolder').value = FINAL_FOLDER;
-    pendingActionDescription = `'${SCEN_LABEL[scenario]}' 최종 대형을 확정했어요`;
-    renderPresets(); updateTexts(); scheduleAutoSave();
-  }
 
   // ---------- 대형 공유: 링크(보기 전용) · GIF ----------
   // 링크에는 대형 데이터 자체를 압축해 #vshare= 뒤에 담아요. 서버나 비밀번호 없이 누구나 열 수 있고,
@@ -6262,14 +6159,13 @@
 
   setTimeout(openSharedFormationIfAny, 0);
 
-  // 폴더를 통째로 복사해요(예: 다른 팀 대형을 바탕으로 새 팀 폴더 만들기). ⭐ 최종 대형을 복사하면 일반 대형이 돼요.
+  // 폴더를 통째로 복사해요(예: 다른 팀 대형을 바탕으로 새 팀 폴더 만들기).
   function copyPresetFolder(folderKey){
     const src = presets.filter(p=>(p.folder||'')===folderKey);
     if(!src.length){ alert('복사할 대형이 없어요.'); return; }
     const label = folderKey || '(폴더 없음)';
     const newName = (prompt(`'${label}' 폴더의 대형 ${src.length}개를 복사해요. 새 폴더 이름을 입력하세요:`, (folderKey ? folderKey+' (복사본)' : '복사본')) || '').trim().slice(0,40);
     if(!newName) return;
-    if(newName===FINAL_FOLDER){ alert('⭐ 최종 대형 폴더로는 복사할 수 없어요.'); return; }
     if(presets.some(p=>(p.folder||'')===newName)){ alert(`'${newName}' 폴더가 이미 있어요. 다른 이름을 써주세요.`); return; }
     src.forEach(p=>{ const c = JSON.parse(JSON.stringify(p)); c.folder = newName; delete c.final; delete c.basedOn; presets.push(c); });
     pendingActionDescription = `'${label}' 폴더를 '${newName}'(으)로 복사했어요`;
@@ -6304,7 +6200,6 @@
         const renameBtn=document.createElement('span'); renameBtn.className='folder-action'; renameBtn.title='폴더 이름 바꾸기'; renameBtn.textContent='✏️';
         renameBtn.addEventListener('click', e=>{
           e.stopPropagation();
-          if(folderKey===FINAL_FOLDER){ alert('⭐ 최종 대형 폴더는 이름을 바꿀 수 없어요.'); return; }
           const newName = (prompt(`'${folderKey}' 폴더의 새 이름을 입력하세요:`, folderKey) || '').trim();
           if(!newName || newName===folderKey) return;
           presets.forEach(p=>{ if((p.folder||'')===folderKey) p.folder = newName; });
@@ -6316,7 +6211,6 @@
         const delBtn=document.createElement('span'); delBtn.className='folder-action'; delBtn.title='폴더 전체 삭제'; delBtn.textContent='🗑️';
         delBtn.addEventListener('click', e=>{
           e.stopPropagation();
-          if(folderKey===FINAL_FOLDER && !canFinalize()){ alert('⭐ 최종 대형은 개설자만 삭제할 수 있어요.'); return; }
           if(!confirm(`'${folderKey}' 폴더 안의 대형 ${groups[folderKey].length}개를 전부 삭제할까요? 되돌릴 수 없어요.`)) return;
           if(activePreset && (activePreset.folder||'')===folderKey) activePreset=null;
           presets = presets.filter(p=>(p.folder||'')!==folderKey);
@@ -6333,14 +6227,12 @@
       groups[folderKey].forEach(({p, idx})=>{
         const chip=document.createElement('div'); chip.className='preset-chip';
         if(activePreset===p) chip.classList.add('active');
-        if(isFinalPreset(p)) chip.classList.add('final');
         const label=document.createElement('span'); label.textContent=p.name;
         const x=document.createElement('span'); x.className='x'; x.textContent='✕';
         chip.appendChild(label); chip.appendChild(x);
         label.addEventListener('click', ()=> loadPreset(p));
         x.addEventListener('click', e=>{
           e.stopPropagation();
-          if(!guardFinal(p, '삭제')) return;
           if(activePreset===p) activePreset=null;
           presets.splice(idx,1);
           renderPresets();
@@ -6403,7 +6295,6 @@
 
   function switchScenario(key){
     scenario=key;
-    renderFinalSection();
     document.getElementById('presetScenarioPick').value = key;
     document.getElementById('customTargetSelect').value = key;
     const cst = document.getElementById('customSaveTarget'); if(cst) cst.innerHTML = '적용 대상: <b></b> (공격 옵션이나 코트 위 제목에서 바꿔요)', cst && (cst.querySelector('b').textContent = SCEN_LABEL[key]||'');
@@ -6548,18 +6439,6 @@
     document.getElementById('presetFolder').value = input.value.trim();
     input.focus(); input.setSelectionRange(input.value.length, input.value.length);
   }));
-  document.getElementById('btnFinalize').addEventListener('click', finalizeCurrent);
-  document.getElementById('btnLoadFinal').addEventListener('click', ()=>{ const f = finalFor(scenario); if(f){ loadPreset(f); lastPickedPreset = f; } });
-  document.getElementById('btnUnfinalize').addEventListener('click', ()=>{
-    const f = finalFor(scenario);
-    if(!f || !canFinalize()) return;
-    if(!confirm(`'${SCEN_LABEL[scenario]}'의 최종 대형 확정을 해제할까요? (저장된 최종 대형이 지워져요)`)) return;
-    if(activePreset===f) activePreset = null;
-    if(lastPickedPreset===f) lastPickedPreset = null;
-    presets.splice(presets.indexOf(f), 1);
-    pendingActionDescription = `'${SCEN_LABEL[scenario]}' 최종 대형 확정을 해제했어요`;
-    renderPresets(); updateTexts(); scheduleAutoSave();
-  });
   document.getElementById('presetFolderNew').addEventListener('input', e=>{
     document.getElementById('presetFolder').value = e.target.value.trim();
   });
@@ -6586,7 +6465,6 @@
       alert('먼저 위 목록에서 이름을 바꿀 대형을 선택해주세요.');
       return;
     }
-    if(!guardFinal(lastPickedPreset, '이름 변경')) return;
     const newName = (prompt('새 이름을 입력해주세요.', lastPickedPreset.name) || '').trim();
     if(!newName) return;
     lastPickedPreset.name = newName.slice(0,20);
@@ -6596,7 +6474,7 @@
   });
   // ---------- 폴더 고르기: 폴더째 이름 바꾸기·복사·삭제 ----------
   var folderPickTouched = null; // var: 시작할 때 renderPresets가 이 줄보다 먼저 불려도 괜찮게 — 사용자가 직접 고른 폴더(불러온 대형이 바뀌면 그 대형 폴더로 따라가요)
-  function editableFolders(){ return [...new Set(presets.map(p=>p.folder||'').filter(f=>f && f!==FINAL_FOLDER))].sort((a,b)=>a.localeCompare(b,'ko')); }
+  function editableFolders(){ return [...new Set(presets.map(p=>p.folder||'').filter(f=>f))].sort((a,b)=>a.localeCompare(b,'ko')); }
   function renderFolderPick(){
     const sel = document.getElementById('presetFolderPick'); if(!sel) return;
     const names = editableFolders();
@@ -6612,7 +6490,6 @@
   function pickedFolder(action){
     const f = document.getElementById('presetFolder').value.trim();
     if(!f || !presets.some(p=>(p.folder||'')===f)){ alert(`먼저 위 폴더 칸에서 ${action}할 폴더를 골라주세요.`); return null; }
-    if(f===FINAL_FOLDER){ alert('⭐ 최종 대형 폴더는 여기서 바꿀 수 없어요.'); return null; }
     return f;
   }
   document.getElementById('btnPresetCopyFolder').addEventListener('click', ()=>{
@@ -6621,10 +6498,9 @@
   });
   document.getElementById('btnFolderRename').addEventListener('click', ()=>{
     const f = pickedFolder('이름을 바꿀'); if(f===null) return;
-    const src = presets.filter(p=>(p.folder||'')===f && !isFinalPreset(p));
+    const src = presets.filter(p=>(p.folder||'')===f);
     const newName = (prompt(`'${f}' 폴더(대형 ${src.length}개)의 새 이름을 입력하세요:`, f) || '').trim().slice(0,40);
     if(!newName || newName===f) return;
-    if(newName===FINAL_FOLDER){ alert('⭐ 최종 대형 폴더 이름은 쓸 수 없어요.'); return; }
     if(presets.some(p=>(p.folder||'')===newName) && !confirm(`'${newName}' 폴더가 이미 있어요. 두 폴더를 합칠까요?`)) return;
     src.forEach(p=>{ p.folder = newName; });
     const fi = document.getElementById('presetFolder'); if(fi.value===f) fi.value = newName;
@@ -6634,7 +6510,7 @@
   });
   document.getElementById('btnFolderDelete').addEventListener('click', ()=>{
     const f = pickedFolder('삭제'); if(f===null) return;
-    const src = presets.filter(p=>(p.folder||'')===f && !isFinalPreset(p));
+    const src = presets.filter(p=>(p.folder||'')===f);
     if(!src.length) return;
     if(!confirm(`'${f}' 폴더와 그 안의 대형 ${src.length}개를 모두 삭제할까요?\n되돌릴 수 없어요.`)) return;
     src.forEach(p=>{ const i = presets.indexOf(p); if(i!==-1) presets.splice(i,1); if(activePreset===p) activePreset=null; if(lastPickedPreset===p) lastPickedPreset=null; });
@@ -6650,7 +6526,6 @@
       alert('먼저 위 목록에서 삭제할 대형을 선택해주세요.');
       return;
     }
-    if(!guardFinal(lastPickedPreset, '삭제')) return;
     if(!confirm(`"${lastPickedPreset.name}"을(를) 삭제할까요?`)) return;
     if(activePreset===lastPickedPreset) activePreset=null;
     presets.splice(i,1);
@@ -6671,9 +6546,6 @@
     // otherwise fall back to matching by name, or create a brand-new entry.
     let target = (activePreset && activePreset.name===name && (activePreset.folder||'')===folder) ? activePreset : null;
     if(!target) target = presets.find(p=>p.name===name && (p.folder||'')===folder);
-    if(folder===FINAL_FOLDER && !canFinalize()){ alert('⭐ 최종 대형 폴더에는 개설자만 저장할 수 있어요. 의견은 "의견 · 내 이름" 같은 폴더에 저장해 주세요.'); return; }
-    if(target && !guardFinal(target, '수정')) return;
-    if(folder===FINAL_FOLDER && !target){ finalizeCurrent(); return; } // keep one final per scenario
     const tactic = tacticSnap(scenario); // 이 대형의 도착 위치·공격 과정도 함께 저장해요(같은 공격 옵션의 다른 전술과 따로)
     if(target){ target.base=baseCopy; target.oppBase=oppCopy; target.folder=folder; target.scenario=scenario; target.tactic=tactic; activePreset=target; }
     else { const created={name, folder, base:baseCopy, oppBase:oppCopy, scenario, tactic}; presets.push(created); activePreset=created; }
@@ -7787,7 +7659,7 @@
         script:[ {click:'.k-sel', then:el=>el.textContent='속공수 ▾'}, {type:'.k-name', text:'민수'},
                  {fn:sc=>{ const d=sc.querySelector('.k-own1'); d.textContent='민수'; d.classList.add('pulse'); }}, {wait:1200} ] },
       { title:'공격 상황을 골라요',
-        text:'코트 위 <b>제목</b>을 누르거나 공격 상황 편집의 <b>공격 옵션</b> 버튼을 누르면 상대 공격 6가지·상대 서브, 우리 공격 6가지 중에서 바로 고를 수 있어요. <b>상대 서브</b>는 서브 위치(공격 위치 버튼)·서브 속도(템포)·착지 칸을 고르면, 우리 팀이 서브 리시브 대형에서 받는 선수·세터·공격 준비 자리로 움직여요. 고른 상황에 대형이 저장돼요. 그 상황에 <b>⭐ 최종 대형</b>이 있으면 가장 먼저 불러와져요.',
+        text:'코트 위 <b>제목</b>(▾)을 누르면 상대 공격 6가지·상대 서브, 우리 공격 6가지 중에서 바로 고를 수 있어요. <b>상대 서브</b>는 서브 위치(공격 위치 버튼)·서브 속도(템포)·착지 칸을 고르면, 우리 팀이 서브 리시브 대형에서 받는 선수·세터·공격 준비 자리로 움직여요. 고른 상황에 대형이 저장돼요.',
         scene:`<div style="position:relative;"><div class="mk-title k-title">상대 좌측(L) 오픈 공격 ▾</div>
           <div class="mk-drop k-drop"><div class="mk-opt on">상대 좌측(L) 오픈 공격</div><div class="mk-opt k-opt">상대 중앙(C) 속공</div><div class="mk-opt">상대 우측(R) 공격</div><div class="mk-opt">좌측(L) 공격 시 커버</div></div></div>${fullCourt()}`,
         script:[ {click:'.k-title', then:(el,sc)=>sc.querySelector('.k-drop').classList.add('show')},
@@ -7810,7 +7682,7 @@
                     const b=sc.querySelector('.k-ball'); setTimeout(()=>{ b.style.left='80%'; b.style.top='66%'; }, 500); }},
                  {wait:2600}, {fn:sc=>{ sc.querySelector('.k-play').textContent='▶'; }}, {wait:900} ] },
       { title:'공격 상황을 편집해요',
-        text:'먼저 <b>공격 상황 편집</b>의 <b>공격 옵션</b>(레프트·A 속공 …)으로 공격 상황을 고르고 위치·템포·<b>공 착지 칸</b>으로 공격 과정을 정해 <b>적용</b>하면 <b>지금 코트의 공격 상황</b>이 바뀌어요. 공격 위치와 착지 칸은 누르면 바로 적용돼요(공격 위치는 코트에 파란 띠로 잠깐 보여줘요). 공격 위치는 공격하는 팀, 착지 칸은 공을 받는 팀 기준이에요.',
+        text:'먼저 코트 위 <b>제목</b>(▾)에서 공격 상황(레프트·A 속공 …)을 고르고 <b>공격 상황 편집</b>에서 위치·템포·<b>공 착지 칸</b>으로 공격 과정을 정해 <b>적용</b>하면 <b>지금 코트의 공격 상황</b>이 바뀌어요. 공격 위치와 착지 칸은 누르면 바로 적용돼요(공격 위치는 코트에 파란 띠로 잠깐 보여줘요). 공격 위치는 공격하는 팀, 착지 칸은 공을 받는 팀 기준이에요.',
         scene:`<div class="mk-card">
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">공격 위치</span><span class="mk-btn on k-x1">왼쪽</span><span class="mk-btn k-x2">중앙</span><span class="mk-btn">오른쪽</span></div>
           <div class="mk-row"><span class="mk-lbl" style="width:52px;">템포</span><span class="mk-btn k-t1">빠름</span><span class="mk-btn on k-t2">보통</span><span class="mk-btn">느림</span></div>
@@ -7847,15 +7719,6 @@
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
                  {wait:1500} ] },
-      { title:'⭐ 최종 대형을 확정해요 (개설자)',
-        text:'개설자는 의견·디테일 폴더의 대형을 불러와 비교한 뒤 <b>⭐ 지금 대형을 최종으로 확정</b>을 눌러요. 공격 상황마다 하나씩 저장되고, 수정 권한자는 불러오기만 할 수 있어요.',
-        scene:`<div class="mk-card"><div class="mk-lbl">📂 대형 보관함</div>
-          <div class="mk-list"><div class="mk-item">📁 의견 · 민수 / 리시브 대형 A</div><div class="mk-item k-pick">📁 의견 · 지훈 / 리시브 대형 B</div></div></div>
-          <div class="mk-card" style="border-color:rgba(255,210,63,.5);"><div class="mk-h">⭐ 최종 대형 <span class="mk-lbl">· 상대 좌측(L) 오픈 공격</span></div>
-          <div class="mk-lbl k-status">아직 이 공격 상황의 최종 대형이 없어요.</div>
-          <div class="mk-row"><span class="mk-btn big on k-fin">⭐ 지금 대형을 최종으로 확정</span></div></div>`,
-        script:[ {click:'.k-pick', then:el=>el.classList.add('on')},
-                 {click:'.k-fin', then:(el,sc)=>{ sc.querySelector('.k-status').innerHTML='확정됨 · 바탕: <b style="color:var(--text)">의견 · 지훈 / 리시브 대형 B</b>'; el.textContent='⭐ 지금 대형으로 최종 교체'; }}, {wait:1800} ] },
       { title:'대형에 코멘트를 남겨요',
         text:'코트 위 <b>💬 대형 코멘트</b>에 이 대형을 짠 의도나 우발 상황 대처를 적어요. 불러온 대형마다 자동 저장되고, 공유 링크에도 함께 담겨요.',
         scene:`${fullCourt()}<div class="mk-card"><div class="mk-h">💬 대형 코멘트 <span class="mk-lbl">· 의견 · 지훈 / 리시브 대형 B</span></div>
