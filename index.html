@@ -417,6 +417,36 @@
   #quickEditSeg button{ flex:1; min-height:44px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; line-height:1.2; }
   #quickEditSeg .qe-main{ font-size:12.5px; }
   #quickEditSeg .qe-sub{ font-size:10.5px; font-weight:600; opacity:.85; white-space:nowrap; }
+  /* 재생 카드 다듬기(TJ 2026-11-26): 그라데이션 알약 대신 단색 재생 버튼 + 편집 줄은 얇은 밑줄 탭 */
+  .timeline-bar .tl-btn{ width:44px; height:44px; border-radius:12px; }
+  .timeline-bar .tl-btn.primary{ background:var(--text); color:var(--panel); box-shadow:none; }
+  .timeline-bar .tl-phase{ font-size:11.5px; letter-spacing:0.02em; margin-bottom:8px; }
+  .timeline-bar #quickEditSeg{ background:none; border:none; border-top:1px solid var(--border); border-radius:0; padding:6px 0 0; gap:0; }
+  #quickEditSeg .qe-label{ font-size:11.5px; font-weight:700; color:var(--muted); padding:0 12px 0 2px; }
+  #quickEditSeg button, body.ys-mode #quickEditSeg button{ background:none; color:var(--text-dim); border-radius:0; position:relative; box-shadow:none; padding:8px 4px 10px; }
+  #quickEditSeg button + button{ border-left:1px solid var(--border); }
+  #quickEditSeg button::after{ content:''; position:absolute; left:18%; right:18%; bottom:0; height:3px; border-radius:3px 3px 0 0; background:transparent; transition:background .2s ease-out; }
+  #quickEditSeg button:hover{ color:var(--text); filter:none; }
+  #quickEditSeg button.active{ background:none; color:var(--text); }
+  #quickEditSeg button.active::after{ background:var(--accent); }
+  #quickEditSeg button.active .qe-main{ font-weight:800; }
+  #quickEditSeg .qe-sub{ font-weight:500; color:var(--muted); opacity:1; }
+  #quickEditSeg button[data-mode="off"]{ flex:1; }
+  /* 처음 점을 누를 때 뜨는 편집 안내창 */
+  .eg-card{ max-width:420px; padding:24px 20px 18px; }
+  .eg-card h2{ font-size:18px; margin-bottom:6px; padding-right:30px; }
+  .eg-lead{ margin:0 0 14px; font-size:13.5px; line-height:1.6; color:var(--text-dim); }
+  .eg-list{ list-style:none; margin:0 0 12px; padding:0; border-top:1px solid var(--border); }
+  .eg-list li{ display:flex; gap:12px; align-items:center; padding:11px 2px; border-bottom:1px solid var(--border); }
+  .eg-list svg{ flex:none; width:52px; height:36px; }
+  .eg-list b{ display:block; font-size:14px; color:var(--text); }
+  .eg-list small{ display:block; font-size:12.5px; line-height:1.5; color:var(--text-dim); margin-top:2px; }
+  .eg-list .eg-k{ display:inline-block; font-size:11px; font-weight:700; color:var(--accent-text); margin-right:6px; }
+  .eg-tip{ margin:0 0 12px; font-size:12.5px; color:var(--text-dim); }
+  .eg-foot{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .eg-hide{ display:flex; align-items:center; gap:8px; min-height:44px; font-size:13px; color:var(--text-dim); cursor:pointer; margin-right:auto; }
+  .eg-hide input{ width:20px; height:20px; accent-color:var(--accent); margin:0; }
+  .eg-foot .btn{ min-height:44px; }
   .tl-phase{ font-family:var(--mono); font-size:11px; letter-spacing:0.06em; color:var(--accent); font-weight:600; margin-bottom:4px; }
   input[type=range]{ width:100%; appearance:none; height:5px; border-radius:3px; background:linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct,0%), var(--border-2) var(--pct,0%), var(--border-2) 100%); cursor:pointer; }
   input[type=range]::-webkit-slider-thumb{ appearance:none; width:15px; height:15px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); cursor:pointer; }
@@ -3165,6 +3195,25 @@
   </div>
 </div>
 
+<div id="editGuideModal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="editGuideTitle">
+  <div class="modal-card eg-card">
+    <button class="modal-close" id="btnCloseEditGuide" type="button" aria-label="닫기">✕</button>
+    <h2 id="editGuideTitle">점을 옮기려면 편집을 바꿔요</h2>
+    <p class="eg-lead">지금은 <b>끔</b>이라 점이 움직이지 않아요. 코트 아래 <b>편집</b> 줄에서 골라요.</p>
+    <ul class="eg-list">
+      <li><svg viewBox="0 0 52 36" aria-hidden="true"><circle cx="16" cy="18" r="8" fill="var(--own)"/><path d="M33 11 L44 18 L33 25 z" fill="var(--text-dim)"/></svg><div><b><span class="eg-k">끔</span>재생해서 봐요</b><small>점은 그대로 두고 ▶ 재생·⟲ 다시보기로 움직임을 봐요.</small></div></li>
+      <li><svg viewBox="0 0 52 36" aria-hidden="true"><circle cx="14" cy="18" r="8" fill="none" stroke="var(--muted)" stroke-dasharray="3 3"/><path d="M24 18 H33" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round"/><circle cx="40" cy="18" r="8" fill="var(--own)"/></svg><div><b><span class="eg-k">시작 위치</span>처음 자리를 옮겨요</b><small>공이 오기 전에 서 있는 대형이에요. 점을 끌어 놓아요.</small></div></li>
+      <li><svg viewBox="0 0 52 36" aria-hidden="true"><circle cx="12" cy="18" r="7" fill="var(--own)"/><path d="M21 18 H35" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3 3"/><path d="M33 13 L40 18 L33 23" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="44" cy="18" r="6" fill="none" stroke="var(--accent)" stroke-width="2"/></svg><div><b><span class="eg-k">도착 위치</span>갈 자리를 옮겨요</b><small>공이 온 뒤 움직여 갈 자리예요. 재생하면 시작 → 도착으로 움직여요.</small></div></li>
+    </ul>
+    <p class="eg-tip">다 옮겼으면 <b>끔</b>으로 돌리고 ▶ 재생해 봐요.</p>
+    <div class="eg-foot">
+      <label class="eg-hide"><input type="checkbox" id="editGuideHide"> 다시 보지 않기</label>
+      <button class="btn" id="btnEditGuideClose" type="button">닫기</button>
+      <button class="btn primary" id="btnEditGuideStart" type="button">시작 위치로 바꾸기</button>
+    </div>
+  </div>
+</div>
+
 <div id="introModal" class="modal-overlay" style="display:none;">
   <div class="modal-card">
     <button class="modal-close" id="btnCloseIntro">✕</button>
@@ -3237,7 +3286,7 @@
         <button class="btn gd-more-btn" type="button">⚠️ 참고사항 더 보기 ▾</button>
         <div class="gd-more" style="display:none;">
         <div class="guide-note-box">⚠️ <b>참고</b><ul>
-          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·재생 카드(▶ 재생·✋ 편집)·포지션 배정, <b>오른쪽</b> 📂 대형 보관함(불러오기·저장) → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
+          <li>화면 배치는 쓰는 순서대로예요: <b>왼쪽</b> 공격 상황 편집, <b>가운데</b> 대형 코멘트·코트·재생 카드(▶ 재생·편집)·포지션 배정, <b>오른쪽</b> 📂 대형 보관함(불러오기·저장) → 공유(좁은 화면에서는 위에서 아래로 같은 순서).</li>
           <li><b>📂 대형 보관함</b>: 맨 위 폴더 칸 하나가 <b>불러올 목록이자 저장할 곳</b>이에요. 폴더를 고르면 그 폴더의 대형이 버튼으로 나오고, 누르면 바로 코트에 불러와요(지금 코트의 대형은 테두리로 표시돼요). 🔍 찾기 칸에 적으면 모든 폴더에서 대형·폴더 이름으로 찾아요. 폴더 이름 바꾸기·복사·삭제와 💡 폴더 이름 Tip은 폴더 칸 옆 <b>⋯ 폴더</b>에 있고, 새 폴더는 폴더 칸 맨 아래 <b>+ 새 폴더 만들기</b>로 만들어요. 불러온 대형은 목록 아래에서 <b>✏️ 이름</b>을 바꾸거나 <b>🗑️ 삭제</b>해요. 공격 옵션(레프트·A 속공 등)이나 공격 상황을 바꿔도 지금 고른 폴더를 그대로 지켜요: 그 폴더에 그 상황 대형이 있으면 그것을 불러오고, 없으면 지금 대형을 그대로 둬요(기본 대형 폴더일 때만 기본 대형으로 바뀌어요). 맨 아래 저장 줄은 위 <b>공격 옵션 목록</b>에서 이름을 고르거나(+ 새 공격 옵션 추가로 목록에 넣을 수 있어요) 칸에 적어요. 이름이 불러온 대형과 같으면 <b>💾 덮어쓰기</b>, 다르면 <b>💾 새로 저장</b>이 되고, <b>➕ 새 이름으로</b>는 불러온 대형은 그대로 두고 하나 더 저장해요. 도트를 고치면 '● 고쳤어요'가 뜨고, 저장하지 않고 다른 대형을 누르면 한 번 물어봐요. 편집 모드를 켜면 코트 아래 재생 카드에도 같은 💾 저장 버튼이 나와서 위로 올라가지 않아도 돼요.</li>
           <li>처음 쓰는 사람(코드 없이 계속하기·새 코드 만들기)은 <b>기본 대형(3인블로킹 기준)</b> 폴더의 대형 12가지로 시작해요. 고쳐서 저장하면 그 방에서는 내 대형이 기준이 되고, 이미 대형을 저장해 둔 방은 그대로예요.</li>
           <li><b>기본 시작 대형</b>: 기본 대형 폴더의 12가지 상황은 모두 같은 자리에서 출발해요. 실제 경기에서 서브가 들어가고 공이 세터에게 가기 전 양 팀이 서 있는 자리예요(서브 상황은 서버만 끝선에서 시작해요). 공격 옵션을 고르면 이 자리에서 공격이 펼쳐지니, 도착 위치만 조금씩 고치면 돼요. 내가 따로 저장한 폴더의 대형은 바뀌지 않아요. 시작 위치 편집의 <b>현재 모드 초기화</b>를 누르면 이 자리로 돌아와요.</li>
@@ -3417,10 +3466,10 @@
           <input type="range" id="timeline" min="0" max="100" value="0" />
         </div>
         <div class="seg" id="quickEditSeg" aria-label="편집 모드 바로가기">
-          <span class="qe-label">✋ 편집</span>
-          <button data-mode="off" class="active" title="편집을 끄면 ▶ 재생·⟲ 다시보기를 할 수 있어요"><span class="qe-main">끔</span><span class="qe-sub">▶ 재생 · ⟲ 다시보기</span></button>
-          <button data-mode="edit">시작 위치</button>
-          <button data-mode="override">도착 위치</button>
+          <span class="qe-label">편집</span>
+          <button data-mode="off" class="active" title="편집을 끄면 ▶ 재생·⟲ 다시보기를 할 수 있어요"><span class="qe-main">끔</span><span class="qe-sub">재생해서 보기</span></button>
+          <button data-mode="edit" title="공이 오기 전 처음 서 있는 자리를 옮겨요"><span class="qe-main">시작 위치</span><span class="qe-sub">처음 자리 옮기기</span></button>
+          <button data-mode="override" title="공이 온 뒤 움직여 갈 자리를 옮겨요"><span class="qe-main">도착 위치</span><span class="qe-sub">갈 자리 옮기기</span></button>
         </div>
         <div id="editModeSection" class="edit-tools" hidden>
         <div class="edit-hint" id="editHintText">편집 모드를 선택하면 코트 위 점을 드래그해 바꿀 수 있어요.</div>
@@ -3447,7 +3496,7 @@
           <button class="btn primary" id="btnEditQuickSave" type="button" hidden title="위 📂 대형 보관함의 저장과 같아요">💾 저장</button>
         </div>
         </div>
-        <div class="tl-note" id="playNote" style="display:none;">편집 중에는 재생할 수 없어요. ✋ 편집 모드를 <b>끔 (▶ 재생 · ⟲ 다시보기)</b>으로 바꿔요.</div>
+        <div class="tl-note" id="playNote" style="display:none;">편집 중에는 재생할 수 없어요. 편집 줄에서 <b>끔</b>을 눌러요.</div>
       </div>
       <div class="legend stage-legend">
         <div class="row"><span class="dot" style="background:var(--own);"></span>우리 팀 (1~9)</div>
@@ -6379,6 +6428,30 @@
   document.querySelectorAll('#quickEditSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=> setEditMode(btn.dataset.mode));
   });
+  // 처음 쓰는 사람이 끔 상태에서 점을 누르면: 끔·시작 위치·도착 위치 쓰는 법 안내창(방문마다 한 번, '다시 보지 않기'면 다시 안 떠요)
+  (function(){
+    const KEY = 'vt:hide-edit-guide', modal = document.getElementById('editGuideModal'), hide = document.getElementById('editGuideHide');
+    if(!modal) return;
+    let shownOnce = false;
+    window.maybeEditGuide = () => {
+      if(shownOnce || editMode || overrideMode) return;
+      try{ if(localStorage.getItem(KEY)==='1') return; }catch(err){}
+      const seg = document.getElementById('quickEditSeg'); if(!seg || !seg.offsetParent) return; // 보기 전용(공유 링크) 화면은 편집 줄이 없어요
+      shownOnce = true; hide.checked = false; modal.style.display = 'flex';
+      document.getElementById('btnEditGuideStart').focus();
+    };
+    const close = start => {
+      if(hide.checked){ try{ localStorage.setItem(KEY, '1'); }catch(err){} }
+      modal.style.display = 'none';
+      if(start) setEditMode('edit');
+    };
+    document.getElementById('btnCloseEditGuide').addEventListener('click', ()=>close(false));
+    document.getElementById('btnEditGuideClose').addEventListener('click', ()=>close(false));
+    document.getElementById('btnEditGuideStart').addEventListener('click', ()=>close(true));
+    modal.addEventListener('click', e=>{ if(e.target===modal) close(false); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.style.display!=='none') close(false); });
+    [...document.querySelectorAll('#court .own-dot, #court .opp-dot')].forEach(g=>g.addEventListener('click', ()=>window.maybeEditGuide()));
+  })();
 
   document.querySelectorAll('#overridePhaseSeg button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -7733,8 +7806,8 @@
                  {type:'.k-name', text:'리시브 대형 A'},
                  {click:'.k-save', then:(el,sc)=>sc.querySelector('.k-toast').classList.add('show')}, {wait:1500} ] },
       { title:'불러와서 고쳐요',
-        text:'<b>📂 대형 보관함</b>에서 폴더를 고르고 대형 버튼을 눌러 불러오고(<b>⋯ 폴더</b>에서 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 코트 아래 재생 카드의 <b>✋ 편집</b>에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요(상대팀 도트도 우리 팀처럼 옮겨져요. 상대 공격수 동선만 공격 과정으로 정해요). 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 <b>끔 (▶ 재생 · ⟲ 다시보기)</b>으로 돌려야 ▶ 재생 버튼이 눌러져요. 고친 대형은 같은 카드의 <b>💾 덮어쓰기</b>로 바로 저장하거나, 보관함의 <b>➕ 새 이름으로</b> 하나 더 남겨요.',
-        scene:`<div class="mk-row"><span class="mk-lbl">✋ 편집</span><span class="mk-btn">끔 ▶⟲</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
+        text:'<b>📂 대형 보관함</b>에서 폴더를 고르고 대형 버튼을 눌러 불러오고(<b>⋯ 폴더</b>에서 폴더째 이름 바꾸기·복사·삭제를 할 수 있어요. 복사하면 새 팀 대형의 바탕으로 쓸 수 있어요), 필요하면 코트 아래 재생 카드의 <b>편집</b> 줄에서 시작 위치나 도착 위치를 고른 뒤 도트를 끌어 옮겨요(처음에 끔 상태로 도트를 누르면 쓰는 법이 짧은 안내창으로 떠요. “다시 보지 않기”를 고르면 더 안 떠요)(상대팀 도트도 우리 팀처럼 옮겨져요. 상대 공격수 동선만 공격 과정으로 정해요). 편집 대상·반응 위치는 <b>⚙️ 고급 옵션</b>에 있어요. 네트 앞 블로킹 존에 놓아야 블로킹으로 인식돼요. 다 옮긴 뒤 <b>끔</b>으로 돌려야 ▶ 재생 버튼이 눌러져요. 고친 대형은 같은 카드의 <b>💾 덮어쓰기</b>로 바로 저장하거나, 보관함의 <b>➕ 새 이름으로</b> 하나 더 남겨요.',
+        scene:`<div class="mk-row"><span class="mk-lbl">편집</span><span class="mk-btn">끔</span><span class="mk-btn k-start">시작 위치</span><span class="mk-btn k-end">도착 위치</span></div>${fullCourt()}`,
         script:[ {click:'.k-end', then:el=>el.classList.add('on')},
                  {drag:'.k-own2', to:[54,50], then:(el,sc)=>sc.querySelector('.k-zone').classList.add('hot')},
                  {wait:1500} ] },
@@ -15216,6 +15289,7 @@ window.BackGuard=function(o){
     const fl=document.querySelector('.pd-float .pd-fl-x'); if(fl){ fl.click(); return true; }
     if(shown($('recoveryModal'))){ guard.toast('복구 코드를 적어 둔 뒤 확인을 눌러 주세요'); return true; }
     if(shown($('qrCritModal'))) return click('btnCloseQrCrit');
+    if(shown($('editGuideModal'))) return click('btnEditGuideClose');
     if(shown($('featureGuideModal'))) return click('btnCloseFeatureGuide');
     if(shown($('introModal'))) return click('btnCloseIntro');
     if(shown($('missionModal'))) return click('btnCloseMission');
